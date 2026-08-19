@@ -82,7 +82,7 @@ export default function CompaniesPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-extrabold text-heading">إدارة الشركات المشتركة</h1>
-                    <p className="text-sm text-body mt-0.5">متابعة حسابات المستأجرين (Tenants)، الخطط، وصلاحيات كل شركة شحن.</p>
+                    <p className="text-sm text-body mt-0.5">متابعة حسابات المستأجرين، الخطط، وصلاحيات كل شركة شحن.</p>
                 </div>
                 <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm hover:shadow-md hover:shadow-accent/20 transition-all">
                     <LuPlus className="w-4 h-4" />

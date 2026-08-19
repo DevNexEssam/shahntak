@@ -10,7 +10,7 @@ export default function ReportsPage() {
                     <h1 className="text-2xl font-extrabold text-heading">التقارير التحليلية والنمو</h1>
                     <p className="text-sm text-body mt-0.5">مؤشرات الأداء الرئيسية (KPIs) لنمو العمليات وتوزيع الشحنات عبر المملكة.</p>
                 </div>
-                <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm">
+                <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-xs">
                     <FaDownload className="w-4 h-4" />
                     <span>توليد تقرير شهري كامل</span>
                 </button>

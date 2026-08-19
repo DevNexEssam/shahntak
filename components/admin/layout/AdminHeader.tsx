@@ -21,13 +21,13 @@ export const AdminHeader: React.FC = () => {
             <div className="flex items-center gap-4">
 
                 {/* System Health Indicator */}
-                <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-success-soft border border-success/20 text-success text-xs font-bold">
+                {/* <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md bg-success/80 border text-white text-xs font-bold">
                     <LuServer className="w-3.5 h-3.5" />
                     <span>الخوادم تعمل بكفاءة ٩٩.٩٪</span>
-                </div>
+                </div> */}
 
                 {/* Create Company Quick Button */}
-                <button className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all">
+                <button className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all">
                     <LuPlus className="w-4 h-4" />
                     <span>إضافة شركة جديدة</span>
                 </button>

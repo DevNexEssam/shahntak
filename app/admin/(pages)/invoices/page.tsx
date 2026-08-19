@@ -51,10 +51,10 @@ export default function InvoicesPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-extrabold text-heading">البوالص والفواتير المالية</h1>
-                    <p className="text-sm text-body mt-0.5">متابعة فواتير اشتراكات منصة شحنتك، ورسوم استهلاك الـ API، والفوترة الإلكترونية (ZATCA).</p>
+                    <p className="text-sm text-body mt-0.5">متابعة فواتير اشتراكات منصة شحنتك، ورسوم استهلاك الـ API، والفوترة الإلكترونية .</p>
                 </div>
-                <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm hover:shadow-md hover:shadow-accent/20 transition-all">
-                    <FaDownLong className="w-4 h-4" />
+                <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-xs hover:shadow-md hover:shadow-accent/20 transition-all">
+                    <FaDownLong />
                     <span>تصدير إقرار ضريبة القيمة المضافة</span>
                 </button>
             </div>

@@ -16,7 +16,7 @@ export default function AdminDashboardPage() {
             {/* Page Title */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-heading">مركز العمليات الرئيسي (Super Admin)</h1>
+                    <h1 className="text-2xl font-extrabold text-heading">مركز العمليات الرئيسي</h1>
                     <p className="text-sm text-body mt-1">نظرة عامة لحظية على أداء جميع شركات الشحن المسجلة على منصة شحنتك.</p>
                 </div>
                 <div className="flex items-center gap-2">

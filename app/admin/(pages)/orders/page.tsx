@@ -68,7 +68,7 @@ export default function OrdersPage() {
                     <p className="text-sm text-body mt-0.5">مراقبة حية لجميع الشحنات الصادرة من كافة شركات الشحن على المنصة.</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button className="px-4 py-2 rounded-xl bg-surface border border-border text-heading text-xs font-bold hover:bg-surface-muted transition-colors">
+                    <button className="px-4 py-2 rounded-md bg-surface border border-border text-heading text-xs font-bold hover:bg-surface-muted transition-colors">
                         تصدير تقرير CSV
                     </button>
                 </div>
@@ -125,7 +125,7 @@ export default function OrdersPage() {
                     />
                 </div>
                 <div className="flex items-center gap-2.5 w-full md:w-auto">
-                    <button className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface border border-border text-xs font-bold text-heading hover:bg-surface-muted transition-colors">
+                    <button className="flex items-center gap-2 px-3.5 py-2 rounded-md bg-surface border border-border text-xs font-bold text-heading hover:bg-surface-muted transition-colors">
                         <LuFilter className="w-3.5 h-3.5 text-body" />
                         <span>فلترة بالشركة</span>
                     </button>

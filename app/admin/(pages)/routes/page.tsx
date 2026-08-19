@@ -21,7 +21,7 @@ export default function RoutesPage() {
             {/* Header */}
             <div>
                 <h1 className="text-2xl font-extrabold text-heading">المسارات، شركات النقل الخارجية، والأسطول</h1>
-                <p className="text-sm text-body mt-0.5">إدارة خطوط الشحن بين المدن وربط شركات التوصيل الوسيطة (3PL).</p>
+                <p className="text-sm text-body mt-0.5">إدارة خطوط الشحن بين المدن وربط شركات التوصيل الوسيطة .</p>
             </div>
 
             {/* 3PL Carriers Health */}

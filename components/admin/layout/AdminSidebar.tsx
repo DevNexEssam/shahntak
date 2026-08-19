@@ -96,8 +96,8 @@ export const AdminSidebar: React.FC = () => {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${isActive
-                                        ? 'bg-accent text-white shadow-lg shadow-accent/30'
+                                className={`flex items-center justify-between px-3.5 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${isActive
+                                        ? 'bg-accent text-white shadow-accent/30'
                                         : 'text-white/70 hover:bg-white/5 hover:text-white'
                                     }`}
                             >

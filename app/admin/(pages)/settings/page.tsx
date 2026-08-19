@@ -51,8 +51,8 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="pt-4 flex justify-end">
-                    <button className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all">
-                        <LuSave className="w-4 h-4" />
+                    <button className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-xs shadow-sm hover:shadow transition-all">
+                        {/* <LuSave className="w-4 h-4" /> */}
                         <span>حفظ التغييرات</span>
                     </button>
                 </div>
