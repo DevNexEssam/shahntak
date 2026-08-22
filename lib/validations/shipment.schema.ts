@@ -19,21 +19,21 @@ export const shipmentStatusEnum = [
 ] as const;
 
 export const shipmentCreateValidationSchema = z.object({
-    shipmentNumber: z.string().min(1, "رقم الشحنة مطلوب"),
-    companyId: z.string().min(1, "معرف الشركة مطلوب"),
+    shipmentNumber: z.string("رقم الشحنة مطلوب").min(1, "رقم الشحنة مطلوب"),
+    companyId: z.string("معرف الشركة مطلوب").min(1, "معرف الشركة مطلوب"),
     type: z.enum(shipmentTypeEnum).default("ftl"),
-    origin: z.string().min(1, "نقطة انطلاق الشحنة مطلوبة"),
-    destination: z.string().min(1, "وجهة الشحنة مطلوبة"),
+    origin: z.string("نقطة انطلاق الشحنة مطلوبة").min(1, "نقطة انطلاق الشحنة مطلوبة"),
+    destination: z.string("وجهة الشحنة مطلوبة").min(1, "وجهة الشحنة مطلوبة"),
     routeId: z.string().optional().or(z.literal("")),
     carrierId: z.string().optional().or(z.literal("")),
     vehicleId: z.string().optional().or(z.literal("")),
     invoiceId: z.string().optional().or(z.literal("")),
     ordersCount: z.number().min(0).default(0),
     shippingCost: z
-        .number({ message: "تكلفة الشحن يجب أن تكون رقماً" })
+        .number({ message: "تكلفة الشحن مطلوبة" })
         .min(0, "التكلفة لا يمكن أن تكون بالسالب"),
     customerPrice: z
-        .number({ message: "السعر للعميل يجب أن يكون رقماً" })
+        .number({ message: "السعر للعميل مطلوب" })
         .min(0, "السعر لا يمكن أن يكون بالسالب"),
     waybillNumber: z.string().optional().or(z.literal("")),
     trackingNumber: z.string().optional().or(z.literal("")),
@@ -41,6 +41,7 @@ export const shipmentCreateValidationSchema = z.object({
 });
 
 export const shipmentUpdateValidationSchema = z.object({
+    companyId: z.string().optional(),
     type: z.enum(shipmentTypeEnum).optional(),
     origin: z.string().min(1).optional(),
     destination: z.string().min(1).optional(),

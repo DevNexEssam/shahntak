@@ -6,6 +6,7 @@ export interface ICarrier extends Document {
     contactPhone?: string;
     contactEmail?: string;
     isActive: boolean;
+    deletedAt?: Date | null;
 }
 
 const CarrierSchema = new Schema<ICarrier>(
@@ -15,6 +16,7 @@ const CarrierSchema = new Schema<ICarrier>(
         contactPhone: { type: String, minlength: 3, maxlength: 15 },
         contactEmail: { type: String, minlength: 8, maxlength: 70 },
         isActive: { type: Boolean, default: true },
+        deletedAt: { type: Date, default: null },
     }, { timestamps: true, versionKey: false }
 )
 

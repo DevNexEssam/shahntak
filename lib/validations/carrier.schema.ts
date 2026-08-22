@@ -4,7 +4,7 @@ export const carrierTypeEnum = ["local", "external_api"] as const;
 
 export const carrierCreateValidationSchema = z.object({
     name: z
-        .string()
+        .string("اسم الناقل مطلوب")
         .min(2, "اسم الناقل يجب أن يكون على الأقل حرفين")
         .max(50, "اسم الناقل يجب أن لا يتجاوز 50 حرف"),
     type: z.enum(carrierTypeEnum).default("local"),

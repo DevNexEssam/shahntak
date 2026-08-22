@@ -7,10 +7,11 @@ export interface ICompanyUser extends Document {
     password: string;
     phone: string;
     userRole: "owner" | "manager" | "staff";
-    status: "active" | "inactive"
+    status: "active" | "inactive";
     permissions: string[];
     userIsActive: boolean;
     createdBy: Types.ObjectId;
+    deletedAt?: Date | null;
 }
 
 const CompanyUserSchema = new Schema<ICompanyUser>(
@@ -28,6 +29,7 @@ const CompanyUserSchema = new Schema<ICompanyUser>(
         permissions: [{ type: String }],
         userIsActive: { type: Boolean, default: true },
         createdBy: { type: Schema.Types.ObjectId, required: true },
+        deletedAt: { type: Date, default: null },
     }, { timestamps: true, versionKey: false }
 )
 

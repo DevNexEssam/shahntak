@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const vehicleCreateValidationSchema = z.object({
     type: z
-        .string()
+        .string("نوع المركبة مطلوب")
         .min(2, "نوع المركبة يجب أن يكون على الأقل حرفين")
         .max(50, "نوع المركبة يجب أن لا يتجاوز 50 حرف"),
     capacityWeight: z

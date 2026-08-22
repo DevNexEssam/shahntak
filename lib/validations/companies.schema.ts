@@ -4,11 +4,11 @@ export const companyStatusEnum = ["active", "inactive", "archived", "banned"] as
 
 export const companyCreateValidationSchema = z.object({
     companyName: z
-        .string()
+        .string("اسم الشركة مطلوب")
         .min(3, "الاسم يجب أن يكون على الأقل 3 أحرف")
         .max(100, "الاسم يجب أن لا يتجاوز 100 حرف"),
     email: z
-        .string()
+        .string("ايميل الشركة مطلوب")
         .email("البريد الإلكتروني غير صحيح")
         .min(4, "البريد الإلكتروني يجب أن يكون على الأقل 4 أحرف")
         .max(70, "البريد الإلكتروني يجب أن لا يتجاوز 70 حرف"),
@@ -18,11 +18,11 @@ export const companyCreateValidationSchema = z.object({
         .optional()
         .or(z.literal("")),
     phone: z
-        .string()
+        .string("رقم الهاتف مطلوب")
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
         .max(20, "رقم الهاتف يجب أن لا يتجاوز 20 رقم"),
     city: z
-        .string()
+        .string("المدينة مطلوبة")
         .min(1, "المدينة مطلوبة")
         .max(50, "المدينة يجب أن لا تتجاوز 50 حرف"),
     taxNumber: z
@@ -41,6 +41,8 @@ export const companyCreateValidationSchema = z.object({
         .optional()
         .or(z.literal("")),
     status: z.enum(companyStatusEnum).default("active"),
+    approvedBy: z.string().optional().or(z.literal("")),
+    approvedAt: z.coerce.date().optional(),
 });
 
 export const updateCompanyValidationSchema = z.object({
@@ -84,6 +86,8 @@ export const updateCompanyValidationSchema = z.object({
         .optional()
         .or(z.literal("")),
     status: z.enum(companyStatusEnum).optional(),
+    approvedBy: z.string().optional().or(z.literal("")),
+    approvedAt: z.coerce.date().optional(),
 });
 
 // Type Inference

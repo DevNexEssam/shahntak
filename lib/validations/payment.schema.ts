@@ -3,9 +3,9 @@ import { z } from "zod";
 export const paymentMethodEnum = ["bank_transfer", "card", "cash", "other"] as const;
 
 export const paymentCreateValidationSchema = z.object({
-    invoiceId: z.string().min(1, "معرف الفاتورة مطلوب"),
+    invoiceId: z.string("معرف الفاتورة مطلوب").min(1, "معرف الفاتورة مطلوب"),
     amount: z
-        .number({ message: "المبلغ يجب أن يكون رقماً" })
+        .number({ message: "مبلغ الدفعة مطلوب" })
         .positive("المبلغ يجب أن يكون رقماً موجباً"),
     method: z.enum(paymentMethodEnum, { message: "طريقة الدفع غير صحيحة" }),
     paidAt: z.coerce.date().default(() => new Date()),

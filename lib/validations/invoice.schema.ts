@@ -9,16 +9,17 @@ export const invoiceStatusEnum = [
 ] as const;
 
 export const invoiceCreateValidationSchema = z.object({
-    invoiceNumber: z.string().min(1, "رقم الفاتورة مطلوب"),
-    companyId: z.string().min(1, "معرف الشركة مطلوب"),
+    invoiceNumber: z.string("رقم الفاتورة مطلوب").min(1, "رقم الفاتورة مطلوب"),
+    companyId: z.string("معرف الشركة مطلوب").min(1, "معرف الشركة مطلوب"),
     total: z
-        .number({ message: "الإجمالي يجب أن يكون رقماً" })
+        .number({ message: "إجمالي الفاتورة مطلوب" })
         .min(0, "الإجمالي لا يمكن أن يكون بالسالب"),
     status: z.enum(invoiceStatusEnum).default("draft"),
     dueDate: z.coerce.date().optional(),
 });
 
 export const invoiceUpdateValidationSchema = z.object({
+    companyId: z.string().optional(),
     total: z.number().min(0).optional(),
     status: z.enum(invoiceStatusEnum).optional(),
     dueDate: z.coerce.date().optional(),

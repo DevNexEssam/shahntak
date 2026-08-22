@@ -1,17 +1,18 @@
 import mongoose, { Schema, Types } from "mongoose";
 
 export interface ICompany extends Document {
-    companyName: string
+    companyName: string;
     email: string;
     password: string;
     city: string;
     taxNumber: string;
     address: string;
-    facilityInfo: string
+    facilityInfo: string;
     phone: string;
     status: "active" | "inactive" | "archived" | "banned";
     approvedBy?: Types.ObjectId;
     approvedAt?: Date;
+    deletedAt?: Date | null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -39,6 +40,7 @@ const CompanySchema = new Schema<ICompany>(
         },
         approvedBy: { type: Schema.Types.ObjectId, ref: "User" },
         approvedAt: { type: Date },
+        deletedAt: { type: Date, default: null },
     }, { timestamps: true, versionKey: false }
 )
 

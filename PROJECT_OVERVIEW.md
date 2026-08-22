@@ -106,6 +106,7 @@ shahntak/
 ## 🔑 5. أهم ملفات النظام ومساراتها
 
 * **إعدادات المصادقة**: [`lib/authOptions.ts`](file:///e:/projects/shahntak/lib/authOptions.ts)
+* **معايير وهندسة الـ APIs والباك إند**: [`BACKEND_CONVENTIONS.md`](file:///e:/projects/shahntak/BACKEND_CONVENTIONS.md)
 * **الاتصال بقاعدة البيانات**: [`lib/mongodb.ts`](file:///e:/projects/shahntak/lib/mongodb.ts)
 * **الصفحة الرئيسية للموقع**: [`app/page.tsx`](file:///e:/projects/shahntak/app/page.tsx)
 * **لوحة تحكم السوبر أدمن**: [`app/admin/page.tsx`](file:///e:/projects/shahntak/app/admin/page.tsx)
@@ -129,3 +130,13 @@ npm run start
 # فحص الأخطاء والتنسيق
 npm run lint
 ```
+
+---
+
+## 🛡️ 7. معايير سلامة المراجع والقيود الهيكلية (Strict Referential Integrity Rules)
+
+* **التحقق المزدوج عند الإنشاء والتعديل (`POST` & `PATCH`)**:
+  جميع المعرفات المرجعية الربطية (`companyId`, `createdByUserId`, `shipmentId`, `carrierId`, `vehicleId`, `routeId`, `approvedBy`, `invoiceId`, `recipientId`) خاضعة لفحصين إلزاميين في جميع الواجهات:
+  1. **التحقق من صحة التركيب الهيكلي**: فحص `mongoose.Types.ObjectId.isValid(id)`.
+  2. **التحقق من الوجود الساري بقاعدة البيانات**: التأكد من وجود الكيان فعلياً ودون حذف مؤقت `...ACTIVE` قبل السماح بإتمام الحفظ أو التعديل.
+  3. **رسائل خطأ Zod للحقول الإجبارية**: تمرير رسالة الخطأ العربية الصريحة (`z.string("اسم الحقل مطلوب")`) لكل حقل إجباري يطابق `required: true` في Mongoose.

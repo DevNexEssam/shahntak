@@ -6,6 +6,7 @@ export interface IInvoice extends Document {
     total: number;
     status: "draft" | "issued" | "paid" | "overdue" | "cancelled";
     dueDate?: Date;
+    deletedAt?: Date | null;
 }
 
 const InvoiceSchema = new Schema<IInvoice>(
@@ -19,6 +20,7 @@ const InvoiceSchema = new Schema<IInvoice>(
             default: "draft",
         },
         dueDate: { type: Date },
+        deletedAt: { type: Date, default: null },
     }, { timestamps: true, versionKey: false }
 )
 

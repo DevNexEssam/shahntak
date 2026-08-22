@@ -13,20 +13,20 @@ export const orderStatusEnum = [
 export const orderSourceEnum = ["manual", "bulk_upload"] as const;
 
 export const orderCreateValidationSchema = z.object({
-    orderNumber: z.string().min(1, "رقم الطلب مطلوب"),
-    companyId: z.string().min(1, "معرف الشركة مطلوب"),
+    orderNumber: z.string("رقم الطلب مطلوب").min(1, "رقم الطلب مطلوب"),
+    companyId: z.string("معرف الشركة مطلوب").min(1, "معرف الشركة مطلوب"),
     shipmentId: z.string().optional().or(z.literal("")),
-    createdByUserId: z.string().min(1, "معرف منشئ الطلب مطلوب"),
+    createdByUserId: z.string("معرف منشئ الطلب مطلوب").min(1, "معرف منشئ الطلب مطلوب"),
     recipientName: z
-        .string()
+        .string("اسم المستلم مطلوب")
         .min(2, "اسم المستلم يجب أن يكون على الأقل حرفين")
         .max(50, "اسم المستلم يجب أن لا يتجاوز 50 حرف"),
     recipientPhone: z
-        .string()
+        .string("رقم هاتف المستلم مطلوب")
         .min(8, "رقم هاتف المستلم يجب أن يكون على الأقل 8 أرقام")
         .max(15, "رقم هاتف المستلم يجب أن لا يتجاوز 15 رقم"),
     recipientCity: z
-        .string()
+        .string("المدينة مطلوبة")
         .min(2, "المدينة يجب أن تكون على الأقل حرفين")
         .max(50, "المدينة يجب أن لا تتجاوز 50 حرف"),
     recipientDistrict: z
@@ -35,7 +35,7 @@ export const orderCreateValidationSchema = z.object({
         .optional()
         .or(z.literal("")),
     recipientAddress: z
-        .string()
+        .string("عنوان المستلم مطلوب")
         .min(1, "عنوان المستلم مطلوب")
         .max(255, "العنوان يجب أن لا يتجاوز 255 حرف"),
     description: z
@@ -48,10 +48,10 @@ export const orderCreateValidationSchema = z.object({
         .min(1, "الكمية يجب أن تكون 1 على الأقل")
         .default(1),
     weight: z
-        .number({ message: "الوزن يجب أن يكون رقماً" })
+        .number({ message: "الوزن مطلوب" })
         .positive("الوزن يجب أن يكون رقماً موجباً"),
     orderValue: z
-        .number({ message: "قيمة الطلب يجب أن تكون رقماً" })
+        .number({ message: "قيمة الطلب مطلوبة" })
         .min(0, "قيمة الطلب لا يمكن أن تكون بالسالب"),
     codAmount: z
         .number({ message: "مبلغ الدفع عند الاستلام يجب أن يكون رقماً" })
@@ -62,6 +62,8 @@ export const orderCreateValidationSchema = z.object({
 });
 
 export const orderUpdateValidationSchema = z.object({
+    companyId: z.string().optional(),
+    createdByUserId: z.string().optional(),
     shipmentId: z.string().optional().or(z.literal("")),
     recipientName: z
         .string()

@@ -2,16 +2,16 @@ import { z } from "zod";
 
 export const routeCreateValidationSchema = z.object({
     origin: z
-        .string()
+        .string("نقطة الانطلاق مطلوبة")
         .min(2, "نقطة الانطلاق يجب أن تكون على الأقل حرفين")
         .max(50, "نقطة الانطلاق يجب أن لا تتجاوز 50 حرف"),
     destination: z
-        .string()
+        .string("وجهة الوصول مطلوبة")
         .min(2, "وجهة الوصول يجب أن تكون على الأقل حرفين")
         .max(50, "وجهة الوصول يجب أن لا تتجاوز 50 حرف"),
-    vehicleType: z.string().min(1, "نوع المركبة مطلوب"),
+    vehicleType: z.string("نوع المركبة مطلوب").min(1, "نوع المركبة مطلوب"),
     basePrice: z
-        .number({ message: "السعر الأساسي يجب أن يكون رقماً" })
+        .number({ message: "السعر الأساسي مطلوب" })
         .min(0, "السعر الأساسي لا يمكن أن يكون بالسالب"),
     carrierId: z.string().optional().or(z.literal("")),
     estimatedTransitTime: z.string().optional().or(z.literal("")),

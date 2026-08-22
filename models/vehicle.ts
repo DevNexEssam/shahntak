@@ -5,6 +5,7 @@ export interface IVehicle extends Document {
     capacityWeight?: number;
     capacityVolume?: number;
     isActive: boolean;
+    deletedAt?: Date | null;
 }
 
 const VehicleSchema = new Schema<IVehicle>(
@@ -13,6 +14,7 @@ const VehicleSchema = new Schema<IVehicle>(
         capacityWeight: { type: Number },
         capacityVolume: { type: Number },
         isActive: { type: Boolean, default: true },
+        deletedAt: { type: Date, default: null },
     }, { timestamps: true, versionKey: false }
 )
 

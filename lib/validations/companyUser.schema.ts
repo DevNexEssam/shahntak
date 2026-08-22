@@ -4,22 +4,22 @@ export const companyUserRoleEnum = ["owner", "manager", "staff"] as const;
 
 export const companyUserCreateValidationSchema = z.object({
     companyId: z
-        .string()
+        .string("معرف الشركة مطلوب")
         .min(1, "معرف الشركة مطلوب"),
     userName: z
-        .string()
+        .string("اسم المستخدم مطلوب")
         .min(3, "اسم المستخدم يجب أن يكون على الأقل 3 أحرف")
         .max(50, "اسم المستخدم يجب أن لا يتجاوز 50 حرف"),
     userEmail: z
-        .string()
+        .string("البريد الإلكتروني مطلوب")
         .email("البريد الإلكتروني غير صحيح")
         .min(8, "البريد الإلكتروني يجب أن يكون على الأقل 8 أحرف")
         .max(70, "البريد الإلكتروني يجب أن لا يتجاوز 70 حرف"),
     password: z
-        .string()
+        .string("كلمة المرور مطلوبة")
         .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
     phone: z
-        .string()
+        .string("رقم الهاتف مطلوب")
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
         .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم"),
     userRole: z.enum(companyUserRoleEnum).default("staff"),
@@ -29,6 +29,7 @@ export const companyUserCreateValidationSchema = z.object({
 });
 
 export const companyUserUpdateValidationSchema = z.object({
+    companyId: z.string().optional(),
     userName: z
         .string()
         .min(3, "اسم المستخدم يجب أن يكون على الأقل 3 أحرف")

@@ -5,16 +5,16 @@ export const userStatusEnum = ["active", "inactive"] as const;
 
 export const userCreateValidationSchema = z.object({
     name: z
-        .string()
+        .string("الاسم مطلوب")
         .min(3, "الاسم يجب أن يكون على الأقل 3 أحرف")
         .max(50, "الاسم يجب أن لا يتجاوز 50 حرف"),
     email: z
-        .string()
+        .string("البريد الإلكتروني مطلوب")
         .email("البريد الإلكتروني غير صحيح")
         .min(8, "البريد الإلكتروني يجب أن يكون على الأقل 8 أحرف")
         .max(70, "البريد الإلكتروني يجب أن لا يتجاوز 70 حرف"),
     password: z
-        .string()
+        .string("كلمة المرور مطلوبة")
         .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف")
         .default("123456"),
     phone: z

@@ -19,6 +19,7 @@ export interface IShipment extends Document {
     | "created" | "confirmed" | "assigned" | "ready_for_pickup" | "picked_up"
     | "in_transit" | "arrived" | "out_for_delivery" | "delivered"
     | "delivery_failed" | "cancelled" | "returned" | "exception";
+    deletedAt?: Date | null;
 }
 
 const ShipmentSchema = new Schema<IShipment>(
@@ -46,6 +47,7 @@ const ShipmentSchema = new Schema<IShipment>(
             ],
             default: "created",
         },
+        deletedAt: { type: Date, default: null },
     }, { timestamps: true, versionKey: false }
 )
 

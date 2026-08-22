@@ -8,6 +8,7 @@ export interface IRoute extends Document {
     carrierId?: Types.ObjectId;
     estimatedTransitTime?: string;
     isActive: boolean;
+    deletedAt?: Date | null;
 }
 
 const RouteSchema = new Schema<IRoute>(
@@ -19,6 +20,7 @@ const RouteSchema = new Schema<IRoute>(
         carrierId: { type: Schema.Types.ObjectId, ref: "Carrier" },
         estimatedTransitTime: { type: String },
         isActive: { type: Boolean, default: true },
+        deletedAt: { type: Date, default: null },
     }, { timestamps: true, versionKey: false }
 )
 

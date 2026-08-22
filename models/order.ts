@@ -17,6 +17,7 @@ export interface IOrder extends Document {
     codAmount?: number;
     status: "pending" | "validated" | "error" | "grouped" | "shipped" | "delivered" | "cancelled";
     source: "manual" | "bulk_upload";
+    deletedAt?: Date | null;
 }
 
 const OrderSchema = new Schema<IOrder>(
@@ -41,6 +42,7 @@ const OrderSchema = new Schema<IOrder>(
             default: "pending",
         },
         source: { type: String, enum: ["manual", "bulk_upload"], default: "manual" },
+        deletedAt: { type: Date, default: null },
     }, { timestamps: true, versionKey: false }
 )
 
