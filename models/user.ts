@@ -1,12 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IUser extends Document {
-    name: string
+    name: string;
     email: string;
     password: string;
     phone: string;
     role: "admin" | "super";
     status: "active" | "inactive";
+    deletedAt?: Date | null;
 }
 
 export const UserSchema = new Schema<IUser>(
@@ -31,6 +32,7 @@ export const UserSchema = new Schema<IUser>(
             enum: ["active", "inactive"],
             default: "active",
         },
+        deletedAt: { type: Date, default: null },
     }, { timestamps: true, versionKey: false }
 )
 

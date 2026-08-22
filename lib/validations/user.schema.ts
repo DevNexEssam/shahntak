@@ -18,7 +18,7 @@ export const userCreateValidationSchema = z.object({
         .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف")
         .default("123456"),
     phone: z
-        .string()
+        .string("رقم الهاتف مطلوب")
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
         .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم"),
     role: z.enum(userRoleEnum).default("admin"),
@@ -41,7 +41,7 @@ export const userUpdateValidationSchema = z.object({
         .optional()
         .or(z.literal("")),
     phone: z
-        .string()
+        .string("رقم الهاتف مطلوب")
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
         .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم")
         .optional(),
