@@ -21,17 +21,17 @@ const CompanySchema = new Schema<ICompany>(
         companyName: {
             type: String,
             required: true,
-            unique: true,
+            // unique: true,
             minlength: 3,
-            maxlength: 50
+            maxlength: 100
         },
-        email: { type: String, required: true, unique: true, minlength: 8, maxlength: 70 },
-        password: { type: String, default: "123456", select: false },
-        phone: { type: String, required: true, unique: true, minlength: 3, maxlength: 15 },
+        email: { type: String, required: true, unique: true, minlength: 4, maxlength: 70 },
+        password: { type: String, default: "123456", select: false, minlength: 6, maxlength: 70 },
+        phone: { type: String, required: true, unique: true, minlength: 3, maxlength: 20 },
         city: { type: String, required: true, minlength: 1, maxlength: 50 },
-        taxNumber: { type: String, minlength: 1, maxlength: 50 },
-        address: { type: String, minlength: 1, maxlength: 255 },
-        facilityInfo: { type: String, minlength: 1, maxlength: 500 },
+        taxNumber: { type: String, maxlength: 50 },
+        address: { type: String, maxlength: 255 },
+        facilityInfo: { type: String, maxlength: 500 },
         status: {
             type: String,
             enum: ["active", "inactive", "archived", "banned"],
