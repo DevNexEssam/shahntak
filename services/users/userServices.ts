@@ -1,65 +1,35 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Admin, AdminResponse } from "@/types/data";
+import { User, UserResponse, UserSingleResponse, UserDeleteResponse } from "@/types/data";
 import axios from "axios";
 
-export const adminsService = {
-    // Get all admins
-    getAdmins: async (page: number = 1, limit: number = 10): Promise<AdminResponse> => {
-        const { data } = await axios.get(`/api/admin?page=${page}&limit=${limit}`);
+export const usersService = {
+    // Get paginated users list
+    getUsers: async (page: number = 1, limit: number = 10): Promise<UserResponse> => {
+        const { data } = await axios.get(`/api/admin/users?page=${page}&limit=${limit}`);
         return data;
     },
 
-    // Get all admins (no pagination)
-    getAlladmins: async (): Promise<AdminResponse> => {
-        const { data } = await axios.get(`/api/admin?nopagination=true`);
+    // Get single user details by ID
+    getUserById: async (id: string): Promise<UserSingleResponse> => {
+        const { data } = await axios.get(`/api/admin/users/${id}`);
         return data;
     },
 
-    // Get admin by id
-    getAdminById: async (id: string): Promise<Admin> => {
-        const { data } = await axios.get(`/api/admin/${id}`);
+    // Create a new user
+    createUser: async (payload: { data: Partial<User> }): Promise<UserSingleResponse> => {
+        const { data } = await axios.post("/api/admin/users/new", payload.data);
         return data;
     },
 
-    // Create admin
-    createAdmin: async (payload: { data: Admin, avatarFile?: File | null }): Promise<AdminResponse> => {
-        let requestData: any = payload.data;
-        let headers = {};
-
-        if (payload.avatarFile) {
-            const formData = new FormData();
-            formData.append("data", JSON.stringify(payload.data));
-            formData.append("avatarFile", payload.avatarFile);
-            requestData = formData;
-            headers = { "Content-Type": "multipart/form-data" };
-        }
-
-        const { data } = await axios.post("/api/admin/new", requestData, { headers });
+    // Update existing user by ID
+    updateUser: async (payload: { id: string; updates: Partial<User> }): Promise<UserSingleResponse> => {
+        const { data } = await axios.patch(`/api/admin/users/${payload.id}`, payload.updates);
         return data;
     },
 
-    // Update admin
-    updateAdmin: async (payload: { id: string, updates: Partial<Admin>, avatarFile?: File | null }): Promise<AdminResponse> => {
-        let requestData: any = payload.updates;
-        let headers = {};
-
-        if (payload.avatarFile) {
-            const formData = new FormData();
-            formData.append("data", JSON.stringify(payload.updates));
-            formData.append("avatarFile", payload.avatarFile);
-            requestData = formData;
-            headers = { "Content-Type": "multipart/form-data" };
-        }
-
-        const { data } = await axios.patch(`/api/admin/${payload.id}`, requestData, { headers });
+    // Delete user by ID
+    deleteUser: async ({ id }: { id: string }): Promise<UserDeleteResponse> => {
+        const { data } = await axios.delete(`/api/admin/users/${id}`);
         return data;
     },
-
-    // Delete admin
-    deleteAdmin: async ({ id, hard = false }: { id: string; hard?: boolean }): Promise<AdminResponse> => {
-        const { data } = await axios.delete(`/api/admin/${id}`, {
-            params: { hard }
-        });
-        return data;
-    }
 };
+

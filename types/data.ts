@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // 1. User Types
 export interface User {
     _id: string;
@@ -19,9 +20,21 @@ export interface UserResponse {
     stats?: {
         active: number;
         inactive: number;
-        total: number;
     };
 }
+
+export interface UserSingleResponse {
+    success: boolean;
+    message?: string;
+    data: User;
+}
+
+export interface UserDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
 
 // 2. Carrier Types
 export interface Carrier {
@@ -47,6 +60,19 @@ export interface CarrierResponse {
         total: number;
     };
 }
+
+export interface CarrierSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Carrier;
+}
+
+export interface CarrierDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
 
 // 3. Company Types
 export interface Company {
@@ -80,6 +106,18 @@ export interface CompanyResponse {
     };
 }
 
+export interface CompanySingleResponse {
+    success: boolean;
+    message?: string;
+    data: Company;
+}
+
+export interface CompanyDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
 // 4. CompanyUser Types
 export interface CompanyUser {
     _id: string;
@@ -108,6 +146,18 @@ export interface CompanyUserResponse {
         inactive: number;
         total: number;
     };
+}
+
+export interface CompanyUserSingleResponse {
+    success: boolean;
+    message?: string;
+    data: CompanyUser;
+}
+
+export interface CompanyUserDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
 }
 
 // 5. Order Types
@@ -148,6 +198,18 @@ export interface OrderResponse {
         cancelled: number;
         total: number;
     };
+}
+
+export interface OrderSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Order;
+}
+
+export interface OrderDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
 }
 
 // 6. Shipment Types
@@ -192,6 +254,18 @@ export interface ShipmentResponse {
     };
 }
 
+export interface ShipmentSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Shipment;
+}
+
+export interface ShipmentDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
 // 7. Vehicle Types
 export interface Vehicle {
     _id: string;
@@ -214,6 +288,18 @@ export interface VehicleResponse {
         inactive: number;
         total: number;
     };
+}
+
+export interface VehicleSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Vehicle;
+}
+
+export interface VehicleDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
 }
 
 // 8. Route Types
@@ -243,6 +329,18 @@ export interface RouteResponse {
     };
 }
 
+export interface RouteSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Route;
+}
+
+export interface RouteDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
 // 9. Waybill Types
 export interface Waybill {
     _id: string;
@@ -259,6 +357,18 @@ export interface WaybillResponse {
     data: Waybill[];
     total: number;
     count: number;
+}
+
+export interface WaybillSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Waybill;
+}
+
+export interface WaybillDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
 }
 
 // 10. Invoice Types
@@ -289,6 +399,18 @@ export interface InvoiceResponse {
     };
 }
 
+export interface InvoiceSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Invoice;
+}
+
+export interface InvoiceDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
 // 11. Payment Types
 export interface Payment {
     _id: string;
@@ -307,6 +429,18 @@ export interface PaymentResponse {
     count: number;
 }
 
+export interface PaymentSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Payment;
+}
+
+export interface PaymentDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
 // 12. TrackingEvent Types
 export interface TrackingEvent {
     _id: string;
@@ -323,6 +457,18 @@ export interface TrackingEventResponse {
     data: TrackingEvent[];
     total: number;
     count: number;
+}
+
+export interface TrackingEventSingleResponse {
+    success: boolean;
+    message?: string;
+    data: TrackingEvent;
+}
+
+export interface TrackingEventDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
 }
 
 // 13. Notification Types
@@ -351,6 +497,19 @@ export interface NotificationResponse {
         total: number;
     };
 }
+
+export interface NotificationSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Notification;
+}
+
+export interface NotificationDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
 
 
 

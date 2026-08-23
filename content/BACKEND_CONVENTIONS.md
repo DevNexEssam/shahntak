@@ -252,15 +252,78 @@ export async function GET(req: NextRequest) {
        data: Resource[];
        total: number;
        count: number;
-       stats: {
+       stats?: {
            active: number;
            inactive: number;
            total: number;
        };
    }
    ```
+3. **نوع استجابة الكيان الفردي (Single Response Interface)**:
+   يمثل الهيكل القياسي لاسترجاع أو إنشاء أو تعديل عنصر واحد (`UserSingleResponse`):
+   ```typescript
+   export interface ResourceSingleResponse {
+       success: boolean;
+       message?: string;
+       data: Resource;
+   }
+   ```
+4. **نوع استجابة الحذف (Delete Response Interface)**:
+   يمثل الهيكل القياسي لاستجابة عمليات الحذف (`UserDeleteResponse`):
+   ```typescript
+   export interface ResourceDeleteResponse {
+       success: boolean;
+       message?: string;
+       data?: any;
+   }
+   ```
 
 ---
 
-تنسيق هذا الملف هو الدليل المعتمد لتطبيق كافة الـ Endpoints والأنواع التالية بنفس الدقة والاحترافية.
+## 🔌 7. نمط ومعايير طبقة الخدمات (Frontend Services Layer Pattern)
+
+يحتوي مجلد [`/services`](file:///e:/projects/shahntak/services) على كائنات الخدمات المخصصة لكل نموذج (مثل [`services/users/userServices.ts`](file:///e:/projects/shahntak/services/users/userServices.ts)):
+
+### أ) الهيكل الإلزامي لكائن الخدمة (`{resource}Service`):
+```typescript
+import { User, UserResponse, UserSingleResponse, UserDeleteResponse } from "@/types/data";
+import axios from "axios";
+
+export const usersService = {
+    // 1. جلب القائمة الترقيمية
+    getUsers: async (page: number = 1, limit: number = 10): Promise<UserResponse> => {
+        const { data } = await axios.get(`/api/admin/users?page=${page}&limit=${limit}`);
+        return data;
+    },
+
+    // 2. جلب عنصر واحد بواسطة الـ ID
+    getUserById: async (id: string): Promise<UserSingleResponse> => {
+        const { data } = await axios.get(`/api/admin/users/${id}`);
+        return data;
+    },
+
+    // 3. إنشاء عنصر جديد
+    createUser: async (payload: { data: Partial<User> }): Promise<UserSingleResponse> => {
+        const { data } = await axios.post("/api/admin/users/new", payload.data);
+        return data;
+    },
+
+    // 4. تعديل عنصر موجود
+    updateUser: async (payload: { id: string; updates: Partial<User> }): Promise<UserSingleResponse> => {
+        const { data } = await axios.patch(`/api/admin/users/${payload.id}`, payload.updates);
+        return data;
+    },
+
+    // 5. حذف عنصر
+    deleteUser: async ({ id }: { id: string }): Promise<UserDeleteResponse> => {
+        const { data } = await axios.delete(`/api/admin/users/${id}`);
+        return data;
+    },
+};
+```
+
+---
+
+تنسيق هذا الملف هو الدليل المعتمد لتطبيق كافة الـ Endpoints والأنواع والخدمات التالية بنفس الدقة والاحترافية.
+
 

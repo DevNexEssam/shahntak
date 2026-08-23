@@ -97,6 +97,20 @@ shahntak/
 │       └── companies.schema.ts
 │
 ├── models/                     # نماذج قواعد البيانات (Mongoose Models)
+├── services/                   # طبقة خدمات الربط واستدعاءات الـ API (Axios API Clients)
+│   ├── carriers/               # carrierServices.ts
+│   ├── companies/              # companyServices.ts
+│   ├── companyUsers/           # companyUserServices.ts
+│   ├── invoices/               # invoiceServices.ts
+│   ├── notifications/          # notificationServices.ts
+│   ├── orders/                 # orderServices.ts
+│   ├── payments/               # paymentServices.ts
+│   ├── routes/                 # routeServices.ts
+│   ├── shipments/              # shipmentServices.ts
+│   ├── trackingEvents/         # trackingEventServices.ts
+│   ├── users/                  # userServices.ts
+│   ├── vehicles/               # vehicleServices.ts
+│   └── waybills/               # waybillServices.ts
 ├── types/                      # تعريفات TypeScript العامة
 │   └── data.ts                 # تعريفات الكائنات واستجابات الـ API (User, Carrier...)
 └── package.json                # التبعيات وأوامر التشغيل
@@ -107,8 +121,12 @@ shahntak/
 ## 🔑 5. أهم ملفات النظام ومساراتها
 
 * **أنواع واستجابات البيانات**: [`types/data.ts`](file:///e:/projects/shahntak/types/data.ts)
+* **خدمات الربط واستدعاءات الباك إند**: مجلد [`/services`](file:///e:/projects/shahntak/services) (يشمل 13 خدمة موحدة لكافة نماذج قاعدة البيانات)
 * **إعدادات المصادقة**: [`lib/authOptions.ts`](file:///e:/projects/shahntak/lib/authOptions.ts)
 * **معايير وهندسة الـ APIs والباك إند**: [`BACKEND_CONVENTIONS.md`](file:///e:/projects/shahntak/content/BACKEND_CONVENTIONS.md)
+
+
+
 * **الاتصال بقاعدة البيانات**: [`lib/mongodb.ts`](file:///e:/projects/shahntak/lib/mongodb.ts)
 * **الصفحة الرئيسية للموقع**: [`app/page.tsx`](file:///e:/projects/shahntak/app/page.tsx)
 * **لوحة تحكم السوبر أدمن**: [`app/admin/page.tsx`](file:///e:/projects/shahntak/app/admin/page.tsx)
