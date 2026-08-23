@@ -238,4 +238,29 @@ export async function GET(req: NextRequest) {
 
 ---
 
-تنسيق هذا الملف هو الدليل المعتمد لتطبيق كافة الـ Endpoints التالية بنفس الدقة والاحترافية.
+## 📑 6. نمط وتوثيق أنواع البيانات والاستجابات (`types/data.ts`)
+
+تحدد ملفات التعريفات في [`types/data.ts`](file:///e:/projects/shahntak/types/data.ts) الأنواع البرمجية الهيكلية (Interfaces) المستهلكة في الـ Frontend والـ Services:
+
+1. **نوع الفرد (Single Entity Interface)**:
+   يمثل الكائن الواحد المسترجع من نموذج قاعدة البيانات (مثل `User`, `Carrier`).
+2. **نوع استجابة الجمع (Plural Response Interface)**:
+   يمثل الهيكل القياسي لاستجابات الجلب الكلي والتصفية بالصفحات (`UserResponse`, `CarrierResponse`):
+   ```typescript
+   export interface ResourceResponse {
+       success: boolean;
+       data: Resource[];
+       total: number;
+       count: number;
+       stats: {
+           active: number;
+           inactive: number;
+           total: number;
+       };
+   }
+   ```
+
+---
+
+تنسيق هذا الملف هو الدليل المعتمد لتطبيق كافة الـ Endpoints والأنواع التالية بنفس الدقة والاحترافية.
+

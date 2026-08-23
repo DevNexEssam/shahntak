@@ -98,6 +98,7 @@ shahntak/
 │
 ├── models/                     # نماذج قواعد البيانات (Mongoose Models)
 ├── types/                      # تعريفات TypeScript العامة
+│   └── data.ts                 # تعريفات الكائنات واستجابات الـ API (User, Carrier...)
 └── package.json                # التبعيات وأوامر التشغيل
 ```
 
@@ -105,8 +106,9 @@ shahntak/
 
 ## 🔑 5. أهم ملفات النظام ومساراتها
 
+* **أنواع واستجابات البيانات**: [`types/data.ts`](file:///e:/projects/shahntak/types/data.ts)
 * **إعدادات المصادقة**: [`lib/authOptions.ts`](file:///e:/projects/shahntak/lib/authOptions.ts)
-* **معايير وهندسة الـ APIs والباك إند**: [`BACKEND_CONVENTIONS.md`](file:///e:/projects/shahntak/BACKEND_CONVENTIONS.md)
+* **معايير وهندسة الـ APIs والباك إند**: [`BACKEND_CONVENTIONS.md`](file:///e:/projects/shahntak/content/BACKEND_CONVENTIONS.md)
 * **الاتصال بقاعدة البيانات**: [`lib/mongodb.ts`](file:///e:/projects/shahntak/lib/mongodb.ts)
 * **الصفحة الرئيسية للموقع**: [`app/page.tsx`](file:///e:/projects/shahntak/app/page.tsx)
 * **لوحة تحكم السوبر أدمن**: [`app/admin/page.tsx`](file:///e:/projects/shahntak/app/admin/page.tsx)
