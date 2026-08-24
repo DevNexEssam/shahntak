@@ -90,6 +90,8 @@ shahntak/
 │   ├── home/                   # مكونات الصفحة الرئيسية (Hero, Features, Pricing, etc.)
 │   └── ui/                     # مكونات واجهة المستخدم العامة
 │
+├── hooks/                      # طبقة الـ Custom React Query Hooks (مقسمة بمجلدات لكل موديل)
+│   └── users/                  # useUsers.ts
 ├── lib/                        # الأدوات المساعدة والإعدادات
 │   ├── authOptions.ts          # إعدادات وتكوين NextAuth
 │   ├── mongodb.ts              # الاتصال بقاعدة بيانات MongoDB
@@ -122,7 +124,10 @@ shahntak/
 
 * **أنواع واستجابات البيانات**: [`types/data.ts`](file:///e:/projects/shahntak/types/data.ts)
 * **خدمات الربط واستدعاءات الباك إند**: مجلد [`/services`](file:///e:/projects/shahntak/services) (يشمل 13 خدمة موحدة لكافة نماذج قاعدة البيانات)
+* **طبقة الـ Custom React Query Hooks**: مجلد [`/hooks`](file:///e:/projects/shahntak/hooks) (يشمل المجلدات والـ Hooks المخصصة كـ [`hooks/users/useUsers.ts`](file:///e:/projects/shahntak/hooks/users/useUsers.ts))
+* **خريطة الطريق والتقدم التنفيذي**: [`content/ROADMAP.md`](file:///e:/projects/shahntak/content/ROADMAP.md)
 * **إعدادات المصادقة**: [`lib/authOptions.ts`](file:///e:/projects/shahntak/lib/authOptions.ts)
+
 * **معايير وهندسة الـ APIs والباك إند**: [`BACKEND_CONVENTIONS.md`](file:///e:/projects/shahntak/content/BACKEND_CONVENTIONS.md)
 
 

@@ -324,6 +324,46 @@ export const usersService = {
 
 ---
 
-تنسيق هذا الملف هو الدليل المعتمد لتطبيق كافة الـ Endpoints والأنواع والخدمات التالية بنفس الدقة والاحترافية.
+نسق هذا الملف هو الدليل المعتمد لتطبيق كافة الـ Endpoints والأنواع والخدمات والـ Hooks التالية بنفس الدقة والاحترافية.
+
+---
+
+## 🪝 8. معايير ونمط طبقة الـ Custom Hooks (Frontend Hooks Architecture)
+
+يُدار جانب جلب وتحديث الكاش في مشروع "شحنتك" عبر **TanStack React Query v5** داخل مجلد [`/hooks`](file:///e:/projects/shahntak/hooks) بالاعتماد على القواعد والمعايير التالية:
+
+### أ) هيكل المجلدات والملفات (Folder Hierarchy per Resource)
+يُوضع كل ملف Hook داخل مجلد فرعي مخصص للموديل نفسه:
+```text
+hooks/
+├── users/
+│   └── useUsers.ts
+├── companies/
+│   └── useCompanies.ts
+├── shipments/
+│   └── useShipments.ts
+```
+
+### ب) قواعد التعليقات والرموز (Clean Commenting Standard)
+* **عدم استخدام أرقام في التعليقات**: تجنب الصيغ الترقيمية مثل (`// 1. Queries`).
+* **عدم استخدام أيقونات أو إيموجي**: تجنب استخدام الإيموجيات داخل التعليقات في ملفات الكود.
+* **التعليقات المختصرة المباشرة**: الاكتفاء بعناوين قصيرة وواضحة فقط (مثل `// Query keys`, `// Queries`, `// Mutations`).
+
+### ج) مصنع مفاتيح الاستعلام (Query Key Factories)
+تجميع كافة مفاتيح التخزين المؤقت (Query Keys) في كائن موحد لكل موديل لتسهيل التحكم والفلترة وإبطال الكاش (`invalidateQueries`):
+```typescript
+export const userKeys = {
+    all: ["users"] as const,
+    lists: () => [...userKeys.all, "list"] as const,
+    list: (page: number, limit: number) => [...userKeys.lists(), { page, limit }] as const,
+    details: () => [...userKeys.all, "detail"] as const,
+    detail: (id: string) => [...userKeys.details(), id] as const,
+};
+```
+
+### د) التنبيهات وإدارة الأخطاء (`react-hot-toast` & `AxiosError`)
+معالجة التنبيهات المباشرة للمستخدم داخل كل Mutation:
+* **عند النجاح (`onSuccess`)**: استدعاء `toast.success` بالرسالة القادمة من الباك إند أو الرسالة الافتراضية، ثم إبطال الاستعلامات المرتبطة بالكاش.
+* **عند الفشل (`onError`)**: استخراج رسالة الخطأ العربية الصريحة القادمة من الباك إند عبر `AxiosError<{ message?: string }>` وإظهارها عبر `toast.error`.
 
 
