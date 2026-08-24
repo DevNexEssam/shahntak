@@ -1,278 +1,324 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from "react";
 import {
     LuBuilding2,
     LuX,
-    LuGlobe,
-    LuUser,
     LuPhone,
-    LuCrown,
     LuMapPin,
-    LuCheck,
     LuMail,
     LuHash,
-    LuSave,
+    LuFileText,
     LuPencil,
-    LuShieldCheck
-} from 'react-icons/lu';
+    LuShieldCheck,
+    LuSave
+} from "react-icons/lu";
+import { Company } from "@/types/data";
+import { useUpdateCompany } from "@/hooks/companies/useCompanies";
+import { updateCompanyValidationSchema } from "@/lib/validations/companies.schema";
+import Loading from "@/components/ui/loading";
+import toast from "react-hot-toast";
 
 interface EditCompaniesProps {
     isOpen?: boolean;
-    onClose?: () => void;
-    companyData?: {
-        id?: string;
-        name?: string;
-        domain?: string;
-        owner?: string;
-        phone?: string;
-        plan?: string;
-        status?: string;
-    } | null;
+    onClose: () => void;
+    company: Company | null;
 }
 
-const EditCompanies: React.FC<EditCompaniesProps> = ({ isOpen = false, onClose, companyData }) => {
-    if (!isOpen) return null;
+export default function EditCompanies({ isOpen = true, onClose, company }: EditCompaniesProps) {
+    const [formData, setFormData] = useState({
+        companyName: "",
+        email: "",
+        phone: "",
+        city: "",
+        taxNumber: "",
+        address: "",
+        facilityInfo: "",
+        status: "active" as Company["status"],
+    });
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    const { mutate: updateCompany, isPending: isSubmitting } = useUpdateCompany();
+
+    useEffect(() => {
+        if (company) {
+            setFormData({
+                companyName: company.companyName || "",
+                email: company.email || "",
+                phone: company.phone || "",
+                city: company.city || "",
+                taxNumber: company.taxNumber || "",
+                address: company.address || "",
+                facilityInfo: company.facilityInfo || "",
+                status: company.status || "active",
+            });
+            setFieldErrors({});
+        }
+    }, [company]);
+
+    if (!isOpen || !company) return null;
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setFieldErrors({});
+
+        const validation = updateCompanyValidationSchema.safeParse(formData);
+        if (!validation.success) {
+            const errors: Record<string, string> = {};
+            validation.error.issues.forEach((issue) => {
+                if (issue.path[0]) {
+                    errors[issue.path[0].toString()] = issue.message;
+                }
+            });
+            setFieldErrors(errors);
+            toast.error("يرجى تصحيح الأخطاء الموضحة");
+            return;
+        }
+
+        updateCompany(
+            { id: company._id, updates: formData },
+            {
+                onSuccess: () => {
+                    onClose();
+                },
+            }
+        );
+    };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
-            {/* Modal Container */}
-            <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+            <div className="relative w-full max-w-2xl bg-white border border-gray-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
-                {/* Modal Header */}
-                <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
+                {/* Header */}
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-extrabold text-xl shadow-xs">
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات شركة الشحن</h2>
-                            <p className="text-xs text-body mt-0.5">
-                                تحديث المعلومات الأساسية، تفاصيل الاتصال، والباقة الحالية لـ ({companyData?.name || 'شركة الرياض السريع'})
+                            <h2 className="text-xl font-extrabold text-gray-900">تعديل بيانات الشركة</h2>
+                            <p className="text-xs text-gray-500 mt-0.5">
+                                تحديث المعلومات الأساسية والحالة لـ ({company.companyName})
                             </p>
                         </div>
                     </div>
 
                     <button
                         onClick={onClose}
-                        className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
+                        disabled={isSubmitting}
+                        className="p-2.5 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-all cursor-pointer disabled:opacity-50"
                         title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
-                {/* Modal Body - Visual UI Layout */}
-                <div className="p-6 overflow-y-auto space-y-6">
+                {/* Form Body */}
+                <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+                    <div className="p-6 overflow-y-auto space-y-6 text-right">
 
-                    {/* Section 1: Basic Company Info */}
-                    <div className="space-y-4">
-                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-accent" />
-                            البيانات الأساسية للشركة
-                        </h3>
+                        {/* Section 1: Basic Company Info */}
+                        <div className="space-y-4">
+                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-blue-600 flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-blue-600" />
+                                البيانات الأساسية
+                            </h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Company Name UI field */}
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                    اسم الشركة
-                                </label>
-                                <input
-                                    type="text"
-                                    defaultValue={companyData?.name || 'شركة الرياض السريع'}
-                                    placeholder="اسم الشركة"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
-                                />
-                            </div>
-
-                            {/* Subdomain UI field */}
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuGlobe className="w-3.5 h-3.5 text-body" />
-                                    النطاق الفرعي (Subdomain)
-                                </label>
-                                <div className="relative flex items-center">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                                        <LuBuilding2 className="w-3.5 h-3.5 text-gray-400" />
+                                        اسم الشركة
+                                    </label>
                                     <input
                                         type="text"
-                                        defaultValue={companyData?.domain?.replace('.shahnetak.sa', '') || 'riyadh-express'}
-                                        placeholder="subdomain"
-                                        className="w-full pl-28 pr-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin dir-ltr focus:outline-none focus:border-accent"
+                                        disabled={isSubmitting}
+                                        value={formData.companyName}
+                                        onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                                        placeholder="اسم الشركة"
+                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
+                                            fieldErrors.companyName ? "border-red-500" : "border-gray-200"
+                                        }`}
                                     />
-                                    <span className="absolute left-3 text-xs font-bold text-body font-latin select-none">
-                                        .shahnetak.sa
-                                    </span>
+                                    {fieldErrors.companyName && <p className="text-red-500 text-xs mt-1">{fieldErrors.companyName}</p>}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                                        <LuMapPin className="w-3.5 h-3.5 text-gray-400" />
+                                        المدينة / المقر الرئيسي
+                                    </label>
+                                    <input
+                                        type="text"
+                                        disabled={isSubmitting}
+                                        value={formData.city}
+                                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                        placeholder="الرياض"
+                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
+                                            fieldErrors.city ? "border-red-500" : "border-gray-200"
+                                        }`}
+                                    />
+                                    {fieldErrors.city && <p className="text-red-500 text-xs mt-1">{fieldErrors.city}</p>}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                                        <LuMail className="w-3.5 h-3.5 text-gray-400" />
+                                        البريد الإلكتروني
+                                    </label>
+                                    <input
+                                        type="email"
+                                        disabled={isSubmitting}
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        placeholder="contact@company.sa"
+                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 dir-ltr text-right disabled:opacity-60 ${
+                                            fieldErrors.email ? "border-red-500" : "border-gray-200"
+                                        }`}
+                                    />
+                                    {fieldErrors.email && <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                                        <LuPhone className="w-3.5 h-3.5 text-gray-400" />
+                                        رقم الهاتف
+                                    </label>
+                                    <input
+                                        type="text"
+                                        disabled={isSubmitting}
+                                        value={formData.phone}
+                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                        placeholder="0501234567"
+                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 dir-ltr text-right disabled:opacity-60 ${
+                                            fieldErrors.phone ? "border-red-500" : "border-gray-200"
+                                        }`}
+                                    />
+                                    {fieldErrors.phone && <p className="text-red-500 text-xs mt-1">{fieldErrors.phone}</p>}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Tax Number UI field */}
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuHash className="w-3.5 h-3.5 text-body" />
-                                    الرقم الضريبي (VAT)
-                                </label>
-                                <input
-                                    type="text"
-                                    defaultValue="310492847200003"
-                                    placeholder="300000000000003"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent"
-                                />
+                        <div className="h-px bg-gray-100" />
+
+                        {/* Section 2: Status & Tax Details */}
+                        <div className="space-y-4">
+                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-blue-600 flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-blue-600" />
+                                حالة الحساب والبيانات الرسمية
+                            </h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                                        <LuHash className="w-3.5 h-3.5 text-gray-400" />
+                                        الرقم الضريبي (VAT)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        disabled={isSubmitting}
+                                        value={formData.taxNumber}
+                                        onChange={(e) => setFormData({ ...formData, taxNumber: e.target.value })}
+                                        placeholder="300000000000003"
+                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
+                                            fieldErrors.taxNumber ? "border-red-500" : "border-gray-200"
+                                        }`}
+                                    />
+                                    {fieldErrors.taxNumber && <p className="text-red-500 text-xs mt-1">{fieldErrors.taxNumber}</p>}
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                                        <LuShieldCheck className="w-3.5 h-3.5 text-gray-400" />
+                                        حالة الشركة بالنظام
+                                    </label>
+                                    <select
+                                        disabled={isSubmitting}
+                                        value={formData.status}
+                                        onChange={(e) => setFormData({ ...formData, status: e.target.value as Company["status"] })}
+                                        className="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-blue-500 cursor-pointer disabled:opacity-60"
+                                    >
+                                        <option value="active">نشط (Active)</option>
+                                        <option value="inactive">غير نشط (Inactive)</option>
+                                        <option value="archived">مؤرشف (Archived)</option>
+                                        <option value="banned">محظور (Banned)</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            {/* City UI field */}
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    المدينة / المقر الرئيسي
+                                <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                                    <LuMapPin className="w-3.5 h-3.5 text-gray-400" />
+                                    العنوان التفصيلي
                                 </label>
                                 <input
                                     type="text"
-                                    defaultValue="الرياض - منطقة الملز"
-                                    placeholder="المدينة"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
+                                    disabled={isSubmitting}
+                                    value={formData.address}
+                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                    placeholder="العنوان التفصيلي"
+                                    className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
+                                        fieldErrors.address ? "border-red-500" : "border-gray-200"
+                                    }`}
                                 />
+                                {fieldErrors.address && <p className="text-red-500 text-xs mt-1">{fieldErrors.address}</p>}
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                                    <LuFileText className="w-3.5 h-3.5 text-gray-400" />
+                                    معلومات المنشأة
+                                </label>
+                                <textarea
+                                    disabled={isSubmitting}
+                                    rows={2}
+                                    value={formData.facilityInfo}
+                                    onChange={(e) => setFormData({ ...formData, facilityInfo: e.target.value })}
+                                    placeholder="معلومات عن المنشأة..."
+                                    className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
+                                        fieldErrors.facilityInfo ? "border-red-500" : "border-gray-200"
+                                    }`}
+                                />
+                                {fieldErrors.facilityInfo && <p className="text-red-500 text-xs mt-1">{fieldErrors.facilityInfo}</p>}
                             </div>
                         </div>
+
                     </div>
 
-                    <div className="h-px bg-border/60" />
+                    {/* Footer */}
+                    <div className="p-5 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between gap-3">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            disabled={isSubmitting}
+                            className="px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                        >
+                            إلغاء
+                        </button>
 
-                    {/* Section 2: Owner Contact Details */}
-                    <div className="space-y-4">
-                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-accent" />
-                            بيانات المالك والاتصال
-                        </h3>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Owner Name UI field */}
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuUser className="w-3.5 h-3.5 text-body" />
-                                    اسم صاحب الشركة / المدير
-                                </label>
-                                <input
-                                    type="text"
-                                    defaultValue={companyData?.owner || 'سلطان العتيبي'}
-                                    placeholder="اسم صاحب الشركة"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
-                                />
-                            </div>
-
-                            {/* Phone UI field */}
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuPhone className="w-3.5 h-3.5 text-body" />
-                                    رقم الجوال
-                                </label>
-                                <input
-                                    type="text"
-                                    defaultValue={companyData?.phone || '0501234567'}
-                                    placeholder="0501234567"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Email UI field */}
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuMail className="w-3.5 h-3.5 text-body" />
-                                    البريد الإلكتروني الرسمي
-                                </label>
-                                <input
-                                    type="email"
-                                    defaultValue="info@riyadh-express.sa"
-                                    placeholder="contact@company.sa"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent"
-                                />
-                            </div>
-
-                            {/* Company Status Select UI */}
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuShieldCheck className="w-3.5 h-3.5 text-body" />
-                                    حالة الشركة بالنظام
-                                </label>
-                                <select
-                                    defaultValue={companyData?.status || 'active'}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
-                                >
-                                    <option value="active">نشط (Active)</option>
-                                    <option value="quota_warning">تجاوز الباقة (Quota Warning)</option>
-                                    <option value="pending">قيد المراجعة (Pending)</option>
-                                    <option value="suspended">موقوف (Suspended)</option>
-                                </select>
-                            </div>
-                        </div>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50"
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loading w="w-4" h="h-4" />
+                                    <span>جاري الحفظ...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <LuSave className="w-4 h-4" />
+                                    <span>حفظ التعديلات</span>
+                                </>
+                            )}
+                        </button>
                     </div>
-
-                    <div className="h-px bg-border/60" />
-
-                    {/* Section 3: Subscription Plan UI Cards */}
-                    <div className="space-y-3">
-                        <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                            <LuCrown className="w-3.5 h-3.5 text-accent" />
-                            تحديث الباقة اللوجستية
-                        </label>
-
-                        <div className="grid grid-cols-3 gap-3">
-                            {/* Plan Option 1 */}
-                            <div className="p-3.5 rounded-2xl border border-border hover:border-accent/40 bg-surface-muted/50 flex flex-col justify-between space-y-2 cursor-pointer transition-all">
-                                <div>
-                                    <span className="text-xs font-extrabold text-heading block">البداية</span>
-                                    <span className="text-[11px] text-body">حتى ٥٠٠ شحنة / شهر</span>
-                                </div>
-                                <b className="text-sm font-extrabold text-heading font-latin">٥٠٠ ر.س</b>
-                            </div>
-
-                            {/* Plan Option 2 */}
-                            <div className="p-3.5 rounded-2xl border border-border hover:border-accent/40 bg-surface-muted/50 flex flex-col justify-between space-y-2 cursor-pointer transition-all">
-                                <div>
-                                    <span className="text-xs font-extrabold text-heading block">النمو</span>
-                                    <span className="text-[11px] text-body">حتى ٥,٠٠٠ شحنة / شهر</span>
-                                </div>
-                                <b className="text-sm font-extrabold text-heading font-latin">١,٥٠٠ ر.س</b>
-                            </div>
-
-                            {/* Plan Option 3 (Selected) */}
-                            <div className="p-3.5 rounded-2xl border-2 border-accent bg-accent-soft/30 flex flex-col justify-between space-y-2 cursor-pointer relative overflow-hidden">
-                                <span className="absolute top-2 left-2 w-4 h-4 rounded-full bg-accent text-white flex items-center justify-center text-[10px]">
-                                    <LuCheck className="w-3 h-3" />
-                                </span>
-                                <div>
-                                    <span className="text-xs font-extrabold text-heading block">المؤسسات</span>
-                                    <span className="text-[11px] text-body">غير محدود</span>
-                                </div>
-                                <b className="text-sm font-extrabold text-accent font-latin">مخصص</b>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                {/* Modal Footer */}
-                <div className="p-5 border-t border-border bg-surface-muted/40 flex items-center justify-between gap-3">
-                    <button
-                        onClick={onClose}
-                        className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer"
-                    >
-                        إلغاء
-                    </button>
-
-                    <button
-                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all opacity-90 cursor-pointer"
-                    >
-                        <LuSave className="w-4 h-4" />
-                        <span>حفظ التعديلات</span>
-                    </button>
-                </div>
+                </form>
 
             </div>
         </div>
     );
-};
-
-export default EditCompanies;
+}

@@ -46,7 +46,14 @@
   * [`hooks/trackingEvents/useTrackingEvents.ts`](file:///e:/projects/shahntak/hooks/trackingEvents/useTrackingEvents.ts)
   * [`hooks/notifications/useNotifications.ts`](file:///e:/projects/shahntak/hooks/notifications/useNotifications.ts)
 
-### 1.4 التحقق والالتزام البنائي
+### 1.4 بناء وتوحيد سكشن الشركات الموحد بالكامل ([`COMPANIES_SECTION_STANDARDIZATION.md`](file:///e:/projects/shahntak/content/COMPANIES_SECTION_STANDARDIZATION.md))
+* تم دمج وتطوير سكشن الشركات (`components/admin/companies/`) بالربط الفعلي بالباك إند وقواعد الدليل القياسي:
+  * **[`Companies.tsx`](file:///e:/projects/shahntak/components/admin/companies/Companies.tsx)**: مكون العميل التفاعلي المحتوي على الترقيم والبحث والفلترة اللحظية والعرض الشبكي/الجدول والاعتماد السريع.
+  * **[`AddCompanies.tsx`](file:///e:/projects/shahntak/components/admin/companies/AddCompanies.tsx)**: مودال تسجيل شركة بمخططات Zod و `useCreateCompany` Mutation وتجميد المدخلات أثناء الشبكة.
+  * **[`EditCompanies.tsx`](file:///e:/projects/shahntak/components/admin/companies/EditCompanies.tsx)**: مودال تعديل بيانات الشركة وتأطير الحقول المعطوبة والمربوط بـ `useUpdateCompany`.
+  * **[`DetailsCompanies.tsx`](file:///e:/projects/shahntak/components/admin/companies/DetailsCompanies.tsx)**: مودال استعراض البيانات التفصيلية الكاملة والسجل الضريبي وحالة الاعتماد `approvedBy`.
+
+### 1.5 التحقق والالتزام البنائي
 * تم فحص جميع الملفات بدون أي أخطاء برمجة أو نمط (`npx tsc --noEmit`).
 * تم بناء وتأكيد النسخة الإنتاجية بنجاح (`npm run build`).
 
