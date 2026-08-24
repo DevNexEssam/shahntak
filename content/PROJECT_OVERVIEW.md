@@ -125,6 +125,8 @@ shahntak/
 * **أنواع واستجابات البيانات**: [`types/data.ts`](file:///e:/projects/shahntak/types/data.ts)
 * **خدمات الربط واستدعاءات الباك إند**: مجلد [`/services`](file:///e:/projects/shahntak/services) (يشمل 13 خدمة موحدة لكافة نماذج قاعدة البيانات)
 * **طبقة الـ Custom React Query Hooks**: مجلد [`/hooks`](file:///e:/projects/shahntak/hooks) (يشمل المجلدات والـ Hooks المخصصة كـ [`hooks/users/useUsers.ts`](file:///e:/projects/shahntak/hooks/users/useUsers.ts))
+* **ربط الواجهات بالـ Hooks واللوجيك**: [`ADMIN_COMPONENTS_MAPPING.md`](file:///e:/projects/shahntak/content/ADMIN_COMPONENTS_MAPPING.md)
+* **نظام التصميم والهوية البصرية**: [`ADMIN_DESIGN_SYSTEM.md`](file:///e:/projects/shahntak/content/ADMIN_DESIGN_SYSTEM.md)
 * **خريطة الطريق والتقدم التنفيذي**: [`content/ROADMAP.md`](file:///e:/projects/shahntak/content/ROADMAP.md)
 * **إعدادات المصادقة**: [`lib/authOptions.ts`](file:///e:/projects/shahntak/lib/authOptions.ts)
 

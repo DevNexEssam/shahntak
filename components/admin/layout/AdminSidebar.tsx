@@ -13,7 +13,8 @@ import {
     LuSettings,
     LuBox,
     LuLogOut,
-    LuShieldAlert
+    LuShieldAlert,
+    LuUser
 } from 'react-icons/lu';
 
 interface NavItem {
@@ -54,6 +55,11 @@ const navItems: NavItem[] = [
         title: 'التقارير والإحصائيات',
         href: '/admin/reports',
         icon: <LuFileSpreadsheet className="w-5 h-5" />,
+    },
+    {
+        title: 'المستخدمون والمدراء',
+        href: '/admin/users',
+        icon: <LuUser className="w-5 h-5" />,
     },
     {
         title: 'إعدادات المنصة',
@@ -97,8 +103,8 @@ export const AdminSidebar: React.FC = () => {
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center justify-between px-3.5 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${isActive
-                                        ? 'bg-accent text-white shadow-accent/30'
-                                        : 'text-white/70 hover:bg-white/5 hover:text-white'
+                                    ? 'bg-accent text-white shadow-accent/30'
+                                    : 'text-white/70 hover:bg-white/5 hover:text-white'
                                     }`}
                             >
                                 <div className="flex items-center gap-3">
