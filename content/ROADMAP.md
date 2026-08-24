@@ -1,6 +1,6 @@
 # 🗺️ خريطة الطريق والتقدم في التطوير (Development Roadmap & Progress)
 
-> **ملاحظة**: هذا الملف يوثق ما تم إنجازه مؤخراً في مشروع **"شحنتك" (Shahntak)** والخطوات الترتيبية القادمة للبدء في بناء طبقة الـ **Custom Hooks** والربط مع الواجهات.
+> **ملاحظة**: هذا الملف يوثق ما تم إنجازه مؤخراً في مشروع **"شحنتك" (Shahntak)** والخطوات الترتيبية القادمة لاستكمال ربط وتنميط باقي صفحات لوحة التحكم بالاعتماد على الماستر بلوبرينت.
 
 ---
 
@@ -9,85 +9,62 @@
 ### 1.1 بناء وتوحيد أنواع البيانات (TypeScript Types in [`types/data.ts`](file:///e:/projects/shahntak/types/data.ts))
 * تم إنشاء وتأمين الـ Interfaces لكافة نماذج قاعدة البيانات الـ 13:
   * `User`, `Company`, `CompanyUser`, `Carrier`, `Vehicle`, `Route`, `Order`, `Shipment`, `Waybill`, `Invoice`, `Payment`, `TrackingEvent`, `Notification`.
-* توثيق أنماط الاستجابات القياسية الموحدة للفرد والجمع والحذف:
-  * `ResourceResponse` (استجابة الجلب والترقيم والـ Stats).
-  * `ResourceSingleResponse` (استجابة عنصر فردي).
-  * `ResourceDeleteResponse` (استجابة الحذف).
+* توثيق أنماط الاستجابات القياسية الموحدة للفرد والجمع والحذف (`ResourceResponse`, `ResourceSingleResponse`, `ResourceDeleteResponse`).
 
 ### 1.2 بناء وتطوير طبقة الخدمات (Services Layer in [`/services`](file:///e:/projects/shahntak/services))
-* بناء 13 خدمة برمجية موحدة متصلة بالـ APIs مع عزل طلبات `axios` والـ HTTP logic بالكامل:
-  * `userServices.ts` (إدارة المستخدمين والمدراء).
-  * `companyServices.ts` (إدارة الشركات وحالاتها وتوثيق الموافقة `approvedBy`).
-  * `companyUserServices.ts` (إدارة موظفي الشركات والصلاحيات).
-  * `carrierServices.ts` (إدارة الناقلين المتعاقد معهم).
-  * `vehicleServices.ts` (إدارة الأسطول والشاحنات والأحمال).
-  * `routeServices.ts` (إدارة المسارات والخطوط والأسعار).
-  * `orderServices.ts` (إدارة الطلبات الفردية والـ `bulkUpload` وتجميع الشحنات).
-  * `shipmentServices.ts` (إدارة الشحنات وربط الناقلين وتحديث الحالات).
-  * `waybillServices.ts` (توليد بوالص الشحن PDF).
-  * `invoiceServices.ts` (إدارة الفواتير والحسابات اللوجستية).
-  * `paymentServices.ts` (إثبات سداد الفواتير وتحديث الحالات تلقائياً).
-  * `trackingEventServices.ts` (سجل تتبع حركة الشحنات).
-  * `notificationServices.ts` (إدارة وتوجيه التنبيهات والإشعارات).
+* بناء 13 خدمة برمجية موحدة متصلة بالـ APIs مع عزل طلبات `axios` والـ HTTP logic بالكامل لكافة الموديلات الـ 13.
 
-### 1.3 بناء وتطوير طبقة الـ Custom React Query Hooks لكافة نماذج النظام (الـ 13 Mongoose Models)
-* تم بناء وتأكيد كافة ملفات الـ Hooks الـ 13 بنجاح داخل مجلد [`/hooks`](file:///e:/projects/shahntak/hooks) بالنمط الهيكلي المعزول والتنبيهات المباشرة:
-  * [`hooks/users/useUsers.ts`](file:///e:/projects/shahntak/hooks/users/useUsers.ts)
-  * [`hooks/companies/useCompanies.ts`](file:///e:/projects/shahntak/hooks/companies/useCompanies.ts)
-  * [`hooks/companyUsers/useCompanyUsers.ts`](file:///e:/projects/shahntak/hooks/companyUsers/useCompanyUsers.ts)
-  * [`hooks/carriers/useCarriers.ts`](file:///e:/projects/shahntak/hooks/carriers/useCarriers.ts)
-  * [`hooks/vehicles/useVehicles.ts`](file:///e:/projects/shahntak/hooks/vehicles/useVehicles.ts)
-  * [`hooks/routes/useRoutes.ts`](file:///e:/projects/shahntak/hooks/routes/useRoutes.ts)
-  * [`hooks/orders/useOrders.ts`](file:///e:/projects/shahntak/hooks/orders/useOrders.ts)
-  * [`hooks/shipments/useShipments.ts`](file:///e:/projects/shahntak/hooks/shipments/useShipments.ts)
-  * [`hooks/waybills/useWaybills.ts`](file:///e:/projects/shahntak/hooks/waybills/useWaybills.ts)
-  * [`hooks/invoices/useInvoices.ts`](file:///e:/projects/shahntak/hooks/invoices/useInvoices.ts)
-  * [`hooks/payments/usePayments.ts`](file:///e:/projects/shahntak/hooks/payments/usePayments.ts)
-  * [`hooks/trackingEvents/useTrackingEvents.ts`](file:///e:/projects/shahntak/hooks/trackingEvents/useTrackingEvents.ts)
-  * [`hooks/notifications/useNotifications.ts`](file:///e:/projects/shahntak/hooks/notifications/useNotifications.ts)
+### 1.3 بناء وتطوير طبقة الـ Custom React Query Hooks (13 Mongoose Models)
+* تم بناء وتأكيد كافة ملفات الـ Hooks الـ 13 بنجاح داخل مجلد [`/hooks`](file:///e:/projects/shahntak/hooks) مع مفاتيح التخزين الموحدة (`Query Key Factories`) والتنبيهات المباشرة.
 
-### 1.4 بناء وتوحيد سكشن الشركات الموحد بالكامل ([`COMPANIES_SECTION_STANDARDIZATION.md`](file:///e:/projects/shahntak/content/COMPANIES_SECTION_STANDARDIZATION.md))
-* تم دمج وتطوير سكشن الشركات (`components/admin/companies/`) بالربط الفعلي بالباك إند وقواعد الدليل القياسي:
-  * **[`Companies.tsx`](file:///e:/projects/shahntak/components/admin/companies/Companies.tsx)**: مكون العميل التفاعلي المحتوي على الترقيم والبحث والفلترة اللحظية والعرض الشبكي/الجدول والاعتماد السريع.
-  * **[`AddCompanies.tsx`](file:///e:/projects/shahntak/components/admin/companies/AddCompanies.tsx)**: مودال تسجيل شركة بمخططات Zod و `useCreateCompany` Mutation وتجميد المدخلات أثناء الشبكة.
-  * **[`EditCompanies.tsx`](file:///e:/projects/shahntak/components/admin/companies/EditCompanies.tsx)**: مودال تعديل بيانات الشركة وتأطير الحقول المعطوبة والمربوط بـ `useUpdateCompany`.
-  * **[`DetailsCompanies.tsx`](file:///e:/projects/shahntak/components/admin/companies/DetailsCompanies.tsx)**: مودال استعراض البيانات التفصيلية الكاملة والسجل الضريبي وحالة الاعتماد `approvedBy`.
+### 1.4 تنميط وبناء قسمي الشركات والمستخدمين بالكامل
+* **قسم الشركات (`components/admin/companies/`)**: تم تحويله بالكامل لربط حقيقي متكامل بالباك إند (`Companies.tsx`, `AddCompanies.tsx`, `EditCompanies.tsx`, `DetailsCompanies.tsx`).
+* **قسم المستخدمين والمدراء (`components/admin/users/`)**: تم تنميطه وتوصيله بالكامل بـ Hooks والـ Zod Schemas وإضافة الـ SEO Metadata في صفحة السيرفر.
 
-### 1.5 التحقق والالتزام البنائي
-* تم فحص جميع الملفات بدون أي أخطاء برمجة أو نمط (`npx tsc --noEmit`).
-* تم بناء وتأكيد النسخة الإنتاجية بنجاح (`npm run build`).
+### 1.5 اعتماد الدليل الموحد الشامل لبناء صفحات لوحة التحكم ([`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md))
+* تم دمج وتطوير الماستر بلوبرينت المعياري الموحد المخصص ليكون المرجع الأساسي المباشر عند بناء أو تنميط أي صفحة جديدة في المنصة، شاملاً القواعد الخمس الرئيسية، قائمة التحقق (Checklist)، والنماذج المرجعية الحية.
+
+### 1.6 اجتياز فحص البناء والإنتاج بنجاح
+* اجتياز فحص الأنواع بنجاح بدون أخطاء (`npx tsc --noEmit`).
+* اجتياز فحص البناء الإنتاجي الكامل وتوليد الصفحات المجمعة بنجاح (`npm run build`).
 
 ---
 
-## 🎯 2. الخطوة الحالية القادمة (Next Immediate Step: Admin UI Components & Page Integration)
+## 🎯 2. الخطوة الترتيبية القادمة للمرة القادمة (Next Steps: Completing Remaining Admin Pages)
 
-بعد الانتهاء من بناء طبقة الـ Custom Hooks بالكامل، الخطوة التالية هي **ربط الـ Hooks بمكونات الواجهة وصفحات لوحة التحكم (Admin Dashboard Pages)**.
+في الجلسة القادمة، سيتم استكمال تنميط وربط باقي صفحات لوحة التحكم بـ **React Query Hooks** ومخططات **Zod Validation** بالاعتماد على [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) بحسب الترتيب التالي:
 
-### 📋 قائمة الـ Hooks المنجزة بالكامل لكل Model:
+1. 👥 **قسم موظفي الشركات والصلاحيات (`app/admin/(pages)/company-users/`)**:
+   - ربط `<CompanyUsersSection />` بـ `useCompanyUsers`, `useCreateCompanyUser`, `useUpdateCompanyUserRoleAndPermissions`.
+2. 🚚 **قسم الناقلين المتعاقد معهم (`app/admin/(pages)/carriers/`)**:
+   - ربط `<CarriersSection />` بـ `useCarriers`, `useToggleCarrierStatus`, `useDeleteCarrier`.
+3. 🚛 **قسم الأسطول والشاحنات (`app/admin/(pages)/vehicles/`)**:
+   - ربط `<VehiclesSection />` بـ `useVehicles`, `useUpdateVehicleCapacities`, `useCreateVehicle`.
+4. 🗺️ **قسم المسارات والخطوط اللوجستية (`app/admin/(pages)/routes/`)**:
+   - ربط `<RoutesSection />` بـ `useRoutes`, `useUpdateRoutePricing`, `useCreateRoute`.
+5. 📦 **قسم الطلبات والتجميع (`app/admin/(pages)/orders/`)**:
+   - ربط `<OrdersSection />` بـ `useOrders`, `useBulkUploadOrders`, `useGroupOrdersToShipment`.
+6. 🚛 **قسم الشحنات وتعيين الموارد (`app/admin/(pages)/shipments/`)**:
+   - ربط `<ShipmentsSection />` بـ `useShipments`, `useAssignShipmentResources`, `useUpdateShipmentStatus`.
+7. 💳 **قسم الفواتير والمدفوعات (`app/admin/(pages)/invoices/` & `payments/`)**:
+   - ربط `<InvoicesSection />` بـ `useInvoices`, `useUpdateInvoiceStatus`, `useCreatePayment`.
+8. 📍 **قسم تتبع الشحنات اللحظي (`app/admin/(pages)/tracking/`)**:
+   - ربط `<TrackingSection />` بـ `useShipmentTrackingEvents`, `useLogTrackingEvent`.
 
-| النموذج (Model) | ملف الـ Hook المسئول | الحالة | الـ Hooks التفصيلية المنجزة |
+---
+
+## 📊 حالة الـ Hooks ومكونات الواجهة بالأقسام:
+
+| النموذج (Model) | مسار الصفحة | حالة ربط الواجهة وتنميطها | الدليل المعتمد |
 | :--- | :--- | :--- | :--- |
-| **`User`** | `hooks/users/useUsers.ts` | ✅ مكتمل | `useUsers()`, `useUser(id)`, `useCreateUser()`, `useUpdateUser()`, `useDeleteUser()` |
-| **`Company`** | `hooks/companies/useCompanies.ts` | ✅ مكتمل | `useCompanies()`, `useAllCompanies()`, `useCompany(id)`, `useCreateCompany()`, `useUpdateCompany()`, `useUpdateCompanyStatus()`, `useApproveCompany()`, `useDeleteCompany()` |
-| **`CompanyUser`** | `hooks/companyUsers/useCompanyUsers.ts` | ✅ مكتمل | `useCompanyUsers()`, `useAllCompanyUsers()`, `useCompanyUser(id)`, `useCreateCompanyUser()`, `useUpdateCompanyUser()`, `useUpdateCompanyUserRoleAndPermissions()`, `useDeleteCompanyUser()` |
-| **`Carrier`** | `hooks/carriers/useCarriers.ts` | ✅ مكتمل | `useCarriers()`, `useAllCarriers()`, `useCarrier(id)`, `useCreateCarrier()`, `useUpdateCarrier()`, `useToggleCarrierStatus()`, `useDeleteCarrier()` |
-| **`Vehicle`** | `hooks/vehicles/useVehicles.ts` | ✅ مكتمل | `useVehicles()`, `useAllVehicles()`, `useVehicle(id)`, `useCreateVehicle()`, `useUpdateVehicle()`, `useUpdateVehicleCapacities()`, `useDeleteVehicle()` |
-| **`Route`** | `hooks/routes/useRoutes.ts` | ✅ مكتمل | `useRoutes()`, `useAllRoutes()`, `useRoute(id)`, `useCreateRoute()`, `useUpdateRoute()`, `useUpdateRoutePricing()`, `useDeleteRoute()` |
-| **`Order`** | `hooks/orders/useOrders.ts` | ✅ مكتمل | `useOrders()`, `useAllOrders()`, `useOrder(id)`, `useCreateOrder()`, `useBulkUploadOrders()`, `useUpdateOrder()`, `useGroupOrdersToShipment()`, `useDeleteOrder()` |
-| **`Shipment`** | `hooks/shipments/useShipments.ts` | ✅ مكتمل | `useShipments()`, `useAllShipments()`, `useShipment(id)`, `useCreateShipment()`, `useUpdateShipment()`, `useAssignShipmentResources()`, `useUpdateShipmentStatus()`, `useDeleteShipment()` |
-| **`Waybill`** | `hooks/waybills/useWaybills.ts` | ✅ مكتمل | `useWaybills()`, `useWaybill(id)`, `useGenerateWaybill()`, `useCreateWaybill()`, `useDeleteWaybill()` |
-| **`Invoice`** | `hooks/invoices/useInvoices.ts` | ✅ مكتمل | `useInvoices()`, `useAllInvoices()`, `useInvoice(id)`, `useCreateInvoice()`, `useUpdateInvoice()`, `useUpdateInvoiceStatus()`, `useDeleteInvoice()` |
-| **`Payment`** | `hooks/payments/usePayments.ts` | ✅ مكتمل | `usePayments()`, `usePayment(id)`, `useCreatePayment()`, `useDeletePayment()` |
-| **`TrackingEvent`** | `hooks/trackingEvents/useTrackingEvents.ts` | ✅ مكتمل | `useShipmentTrackingEvents(shipmentId)`, `useLogTrackingEvent()`, `useDeleteTrackingEvent()` |
-| **`Notification`** | `hooks/notifications/useNotifications.ts` | ✅ مكتمل | `useNotifications(recipientId)`, `useSendNotification()`, `useMarkNotificationAsRead()`, `useDeleteNotification()` |
-
----
-
-## 🚀 3. الخطوات المستقبلية اللاحقة (Future Roadmap)
-
-1. **مكونات صفحات لوحة التحكم (Admin UI Pages)**:
-   * ربط الـ Hooks في صفحات `app/admin/(pages)/` (الشركات، الفواتير، الطلبات، الشحنات، المسارات، التنبيهات، الإعدادات).
-2. **النماذج والتحقق (React Hook Form & Zod)**:
-   * إنشاء مكونات Form موحدة تعتمد على `lib/validations/` لإضافة وتعديل الكيانات.
-3. **معالجة التنبيهات والأخطاء (Toasts & Notifications)**:
-   * إضافة مكتبة تنبيهات (مثل `sonner` أو `react-hot-toast`) لإظهار رسائل النجاح والفشل عند تنفيذ عمليات التعديل والإنشاء والحذف.
+| **`Company`** | `/admin/companies` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`User`** | `/admin/users` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`CompanyUser`** | `/admin/company-users` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Carrier`** | `/admin/carriers` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Vehicle`** | `/admin/vehicles` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Route`** | `/admin/routes` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Order`** | `/admin/orders` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Shipment`** | `/admin/shipments` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Invoice`** | `/admin/invoices` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Payment`** | `/admin/payments` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`TrackingEvent`**| `/admin/tracking` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |

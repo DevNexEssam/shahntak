@@ -3,8 +3,11 @@ import axios from "axios";
 
 export const usersService = {
     // Get paginated users list
-    getUsers: async (page: number = 1, limit: number = 10): Promise<UserResponse> => {
-        const { data } = await axios.get(`/api/admin/users?page=${page}&limit=${limit}`);
+    getUsers: async (page: number = 1, limit: number = 10, search: string = "", status: string = ""): Promise<UserResponse> => {
+        let url = `/api/admin/users?page=${page}&limit=${limit}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+        if (status && status !== "all") url += `&status=${encodeURIComponent(status)}`;
+        const { data } = await axios.get(url);
         return data;
     },
 
@@ -32,4 +35,3 @@ export const usersService = {
         return data;
     },
 };
-

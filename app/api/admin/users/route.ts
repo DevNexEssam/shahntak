@@ -61,8 +61,6 @@ export async function GET(req: NextRequest) {
             { status: 200 }
         );
     } catch (error: any) {
-        // console.error("Error fetching users:", error);
-
         return NextResponse.json(
             { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
             { status: 500 }

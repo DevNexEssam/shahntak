@@ -8,25 +8,26 @@ import { AxiosError } from "axios";
 export const userKeys = {
     all: ["users"] as const,
     lists: () => [...userKeys.all, "list"] as const,
-    list: (page: number, limit: number) => [...userKeys.lists(), { page, limit }] as const,
+    list: (page: number, limit: number, search: string = "", status: string = "") =>
+        [...userKeys.lists(), { page, limit, search, status }] as const,
     details: () => [...userKeys.all, "detail"] as const,
     detail: (id: string) => [...userKeys.details(), id] as const,
 };
 
 // Queries
-export const useUsers = (page: number = 1, limit: number = 10) => {
+export const useUsers = (page: number = 1, limit: number = 10, search: string = "", status: string = "") => {
     return useQuery({
-        queryKey: userKeys.list(page, limit),
-        queryFn: () => usersService.getUsers(page, limit),
+        queryKey: userKeys.list(page, limit, search, status),
+        queryFn: () => usersService.getUsers(page, limit, search, status),
         placeholderData: keepPreviousData,
     });
 };
 
-export const useUser = (id: string) => {
+export const useUser = (id: string, enabled: boolean = true) => {
     return useQuery({
         queryKey: userKeys.detail(id),
         queryFn: () => usersService.getUserById(id),
-        enabled: !!id,
+        enabled: !!id && enabled,
     });
 };
 

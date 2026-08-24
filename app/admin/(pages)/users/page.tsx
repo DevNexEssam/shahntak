@@ -1,11 +1,11 @@
 import Users from "@/components/admin/users/Users";
+import { Metadata } from "next";
 
-const UsersPage = () => {
-    return (
-        <>
-            <Users />
-        </>
-    );
+export const metadata: Metadata = {
+    title: "إدارة المستخدمين والمدراء | شحنتك",
+    description: "إدارة فريق عمل ومدراء منصة شحنتك وتعيين الصلاحيات وحالات الحسابات.",
 };
 
-export default UsersPage;
+export default function UsersPage() {
+    return <Users />;
+}

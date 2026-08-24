@@ -127,7 +127,7 @@ shahntak/
 * **طبقة الـ Custom React Query Hooks**: مجلد [`/hooks`](file:///e:/projects/shahntak/hooks) (يشمل المجلدات والـ Hooks المخصصة كـ [`hooks/users/useUsers.ts`](file:///e:/projects/shahntak/hooks/users/useUsers.ts))
 * **ربط الواجهات بالـ Hooks واللوجيك**: [`ADMIN_COMPONENTS_MAPPING.md`](file:///e:/projects/shahntak/content/ADMIN_COMPONENTS_MAPPING.md)
 * **الدليل القياسي لسكاشن الأدمن**: [`ADMIN_SECTIONS_STANDARDIZED_GUIDE.md`](file:///e:/projects/shahntak/content/ADMIN_SECTIONS_STANDARDIZED_GUIDE.md)
-* **توثيق مرحلة تنميط قسم الشركات المكتمل**: [`COMPANIES_SECTION_STANDARDIZATION.md`](file:///e:/projects/shahntak/content/COMPANIES_SECTION_STANDARDIZATION.md)
+* **الدليل الموحد الشامل لبناء صفحات لوحة التحكم**: [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md)
 * **نظام التصميم والهوية البصرية**: [`ADMIN_DESIGN_SYSTEM.md`](file:///e:/projects/shahntak/content/ADMIN_DESIGN_SYSTEM.md)
 * **خريطة الطريق والتقدم التنفيذي**: [`content/ROADMAP.md`](file:///e:/projects/shahntak/content/ROADMAP.md)
 * **إعدادات المصادقة**: [`lib/authOptions.ts`](file:///e:/projects/shahntak/lib/authOptions.ts)
@@ -136,6 +136,7 @@ shahntak/
 * **الصفحة الرئيسية للموقع**: [`app/page.tsx`](file:///e:/projects/shahntak/app/page.tsx)
 * **لوحة تحكم السوبر أدمن**: [`app/admin/page.tsx`](file:///e:/projects/shahntak/app/admin/page.tsx)
 * **قسم الشركات المكتمل والتفاعلي**: [`components/admin/companies/Companies.tsx`](file:///e:/projects/shahntak/components/admin/companies/Companies.tsx)
+* **قسم المستخدمين المكتمل والتفاعلي**: [`components/admin/users/Users.tsx`](file:///e:/projects/shahntak/components/admin/users/Users.tsx)
 * **الشريط الجانبي للأدمن**: [`components/admin/layout/AdminSidebar.tsx`](file:///e:/projects/shahntak/components/admin/layout/AdminSidebar.tsx)
 * **الهيدر للأدمن**: [`components/admin/layout/AdminHeader.tsx`](file:///e:/projects/shahntak/components/admin/layout/AdminHeader.tsx)
 
