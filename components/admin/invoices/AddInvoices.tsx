@@ -1,28 +1,79 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
+import { useCreateInvoice } from '@/hooks/invoices/useInvoices';
+import { useAllCompanies } from '@/hooks/companies/useCompanies';
+import { invoiceCreateValidationSchema } from '@/lib/validations/invoice.schema';
+import toast from 'react-hot-toast';
 import {
     LuReceipt,
     LuX,
     LuBuilding2,
-    LuDollarSign,
-    LuCreditCard,
-    LuPlus,
+    LuCoins,
     LuCalendar,
     LuHash
 } from 'react-icons/lu';
 
 interface AddInvoicesProps {
     isOpen?: boolean;
-    onClose?: () => void;
+    onClose: () => void;
 }
 
-const AddInvoices: React.FC<AddInvoicesProps> = ({ isOpen = false, onClose }) => {
+export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps) {
+    const [formValues, setFormValues] = useState({
+        invoiceNumber: `INV-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
+        companyId: '',
+        total: 1000,
+        status: 'issued' as const,
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    });
+
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    const { mutate: createInvoice, isPending: isSubmitting } = useCreateInvoice();
+    const { data: companiesRes, isLoading: isLoadingCompanies } = useAllCompanies();
+
     if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
-            <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    const companies = companiesRes?.data || [];
 
-                {/* Header */}
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setFieldErrors({});
+
+        const payload = {
+            ...formValues,
+            dueDate: formValues.dueDate || undefined,
+        };
+
+        // 1. Zod Validation Check
+        const validation = invoiceCreateValidationSchema.safeParse(payload);
+        if (!validation.success) {
+            const errors: Record<string, string> = {};
+            validation.error.issues.forEach((issue) => {
+                if (issue.path[0]) {
+                    errors[issue.path[0].toString()] = issue.message;
+                }
+            });
+            setFieldErrors(errors);
+            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            return;
+        }
+
+        // 2. Trigger Mutation
+        createInvoice(payload, {
+            onSuccess: () => {
+                onClose();
+            },
+        });
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+            {/* Modal Container */}
+            <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+
+                {/* Modal Header */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
                         <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
@@ -30,130 +81,146 @@ const AddInvoices: React.FC<AddInvoicesProps> = ({ isOpen = false, onClose }) =>
                         </div>
                         <div>
                             <h2 className="text-xl font-extrabold text-heading">إصدار فاتورة جديدة</h2>
-                            <p className="text-xs text-body mt-0.5">إنشاء فاتورة اشتراك أو رسوم لوجستية جديدة للشركات</p>
+                            <p className="text-xs text-body mt-0.5">إنشاء فاتورة خدمات لوجستية وتحديد المستفيد والمبلغ والقيم</p>
                         </div>
                     </div>
 
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
+                        disabled={isSubmitting}
+                        className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
-                {/* Body */}
-                <div className="p-6 overflow-y-auto space-y-6">
+                {/* Form Body */}
+                <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1">
 
-                    <div className="space-y-4">
-                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-accent" />
-                            بيانات الفاتورة
-                        </h3>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                <LuHash className="w-3.5 h-3.5 text-body" />
+                                رقم الفاتورة <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                disabled={isSubmitting}
+                                value={formValues.invoiceNumber}
+                                onChange={(e) => setFormValues({ ...formValues, invoiceNumber: e.target.value })}
+                                className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                    fieldErrors.invoiceNumber ? 'border-rose-500' : 'border-border'
+                                }`}
+                            />
+                            {fieldErrors.invoiceNumber && (
+                                <span className="text-xs text-rose-500 font-medium block">{fieldErrors.invoiceNumber}</span>
+                            )}
+                        </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuHash className="w-3.5 h-3.5 text-body" />
-                                    رقم الفاتورة
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="مثال: INV-2026-090"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent"
-                                />
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                    شركة الشحن المستفيدة
-                                </label>
-                                <select className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer">
-                                    <option value="">اختر الشركة...</option>
-                                    <option value="riyadh">شركة الرياض السريع</option>
-                                    <option value="darb">درب الشرق للنقل</option>
-                                    <option value="tawseel">توصيل بلس اللوجستية</option>
-                                    <option value="najm">نجم للنقل والتوزيع</option>
-                                </select>
-                            </div>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                <LuBuilding2 className="w-3.5 h-3.5 text-body" />
+                                الشركة المفلتر لها الفاتورة <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                disabled={isSubmitting || isLoadingCompanies}
+                                value={formValues.companyId}
+                                onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
+                                className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
+                                    fieldErrors.companyId ? 'border-rose-500' : 'border-border'
+                                }`}
+                            >
+                                <option value="">اختر الشركة...</option>
+                                {companies.map((comp) => (
+                                    <option key={comp._id} value={comp._id}>
+                                        {comp.companyName} ({comp.city})
+                                    </option>
+                                ))}
+                            </select>
+                            {fieldErrors.companyId && (
+                                <span className="text-xs text-rose-500 font-medium block">{fieldErrors.companyId}</span>
+                            )}
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuCreditCard className="w-3.5 h-3.5 text-body" />
-                                    نوع الخطة / الخدمة
+                                    <LuCoins className="w-3.5 h-3.5 text-body" />
+                                    إجمالي الفاتورة (ر.س) <span className="text-red-500">*</span>
                                 </label>
                                 <input
-                                    type="text"
-                                    placeholder="مثال: المؤسسات (سنوي)"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
+                                    type="number"
+                                    disabled={isSubmitting}
+                                    value={formValues.total}
+                                    onChange={(e) => setFormValues({ ...formValues, total: Number(e.target.value) })}
+                                    min={0}
+                                    className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        fieldErrors.total ? 'border-rose-500' : 'border-border'
+                                    }`}
                                 />
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuDollarSign className="w-3.5 h-3.5 text-body" />
-                                    المبلغ المستحق (ر.س)
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="١,٤٠٠ ر.س"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuCreditCard className="w-3.5 h-3.5 text-body" />
-                                    طريقة الدفع
-                                </label>
-                                <select className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer">
-                                    <option value="mada">مدى (أوتوماتيكي)</option>
-                                    <option value="apple">Apple Pay</option>
-                                    <option value="visa">فيزا / ماستركارد</option>
-                                    <option value="stc">STC Pay</option>
-                                    <option value="bank">تحويل بنكي</option>
-                                </select>
+                                {fieldErrors.total && (
+                                    <span className="text-xs text-rose-500 font-medium block">{fieldErrors.total}</span>
+                                )}
                             </div>
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCalendar className="w-3.5 h-3.5 text-body" />
-                                    حالة الفاتورة
+                                    تاريخ الاستحقاق (Due Date)
                                 </label>
-                                <select className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer">
-                                    <option value="paid">تم السداد (Paid)</option>
-                                    <option value="pending">معلقة (Pending)</option>
-                                    <option value="canceled">ملغاة (Canceled)</option>
-                                </select>
+                                <input
+                                    type="date"
+                                    disabled={isSubmitting}
+                                    value={formValues.dueDate}
+                                    onChange={(e) => setFormValues({ ...formValues, dueDate: e.target.value })}
+                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 cursor-pointer"
+                                />
                             </div>
                         </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-bold text-heading block">
+                                حالة الفاتورة
+                            </label>
+                            <select
+                                disabled={isSubmitting}
+                                value={formValues.status}
+                                onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
+                                className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                            >
+                                <option value="issued">صادرة بانتظار التحصيل (Issued)</option>
+                                <option value="paid">مدفوعة ومحصلة (Paid)</option>
+                                <option value="draft">مسودة (Draft)</option>
+                                <option value="overdue">متأخرة السداد (Overdue)</option>
+                                <option value="cancelled">ملغاة (Cancelled)</option>
+                            </select>
+                        </div>
+
                     </div>
 
-                </div>
+                    {/* Modal Footer */}
+                    <div className="p-5 border-t border-border bg-surface-muted/40 flex items-center justify-between gap-3 shrink-0">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            disabled={isSubmitting}
+                            className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                        >
+                            إلغاء
+                        </button>
 
-                {/* Footer */}
-                <div className="p-5 border-t border-border bg-surface-muted/40 flex items-center justify-between gap-3">
-                    <button
-                        onClick={onClose}
-                        className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer"
-                    >
-                        إلغاء
-                    </button>
-
-                    <button className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer">
-                        <LuPlus className="w-4 h-4" />
-                        <span>إصدار الفاتورة</span>
-                    </button>
-                </div>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
+                        >
+                            {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
+                        </button>
+                    </div>
+                </form>
 
             </div>
         </div>
     );
-};
-
-export default AddInvoices;
+}
