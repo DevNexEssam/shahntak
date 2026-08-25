@@ -3,15 +3,14 @@
 import React, { useState } from 'react';
 import { useCreateUser } from '@/hooks/users/useUsers';
 import { userCreateValidationSchema } from '@/lib/validations/user.schema';
+import toast from 'react-hot-toast';
 import {
     LuUser,
     LuX,
     LuMail,
     LuPhone,
     LuShieldCheck,
-    LuPlus,
-    LuKey,
-    LuLoaderCircle
+    LuKey
 } from 'react-icons/lu';
 
 interface AddUsersProps {
@@ -49,6 +48,7 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                 }
             });
             setFieldErrors(errors);
+            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
             return;
         }
 
@@ -61,7 +61,7 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
             {/* Modal Container */}
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -72,15 +72,17 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                             <LuUser className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إضافة مستخدم / مدير جديد</h2>
+                            <h2 className="text-xl font-extrabold text-heading">إضافة مستخدم جديد</h2>
                             <p className="text-xs text-body mt-0.5">إنشاء حساب مستخدم جديد وتحديد الدور والصلاحيات</p>
                         </div>
                     </div>
 
                     <button
+                        type="button"
                         onClick={onClose}
                         disabled={isPending}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
+                        title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -88,7 +90,7 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                    <div className="p-6 overflow-y-auto space-y-6 flex-1 text-right">
 
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
@@ -100,14 +102,17 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuUser className="w-3.5 h-3.5 text-body" />
-                                        الاسم الكامل
+                                        الاسم الكامل <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
+                                        disabled={isPending}
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="مثال: أحمد المنشاوي"
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                            fieldErrors.name ? 'border-rose-500' : 'border-border'
+                                        }`}
                                     />
                                     {fieldErrors.name && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.name}</span>
@@ -117,14 +122,17 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMail className="w-3.5 h-3.5 text-body" />
-                                        البريد الإلكتروني
+                                        البريد الإلكتروني <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="email"
+                                        disabled={isPending}
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         placeholder="admin@shahnetak.sa"
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                            fieldErrors.email ? 'border-rose-500' : 'border-border'
+                                        }`}
                                     />
                                     {fieldErrors.email && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.email}</span>
@@ -136,14 +144,17 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuPhone className="w-3.5 h-3.5 text-body" />
-                                        رقم الجوال
+                                        رقم الجوال <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
+                                        disabled={isPending}
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                         placeholder="0501234567"
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                            fieldErrors.phone ? 'border-rose-500' : 'border-border'
+                                        }`}
                                     />
                                     {fieldErrors.phone && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.phone}</span>
@@ -153,15 +164,16 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuShieldCheck className="w-3.5 h-3.5 text-body" />
-                                        الدور والصلاحيات (Role)
+                                        الدور والصلاحيات (Role) <span className="text-red-500">*</span>
                                     </label>
                                     <select
+                                        disabled={isPending}
                                         value={formData.role}
                                         onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'super' })}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
-                                        <option value="admin">مدير نظام (Admin)</option>
-                                        <option value="super">سوبر أدمن (Super Admin)</option>
+                                        <option value="admin">مدير نظام</option>
+                                        <option value="super">سوبر أدمن</option>
                                     </select>
                                     {fieldErrors.role && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.role}</span>
@@ -173,14 +185,17 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuKey className="w-3.5 h-3.5 text-body" />
-                                        كلمة المرور
+                                        كلمة المرور <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="password"
+                                        disabled={isPending}
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                         placeholder="••••••••"
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                            fieldErrors.password ? 'border-rose-500' : 'border-border'
+                                        }`}
                                     />
                                     {fieldErrors.password && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.password}</span>
@@ -192,9 +207,10 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                                         الحالة
                                     </label>
                                     <select
+                                        disabled={isPending}
                                         value={formData.status}
                                         onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
                                         <option value="active">نشط (Active)</option>
                                         <option value="inactive">غير نشط (Inactive)</option>
@@ -214,7 +230,7 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                             type="button"
                             onClick={onClose}
                             disabled={isPending}
-                            className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
                             إلغاء
                         </button>
@@ -222,19 +238,9 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isPending ? (
-                                <>
-                                    <LuLoaderCircle className="w-4 h-4 animate-spin" />
-                                    <span>جاري الحفظ...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <LuPlus className="w-4 h-4" />
-                                    <span>إنشاء الحساب</span>
-                                </>
-                            )}
+                            {isPending ? "جاري الإضافة..." : "حفظ البيانات"}
                         </button>
                     </div>
                 </form>

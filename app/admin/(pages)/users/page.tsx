@@ -7,5 +7,9 @@ export const metadata: Metadata = {
 };
 
 export default function UsersPage() {
-    return <Users />;
+    return (
+        <main className="bg-surface-muted">
+            <Users />
+        </main>
+    );
 }
