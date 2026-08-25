@@ -34,12 +34,23 @@ components/admin/{resource}/
 ### 3️⃣ تنظيف الكائن المختار فور الإغلاق (Cleanup Selected Item)
 * عند إغلاق مودال التعديل أو التفاصيل، **يجب مسح الكائن المختار `setSelectedEntity(null)` فور الإغلاق** لمنع استعادة بيانات سابقة خاطئة عند فتح مودال لعنصر آخر.
 
-### 4️⃣ الحماية من التكرار والتحميل (`disabled={isSubmitting}`)
-* تجميد كافة عناصر الإدخال والأزرار بـ `disabled={isSubmitting}` أو `disabled={isPending}` وإظهار أيقونة التحميل الملتفة `<LuLoaderCircle className="animate-spin" />` أو `<Loading />` داخل زر الحفظ.
+### 4️⃣ الحماية من التكرار والنصوص الحركية في الأزرار (`disabled={isSubmitting}`)
+* تجميد كافة عناصر الإدخال والأزرار بـ `disabled={isSubmitting}` أو `disabled={isPending}`.
+* **التحميل الأولي**: استخدام مكون التحميل الموحد `<Loading />` من `@/components/ui/loading` فقط وحصراً عند التحميل الأولي للصفحة (`if (isLoading) return <Loading />;`).
+* **ممنوع وضع `<Loading />` داخل أزرار التقديم**: يُستبدل النص داخل زر الحفظ بنص حركي صريح دون مكونات تحميل:
+  - في مودال الإضافة: `{isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}`
+  - في مودال التعديل: `{isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}`
 
 ### 5️⃣ التنبيه وتجديد الكاش اللحظي (Toast & Cache Invalidation)
 * إظهار الرسائل الصريحة عبر `react-hot-toast`.
 * إبطال الاستعلامات تلقائياً داخل `onSuccess` عبر `queryClient.invalidateQueries({ queryKey: resourceKeys.all })` لإعادة جلب البيانات وتحديث الواجهة مباشرة.
+
+### 6️⃣ تمييز الحقول الإجبارية (`<span className="text-red-500">*</span>`)
+* إدراج نجمة حمراء بارزة `<span className="text-red-500">*</span>` بجانب عنوان كل حقل إجباري مطابق للمخطط الزودي و Mongoose.
+
+### 7️⃣ ضوابط وتسمية متغيرات النموذج (`formValues` vs `FormData`)
+* **النماذج النصية العادية**: تُسمى حالة النموذج بـ `formValues` بدلاً من `formData` لمنع اللبس مع `new FormData()`.
+* **الصور والملفات**: يُستخدم `new FormData()` حصراً وفقط في المكونات التي تتضمن رفع ملفات أو صور مستندات (`multipart/form-data`).
 
 ---
 
@@ -63,16 +74,20 @@ components/admin/{resource}/
 - [ ] إضافة زر التحديث وتدوير الأيقونة أثناء الجلب `isFetching`.
 - [ ] إضافة كروت الإحصائيات `stats`.
 - [ ] إضافة شريط البحث والفلترة مع استدعاء `setPage(1)`.
-- [ ] رندر الجدول أو البطاقات مع حالات التحميل والبيانات الفارغة `<EmptyData />`.
+- [ ] استخدام `if (isLoading) return <Loading />;` للتحميل الأولي.
+- [ ] رندر الجدول أو البطاقات مع حالات البيانات الفارغة `<EmptyData />`.
 - [ ] ربط المودالات وتأكيد الحذف المؤقت عبر `<ConfirmDeletePopup />`.
 
 ### 4. مودال الإضافة (`Add[Entity].tsx`):
 - [ ] ربط النموذج بـ Zod Schema الخاص بالإصدار الجديد (`[entity]CreateValidationSchema`).
-- [ ] إدارك التجميد والأخطاء وتمرير callback النجاح `onClose`.
+- [ ] إضافة `<span className="text-red-500">*</span>` للحقول الإجبارية.
+- [ ] إدراج التجميد والتعطيل `disabled={isSubmitting}` وتأطير الأخطاء باللون الأحمر.
+- [ ] استخدام `<Loading w="w-4" h="h-4" />` داخل زر الحفظ وتمرير callback النجاح `onClose`.
 
 ### 5. مودال التعديل (`Edit[Entity].tsx`):
 - [ ] تعبئة الحقول في `useEffect` عند تغيير الكائن المختار.
 - [ ] ربط النموذج بـ Zod Schema الخاص بالتحديث (`update[Entity]ValidationSchema`).
+- [ ] إضافة `<span className="text-red-500">*</span>` للحقول الإجبارية وإدارج `<Loading w="w-4" h="h-4" />` لزر التعديل.
 
 ### 6. مودال التفاصيل (`Details[Entity].tsx`):
 - [ ] رندر البيانات بصيغة قراءة فقط (Read-only) مع Badges الحالة والتواريخ.
@@ -86,14 +101,21 @@ components/admin/{resource}/
 
 يمكنك دائماً الاعتماد على الموديلات والسكاشن المكتملة التالية كنموذج تطبيقي حي:
 
-### 1️⃣ قسم الشركات المسجلة والمشتريات (`companies`):
+### 1️⃣ قسم موظفي الشركات والصلاحيات (`company-users`):
+- صفحة السيرفر: [`app/admin/(pages)/company-users/page.tsx`](file:///e:/projects/shahntak/app/admin/%28pages%29/company-users/page.tsx)
+- المكون الرئيسي: [`components/admin/company-users/CompanyUsers.tsx`](file:///e:/projects/shahntak/components/admin/company-users/CompanyUsers.tsx)
+- مودال الإضافة: [`components/admin/company-users/AddCompanyUsers.tsx`](file:///e:/projects/shahntak/components/admin/company-users/AddCompanyUsers.tsx)
+- مودال التعديل: [`components/admin/company-users/EditCompanyUsers.tsx`](file:///e:/projects/shahntak/components/admin/company-users/EditCompanyUsers.tsx)
+- مودال التفاصيل: [`components/admin/company-users/DetailsCompanyUsers.tsx`](file:///e:/projects/shahntak/components/admin/company-users/DetailsCompanyUsers.tsx)
+
+### 2️⃣ قسم الشركات المسجلة والمشتريات (`companies`):
 - صفحة السيرفر: [`app/admin/(pages)/companies/page.tsx`](file:///e:/projects/shahntak/app/admin/%28pages%29/companies/page.tsx)
 - المكون الرئيسي: [`components/admin/companies/Companies.tsx`](file:///e:/projects/shahntak/components/admin/companies/Companies.tsx)
 - مودال الإضافة: [`components/admin/companies/AddCompanies.tsx`](file:///e:/projects/shahntak/components/admin/companies/AddCompanies.tsx)
 - مودال التعديل: [`components/admin/companies/EditCompanies.tsx`](file:///e:/projects/shahntak/components/admin/companies/EditCompanies.tsx)
 - مودال التفاصيل: [`components/admin/companies/DetailsCompanies.tsx`](file:///e:/projects/shahntak/components/admin/companies/DetailsCompanies.tsx)
 
-### 2️⃣ قسم المستخدمين والمدراء (`users`):
+### 3️⃣ قسم المستخدمين والمدراء (`users`):
 - صفحة السيرفر: [`app/admin/(pages)/users/page.tsx`](file:///e:/projects/shahntak/app/admin/%28pages%29/users/page.tsx)
 - المكون الرئيسي: [`components/admin/users/Users.tsx`](file:///e:/projects/shahntak/components/admin/users/Users.tsx)
 - مودال الإضافة: [`components/admin/users/AddUsers.tsx`](file:///e:/projects/shahntak/components/admin/users/AddUsers.tsx)

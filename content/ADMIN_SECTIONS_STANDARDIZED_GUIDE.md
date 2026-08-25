@@ -281,7 +281,7 @@ export default function AddUser({ onClose }: AddUserProps) {
               إلغاء
             </button>
             <button type="submit" disabled={isSubmitting} className="px-6 py-2 text-sm bg-primary text-white rounded font-medium flex items-center gap-2 disabled:opacity-50">
-              {isSubmitting ? <Loading w="w-4" h="h-4" /> : "حفظ البيانات"}
+              {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
             </button>
           </div>
         </form>
@@ -388,7 +388,7 @@ export default function EditUser({ user, onClose }: EditUserProps) {
               إلغاء
             </button>
             <button type="submit" disabled={isSubmitting} className="px-6 py-2 text-sm bg-blue-600 text-white rounded font-medium disabled:opacity-50">
-              {isSubmitting ? <Loading w="w-4" h="h-4" /> : "حفظ التعديلات"}
+              {isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}
             </button>
           </div>
         </form>
@@ -508,6 +508,10 @@ const handleFilterChange = (status: string) => {
 
 ### 4️⃣ تنظيف أخطاء Zod عند إعادة التفكير (`setFieldErrors({})`)
 عند إعادة الضغط على تقديم النموذج، يجب مسح مصفوفة الأخطاء السابقة `setFieldErrors({})` أولاً قبل إجراء الفحص الجديد.
+
+### 5️⃣ ضوابط وتوضيح استخدام `FormData` والملفات/الصور
+- **النماذج النصية والتحكم العادي (JSON Objects)**: إذا كان النموذج لا يحتوي على رفع صور أو ملفات (فقط نصوص، بريد، جوال، خيارات)، يُمنع استخدام `new FormData()`. ويتم التعامل كلياً مع كائن JavaScript عادي (`Object`) يُرسل كـ JSON Body.
+- **استخدام `FormData` المخصص**: يُستخدم كائن `new FormData()` فقط وحصراً عند التعامل مع نماذج تتضمن رفع ملفات أو صور مستندات (`File` / `Image Uploads`) لإرسال الطلب كـ `multipart/form-data`.
 
 ---
 *تم إعداد هذا المستند ليكون المرجع المتكامل 100% لبناء وتوحيد أي سكشن داخل مجلد components/admin/sections/.*

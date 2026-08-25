@@ -14,7 +14,7 @@ import { Footer } from '@/components/home/Footer';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-surface text-body font-arabic selection:bg-accent selection:text-white" dir="rtl">
+    <div className="min-h-screen bg-surface text-body font-arabic selection:bg-accent selection:text-white">
       <Navbar />
       <main>
         <Hero />

@@ -87,7 +87,7 @@ export async function POST(req: Request) {
             userRole: data.userRole || "staff",
             permissions: data.permissions || [],
             userIsActive: data.userIsActive ?? true,
-            createdBy: (session.user as any)?.id || data.companyId,
+            createdBy: (session?.user as any)?.id || data.companyId,
         });
 
         const safeUser = {
