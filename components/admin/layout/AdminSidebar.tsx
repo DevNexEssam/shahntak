@@ -48,9 +48,14 @@ const navItems: NavItem[] = [
         icon: <LuPackage className="w-5 h-5" />,
     },
     {
-        title: 'المسارات والأسطول',
+        title: 'المسارات والخطوط',
         href: '/admin/routes',
         icon: <LuRoute className="w-5 h-5" />,
+    },
+    {
+        title: 'الأسطول والشاحنات',
+        href: '/admin/vehicles',
+        icon: <LuBox className="w-5 h-5" />,
     },
     {
         title: 'البوالص والفواتير',

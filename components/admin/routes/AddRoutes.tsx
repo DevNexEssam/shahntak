@@ -1,79 +1,140 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
+import { useCreateRoute } from '@/hooks/routes/useRoutes';
+import { useAllCarriers } from '@/hooks/carriers/useCarriers';
+import { routeCreateValidationSchema } from '@/lib/validations/route.schema';
+import toast from 'react-hot-toast';
 import {
-    LuRoute,
-    LuX,
     LuMapPin,
+    LuX,
     LuTruck,
-    LuPlus,
-    LuRadio,
-    LuPercent,
+    LuCoins,
+    LuClock,
     LuBuilding2
 } from 'react-icons/lu';
 
 interface AddRoutesProps {
     isOpen?: boolean;
-    onClose?: () => void;
+    onClose: () => void;
 }
 
-const AddRoutes: React.FC<AddRoutesProps> = ({ isOpen = false, onClose }) => {
+export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
+    const [formValues, setFormValues] = useState({
+        origin: '',
+        destination: '',
+        vehicleType: 'شاحنة كبيرة (دينا)',
+        basePrice: 500,
+        carrierId: '',
+        estimatedTransitTime: '24 ساعة',
+        isActive: true,
+    });
+
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    const { mutate: createRoute, isPending: isSubmitting } = useCreateRoute();
+    const { data: carriersRes, isLoading: isLoadingCarriers } = useAllCarriers();
+
     if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
-            <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    const carriers = carriersRes?.data || [];
 
-                {/* Header */}
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setFieldErrors({});
+
+        // 1. Zod Validation Check
+        const validation = routeCreateValidationSchema.safeParse(formValues);
+        if (!validation.success) {
+            const errors: Record<string, string> = {};
+            validation.error.issues.forEach((issue) => {
+                if (issue.path[0]) {
+                    errors[issue.path[0].toString()] = issue.message;
+                }
+            });
+            setFieldErrors(errors);
+            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            return;
+        }
+
+        // 2. Trigger Mutation
+        createRoute(formValues, {
+            onSuccess: () => {
+                onClose();
+            },
+        });
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+            {/* Modal Container */}
+            <div className="relative w-full max-w-xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+
+                {/* Modal Header */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
                         <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
-                            <LuRoute className="w-6 h-6" />
+                            <LuMapPin className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إضافة مسار / خط نقل جديد</h2>
-                            <p className="text-xs text-body mt-0.5">تحديد نقطة الانطلاق والوصول لخطوط الشاحنات والأساطيل</p>
+                            <h2 className="text-xl font-extrabold text-heading">إضافة مسار لوجستي جديد</h2>
+                            <p className="text-xs text-body mt-0.5">تحديد نقطة الانطلاق والوصول ونوع المركبة والتسعيرة</p>
                         </div>
                     </div>
 
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
+                        disabled={isSubmitting}
+                        className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
-                {/* Body */}
-                <div className="p-6 overflow-y-auto space-y-6">
-
-                    <div className="space-y-4">
-                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-accent" />
-                            بيانات الخط اللوجستي
-                        </h3>
+                {/* Form Body */}
+                <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    نقطة الانطلاق (المستودع الرئيسي)
+                                    نقطة الانطلاق (Origin) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    placeholder="مثال: الرياض (المستودع الرئيسي)"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
+                                    disabled={isSubmitting}
+                                    value={formValues.origin}
+                                    onChange={(e) => setFormValues({ ...formValues, origin: e.target.value })}
+                                    placeholder="الرياض، جدة، الدمام..."
+                                    className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        fieldErrors.origin ? 'border-rose-500' : 'border-border'
+                                    }`}
                                 />
+                                {fieldErrors.origin && (
+                                    <span className="text-xs text-rose-500 font-medium block">{fieldErrors.origin}</span>
+                                )}
                             </div>
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    جهة الوصول (الفرع/المنطقة)
+                                    وجهة الوصول (Destination) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    placeholder="مثال: الدمام (فرع الخالدية)"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
+                                    disabled={isSubmitting}
+                                    value={formValues.destination}
+                                    onChange={(e) => setFormValues({ ...formValues, destination: e.target.value })}
+                                    placeholder="مكة، المدينة، مجمع الهفوف..."
+                                    className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        fieldErrors.destination ? 'border-rose-500' : 'border-border'
+                                    }`}
                                 />
+                                {fieldErrors.destination && (
+                                    <span className="text-xs text-rose-500 font-medium block">{fieldErrors.destination}</span>
+                                )}
                             </div>
                         </div>
 
@@ -81,61 +142,123 @@ const AddRoutes: React.FC<AddRoutesProps> = ({ isOpen = false, onClose }) => {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuTruck className="w-3.5 h-3.5 text-body" />
-                                    عدد الرحلات اليومية المجدولة
+                                    نوع المركبة المطلوبة <span className="text-red-500">*</span>
+                                </label>
+                                <select
+                                    disabled={isSubmitting}
+                                    value={formValues.vehicleType}
+                                    onChange={(e) => setFormValues({ ...formValues, vehicleType: e.target.value })}
+                                    className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
+                                        fieldErrors.vehicleType ? 'border-rose-500' : 'border-border'
+                                    }`}
+                                >
+                                    <option value="شاحنة كبيرة (دينا)">شاحنة كبيرة (دينا - Dyna)</option>
+                                    <option value="شاحنة مغلقة (تريلا)">شاحنة مغلقة (تريلا - Trailer)</option>
+                                    <option value="سيارة نقل صغيرة (وانيت)">سيارة نقل صغيرة (وانيت - Pickup)</option>
+                                    <option value="شاحنة مبردة">شاحنة مبردة (Refrigerated Truck)</option>
+                                </select>
+                                {fieldErrors.vehicleType && (
+                                    <span className="text-xs text-rose-500 font-medium block">{fieldErrors.vehicleType}</span>
+                                )}
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                    <LuCoins className="w-3.5 h-3.5 text-body" />
+                                    السعر الأساسي للمسار (ر.س) <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    disabled={isSubmitting}
+                                    value={formValues.basePrice}
+                                    onChange={(e) => setFormValues({ ...formValues, basePrice: Number(e.target.value) })}
+                                    min={0}
+                                    className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        fieldErrors.basePrice ? 'border-rose-500' : 'border-border'
+                                    }`}
+                                />
+                                {fieldErrors.basePrice && (
+                                    <span className="text-xs text-rose-500 font-medium block">{fieldErrors.basePrice}</span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                    <LuClock className="w-3.5 h-3.5 text-body" />
+                                    وقت الترانزيت التقديري
                                 </label>
                                 <input
                                     type="text"
-                                    placeholder="مثال: ١٢ رحلة/يوم"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent"
+                                    disabled={isSubmitting}
+                                    value={formValues.estimatedTransitTime}
+                                    onChange={(e) => setFormValues({ ...formValues, estimatedTransitTime: e.target.value })}
+                                    placeholder="مثال: 24 ساعة / يومين"
+                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50"
                                 />
                             </div>
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuPercent className="w-3.5 h-3.5 text-body" />
-                                    نسبة السعة الاستيعابية الحالية
+                                    <LuBuilding2 className="w-3.5 h-3.5 text-body" />
+                                    تخصيص ناقل محدد (اختياري)
                                 </label>
-                                <input
-                                    type="text"
-                                    placeholder="مثال: ٨٠٪"
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent"
-                                />
+                                <select
+                                    disabled={isSubmitting || isLoadingCarriers}
+                                    value={formValues.carrierId}
+                                    onChange={(e) => setFormValues({ ...formValues, carrierId: e.target.value })}
+                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                                >
+                                    <option value="">جميع الناقلين المتاحين</option>
+                                    {carriers.map((car) => (
+                                        <option key={car._id} value={car._id}>
+                                            {car.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                الناقل المشغّل
+                            <label className="text-xs font-bold text-heading block">
+                                حالة المسار
                             </label>
-                            <input
-                                type="text"
-                                placeholder="مثال: أسطول الرياض السريع / سمسا"
-                                className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
-                            />
+                            <select
+                                disabled={isSubmitting}
+                                value={formValues.isActive ? 'active' : 'inactive'}
+                                onChange={(e) => setFormValues({ ...formValues, isActive: e.target.value === 'active' })}
+                                className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                            >
+                                <option value="active">نشط ومتاح</option>
+                                <option value="inactive">موقوف مؤقتاً</option>
+                            </select>
                         </div>
+
                     </div>
 
-                </div>
+                    {/* Modal Footer */}
+                    <div className="p-5 border-t border-border bg-surface-muted/40 flex items-center justify-between gap-3 shrink-0">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            disabled={isSubmitting}
+                            className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                        >
+                            إلغاء
+                        </button>
 
-                {/* Footer */}
-                <div className="p-5 border-t border-border bg-surface-muted/40 flex items-center justify-between gap-3">
-                    <button
-                        onClick={onClose}
-                        className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer"
-                    >
-                        إلغاء
-                    </button>
-
-                    <button className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer">
-                        <LuPlus className="w-4 h-4" />
-                        <span>إضافة المسار</span>
-                    </button>
-                </div>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
+                        >
+                            {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
+                        </button>
+                    </div>
+                </form>
 
             </div>
         </div>
     );
-};
-
-export default AddRoutes;
+}

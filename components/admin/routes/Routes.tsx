@@ -1,146 +1,366 @@
-'use client';
+"use client";
 
 import React, { useState } from 'react';
-import {
-    LuRoute,
-    LuTruck,
-    LuMapPin,
-    LuPlus,
-    LuPencil
-} from 'react-icons/lu';
+import { Route, Carrier } from '@/types/data';
+import { useRoutes, useDeleteRoute } from '@/hooks/routes/useRoutes';
 import AddRoutes from './AddRoutes';
 import EditRoutes from './EditRoutes';
-
-interface RouteItem {
-    from: string;
-    to: string;
-    load: string;
-    trips: string;
-    carrier?: string;
-}
-
-const carrierIntegrations = [
-    { name: 'سمسا إكسبريس (SMSA)', apiStatus: 'online', latency: '42ms', activeShipments: '٢٬١٤٠' },
-    { name: 'أرامكس (Aramex)', apiStatus: 'online', latency: '68ms', activeShipments: '١٬٨٩٠' },
-    { name: 'ناقل للخدمات اللوجستية', apiStatus: 'online', latency: '54ms', activeShipments: '٩٢٠' },
-    { name: 'سبل | البريد السعودي', apiStatus: 'degraded', latency: '240ms', activeShipments: '٦١٠' },
-];
-
-const hubRoutesData: RouteItem[] = [
-    { from: 'الرياض (المستودع الرئيسي)', to: 'جدة (فرع المروة)', load: '٩٤٪', trips: '١٨ رحلة/يوم', carrier: 'أسطول الشركة الرئيسي' },
-    { from: 'الرياض (المستودع الرئيسي)', to: 'الدمام (فرع الخالدية)', load: '٨٢٪', trips: '١٢ رحلة/يوم', carrier: 'سمسا إكسبريس' },
-    { from: 'جدة (المركز اللوجستي)', to: 'مكة المكرمة', load: '٦٥٪', trips: '٢٤ رحلة/يوم', carrier: 'أرامكس' },
-    { from: 'القصيم', to: 'الرياض', load: '٤٥٪', trips: '٨ رحلات/يوم', carrier: 'ناقل للخدمات اللوجستية' },
-];
+import DetailsRoutes from './DetailsRoutes';
+import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
+import EmptyData from '@/components/ui/EmptyData';
+import Loading from '@/components/ui/loading';
+import {
+    LuMapPin,
+    LuPlus,
+    LuSearch,
+    LuRefreshCw,
+    LuPencil,
+    LuEye,
+    LuTrash2,
+    LuChevronRight,
+    LuChevronLeft,
+    LuTruck,
+    LuCoins,
+    LuClock,
+    LuFilter,
+    LuCheck,
+    LuX,
+    LuBuilding2
+} from 'react-icons/lu';
 
 export default function Routes() {
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [selectedRoute, setSelectedRoute] = useState<RouteItem | null>(null);
+    // 1. Pagination & Search/Filtering States
+    const [page, setPage] = useState(1);
+    const limit = 10;
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
+
+    // 2. Modals Control States
+    const [isAddOpen, setIsAddOpen] = useState(false);
+    const [selectedRouteForEdit, setSelectedRouteForEdit] = useState<Route | null>(null);
+    const [selectedRouteForDetails, setSelectedRouteForDetails] = useState<Route | null>(null);
+    const [selectedRouteForDelete, setSelectedRouteForDelete] = useState<Route | null>(null);
+
+    // 3. React Query Hooks
+    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useRoutes(page, limit);
+    const { mutate: deleteRoute, isPending: isDeleting } = useDeleteRoute();
+
+    // 4. Initial Loading Check (Standard Rule)
+    if (isLoading) return <Loading />;
+
+    const routesList = responseData?.data || [];
+    const totalRecords = responseData?.total || 0;
+    const totalPages = Math.ceil(totalRecords / limit) || 1;
+
+    // Rule 2: Always setPage(1) on search/filter changes
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+        setPage(1);
+    };
+
+    const handleFilterStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setFilterStatus(e.target.value as 'all' | 'active' | 'inactive');
+        setPage(1);
+    };
+
+    // Client side filtering over current page
+    const filteredRoutes = routesList.filter((rt) => {
+        const matchesSearch =
+            rt.origin.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            rt.destination.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            rt.vehicleType.toLowerCase().includes(searchQuery.toLowerCase());
+
+        const matchesStatus =
+            filterStatus === 'all' ||
+            (filterStatus === 'active' && rt.isActive !== false) ||
+            (filterStatus === 'inactive' && rt.isActive === false);
+
+        return matchesSearch && matchesStatus;
+    });
+
+    // Stats Calculation
+    const stats = {
+        total: totalRecords || routesList.length,
+        active: routesList.filter(r => r.isActive !== false).length,
+        inactive: routesList.filter(r => r.isActive === false).length,
+    };
+
+    const handleDeleteConfirm = () => {
+        if (!selectedRouteForDelete) return;
+        deleteRoute(
+            { id: selectedRouteForDelete._id, hard: false },
+            {
+                onSuccess: () => {
+                    setSelectedRouteForDelete(null);
+                },
+            }
+        );
+    };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6" dir="rtl">
 
-            {/* Header */}
+            {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-heading">المسارات، شركات النقل الخارجية، والأسطول</h1>
-                    <p className="text-sm text-body mt-0.5">إدارة خطوط الشحن بين المدن وربط شركات التوصيل الوسيطة.</p>
+                    <h1 className="text-2xl font-extrabold text-heading flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
+                            <LuMapPin className="w-5 h-5" />
+                        </span>
+                        إدارة المسارات والخطوط اللوجستية
+                    </h1>
+                    <p className="text-xs text-body mt-1">تحديد الخطوط النقلية والربط بين المدن والأسعار الافتراضية ومدد الشحن</p>
                 </div>
-                <button
-                    onClick={() => setIsAddModalOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
-                >
-                    <LuPlus className="w-4 h-4" />
-                    <span>إضافة مسار جديد</span>
-                </button>
+
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => refetch()}
+                        disabled={isFetching}
+                        title="إعادة جلب البيانات"
+                        className="p-2.5 rounded-xl bg-surface border border-border text-body hover:text-heading hover:bg-surface-muted transition-all cursor-pointer disabled:opacity-50"
+                    >
+                        <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
+                    </button>
+
+                    <button
+                        onClick={() => setIsAddOpen(true)}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
+                    >
+                        <LuPlus className="w-4 h-4" />
+                        <span>إضافة مسار جديد</span>
+                    </button>
+                </div>
             </div>
 
-            {/* 3PL Carriers Health */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {carrierIntegrations.map((carrier, idx) => (
-                    <div key={idx} className="bg-surface p-5 rounded-2xl border border-border shadow-xs">
-                        <div className="flex items-center justify-between mb-3">
-                            <span className="w-9 h-9 rounded-xl bg-accent-soft text-accent flex items-center justify-center">
-                                <LuTruck className="w-5 h-5" />
-                            </span>
-                            {carrier.apiStatus === 'online' ? (
-                                <span className="flex items-center gap-1 text-[11px] font-bold text-success bg-success-soft px-2 py-0.5 rounded-full">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-success" /> مستقر
-                                </span>
-                            ) : (
-                                <span className="flex items-center gap-1 text-[11px] font-bold text-warning bg-warning-soft px-2 py-0.5 rounded-full">
-                                    بطء استجابة
-                                </span>
-                            )}
-                        </div>
-                        <h3 className="font-extrabold text-sm text-heading mb-1">{carrier.name}</h3>
-                        <div className="flex justify-between items-center text-xs text-body font-latin">
-                            <span>شحنات اليوم: <b className="text-heading">{carrier.activeShipments}</b></span>
-                            <span>{carrier.latency}</span>
-                        </div>
+            {/* Error Notification Banner */}
+            {isError && (
+                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-bold flex items-center justify-between">
+                    <span>تعذر جلب بيانات المسارات: {(error as any)?.message || 'حدث خطأ في الاتصال بالخادم'}</span>
+                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">إعادة المحاولة</button>
+                </div>
+            )}
+
+            {/* KPI Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                        <LuMapPin className="w-6 h-6" />
                     </div>
-                ))}
-            </div>
-
-            {/* Main Hub Routes */}
-            <div className="bg-surface rounded-2xl border border-border p-6 shadow-xs">
-                <div className="flex items-center justify-between mb-5">
                     <div>
-                        <h2 className="text-base font-extrabold text-heading mb-1">أكثر خطوط التوزيع نشاطاً بالمملكة</h2>
-                        <p className="text-xs text-body">كثافة النقل وحركة الشاحنات بين المناطق الرئيسية.</p>
+                        <span className="text-xs text-body font-medium block">إجمالي المسارات</span>
+                        <span className="text-2xl font-extrabold text-heading font-latin">{stats.total}</span>
                     </div>
                 </div>
 
-                <div className="space-y-3">
-                    {hubRoutesData.map((route, idx) => (
-                        <div key={idx} className="p-4 rounded-xl bg-surface-muted/60 border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-accent/30 transition-all">
-                            <div className="flex items-center gap-3">
-                                <LuMapPin className="w-5 h-5 text-accent shrink-0" />
-                                <div>
-                                    <span className="font-extrabold text-sm text-heading block">
-                                        {route.from} ← {route.to}
-                                    </span>
-                                    <span className="text-xs text-body">{route.trips}</span>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xs font-bold text-heading font-latin">حمولة الخط: {route.load}</span>
-                                    <div className="w-24 bg-surface rounded-full h-2 overflow-hidden border border-border">
-                                        <div className="bg-accent h-full rounded-full" style={{ width: route.load.replace('٪', '%') }} />
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => {
-                                        setSelectedRoute(route);
-                                        setIsEditModalOpen(true);
-                                    }}
-                                    title="تعديل المسار"
-                                    className="p-2 rounded-lg bg-surface border border-border hover:bg-heading hover:text-white text-xs font-bold transition-colors cursor-pointer"
-                                >
-                                    <LuPencil className="w-3.5 h-3.5" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                        <LuCheck className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <span className="text-xs text-body font-medium block">المسارات النشطة</span>
+                        <span className="text-2xl font-extrabold text-emerald-600 font-latin">{stats.active}</span>
+                    </div>
+                </div>
+
+                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+                        <LuX className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <span className="text-xs text-body font-medium block">المسارات الموقوفة</span>
+                        <span className="text-2xl font-extrabold text-rose-600 font-latin">{stats.inactive}</span>
+                    </div>
                 </div>
             </div>
 
-            {/* Modal Add Routes */}
+            {/* Filter and Search Controller Header */}
+            <div className="bg-surface p-4 rounded-3xl border border-border shadow-xs flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div className="relative w-full md:w-96">
+                    <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        placeholder="بحث بنقطة الانطلاق، الوجهة، نوع المركبة..."
+                        className="w-full pl-4 pr-11 py-2.5 rounded-2xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
+                    />
+                </div>
+
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                    <div className="flex items-center gap-2 bg-surface-muted px-3 py-1.5 rounded-2xl border border-border w-full md:w-auto">
+                        <LuFilter className="w-4 h-4 text-body shrink-0" />
+                        <select
+                            value={filterStatus}
+                            onChange={handleFilterStatusChange}
+                            className="bg-transparent text-sm text-heading font-bold focus:outline-none cursor-pointer w-full"
+                        >
+                            <option value="all">جميع الحالات</option>
+                            <option value="active">نشط ومتاح</option>
+                            <option value="inactive">موقوف مؤقتاً</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {/* Data Table View */}
+            <div className="bg-surface rounded-3xl border border-border shadow-xs overflow-hidden">
+                {filteredRoutes.length === 0 ? (
+                    <div className="p-8">
+                        <EmptyData message="لا توجد مسارات لوجستية تطابق خيارات البحث أو التصفية الحالية" icon={LuMapPin} />
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-right border-collapse">
+                            <thead>
+                                <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
+                                    <th className="py-4 px-6">مسار الخط (Origin ← Destination)</th>
+                                    <th className="py-4 px-6">نوع المركبة</th>
+                                    <th className="py-4 px-6">السعر الأساسي</th>
+                                    <th className="py-4 px-6">الترانزيت التقديري</th>
+                                    <th className="py-4 px-6">الناقل المعين</th>
+                                    <th className="py-4 px-6">الحالة</th>
+                                    <th className="py-4 px-6 text-center">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-border text-sm">
+                                {filteredRoutes.map((rt) => {
+                                    const carrierName = typeof rt.carrierId === 'object' && rt.carrierId !== null
+                                        ? (rt.carrierId as Carrier).name
+                                        : 'جميع الناقلين';
+
+                                    return (
+                                        <tr key={rt._id} className="hover:bg-surface-muted/40 transition-colors">
+                                            <td className="py-4 px-6 font-bold text-heading">
+                                                <div className="flex items-center gap-2">
+                                                    <span>{rt.origin}</span>
+                                                    <span className="text-accent text-xs">←</span>
+                                                    <span>{rt.destination}</span>
+                                                </div>
+                                            </td>
+
+                                            <td className="py-4 px-6 text-xs font-semibold text-heading">
+                                                <div className="flex items-center gap-1.5">
+                                                    <LuTruck className="w-3.5 h-3.5 text-accent shrink-0" />
+                                                    <span>{rt.vehicleType}</span>
+                                                </div>
+                                            </td>
+
+                                            <td className="py-4 px-6 font-latin font-bold text-emerald-600">
+                                                {rt.basePrice} ر.س
+                                            </td>
+
+                                            <td className="py-4 px-6 text-xs text-body font-medium">
+                                                <div className="flex items-center gap-1">
+                                                    <LuClock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                                                    <span>{rt.estimatedTransitTime || 'غير محدد'}</span>
+                                                </div>
+                                            </td>
+
+                                            <td className="py-4 px-6 text-xs font-medium text-heading">
+                                                <div className="flex items-center gap-1.5">
+                                                    <LuBuilding2 className="w-3.5 h-3.5 text-body shrink-0" />
+                                                    <span>{carrierName}</span>
+                                                </div>
+                                            </td>
+
+                                            <td className="py-4 px-6">
+                                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${
+                                                    rt.isActive !== false
+                                                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
+                                                        : 'bg-rose-500/10 text-rose-600 border-rose-200'
+                                                }`}>
+                                                    {rt.isActive !== false ? 'نشط' : 'موقوف'}
+                                                </span>
+                                            </td>
+
+                                            <td className="py-4 px-6 text-center">
+                                                <div className="flex items-center justify-center gap-1.5">
+                                                    <button
+                                                        onClick={() => setSelectedRouteForDetails(rt)}
+                                                        title="عرض التفاصيل"
+                                                        className="p-2 rounded-xl bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
+                                                    >
+                                                        <LuEye className="w-4 h-4" />
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => setSelectedRouteForEdit(rt)}
+                                                        title="تعديل المسار"
+                                                        className="p-2 rounded-xl bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
+                                                    >
+                                                        <LuPencil className="w-4 h-4" />
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => setSelectedRouteForDelete(rt)}
+                                                        title="حذف المسار"
+                                                        className="p-2 rounded-xl bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
+                                                    >
+                                                        <LuTrash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs">
+                        <span className="text-body font-medium">
+                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} مسار)
+                        </span>
+
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                                disabled={page === 1}
+                                className="p-2 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
+                            >
+                                <LuChevronRight className="w-4 h-4" />
+                            </button>
+
+                            <button
+                                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                                disabled={page === totalPages}
+                                className="p-2 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
+                            >
+                                <LuChevronLeft className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Modals Mounting */}
             <AddRoutes
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
+                isOpen={isAddOpen}
+                onClose={() => setIsAddOpen(false)}
             />
 
-            {/* Modal Edit Routes */}
             <EditRoutes
-                isOpen={isEditModalOpen}
-                onClose={() => {
-                    setIsEditModalOpen(false);
-                    setSelectedRoute(null);
-                }}
-                routeData={selectedRoute}
+                isOpen={!!selectedRouteForEdit}
+                route={selectedRouteForEdit}
+                onClose={() => setSelectedRouteForEdit(null)}
+            />
+
+            <DetailsRoutes
+                isOpen={!!selectedRouteForDetails}
+                route={selectedRouteForDetails}
+                onClose={() => setSelectedRouteForDetails(null)}
+            />
+
+            <ConfirmDeletePopup
+                isOpen={!!selectedRouteForDelete}
+                title="تأكيد حذف المسار"
+                description={`هل أنت تأكد من رغبتك في حذف المسار (${selectedRouteForDelete?.origin} ← ${selectedRouteForDelete?.destination})؟`}
+                isDeleting={isDeleting}
+                onConfirm={handleDeleteConfirm}
+                onClose={() => setSelectedRouteForDelete(null)}
             />
 
         </div>

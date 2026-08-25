@@ -61,9 +61,9 @@
 | **`User`** | `/admin/users` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`CompanyUser`** | `/admin/company-users` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Carrier`** | `/admin/carriers` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
-| **`Vehicle`** | `/admin/vehicles` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
-| **`Route`** | `/admin/routes` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
-| **`Order`** | `/admin/orders` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Vehicle`** | `/admin/vehicles` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Route`** | `/admin/routes` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Order`** | `/admin/orders` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Shipment`** | `/admin/shipments` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Invoice`** | `/admin/invoices` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Payment`** | `/admin/payments` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
