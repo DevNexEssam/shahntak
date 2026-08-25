@@ -10,13 +10,11 @@ import {
     LuHash,
     LuFileText,
     LuPencil,
-    LuShieldCheck,
-    LuSave
+    LuShieldCheck
 } from "react-icons/lu";
 import { Company } from "@/types/data";
 import { useUpdateCompany } from "@/hooks/companies/useCompanies";
 import { updateCompanyValidationSchema } from "@/lib/validations/companies.schema";
-import Loading from "@/components/ui/loading";
 import toast from "react-hot-toast";
 
 interface EditCompaniesProps {
@@ -26,7 +24,7 @@ interface EditCompaniesProps {
 }
 
 export default function EditCompanies({ isOpen = true, onClose, company }: EditCompaniesProps) {
-    const [formData, setFormData] = useState({
+    const [formValues, setFormValues] = useState({
         companyName: "",
         email: "",
         phone: "",
@@ -42,7 +40,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
 
     useEffect(() => {
         if (company) {
-            setFormData({
+            setFormValues({
                 companyName: company.companyName || "",
                 email: company.email || "",
                 phone: company.phone || "",
@@ -62,7 +60,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
         e.preventDefault();
         setFieldErrors({});
 
-        const validation = updateCompanyValidationSchema.safeParse(formData);
+        const validation = updateCompanyValidationSchema.safeParse(formValues);
         if (!validation.success) {
             const errors: Record<string, string> = {};
             validation.error.issues.forEach((issue) => {
@@ -76,7 +74,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
         }
 
         updateCompany(
-            { id: company._id, updates: formData },
+            { id: company._id, updates: formValues },
             {
                 onSuccess: () => {
                     onClose();
@@ -86,19 +84,19 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
-            <div className="relative w-full max-w-2xl bg-white border border-gray-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+            <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Header */}
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-extrabold text-xl shadow-xs">
+                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-gray-900">تعديل بيانات الشركة</h2>
-                            <p className="text-xs text-gray-500 mt-0.5">
-                                تحديث المعلومات الأساسية والحالة لـ ({company.companyName})
+                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات الشركة</h2>
+                            <p className="text-xs text-body mt-0.5">
+                                تحديث المعلومات الأساسية والحالة لـ (<span className="font-bold text-accent">{company.companyName}</span>)
                             </p>
                         </div>
                     </div>
@@ -106,7 +104,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                     <button
                         onClick={onClose}
                         disabled={isSubmitting}
-                        className="p-2.5 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-all cursor-pointer disabled:opacity-50"
+                        className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                         title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
@@ -119,126 +117,126 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
 
                         {/* Section 1: Basic Company Info */}
                         <div className="space-y-4">
-                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-blue-600 flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-blue-600" />
+                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-accent" />
                                 البيانات الأساسية
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-                                        <LuBuilding2 className="w-3.5 h-3.5 text-gray-400" />
-                                        اسم الشركة
+                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                        <LuBuilding2 className="w-3.5 h-3.5 text-body" />
+                                        اسم الشركة <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
-                                        value={formData.companyName}
-                                        onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                                        value={formValues.companyName}
+                                        onChange={(e) => setFormValues({ ...formValues, companyName: e.target.value })}
                                         placeholder="اسم الشركة"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
-                                            fieldErrors.companyName ? "border-red-500" : "border-gray-200"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
+                                            fieldErrors.companyName ? "border-rose-500" : "border-border"
                                         }`}
                                     />
-                                    {fieldErrors.companyName && <p className="text-red-500 text-xs mt-1">{fieldErrors.companyName}</p>}
+                                    {fieldErrors.companyName && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.companyName}</p>}
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-                                        <LuMapPin className="w-3.5 h-3.5 text-gray-400" />
-                                        المدينة / المقر الرئيسي
+                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                        <LuMapPin className="w-3.5 h-3.5 text-body" />
+                                        المدينة / المقر الرئيسي <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
-                                        value={formData.city}
-                                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                        value={formValues.city}
+                                        onChange={(e) => setFormValues({ ...formValues, city: e.target.value })}
                                         placeholder="الرياض"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
-                                            fieldErrors.city ? "border-red-500" : "border-gray-200"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
+                                            fieldErrors.city ? "border-rose-500" : "border-border"
                                         }`}
                                     />
-                                    {fieldErrors.city && <p className="text-red-500 text-xs mt-1">{fieldErrors.city}</p>}
+                                    {fieldErrors.city && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.city}</p>}
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-                                        <LuMail className="w-3.5 h-3.5 text-gray-400" />
-                                        البريد الإلكتروني
+                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                        <LuMail className="w-3.5 h-3.5 text-body" />
+                                        البريد الإلكتروني <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="email"
                                         disabled={isSubmitting}
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        value={formValues.email}
+                                        onChange={(e) => setFormValues({ ...formValues, email: e.target.value })}
                                         placeholder="contact@company.sa"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 dir-ltr text-right disabled:opacity-60 ${
-                                            fieldErrors.email ? "border-red-500" : "border-gray-200"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${
+                                            fieldErrors.email ? "border-rose-500" : "border-border"
                                         }`}
                                     />
-                                    {fieldErrors.email && <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>}
+                                    {fieldErrors.email && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.email}</p>}
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-                                        <LuPhone className="w-3.5 h-3.5 text-gray-400" />
-                                        رقم الهاتف
+                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                        <LuPhone className="w-3.5 h-3.5 text-body" />
+                                        رقم الهاتف <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
-                                        value={formData.phone}
-                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                        value={formValues.phone}
+                                        onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })}
                                         placeholder="0501234567"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 dir-ltr text-right disabled:opacity-60 ${
-                                            fieldErrors.phone ? "border-red-500" : "border-gray-200"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${
+                                            fieldErrors.phone ? "border-rose-500" : "border-border"
                                         }`}
                                     />
-                                    {fieldErrors.phone && <p className="text-red-500 text-xs mt-1">{fieldErrors.phone}</p>}
+                                    {fieldErrors.phone && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.phone}</p>}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="h-px bg-gray-100" />
+                        <div className="h-px bg-border" />
 
                         {/* Section 2: Status & Tax Details */}
                         <div className="space-y-4">
-                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-blue-600 flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-blue-600" />
+                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-accent" />
                                 حالة الحساب والبيانات الرسمية
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-                                        <LuHash className="w-3.5 h-3.5 text-gray-400" />
+                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                        <LuHash className="w-3.5 h-3.5 text-body" />
                                         الرقم الضريبي (VAT)
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
-                                        value={formData.taxNumber}
-                                        onChange={(e) => setFormData({ ...formData, taxNumber: e.target.value })}
+                                        value={formValues.taxNumber}
+                                        onChange={(e) => setFormValues({ ...formValues, taxNumber: e.target.value })}
                                         placeholder="300000000000003"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
-                                            fieldErrors.taxNumber ? "border-red-500" : "border-gray-200"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
+                                            fieldErrors.taxNumber ? "border-rose-500" : "border-border"
                                         }`}
                                     />
-                                    {fieldErrors.taxNumber && <p className="text-red-500 text-xs mt-1">{fieldErrors.taxNumber}</p>}
+                                    {fieldErrors.taxNumber && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.taxNumber}</p>}
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-                                        <LuShieldCheck className="w-3.5 h-3.5 text-gray-400" />
+                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                        <LuShieldCheck className="w-3.5 h-3.5 text-body" />
                                         حالة الشركة بالنظام
                                     </label>
                                     <select
                                         disabled={isSubmitting}
-                                        value={formData.status}
-                                        onChange={(e) => setFormData({ ...formData, status: e.target.value as Company["status"] })}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-blue-500 cursor-pointer disabled:opacity-60"
+                                        value={formValues.status}
+                                        onChange={(e) => setFormValues({ ...formValues, status: e.target.value as Company["status"] })}
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-60"
                                     >
                                         <option value="active">نشط (Active)</option>
                                         <option value="inactive">غير نشط (Inactive)</option>
@@ -249,51 +247,51 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-                                    <LuMapPin className="w-3.5 h-3.5 text-gray-400" />
+                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                    <LuMapPin className="w-3.5 h-3.5 text-body" />
                                     العنوان التفصيلي
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
-                                    value={formData.address}
-                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                    value={formValues.address}
+                                    onChange={(e) => setFormValues({ ...formValues, address: e.target.value })}
                                     placeholder="العنوان التفصيلي"
-                                    className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
-                                        fieldErrors.address ? "border-red-500" : "border-gray-200"
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
+                                        fieldErrors.address ? "border-rose-500" : "border-border"
                                     }`}
                                 />
-                                {fieldErrors.address && <p className="text-red-500 text-xs mt-1">{fieldErrors.address}</p>}
+                                {fieldErrors.address && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.address}</p>}
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
-                                    <LuFileText className="w-3.5 h-3.5 text-gray-400" />
+                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                    <LuFileText className="w-3.5 h-3.5 text-body" />
                                     معلومات المنشأة
                                 </label>
                                 <textarea
                                     disabled={isSubmitting}
                                     rows={2}
-                                    value={formData.facilityInfo}
-                                    onChange={(e) => setFormData({ ...formData, facilityInfo: e.target.value })}
+                                    value={formValues.facilityInfo}
+                                    onChange={(e) => setFormValues({ ...formValues, facilityInfo: e.target.value })}
                                     placeholder="معلومات عن المنشأة..."
-                                    className={`w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 disabled:opacity-60 ${
-                                        fieldErrors.facilityInfo ? "border-red-500" : "border-gray-200"
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
+                                        fieldErrors.facilityInfo ? "border-rose-500" : "border-border"
                                     }`}
                                 />
-                                {fieldErrors.facilityInfo && <p className="text-red-500 text-xs mt-1">{fieldErrors.facilityInfo}</p>}
+                                {fieldErrors.facilityInfo && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.facilityInfo}</p>}
                             </div>
                         </div>
 
                     </div>
 
                     {/* Footer */}
-                    <div className="p-5 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between gap-3">
+                    <div className="p-5 border-t border-border bg-surface-muted/40 flex items-center justify-between gap-3 shrink-0">
                         <button
                             type="button"
                             onClick={onClose}
                             disabled={isSubmitting}
-                            className="px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
                             إلغاء
                         </button>
@@ -301,19 +299,9 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? (
-                                <>
-                                    <Loading w="w-4" h="h-4" />
-                                    <span>جاري الحفظ...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <LuSave className="w-4 h-4" />
-                                    <span>حفظ التعديلات</span>
-                                </>
-                            )}
+                            {isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}
                         </button>
                     </div>
                 </form>

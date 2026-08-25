@@ -60,18 +60,19 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
                         type="button"
                         onClick={onClose}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
+                        title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                <div className="p-6 overflow-y-auto space-y-6 flex-1 text-right">
 
                     {/* Top Identity Card */}
                     <div className="p-4 rounded-2xl bg-surface-muted border border-border flex items-center justify-between flex-wrap gap-4">
                         <div className="flex items-center gap-3.5">
-                            <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent font-extrabold text-lg flex items-center justify-center border border-accent/20">
+                            <div className="w-12 h-12 rounded-md bg-accent-soft text-accent font-extrabold text-lg flex items-center justify-center border border-accent/20">
                                 <LuHash className="w-6 h-6" />
                             </div>
                             <div>
@@ -198,7 +199,7 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-xs hover:shadow transition-all cursor-pointer"
+                        className="px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-xs hover:shadow transition-all cursor-pointer"
                     >
                         إغلاق
                     </button>

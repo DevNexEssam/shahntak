@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { CompanyUser, Company } from '@/types/data';
 import { useUpdateCompanyUser, useUpdateCompanyUserRoleAndPermissions } from '@/hooks/companyUsers/useCompanyUsers';
 import { companyUserUpdateValidationSchema } from '@/lib/validations/companyUser.schema';
-import Loading from '@/components/ui/loading';
 import toast from 'react-hot-toast';
 import {
     LuUser,
@@ -13,7 +12,8 @@ import {
     LuPhone,
     LuShieldCheck,
     LuKey,
-    LuBuilding2
+    LuBuilding2,
+    LuPencil
 } from 'react-icons/lu';
 
 interface EditCompanyUsersProps {
@@ -119,11 +119,11 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
             {/* Modal Container */}
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
-                {/* Modal Header */}
+                {/* Modal Header - Identical to Add Modal Theme */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-extrabold text-xl shadow-xs">
-                            <LuUser className="w-6 h-6" />
+                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
+                            <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
                             <h2 className="text-xl font-extrabold text-heading">تعديل بيانات الموظف</h2>
@@ -152,8 +152,8 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
                             </h3>
 
                             {/* Company Info (Read-only display) */}
-                            <div className="p-3.5 rounded-2xl bg-surface-muted border border-border flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-xl bg-accent-soft text-accent flex items-center justify-center shrink-0">
+                            <div className="p-3.5 rounded-md bg-surface-muted border border-border flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-md bg-accent-soft text-accent flex items-center justify-center shrink-0">
                                     <LuBuilding2 className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -174,7 +174,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
                                         value={formValues.userName}
                                         onChange={(e) => setFormValues({ ...formValues, userName: e.target.value })}
                                         placeholder="اسم الموظف"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.userName ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -194,7 +194,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
                                         value={formValues.userEmail}
                                         onChange={(e) => setFormValues({ ...formValues, userEmail: e.target.value })}
                                         placeholder="employee@company.com"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.userEmail ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -216,7 +216,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
                                         value={formValues.phone}
                                         onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })}
                                         placeholder="0551234567"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.phone ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -236,7 +236,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
                                         value={formValues.password}
                                         onChange={(e) => setFormValues({ ...formValues, password: e.target.value })}
                                         placeholder="اتركها فارغة للتخطي"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.password ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -256,7 +256,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
                                         disabled={isSubmitting}
                                         value={formValues.userRole}
                                         onChange={(e) => setFormValues({ ...formValues, userRole: e.target.value as 'owner' | 'manager' | 'staff' })}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
                                         <option value="staff">موظف (Staff)</option>
                                         <option value="manager">مدير تشغيلي (Manager)</option>
@@ -272,7 +272,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
                                         disabled={isSubmitting}
                                         value={formValues.userIsActive ? 'active' : 'inactive'}
                                         onChange={(e) => setFormValues({ ...formValues, userIsActive: e.target.value === 'active' })}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
                                         <option value="active">نشط (Active)</option>
                                         <option value="inactive">غير نشط (Inactive)</option>
@@ -289,7 +289,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
                             type="button"
                             onClick={onClose}
                             disabled={isSubmitting}
-                            className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
                             إلغاء
                         </button>
@@ -297,7 +297,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 text-white font-bold text-sm shadow-sm hover:shadow hover:bg-amber-600 transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
                             {isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}
                         </button>

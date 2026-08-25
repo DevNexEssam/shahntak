@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function OrdersPage() {
     return (
-        <main className="min-h-screen bg-surface-muted p-4 md:p-8 font-arabic" dir="rtl">
+        <main className="bg-surface-muted">
             <Orders />
         </main>
     );

@@ -98,7 +98,7 @@ export default function Routes() {
     };
 
     return (
-        <div className="space-y-6" dir="rtl">
+        <div className="space-y-6 text-right font-arabic" dir="rtl">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -116,8 +116,8 @@ export default function Routes() {
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        title="إعادة جلب البيانات"
-                        className="p-2.5 rounded-xl bg-surface border border-border text-body hover:text-heading hover:bg-surface-muted transition-all cursor-pointer disabled:opacity-50"
+                        title="تحديث البيانات"
+                        className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
                     </button>
@@ -140,41 +140,56 @@ export default function Routes() {
                 </div>
             )}
 
-            {/* KPI Stats Grid */}
+            {/* KPI Stats Grid - Matching Companies.tsx Design */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
-                        <LuMapPin className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <span className="text-xs text-body font-medium block">إجمالي المسارات</span>
-                        <span className="text-2xl font-extrabold text-heading font-latin">{stats.total}</span>
-                    </div>
-                </div>
-
-                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
-                        <LuCheck className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <span className="text-xs text-body font-medium block">المسارات النشطة</span>
-                        <span className="text-2xl font-extrabold text-emerald-600 font-latin">{stats.active}</span>
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">إجمالي المسارات</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.total}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>المسجلة في النظام</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuMapPin className="w-5 h-5" />
+                        </div>
                     </div>
                 </div>
 
-                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
-                        <LuX className="w-6 h-6" />
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">المسارات النشطة</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.active}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>نشطة ومتاحة</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuCheck className="w-5 h-5" />
+                        </div>
                     </div>
-                    <div>
-                        <span className="text-xs text-body font-medium block">المسارات الموقوفة</span>
-                        <span className="text-2xl font-extrabold text-rose-600 font-latin">{stats.inactive}</span>
+                </div>
+
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">المسارات الموقوفة</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.inactive}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>موقوفة مؤقتاً</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuX className="w-5 h-5" />
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Filter and Search Controller Header */}
-            <div className="bg-surface p-4 rounded-3xl border border-border shadow-xs flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">
                     <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
                     <input
@@ -182,17 +197,17 @@ export default function Routes() {
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder="بحث بنقطة الانطلاق، الوجهة، نوع المركبة..."
-                        className="w-full pl-4 pr-11 py-2.5 rounded-2xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
+                        className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </div>
 
                 <div className="flex items-center gap-3 w-full md:w-auto">
-                    <div className="flex items-center gap-2 bg-surface-muted px-3 py-1.5 rounded-2xl border border-border w-full md:w-auto">
+                    <div className="flex items-center gap-2 bg-surface-muted px-3 py-1.5 rounded-md border border-border w-full md:w-auto">
                         <LuFilter className="w-4 h-4 text-body shrink-0" />
                         <select
                             value={filterStatus}
                             onChange={handleFilterStatusChange}
-                            className="bg-transparent text-sm text-heading font-bold focus:outline-none cursor-pointer w-full"
+                            className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer w-full"
                         >
                             <option value="all">جميع الحالات</option>
                             <option value="active">نشط ومتاح</option>
@@ -203,26 +218,26 @@ export default function Routes() {
             </div>
 
             {/* Data Table View */}
-            <div className="bg-surface rounded-3xl border border-border shadow-xs overflow-hidden">
+            <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {filteredRoutes.length === 0 ? (
-                    <div className="p-8">
+                    <div className="p-12 text-center">
                         <EmptyData message="لا توجد مسارات لوجستية تطابق خيارات البحث أو التصفية الحالية" icon={LuMapPin} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right border-collapse">
+                        <table className="w-full text-right text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-4 px-6">مسار الخط (Origin ← Destination)</th>
-                                    <th className="py-4 px-6">نوع المركبة</th>
-                                    <th className="py-4 px-6">السعر الأساسي</th>
-                                    <th className="py-4 px-6">الترانزيت التقديري</th>
-                                    <th className="py-4 px-6">الناقل المعين</th>
-                                    <th className="py-4 px-6">الحالة</th>
-                                    <th className="py-4 px-6 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">مسار الخط (Origin ← Destination)</th>
+                                    <th className="py-3.5 px-4">نوع المركبة</th>
+                                    <th className="py-3.5 px-4">السعر الأساسي</th>
+                                    <th className="py-3.5 px-4">الترانزيت التقديري</th>
+                                    <th className="py-3.5 px-4">الناقل المعين</th>
+                                    <th className="py-3.5 px-4">الحالة</th>
+                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-border text-sm">
+                            <tbody className="divide-y divide-border font-medium">
                                 {filteredRoutes.map((rt) => {
                                     const carrierName = typeof rt.carrierId === 'object' && rt.carrierId !== null
                                         ? (rt.carrierId as Carrier).name
@@ -230,7 +245,7 @@ export default function Routes() {
 
                                     return (
                                         <tr key={rt._id} className="hover:bg-surface-muted/40 transition-colors">
-                                            <td className="py-4 px-6 font-bold text-heading">
+                                            <td className="py-3.5 px-4 font-bold text-heading">
                                                 <div className="flex items-center gap-2">
                                                     <span>{rt.origin}</span>
                                                     <span className="text-accent text-xs">←</span>
@@ -238,32 +253,32 @@ export default function Routes() {
                                                 </div>
                                             </td>
 
-                                            <td className="py-4 px-6 text-xs font-semibold text-heading">
+                                            <td className="py-3.5 px-4 text-xs font-semibold text-heading">
                                                 <div className="flex items-center gap-1.5">
                                                     <LuTruck className="w-3.5 h-3.5 text-accent shrink-0" />
                                                     <span>{rt.vehicleType}</span>
                                                 </div>
                                             </td>
 
-                                            <td className="py-4 px-6 font-latin font-bold text-emerald-600">
+                                            <td className="py-3.5 px-4 font-latin font-bold text-emerald-600">
                                                 {rt.basePrice} ر.س
                                             </td>
 
-                                            <td className="py-4 px-6 text-xs text-body font-medium">
+                                            <td className="py-3.5 px-4 text-xs text-body font-medium">
                                                 <div className="flex items-center gap-1">
                                                     <LuClock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                                                     <span>{rt.estimatedTransitTime || 'غير محدد'}</span>
                                                 </div>
                                             </td>
 
-                                            <td className="py-4 px-6 text-xs font-medium text-heading">
+                                            <td className="py-3.5 px-4 text-xs font-medium text-heading">
                                                 <div className="flex items-center gap-1.5">
                                                     <LuBuilding2 className="w-3.5 h-3.5 text-body shrink-0" />
                                                     <span>{carrierName}</span>
                                                 </div>
                                             </td>
 
-                                            <td className="py-4 px-6">
+                                            <td className="py-3.5 px-4">
                                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${
                                                     rt.isActive !== false
                                                         ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
@@ -273,12 +288,12 @@ export default function Routes() {
                                                 </span>
                                             </td>
 
-                                            <td className="py-4 px-6 text-center">
+                                            <td className="py-3.5 px-4 text-center">
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <button
                                                         onClick={() => setSelectedRouteForDetails(rt)}
                                                         title="عرض التفاصيل"
-                                                        className="p-2 rounded-xl bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
+                                                        className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
                                                     </button>
@@ -286,7 +301,7 @@ export default function Routes() {
                                                     <button
                                                         onClick={() => setSelectedRouteForEdit(rt)}
                                                         title="تعديل المسار"
-                                                        className="p-2 rounded-xl bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
+                                                        className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
                                                     </button>
@@ -294,7 +309,7 @@ export default function Routes() {
                                                     <button
                                                         onClick={() => setSelectedRouteForDelete(rt)}
                                                         title="حذف المسار"
-                                                        className="p-2 rounded-xl bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
+                                                        className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuTrash2 className="w-4 h-4" />
                                                     </button>
@@ -310,7 +325,7 @@ export default function Routes() {
 
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
-                    <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs">
+                    <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
                             عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} مسار)
                         </span>
@@ -319,16 +334,18 @@ export default function Routes() {
                             <button
                                 onClick={() => setPage((p) => Math.max(p - 1, 1))}
                                 disabled={page === 1}
-                                className="p-2 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
+                                className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
                                 <LuChevronRight className="w-4 h-4" />
+                                <span>السابق</span>
                             </button>
 
                             <button
                                 onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                                 disabled={page === totalPages}
-                                className="p-2 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
+                                className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
+                                <span>التالي</span>
                                 <LuChevronLeft className="w-4 h-4" />
                             </button>
                         </div>

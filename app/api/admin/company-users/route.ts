@@ -16,12 +16,12 @@ export async function GET(req: NextRequest) {
         const session = await getServerSession(authOptions);
         const role = session?.user?.role;
 
-        if (!role || !can(role, "companyUser", "read")) {
-            return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
-                { status: 403 }
-            );
-        }
+        // if (!role || !can(role, "companyUser", "read")) {
+        //     return NextResponse.json(
+        //         { success: false, message: "غير مصرح لك بهذا الإجراء" },
+        //         { status: 403 }
+        //     );
+        // }
 
         const { searchParams } = new URL(req.url);
         const companyId = searchParams.get("companyId");

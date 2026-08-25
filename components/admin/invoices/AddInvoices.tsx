@@ -90,6 +90,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
+                        title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -109,7 +110,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                 disabled={isSubmitting}
                                 value={formValues.invoiceNumber}
                                 onChange={(e) => setFormValues({ ...formValues, invoiceNumber: e.target.value })}
-                                className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                     fieldErrors.invoiceNumber ? 'border-rose-500' : 'border-border'
                                 }`}
                             />
@@ -127,7 +128,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                 disabled={isSubmitting || isLoadingCompanies}
                                 value={formValues.companyId}
                                 onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
-                                className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
+                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
                                     fieldErrors.companyId ? 'border-rose-500' : 'border-border'
                                 }`}
                             >
@@ -155,7 +156,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                     value={formValues.total}
                                     onChange={(e) => setFormValues({ ...formValues, total: Number(e.target.value) })}
                                     min={0}
-                                    className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                         fieldErrors.total ? 'border-rose-500' : 'border-border'
                                     }`}
                                 />
@@ -174,7 +175,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                     disabled={isSubmitting}
                                     value={formValues.dueDate}
                                     onChange={(e) => setFormValues({ ...formValues, dueDate: e.target.value })}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 cursor-pointer"
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 cursor-pointer"
                                 />
                             </div>
                         </div>
@@ -187,7 +188,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                 disabled={isSubmitting}
                                 value={formValues.status}
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
-                                className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                                className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
                                 <option value="issued">صادرة بانتظار التحصيل (Issued)</option>
                                 <option value="paid">مدفوعة ومحصلة (Paid)</option>
@@ -205,7 +206,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                             type="button"
                             onClick={onClose}
                             disabled={isSubmitting}
-                            className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
                             إلغاء
                         </button>
@@ -213,7 +214,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
                             {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
                         </button>

@@ -104,6 +104,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
+                        title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -131,7 +132,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         disabled={isSubmitting}
                                         value={formValues.orderNumber}
                                         onChange={(e) => setFormValues({ ...formValues, orderNumber: e.target.value })}
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.orderNumber ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -149,7 +150,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         disabled={isSubmitting || isLoadingCompanies}
                                         value={formValues.companyId}
                                         onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
                                             fieldErrors.companyId ? 'border-rose-500' : 'border-border'
                                         }`}
                                     >
@@ -186,7 +187,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.recipientName}
                                         onChange={(e) => setFormValues({ ...formValues, recipientName: e.target.value })}
                                         placeholder="اسم المستلم الثلاثي"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -206,7 +207,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.recipientPhone}
                                         onChange={(e) => setFormValues({ ...formValues, recipientPhone: e.target.value })}
                                         placeholder="0501234567"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.recipientPhone ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -228,7 +229,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.recipientCity}
                                         onChange={(e) => setFormValues({ ...formValues, recipientCity: e.target.value })}
                                         placeholder="الرياض، جدة، الدمام..."
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -247,7 +248,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.recipientDistrict}
                                         onChange={(e) => setFormValues({ ...formValues, recipientDistrict: e.target.value })}
                                         placeholder="حي النرجس..."
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
                             </div>
@@ -262,7 +263,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                     value={formValues.recipientAddress}
                                     onChange={(e) => setFormValues({ ...formValues, recipientAddress: e.target.value })}
                                     placeholder="شارع التخصصي، عمائر النصر..."
-                                    className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
                                         fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
                                     }`}
                                 />
@@ -292,7 +293,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         onChange={(e) => setFormValues({ ...formValues, weight: Number(e.target.value) })}
                                         min={0.1}
                                         step={0.5}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
 
@@ -306,7 +307,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.quantity}
                                         onChange={(e) => setFormValues({ ...formValues, quantity: Number(e.target.value) })}
                                         min={1}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
 
@@ -321,7 +322,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.orderValue}
                                         onChange={(e) => setFormValues({ ...formValues, orderValue: Number(e.target.value) })}
                                         min={0}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
 
@@ -335,7 +336,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.codAmount}
                                         onChange={(e) => setFormValues({ ...formValues, codAmount: Number(e.target.value) })}
                                         min={0}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
                             </div>
@@ -349,7 +350,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                             type="button"
                             onClick={onClose}
                             disabled={isSubmitting}
-                            className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
                             إلغاء
                         </button>
@@ -357,7 +358,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
                             {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
                         </button>

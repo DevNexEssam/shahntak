@@ -218,7 +218,7 @@ interface AddUserProps {
 }
 
 export default function AddUser({ onClose }: AddUserProps) {
-  const [formData, setFormData] = useState({
+  const [formValues, setFormValues] = useState({
     name: "",
     email: "",
     phone: "",
@@ -233,7 +233,7 @@ export default function AddUser({ onClose }: AddUserProps) {
     e.preventDefault();
     setFieldErrors({});
 
-    const validation = createUserSchema.safeParse(formData);
+    const validation = createUserSchema.safeParse(formValues);
     if (!validation.success) {
       const errors: Record<string, string> = {};
       validation.error.issues.forEach((issue) => {
@@ -244,7 +244,7 @@ export default function AddUser({ onClose }: AddUserProps) {
       return;
     }
 
-    createUser(formData, {
+    createUser(formValues, {
       onSuccess: () => {
         onClose();
       },
@@ -269,8 +269,8 @@ export default function AddUser({ onClose }: AddUserProps) {
             <input
               type="text"
               disabled={isSubmitting}
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              value={formValues.name}
+              onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
               className="w-full p-2 text-sm border rounded focus:outline-none focus:border-primary disabled:bg-gray-100"
             />
             {fieldErrors.name && <p className="text-red-500 text-xs mt-1">{fieldErrors.name}</p>}
@@ -312,7 +312,7 @@ interface EditUserProps {
 }
 
 export default function EditUser({ user, onClose }: EditUserProps) {
-  const [formData, setFormData] = useState({
+  const [formValues, setFormValues] = useState({
     name: "",
     email: "",
     phone: "",
@@ -322,7 +322,7 @@ export default function EditUser({ user, onClose }: EditUserProps) {
 
   useEffect(() => {
     if (user) {
-      setFormData({
+      setFormValues({
         name: user.name || "",
         email: user.email || "",
         phone: user.phone || "",
@@ -337,7 +337,7 @@ export default function EditUser({ user, onClose }: EditUserProps) {
     e.preventDefault();
     setFieldErrors({});
 
-    const validation = updateUserSchema.safeParse(formData);
+    const validation = updateUserSchema.safeParse(formValues);
     if (!validation.success) {
       const errors: Record<string, string> = {};
       validation.error.issues.forEach((issue) => {
@@ -349,7 +349,7 @@ export default function EditUser({ user, onClose }: EditUserProps) {
     }
 
     updateUser(
-      { id: user._id || user.id, data: formData },
+      { id: user._id || user.id, data: formValues },
       {
         onSuccess: () => {
           onClose();
@@ -372,12 +372,12 @@ export default function EditUser({ user, onClose }: EditUserProps) {
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div>
-            <label className="block text-xs font-semibold mb-1">الاسم</label>
+            <label className="block text-xs font-semibold mb-1">الاسم <span className="text-red-500">*</span></label>
             <input
               type="text"
               disabled={isSubmitting}
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              value={formValues.name}
+              onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
               className="w-full p-2 text-sm border rounded"
             />
             {fieldErrors.name && <p className="text-red-500 text-xs mt-1">{fieldErrors.name}</p>}
@@ -510,8 +510,41 @@ const handleFilterChange = (status: string) => {
 عند إعادة الضغط على تقديم النموذج، يجب مسح مصفوفة الأخطاء السابقة `setFieldErrors({})` أولاً قبل إجراء الفحص الجديد.
 
 ### 5️⃣ ضوابط وتوضيح استخدام `FormData` والملفات/الصور
-- **النماذج النصية والتحكم العادي (JSON Objects)**: إذا كان النموذج لا يحتوي على رفع صور أو ملفات (فقط نصوص، بريد، جوال، خيارات)، يُمنع استخدام `new FormData()`. ويتم التعامل كلياً مع كائن JavaScript عادي (`Object`) يُرسل كـ JSON Body.
+- **النماذج النصية والتحكم العادي (JSON Objects)**: إذا كان النموذج لا يحتوي على رفع صور أو ملفات (فقط نصوص، بريد، جوال، خيارات)، يُمنع استخدام `new FormData()`. ويتم تسمية حالة النموذج بـ `formValues` بدلاً من `formData` لمنع اللبس، والتعامل كلياً مع كائن JavaScript عادي (`Object`) يُرسل كـ JSON Body.
 - **استخدام `FormData` المخصص**: يُستخدم كائن `new FormData()` فقط وحصراً عند التعامل مع نماذج تتضمن رفع ملفات أو صور مستندات (`File` / `Image Uploads`) لإرسال الطلب كـ `multipart/form-data`.
+
+### 6️⃣ تمييز الحقول الإجبارية (`<span className="text-red-500">*</span>`)
+يجب وضع نجمة حمراء صريحة `<span className="text-red-500">*</span>` بجانب عنوان كل حقل إجباري مطابق لمخطط Zod و Mongoose في جميع مودالات الإضافة والتعديل.
+
+### 7️⃣ نصوص التحميل الحركية بالأزرار بدلاً من `<Loading />`
+- يُحظر وضع مكون التحميل الموحد `<Loading />` داخل أزرار التقديم والحفظ.
+- يُستخدم مكون `<Loading />` فقط وحصراً في التحميل الأولي للمحتوى الرئيسي (`if (isLoading) return <Loading />;`).
+- يُستبدل النص داخل زر الحفظ بنص حركي صريح أثناء المعالجة:
+  - في مودال الإضافة: `{isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}`
+  - في مودال التعديل: `{isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}`
+
+### 8️⃣ تطابق تصميم وألوان مودال التعديل مع مودال الإضافة (Identical Edit & Add Form Styles)
+- يُشترط مطابقة تصميم وألوان مودال التعديل (`Edit[Entity].tsx`) كلياً لمودال الإضافة (`Add[Entity].tsx`).
+- صندوق الأيقونة بالهيدر: `bg-accent-soft text-accent` بحجم `w-12 h-12 rounded-2xl` بنفس ألوان مودال الإضافة.
+- عناوين الأقسام الفرعية داخل النموذج: `text-accent` مع نقطة `bg-accent`.
+- كلاسات حقول الإدخال والحدود والـ Focus والتقوسات: مطابقة تماماً لمودال الإضافة (`bg-surface-muted border-border focus:border-accent rounded-md`).
+- زر حفظ التعديلات في الفوتر: `bg-accent text-accent-foreground rounded-md font-bold` مطابق لنفس نمط وألوان زر الإضافة.
+
+### 9️⃣ تصميم الجدول وشريط الفلترة وكروت الإحصائيات (Table, Filters & KPI Cards Specs)
+- **حاوية الجدول وشريط الفلاتر**: يجب أن تكون بحواف `rounded-md` وبدون أي ظلال `shadow-none` (اعتماد `bg-surface rounded-md border border-border overflow-hidden` فقط بدون `shadow-xs`).
+- **أزرار الفلترة**: جميع أزرار التصفية والتبديل تكون بحواف `rounded-md` (`px-3.5 py-1.5 rounded-md text-xs font-bold`).
+- **كروت الإحصائيات (KPI Cards)**: مطابقة كلياً وبشكل دقيق لبطاقات الإحصائيات في `Companies.tsx`:
+  - نمط الحاوية الخارجية: `border border-border rounded-sm p-5 bg-surface`.
+  - صندوق الأيقونة الدائري على اليسار: `w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center` وأيقونة بحجم `w-5 h-5`.
+  - الخطوط والأرقام: العنوان (`text-xs font-semibold text-body block mb-1`)، الرقم (`text-2xl font-bold text-heading my-1`)، الوصف الفرعي (`text-xs text-body flex items-center gap-1 mt-2`).
+
+### 🔟 المسافات والـ Padding المعتمد للصفحات والمكونات (Standard Page Padding & Spacing)
+- **الحاوية الرئيسية للصفحة**: `space-y-6 text-right font-arabic` (تباعد عمودي 24px).
+- **حشو كروت الإحصائيات (KPI Cards)**: `p-5` (حشو 20px من جميع الجوانب).
+- **حشو شريط البحث والفلاتر**: `p-4` (حشو 16px من جميع الجوانب).
+- **حشو خلايا الجدول (Table Cells TH/TD)**: `py-3.5 px-4` (14px عمودي، 16px أفقي).
+- **حشو بطاقات الكروت الشبكية (Grid Cards)**: جسم الكرت `p-5 space-y-4` والفوتر `p-4 border-t border-border bg-surface-muted/40`.
+- **حشو المودالات (Modals)**: الهيدر `p-6`، جسم الفيلدات `p-6 space-y-6`، والفوتر `p-5`.
 
 ---
 *تم إعداد هذا المستند ليكون المرجع المتكامل 100% لبناء وتوحيد أي سكشن داخل مجلد components/admin/sections/.*

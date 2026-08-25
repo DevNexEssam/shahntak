@@ -23,16 +23,19 @@ import {
     LuTable,
     LuPencil,
     LuTrash2,
-    LuInfo,
+    LuEye,
     LuRefreshCw,
     LuShieldCheck,
     LuMapPin,
     LuMail,
     LuPhone,
     LuChevronRight,
-    LuChevronLeft
+    LuChevronLeft,
+    LuCheck,
+    LuX,
+    LuClock,
+    LuTrendingUp
 } from "react-icons/lu";
-import { FaCircle } from "react-icons/fa6";
 
 export default function Companies() {
     // 1. Pagination & Search/Filter states
@@ -55,6 +58,12 @@ export default function Companies() {
     const { mutate: approveCompany, isPending: isApproving } = useApproveCompany();
     const { mutate: updateCompanyStatus } = useUpdateCompanyStatus();
 
+    // Initial Loading State
+    if (isLoading) return <Loading />;
+
+    const companiesList = companiesRes?.data || [];
+    const totalRecords = companiesRes?.total || 0;
+
     // 4. Handlers for search/filter resetting page to 1
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
@@ -67,121 +76,108 @@ export default function Companies() {
     };
 
     // 5. Client-side filtered list
-    const filteredCompanies = useMemo(() => {
-        if (!companiesRes?.data) return [];
-        return companiesRes.data.filter((comp) => {
-            const matchesSearch =
-                comp.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                comp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                comp.phone.includes(searchQuery) ||
-                (comp.city && comp.city.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredCompanies = companiesList.filter((comp) => {
+        const matchesSearch =
+            comp.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            comp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            comp.phone.includes(searchQuery) ||
+            (comp.city && comp.city.toLowerCase().includes(searchQuery.toLowerCase()));
 
-            const matchesStatus = filterStatus === "all" || comp.status === filterStatus;
-            return matchesSearch && matchesStatus;
-        });
-    }, [companiesRes?.data, searchQuery, filterStatus]);
+        const matchesStatus = filterStatus === "all" || comp.status === filterStatus;
+        return matchesSearch && matchesStatus;
+    });
 
-    const totalPages = Math.ceil((companiesRes?.total || filteredCompanies.length || 1) / limit);
+    const totalPages = Math.ceil((totalRecords || filteredCompanies.length || 1) / limit);
+
+    // KPI Stats
+    const stats = {
+        total: totalRecords || companiesList.length,
+        active: companiesList.filter(c => c.status === "active").length,
+        inactive: companiesList.filter(c => c.status === "inactive").length,
+        banned: companiesList.filter(c => c.status === "banned").length,
+    };
 
     const getStatusBadge = (status: Company["status"]) => {
         switch (status) {
             case "active":
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        <FaCircle className="w-1.5 h-1.5 text-emerald-500 animate-pulse" />
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-200">
                         نشط
                     </span>
                 );
             case "inactive":
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-200">
                         غير نشط
                     </span>
                 );
             case "archived":
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-200">
                         مؤرشف
                     </span>
                 );
             case "banned":
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-200">
                         محظور
                     </span>
                 );
             default:
-                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700">{status}</span>;
+                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-surface-muted text-body">{status}</span>;
         }
     };
 
-    // Initial Loading State
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <Loading />
-            </div>
-        );
-    }
-
     return (
-        <section className="space-y-6 text-right" dir="rtl">
-            {/* Error Banner if any */}
-            {isError && (
-                <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-sm font-semibold">
-                    حدث خطأ أثناء جلب قائمة الشركات: {(error as Error)?.message || "خطأ في الشبكة"}
-                </div>
-            )}
+        <div className="space-y-6 text-right font-arabic" dir="rtl">
 
-            {/* Page Header */}
+            {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
-                        <LuBuilding2 className="w-7 h-7 text-amber-600" />
-                        إدارة الشركات المسجلة (Tenants)
+                    <h1 className="text-2xl font-extrabold text-heading flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
+                            <LuBuilding2 className="w-5 h-5" />
+                        </span>
+                        إدارة الشركات المسجلة
                     </h1>
-                    <p className="text-sm text-gray-500 mt-0.5">
-                        متابعة حسابات شركات الشحن، تفاصيل الاعتماد، والسجلات المحدثة.
+                    <p className="text-xs text-body mt-1">
+                        متابعة حسابات شركات الشحن، تفاصيل الاعتماد، والسجلات المحدثة على المنصة.
                     </p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {/* Refresh Button */}
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        className="p-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 transition-colors disabled:opacity-50"
+                        className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                         title="تحديث البيانات"
                     >
-                        <LuRefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin text-amber-600" : ""}`} />
+                        <LuRefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin text-accent" : ""}`} />
                     </button>
 
                     {/* View Toggle */}
-                    <div className="bg-gray-100 p-1 rounded-xl flex items-center gap-1 border border-gray-200">
+                    <div className="bg-surface-muted p-1 rounded-2xl flex items-center gap-1 border border-border">
                         <button
                             onClick={() => setViewMode("grid")}
-                            className={`p-2 rounded-lg text-xs font-bold transition-colors ${
-                                viewMode === "grid" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"
-                            }`}
+                            className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${viewMode === "grid" ? "bg-accent text-accent-foreground shadow-xs" : "text-body hover:text-heading"
+                                }`}
                             title="عرض البطاقات"
                         >
                             <LuLayoutGrid className="w-4 h-4" />
                         </button>
                         <button
                             onClick={() => setViewMode("table")}
-                            className={`p-2 rounded-lg text-xs font-bold transition-colors ${
-                                viewMode === "table" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"
-                            }`}
+                            className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${viewMode === "table" ? "bg-accent text-accent-foreground shadow-xs" : "text-body hover:text-heading"
+                                }`}
                             title="عرض الجدول المدمج"
                         >
                             <LuTable className="w-4 h-4" />
                         </button>
                     </div>
 
-                    {/* Add Company Button */}
                     <button
                         onClick={() => setIsAddModalOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm shadow-sm transition-all cursor-pointer"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
                         <span>تسجيل شركة شحن</span>
@@ -189,50 +185,124 @@ export default function Companies() {
                 </div>
             </div>
 
+            {/* Error Banner if any */}
+            {isError && (
+                <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-sm font-bold flex items-center justify-between">
+                    <span>حدث خطأ أثناء جلب قائمة الشركات: {(error as Error)?.message || "خطأ في الاتصال بالخادم"}</span>
+                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">إعادة المحاولة</button>
+                </div>
+            )}
+
+            {/* KPI Stats Grid - Exact Admin Dashboard Cards Structure */}
+            {/* KPI Stats Grid - Simple & Clean Design with Our Colors */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                {/* Total Companies */}
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الشركات</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.total}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>المسجلة في المنصة</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuBuilding2 className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Active Companies */}
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">الشركات النشطة</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.active}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>تعمل حالياً</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuCheck className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Inactive Companies */}
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">الشركات غير النشطة</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.inactive}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>بحاجة للتفعيل</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuClock className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Banned Companies */}
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">الشركات المحظورة</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.banned}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>موقوفة مؤقتاً</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuX className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
             {/* Filter and Search Bar */}
-            <div className="bg-white p-4 rounded-2xl border border-gray-200 flex flex-col md:flex-row gap-4 items-center justify-between shadow-xs">
+            <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">
-                    <LuSearch className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder="بحث باسم الشركة، البريد، الهاتف، أو المدينة..."
-                        className="w-full pr-10 pl-4 py-2 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-amber-500"
+                        className="w-full pr-11 pl-4 py-2.5 rounded-2xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
                     />
                 </div>
 
                 <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto">
-                    <LuFilter className="w-4 h-4 text-gray-400 shrink-0" />
+                    <LuFilter className="w-4 h-4 text-body shrink-0 ml-1" />
                     <button
                         onClick={() => handleFilterStatusChange("all")}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
-                            filterStatus === "all" ? "bg-amber-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }`}
+                        className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${filterStatus === "all" ? "bg-accent text-accent-foreground shadow-xs" : "bg-surface-muted text-body hover:text-heading border border-border"
+                            }`}
                     >
-                        الكل ({companiesRes?.total || 0})
+                        الكل ({totalRecords})
                     </button>
                     <button
                         onClick={() => handleFilterStatusChange("active")}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
-                            filterStatus === "active" ? "bg-emerald-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }`}
+                        className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${filterStatus === "active" ? "bg-emerald-600 text-white shadow-xs" : "bg-surface-muted text-body hover:text-heading border border-border"
+                            }`}
                     >
                         النشطة
                     </button>
                     <button
                         onClick={() => handleFilterStatusChange("inactive")}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
-                            filterStatus === "inactive" ? "bg-amber-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }`}
+                        className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${filterStatus === "inactive" ? "bg-amber-600 text-white shadow-xs" : "bg-surface-muted text-body hover:text-heading border border-border"
+                            }`}
                     >
                         غير النشطة
                     </button>
                     <button
                         onClick={() => handleFilterStatusChange("banned")}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
-                            filterStatus === "banned" ? "bg-rose-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }`}
+                        className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${filterStatus === "banned" ? "bg-rose-600 text-white shadow-xs" : "bg-surface-muted text-body hover:text-heading border border-border"
+                            }`}
                     >
                         المحظورة
                     </button>
@@ -241,8 +311,8 @@ export default function Companies() {
 
             {/* Empty State */}
             {filteredCompanies.length === 0 ? (
-                <div className="p-12 bg-white border border-gray-200 rounded-2xl text-center">
-                    <EmptyData message="لا يوجد شركات مسجلة مطابقة لخيارات البحث والحالة" />
+                <div className="p-12 bg-surface border border-border rounded-3xl text-center shadow-xs">
+                    <EmptyData message="لا يوجد شركات مسجلة مطابقة لخيارات البحث والحالة" icon={LuBuilding2} />
                 </div>
             ) : (
                 <>
@@ -252,22 +322,22 @@ export default function Companies() {
                             {filteredCompanies.map((comp) => (
                                 <div
                                     key={comp._id}
-                                    className="bg-white rounded-2xl border border-gray-200 hover:border-amber-400/60 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden"
+                                    className="bg-surface rounded-3xl border border-border hover:border-accent/40 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden"
                                 >
                                     <div className="p-5 space-y-4">
 
                                         {/* Logo & Basic Header */}
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 font-extrabold text-lg flex items-center justify-center shrink-0 border border-amber-100">
+                                                <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent font-extrabold text-lg flex items-center justify-center shrink-0 border border-accent/20">
                                                     {comp.companyName ? comp.companyName.charAt(0) : "C"}
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-extrabold text-base text-gray-900 leading-tight">
+                                                    <h3 className="font-extrabold text-base text-heading leading-tight">
                                                         {comp.companyName}
                                                     </h3>
-                                                    <span className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                                                        <LuMapPin className="w-3 h-3 text-gray-400" />
+                                                    <span className="text-xs text-body flex items-center gap-1 mt-1 font-medium">
+                                                        <LuMapPin className="w-3.5 h-3.5 text-accent" />
                                                         {comp.city || "غير محدد"}
                                                     </span>
                                                 </div>
@@ -277,27 +347,27 @@ export default function Companies() {
                                         </div>
 
                                         {/* Contact Details */}
-                                        <div className="space-y-2 pt-2 border-t border-gray-100 text-xs">
-                                            <div className="flex items-center justify-between text-gray-600">
-                                                <span className="flex items-center gap-1.5 text-gray-500">
-                                                    <LuMail className="w-3.5 h-3.5 text-gray-400" />
+                                        <div className="space-y-2 pt-3 border-t border-border text-xs">
+                                            <div className="flex items-center justify-between text-body">
+                                                <span className="flex items-center gap-1.5 text-body font-medium">
+                                                    <LuMail className="w-3.5 h-3.5 text-body/60" />
                                                     البريد:
                                                 </span>
-                                                <span className="font-mono font-bold text-gray-800 dir-ltr">{comp.email}</span>
+                                                <span className="font-mono font-bold text-heading dir-ltr">{comp.email}</span>
                                             </div>
 
-                                            <div className="flex items-center justify-between text-gray-600">
-                                                <span className="flex items-center gap-1.5 text-gray-500">
-                                                    <LuPhone className="w-3.5 h-3.5 text-gray-400" />
+                                            <div className="flex items-center justify-between text-body">
+                                                <span className="flex items-center gap-1.5 text-body font-medium">
+                                                    <LuPhone className="w-3.5 h-3.5 text-body/60" />
                                                     الهاتف:
                                                 </span>
-                                                <span className="font-mono font-bold text-gray-800 dir-ltr">{comp.phone}</span>
+                                                <span className="font-mono font-bold text-heading dir-ltr">{comp.phone}</span>
                                             </div>
 
                                             {comp.taxNumber && (
-                                                <div className="flex items-center justify-between text-gray-600">
-                                                    <span className="text-gray-500">الرقم الضريبي:</span>
-                                                    <span className="font-mono text-gray-800">{comp.taxNumber}</span>
+                                                <div className="flex items-center justify-between text-body">
+                                                    <span className="text-body font-medium">الرقم الضريبي:</span>
+                                                    <span className="font-mono font-bold text-heading">{comp.taxNumber}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -305,7 +375,7 @@ export default function Companies() {
                                         {/* Approval Status Card */}
                                         <div className="pt-2">
                                             {comp.approvedBy ? (
-                                                <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
+                                                <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-emerald-500/10 px-3 py-1.5 rounded-2xl border border-emerald-200">
                                                     <LuShieldCheck className="w-4 h-4" />
                                                     <span>معتمدة من الإدارة</span>
                                                 </div>
@@ -313,7 +383,7 @@ export default function Companies() {
                                                 <button
                                                     onClick={() => approveCompany({ id: comp._id, approvedBy: "SuperAdmin" })}
                                                     disabled={isApproving}
-                                                    className="w-full py-1.5 px-3 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
+                                                    className="w-full py-2 px-3 rounded-2xl border border-amber-200 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                                                 >
                                                     <LuShieldCheck className="w-4 h-4" />
                                                     <span>اعتماد الشركة الآن</span>
@@ -324,16 +394,16 @@ export default function Companies() {
                                     </div>
 
                                     {/* Card Footer Actions */}
-                                    <div className="px-5 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-2">
+                                    <div className="px-5 py-3 bg-surface-muted/60 border-t border-border flex items-center justify-between gap-2">
                                         <button
                                             onClick={() => {
                                                 setSelectedCompany(comp);
                                                 setIsDetailsModalOpen(true);
                                             }}
-                                            className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
+                                            className="p-2 rounded-xl border border-border bg-surface hover:bg-accent-soft text-body hover:text-accent transition-all cursor-pointer"
                                             title="التفاصيل"
                                         >
-                                            <LuInfo className="w-4 h-4" />
+                                            <LuEye className="w-4 h-4" />
                                         </button>
 
                                         <button
@@ -341,7 +411,7 @@ export default function Companies() {
                                                 setSelectedCompany(comp);
                                                 setIsEditModalOpen(true);
                                             }}
-                                            className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-blue-50 text-blue-600 transition-colors"
+                                            className="p-2 rounded-xl border border-border bg-surface hover:bg-amber-500/10 text-body hover:text-amber-600 transition-all cursor-pointer"
                                             title="تعديل"
                                         >
                                             <LuPencil className="w-4 h-4" />
@@ -349,7 +419,7 @@ export default function Companies() {
 
                                         <button
                                             onClick={() => setCompanyToDeleteId(comp._id)}
-                                            className="p-2 rounded-xl border border-gray-200 bg-white hover:bg-rose-50 text-rose-600 transition-colors"
+                                            className="p-2 rounded-xl border border-border bg-surface hover:bg-rose-500/10 text-body hover:text-rose-600 transition-all cursor-pointer"
                                             title="حذف"
                                         >
                                             <LuTrash2 className="w-4 h-4" />
@@ -362,59 +432,59 @@ export default function Companies() {
 
                     {/* VIEW 2: Table View */}
                     {viewMode === "table" && (
-                        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
+                        <div className="bg-surface rounded-md border border-border overflow-hidden">
                             <div className="overflow-x-auto">
-                                <table className="w-full text-right text-sm">
-                                    <thead className="bg-gray-50 border-b border-gray-200 text-xs text-gray-500 font-bold">
+                                <table className="w-full text-right text-sm border-collapse">
+                                    <thead className="bg-surface-muted/60 border-b border-border text-xs text-body font-bold">
                                         <tr>
-                                            <th className="py-3.5 px-5">اسم الشركة والمقر</th>
-                                            <th className="py-3.5 px-4">بيانات الاتصال</th>
-                                            <th className="py-3.5 px-4">الرقم الضريبي</th>
-                                            <th className="py-3.5 px-4">الحالة</th>
-                                            <th className="py-3.5 px-4">الاعتماد</th>
-                                            <th className="py-3.5 px-5 text-center">الإجراءات</th>
+                                            <th className="py-4 px-6">اسم الشركة والمقر</th>
+                                            <th className="py-4 px-5">بيانات الاتصال</th>
+                                            <th className="py-4 px-5">الرقم الضريبي</th>
+                                            <th className="py-4 px-5">الحالة</th>
+                                            <th className="py-4 px-5">الاعتماد</th>
+                                            <th className="py-4 px-6 text-center">الإجراءات</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-200">
+                                    <tbody className="divide-y divide-border">
                                         {filteredCompanies.map((comp) => (
-                                            <tr key={comp._id} className="hover:bg-gray-50/50 transition-colors">
-                                                <td className="py-4 px-5">
+                                            <tr key={comp._id} className="hover:bg-surface-muted/40 transition-colors">
+                                                <td className="py-4 px-6">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 font-bold flex items-center justify-center shrink-0 border border-amber-100">
+                                                        <div className="w-9 h-9 rounded-xl bg-accent-soft text-accent font-extrabold flex items-center justify-center shrink-0 border border-accent/20">
                                                             {comp.companyName ? comp.companyName.charAt(0) : "C"}
                                                         </div>
                                                         <div>
-                                                            <b className="text-gray-900 block font-extrabold">{comp.companyName}</b>
-                                                            <span className="text-xs text-gray-500">{comp.city || "غير محدد"}</span>
+                                                            <b className="text-heading block font-extrabold">{comp.companyName}</b>
+                                                            <span className="text-xs text-body font-medium">{comp.city || "غير محدد"}</span>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="py-4 px-4 text-xs font-mono">
-                                                    <span className="block text-gray-800">{comp.email}</span>
-                                                    <span className="text-gray-500">{comp.phone}</span>
+                                                <td className="py-4 px-5 text-xs font-mono">
+                                                    <span className="block text-heading font-bold">{comp.email}</span>
+                                                    <span className="text-body">{comp.phone}</span>
                                                 </td>
-                                                <td className="py-4 px-4 text-xs font-mono text-gray-700">
+                                                <td className="py-4 px-5 text-xs font-mono text-heading font-bold">
                                                     {comp.taxNumber || "—"}
                                                 </td>
-                                                <td className="py-4 px-4">
+                                                <td className="py-4 px-5">
                                                     {getStatusBadge(comp.status)}
                                                 </td>
-                                                <td className="py-4 px-4">
+                                                <td className="py-4 px-5">
                                                     {comp.approvedBy ? (
-                                                        <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                                                        <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-200">
                                                             معتمدة
                                                         </span>
                                                     ) : (
                                                         <button
                                                             onClick={() => approveCompany({ id: comp._id, approvedBy: "SuperAdmin" })}
                                                             disabled={isApproving}
-                                                            className="text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-full border border-amber-200 transition-colors"
+                                                            className="text-xs font-bold text-amber-700 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-1 rounded-full border border-amber-200 transition-colors cursor-pointer"
                                                         >
                                                             اعتماد
                                                         </button>
                                                     )}
                                                 </td>
-                                                <td className="py-4 px-5 text-center">
+                                                <td className="py-4 px-6 text-center">
                                                     <div className="flex items-center justify-center gap-1.5">
                                                         <button
                                                             onClick={() => {
@@ -422,9 +492,9 @@ export default function Companies() {
                                                                 setIsDetailsModalOpen(true);
                                                             }}
                                                             title="التفاصيل"
-                                                            className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                                            className="p-2 rounded-xl bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                         >
-                                                            <LuInfo size={18} />
+                                                            <LuEye className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => {
@@ -432,16 +502,16 @@ export default function Companies() {
                                                                 setIsEditModalOpen(true);
                                                             }}
                                                             title="تعديل"
-                                                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                            className="p-2 rounded-xl bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                         >
-                                                            <LuPencil size={18} />
+                                                            <LuPencil className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => setCompanyToDeleteId(comp._id)}
                                                             title="حذف"
-                                                            className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                                                            className="p-2 rounded-xl bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                         >
-                                                            <LuTrash2 size={18} />
+                                                            <LuTrash2 className="w-4 h-4" />
                                                         </button>
                                                     </div>
                                                 </td>
@@ -455,15 +525,15 @@ export default function Companies() {
 
                     {/* Pagination controls */}
                     {totalPages > 1 && (
-                        <div className="flex items-center justify-between border-t border-gray-200 pt-4 text-xs font-semibold">
-                            <span className="text-gray-500">
-                                عرض الصفحة {page} من أصل {totalPages}
+                        <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs">
+                            <span className="text-body font-medium">
+                                عرض الصفحة <b className="font-latin text-heading">{page}</b> من أصل <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} شركة)
                             </span>
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => setPage((p) => Math.max(p - 1, 1))}
                                     disabled={page === 1}
-                                    className="p-2 border rounded-xl hover:bg-gray-50 disabled:opacity-40 flex items-center gap-1"
+                                    className="p-2 border rounded-xl border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 flex items-center gap-1 cursor-pointer"
                                 >
                                     <LuChevronRight className="w-4 h-4" />
                                     <span>السابقة</span>
@@ -471,7 +541,7 @@ export default function Companies() {
                                 <button
                                     onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                                     disabled={page >= totalPages}
-                                    className="p-2 border rounded-xl hover:bg-gray-50 disabled:opacity-40 flex items-center gap-1"
+                                    className="p-2 border rounded-xl border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 flex items-center gap-1 cursor-pointer"
                                 >
                                     <span>التالية</span>
                                     <LuChevronLeft className="w-4 h-4" />
@@ -524,6 +594,6 @@ export default function Companies() {
                 title="تأكيد حذف الشركة"
                 description="هل أنت أصلًا متأكد من حذف هذه الشركة؟ سيؤدي هذا الإجراء لإخفاء بيانات الشركة مؤقتاً بالمنظومة (Soft Delete)."
             />
-        </section>
+        </div>
     );
 }

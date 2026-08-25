@@ -32,7 +32,7 @@ export default function AdminDashboardPage() {
                 {/* Total Companies */}
                 <div className="bg-surface p-6 rounded-2xl border border-border shadow-xs">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="w-12 h-12 rounded-xl bg-accent-soft text-accent flex items-center justify-center">
+                        <span className="w-12 h-12 rounded-md bg-accent-soft text-accent flex items-center justify-center">
                             <LuBuilding2 className="w-6 h-6" />
                         </span>
                         <span className="inline-flex items-center gap-1 text-xs font-bold text-success bg-success-soft px-2 py-0.5 rounded-full">
@@ -46,7 +46,7 @@ export default function AdminDashboardPage() {
                 {/* Total Shipments Today */}
                 <div className="bg-surface p-6 rounded-2xl border border-border shadow-xs">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="w-12 h-12 rounded-xl bg-warning-soft text-warning flex items-center justify-center">
+                        <span className="w-12 h-12 rounded-md bg-accent-soft text-accent flex items-center justify-center">
                             <LuPackageCheck className="w-6 h-6" />
                         </span>
                         <span className="inline-flex items-center gap-1 text-xs font-bold text-success bg-success-soft px-2 py-0.5 rounded-full">
@@ -60,7 +60,7 @@ export default function AdminDashboardPage() {
                 {/* Platform Monthly Revenue */}
                 <div className="bg-surface p-6 rounded-2xl border border-border shadow-xs">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="w-12 h-12 rounded-xl bg-success-soft text-success flex items-center justify-center">
+                        <span className="w-12 h-12 rounded-md bg-accent-soft text-accent flex items-center justify-center">
                             <LuCircleDollarSign className="w-6 h-6" />
                         </span>
                         <span className="inline-flex items-center gap-1 text-xs font-bold text-success bg-success-soft px-2 py-0.5 rounded-full">
@@ -74,7 +74,7 @@ export default function AdminDashboardPage() {
                 {/* Active Drivers Platform-wide */}
                 <div className="bg-surface p-6 rounded-2xl border border-border shadow-xs">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="w-12 h-12 rounded-xl bg-accent-soft text-accent flex items-center justify-center">
+                        <span className="w-12 h-12 rounded-md bg-accent-soft text-accent flex items-center justify-center">
                             <LuUsers className="w-6 h-6" />
                         </span>
                         <span className="text-xs font-bold text-body bg-surface-muted px-2 py-0.5 rounded-full border border-border">
@@ -159,21 +159,21 @@ export default function AdminDashboardPage() {
                         </div>
 
                         <div className="space-y-3.5">
-                            <div className="p-3.5 rounded-xl bg-warning-soft/60 border border-warning/20">
+                            <div className="p-3.5 rounded-md bg-warning-soft/60 border border-warning/20">
                                 <span className="block text-xs font-bold text-heading mb-1">طلب ترقية باقة</span>
                                 <p className="text-xs text-body leading-relaxed">
                                     شركة &quot;توصيل بلس&quot; وصلت إلى ٩٨٪ من سعة خطة البداية وتطلب الترقية لخطة النمو.
                                 </p>
                             </div>
 
-                            <div className="p-3.5 rounded-xl bg-surface-muted border border-border">
+                            <div className="p-3.5 rounded-md bg-surface-muted border border-border">
                                 <span className="block text-xs font-bold text-heading mb-1">تكامل API متوقف</span>
                                 <p className="text-xs text-body leading-relaxed">
                                     فشل في استقبال Webhook من بوابة دفع تابعة لشركة &quot;درب الشرق&quot;.
                                 </p>
                             </div>
 
-                            <div className="p-3.5 rounded-xl bg-accent-soft/40 border border-accent/20">
+                            <div className="p-3.5 rounded-md bg-accent-soft/40 border border-accent/20">
                                 <span className="block text-xs font-bold text-heading mb-1">طلب تسجيل شركة جديدة</span>
                                 <p className="text-xs text-body leading-relaxed">
                                     شركة &quot;أفق الحجاز للشحن&quot; بانتظار مراجعة السجل التجاري والتفعيل.
@@ -187,10 +187,10 @@ export default function AdminDashboardPage() {
                         <h3 className="font-extrabold text-sm mb-2 text-white">إجراءات سريعة للمنصة</h3>
                         <p className="text-xs text-white/60 mb-4">أدوات التحكم الشاملة للعمليات والبنية التحتية.</p>
                         <div className="grid grid-cols-2 gap-2">
-                            <button className="p-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-center transition-colors">
+                            <button className="p-2.5 rounded-md bg-white/10 hover:bg-white/15 text-xs font-bold text-center transition-colors">
                                 توليد فواتير الشهر
                             </button>
-                            <button className="p-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-center transition-colors">
+                            <button className="p-2.5 rounded-md bg-white/10 hover:bg-white/15 text-xs font-bold text-center transition-colors">
                                 تصدير تقرير شامل
                             </button>
                         </div>

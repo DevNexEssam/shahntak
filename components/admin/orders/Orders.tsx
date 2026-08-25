@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Order, Company } from '@/types/data';
 import { useOrders, useDeleteOrder } from '@/hooks/orders/useOrders';
 import AddOrders from './AddOrders';
@@ -119,7 +119,7 @@ export default function Orders() {
     };
 
     return (
-        <div className="space-y-6" dir="rtl">
+        <div className="space-y-6 text-right font-arabic" dir="rtl">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -137,8 +137,8 @@ export default function Orders() {
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        title="إعادة جلب البيانات"
-                        className="p-2.5 rounded-xl bg-surface border border-border text-body hover:text-heading hover:bg-surface-muted transition-all cursor-pointer disabled:opacity-50"
+                        title="تحديث البيانات"
+                        className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
                     </button>
@@ -161,51 +161,75 @@ export default function Orders() {
                 </div>
             )}
 
-            {/* KPI Stats Grid */}
+            {/* KPI Stats Grid - Matching Companies.tsx Design */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
-                        <LuPackage className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <span className="text-xs text-body font-medium block">إجمالي الطلبات</span>
-                        <span className="text-2xl font-extrabold text-heading font-latin">{stats.total}</span>
-                    </div>
-                </div>
-
-                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
-                        <LuClock className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <span className="text-xs text-body font-medium block">الطلبات المعلقة</span>
-                        <span className="text-2xl font-extrabold text-amber-600 font-latin">{stats.pending}</span>
+                {/* Total Orders */}
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الطلبات</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.total}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>المسجلة بالمنصة</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuPackage className="w-5 h-5" />
+                        </div>
                     </div>
                 </div>
 
-                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-600 flex items-center justify-center shrink-0">
-                        <LuTruck className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <span className="text-xs text-body font-medium block">في الطريق / مجمعة</span>
-                        <span className="text-2xl font-extrabold text-cyan-600 font-latin">{stats.shipped}</span>
+                {/* Pending Orders */}
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">الطلبات المعلقة</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.pending}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>في انتظار المعالجة</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuClock className="w-5 h-5" />
+                        </div>
                     </div>
                 </div>
 
-                <div className="bg-surface p-5 rounded-3xl border border-border shadow-xs flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
-                        <LuCheck className="w-6 h-6" />
+                {/* Shipped Orders */}
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">في الطريق / مجمعة</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.shipped}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>جاري التوصيل</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuTruck className="w-5 h-5" />
+                        </div>
                     </div>
-                    <div>
-                        <span className="text-xs text-body font-medium block">تم التسليم بنجاح</span>
-                        <span className="text-2xl font-extrabold text-emerald-600 font-latin">{stats.delivered}</span>
+                </div>
+
+                {/* Delivered Orders */}
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">تم التسليم بنجاح</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.delivered}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>مكتملة بالكامل</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                            <LuCheck className="w-5 h-5" />
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Filter and Search Controller Header */}
-            <div className="bg-surface p-4 rounded-3xl border border-border shadow-xs flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">
                     <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
                     <input
@@ -213,17 +237,17 @@ export default function Orders() {
                         value={searchQuery}
                         onChange={handleSearchChange}
                         placeholder="بحث برقم الطلب، اسم المستلم، الجوال، المدينة..."
-                        className="w-full pl-4 pr-11 py-2.5 rounded-2xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
+                        className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </div>
 
                 <div className="flex items-center gap-3 w-full md:w-auto">
-                    <div className="flex items-center gap-2 bg-surface-muted px-3 py-1.5 rounded-2xl border border-border w-full md:w-auto">
+                    <div className="flex items-center gap-2 bg-surface-muted px-3 py-1.5 rounded-md border border-border w-full md:w-auto">
                         <LuFilter className="w-4 h-4 text-body shrink-0" />
                         <select
                             value={filterStatus}
                             onChange={handleFilterStatusChange}
-                            className="bg-transparent text-sm text-heading font-bold focus:outline-none cursor-pointer w-full"
+                            className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer w-full"
                         >
                             <option value="all">جميع الحالات</option>
                             <option value="pending">معلق (Pending)</option>
@@ -239,27 +263,27 @@ export default function Orders() {
             </div>
 
             {/* Data Table View */}
-            <div className="bg-surface rounded-3xl border border-border shadow-xs overflow-hidden">
+            <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {filteredOrders.length === 0 ? (
-                    <div className="p-8">
+                    <div className="p-12 text-center">
                         <EmptyData message="لا توجد طلبات تطابق خيارات البحث أو التصفية الحالية" icon={LuPackage} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right border-collapse">
+                        <table className="w-full text-right text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-4 px-6">رقم الطلب</th>
-                                    <th className="py-4 px-6">الشركة المنشئة</th>
-                                    <th className="py-4 px-6">المستلم والجوال</th>
-                                    <th className="py-4 px-6">المدينة والعنوان</th>
-                                    <th className="py-4 px-6">الوزن / الكمية</th>
-                                    <th className="py-4 px-6">القيمة / COD</th>
-                                    <th className="py-4 px-6">الحالة</th>
-                                    <th className="py-4 px-6 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">رقم الطلب</th>
+                                    <th className="py-3.5 px-4">الشركة المنشئة</th>
+                                    <th className="py-3.5 px-4">المستلم والجوال</th>
+                                    <th className="py-3.5 px-4">المدينة والعنوان</th>
+                                    <th className="py-3.5 px-4">الوزن / الكمية</th>
+                                    <th className="py-3.5 px-4">القيمة / COD</th>
+                                    <th className="py-3.5 px-4">الحالة</th>
+                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-border text-sm">
+                            <tbody className="divide-y divide-border font-medium">
                                 {filteredOrders.map((ord) => {
                                     const compName = typeof ord.companyId === 'object' && ord.companyId !== null
                                         ? (ord.companyId as Company).companyName
@@ -267,56 +291,56 @@ export default function Orders() {
 
                                     return (
                                         <tr key={ord._id} className="hover:bg-surface-muted/40 transition-colors">
-                                            <td className="py-4 px-6 font-latin font-bold text-accent">
+                                            <td className="py-3.5 px-4 font-latin font-bold text-accent">
                                                 {ord.orderNumber}
                                             </td>
 
-                                            <td className="py-4 px-6">
+                                            <td className="py-3.5 px-4">
                                                 <div className="flex items-center gap-2">
                                                     <LuBuilding2 className="w-4 h-4 text-body shrink-0" />
                                                     <span className="font-bold text-heading text-xs">{compName}</span>
                                                 </div>
                                             </td>
 
-                                            <td className="py-4 px-6">
+                                            <td className="py-3.5 px-4">
                                                 <div>
                                                     <span className="font-bold text-heading block">{ord.recipientName}</span>
                                                     <span className="text-xs text-body font-latin">{ord.recipientPhone}</span>
                                                 </div>
                                             </td>
 
-                                            <td className="py-4 px-6">
+                                            <td className="py-3.5 px-4">
                                                 <div className="text-xs">
                                                     <span className="font-bold text-heading flex items-center gap-1">
-                                                        <LuMapPin className="w-3 h-3 text-accent" />
+                                                        <LuMapPin className="w-3.5 h-3.5 text-accent" />
                                                         {ord.recipientCity}
                                                     </span>
                                                     <span className="text-body text-[11px] truncate max-w-[150px] block">{ord.recipientAddress}</span>
                                                 </div>
                                             </td>
 
-                                            <td className="py-4 px-6 font-latin text-xs font-semibold text-heading">
+                                            <td className="py-3.5 px-4 font-latin text-xs font-semibold text-heading">
                                                 <div>{ord.weight} كجم</div>
                                                 <div className="text-body text-[11px]">{ord.quantity} طرد</div>
                                             </td>
 
-                                            <td className="py-4 px-6 font-latin text-xs">
+                                            <td className="py-3.5 px-4 font-latin text-xs">
                                                 <div className="font-bold text-emerald-600">{ord.orderValue} ر.س</div>
                                                 {ord.codAmount ? (
                                                     <div className="text-amber-600 font-medium text-[11px]">COD: {ord.codAmount}</div>
                                                 ) : null}
                                             </td>
 
-                                            <td className="py-4 px-6">
+                                            <td className="py-3.5 px-4">
                                                 {statusBadge(ord.status)}
                                             </td>
 
-                                            <td className="py-4 px-6 text-center">
+                                            <td className="py-3.5 px-4 text-center">
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <button
                                                         onClick={() => setSelectedOrderForDetails(ord)}
                                                         title="عرض التفاصيل"
-                                                        className="p-2 rounded-xl bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
+                                                        className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
                                                     </button>
@@ -324,7 +348,7 @@ export default function Orders() {
                                                     <button
                                                         onClick={() => setSelectedOrderForEdit(ord)}
                                                         title="تعديل البيانات"
-                                                        className="p-2 rounded-xl bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
+                                                        className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
                                                     </button>
@@ -332,7 +356,7 @@ export default function Orders() {
                                                     <button
                                                         onClick={() => setSelectedOrderForDelete(ord)}
                                                         title="حذف الطلب"
-                                                        className="p-2 rounded-xl bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
+                                                        className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuTrash2 className="w-4 h-4" />
                                                     </button>
@@ -348,7 +372,7 @@ export default function Orders() {
 
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
-                    <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs">
+                    <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
                             عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} طلب)
                         </span>
@@ -357,16 +381,18 @@ export default function Orders() {
                             <button
                                 onClick={() => setPage((p) => Math.max(p - 1, 1))}
                                 disabled={page === 1}
-                                className="p-2 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
+                                className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
                                 <LuChevronRight className="w-4 h-4" />
+                                <span>السابق</span>
                             </button>
 
                             <button
                                 onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                                 disabled={page === totalPages}
-                                className="p-2 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
+                                className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
+                                <span>التالي</span>
                                 <LuChevronLeft className="w-4 h-4" />
                             </button>
                         </div>
@@ -404,4 +430,3 @@ export default function Orders() {
         </div>
     );
 }
-

@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useCreateCompanyUser } from '@/hooks/companyUsers/useCompanyUsers';
 import { useAllCompanies } from '@/hooks/companies/useCompanies';
 import { companyUserCreateValidationSchema } from '@/lib/validations/companyUser.schema';
-import Loading from '@/components/ui/loading';
 import toast from 'react-hot-toast';
 import {
     LuUser,
@@ -115,7 +114,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                     disabled={isSubmitting || isLoadingCompanies}
                                     value={formValues.companyId}
                                     onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
                                         fieldErrors.companyId ? 'border-rose-500' : 'border-border'
                                     }`}
                                 >
@@ -143,7 +142,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         value={formValues.userName}
                                         onChange={(e) => setFormValues({ ...formValues, userName: e.target.value })}
                                         placeholder="مثال: خالد العتيبي"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.userName ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -163,7 +162,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         value={formValues.userEmail}
                                         onChange={(e) => setFormValues({ ...formValues, userEmail: e.target.value })}
                                         placeholder="employee@company.com"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.userEmail ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -185,7 +184,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         value={formValues.phone}
                                         onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })}
                                         placeholder="0551234567"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.phone ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -205,7 +204,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         value={formValues.password}
                                         onChange={(e) => setFormValues({ ...formValues, password: e.target.value })}
                                         placeholder="••••••••"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.password ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -225,7 +224,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         disabled={isSubmitting}
                                         value={formValues.userRole}
                                         onChange={(e) => setFormValues({ ...formValues, userRole: e.target.value as 'owner' | 'manager' | 'staff' })}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
                                         <option value="staff">موظف (Staff)</option>
                                         <option value="manager">مدير تشغيلي (Manager)</option>
@@ -244,7 +243,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         disabled={isSubmitting}
                                         value={formValues.userIsActive ? 'active' : 'inactive'}
                                         onChange={(e) => setFormValues({ ...formValues, userIsActive: e.target.value === 'active' })}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
                                         <option value="active">نشط (Active)</option>
                                         <option value="inactive">غير نشط (Inactive)</option>
@@ -261,7 +260,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                             type="button"
                             onClick={onClose}
                             disabled={isSubmitting}
-                            className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
                             إلغاء
                         </button>
@@ -269,7 +268,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
                             {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
                         </button>

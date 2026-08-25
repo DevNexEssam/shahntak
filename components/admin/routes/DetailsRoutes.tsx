@@ -47,13 +47,14 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                         type="button"
                         onClick={onClose}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
+                        title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                <div className="p-6 overflow-y-auto space-y-6 flex-1 text-right">
 
                     {/* Origin -> Destination Card */}
                     <div className="p-5 rounded-2xl bg-surface-muted border border-border flex items-center justify-between gap-4">
@@ -62,7 +63,7 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                             <span className="text-lg font-extrabold text-heading">{route.origin}</span>
                         </div>
 
-                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center shrink-0">
                             <LuArrowLeft className="w-5 h-5" />
                         </div>
 
@@ -138,7 +139,7 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-xs hover:shadow transition-all cursor-pointer"
+                        className="px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-xs hover:shadow transition-all cursor-pointer"
                     >
                         إغلاق
                     </button>

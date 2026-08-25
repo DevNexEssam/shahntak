@@ -78,6 +78,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
+                        title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -98,7 +99,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                                 value={formValues.type}
                                 onChange={(e) => setFormValues({ ...formValues, type: e.target.value })}
                                 placeholder="مثال: دينا جامبو 5 طن، تريلا مبردة، وانيت..."
-                                className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
                                     fieldErrors.type ? 'border-rose-500' : 'border-border'
                                 }`}
                             />
@@ -119,7 +120,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                                     value={formValues.capacityWeight}
                                     onChange={(e) => setFormValues({ ...formValues, capacityWeight: Number(e.target.value) })}
                                     min={1}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                 />
                             </div>
 
@@ -134,7 +135,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                                     value={formValues.capacityVolume}
                                     onChange={(e) => setFormValues({ ...formValues, capacityVolume: Number(e.target.value) })}
                                     min={1}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                 />
                             </div>
                         </div>
@@ -147,7 +148,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                                 disabled={isSubmitting}
                                 value={formValues.isActive ? 'active' : 'inactive'}
                                 onChange={(e) => setFormValues({ ...formValues, isActive: e.target.value === 'active' })}
-                                className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                                className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
                                 <option value="active">نشطة ومتاحة بالأسطول</option>
                                 <option value="inactive">موقوفة / تحت الصيانة</option>
@@ -162,7 +163,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                             type="button"
                             onClick={onClose}
                             disabled={isSubmitting}
-                            className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
                             إلغاء
                         </button>
@@ -170,7 +171,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
                             {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
                         </button>

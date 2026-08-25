@@ -14,7 +14,8 @@ import {
     LuBuilding2,
     LuCoins,
     LuWeight,
-    LuHash
+    LuHash,
+    LuPencil
 } from 'react-icons/lu';
 
 interface EditOrdersProps {
@@ -101,11 +102,11 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
             {/* Modal Container */}
             <div className="relative w-full max-w-3xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
-                {/* Modal Header */}
+                {/* Modal Header - Identical to Add Modal Theme */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-extrabold text-xl shadow-xs">
-                            <LuPackage className="w-6 h-6" />
+                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
+                            <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
                             <h2 className="text-xl font-extrabold text-heading">تعديل بيانات الطلب</h2>
@@ -118,6 +119,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
+                        title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -128,9 +130,9 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                     <div className="p-6 overflow-y-auto space-y-6 flex-1">
 
                         {/* Order & Company Read-Only Info */}
-                        <div className="p-4 rounded-2xl bg-surface-muted border border-border flex items-center justify-between flex-wrap gap-4">
+                        <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between flex-wrap gap-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-accent-soft text-accent flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-md bg-accent-soft text-accent flex items-center justify-center">
                                     <LuBuilding2 className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -155,7 +157,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                 disabled={isSubmitting}
                                 value={formValues.status}
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
-                                className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
+                                className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
                                 <option value="pending">معلق (Pending)</option>
                                 <option value="validated">مكتمل الفحص (Validated)</option>
@@ -186,7 +188,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                         value={formValues.recipientName}
                                         onChange={(e) => setFormValues({ ...formValues, recipientName: e.target.value })}
                                         placeholder="اسم المستلم الثلاثي"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -206,7 +208,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                         value={formValues.recipientPhone}
                                         onChange={(e) => setFormValues({ ...formValues, recipientPhone: e.target.value })}
                                         placeholder="0501234567"
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.recipientPhone ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -228,7 +230,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                         value={formValues.recipientCity}
                                         onChange={(e) => setFormValues({ ...formValues, recipientCity: e.target.value })}
                                         placeholder="الرياض، جدة..."
-                                        className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
                                         }`}
                                     />
@@ -246,7 +248,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                         disabled={isSubmitting}
                                         value={formValues.recipientDistrict}
                                         onChange={(e) => setFormValues({ ...formValues, recipientDistrict: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
                             </div>
@@ -260,7 +262,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                     disabled={isSubmitting}
                                     value={formValues.recipientAddress}
                                     onChange={(e) => setFormValues({ ...formValues, recipientAddress: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-xl bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
                                         fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
                                     }`}
                                 />
@@ -290,7 +292,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                         onChange={(e) => setFormValues({ ...formValues, weight: Number(e.target.value) })}
                                         min={0.1}
                                         step={0.5}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
 
@@ -304,7 +306,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                         value={formValues.quantity}
                                         onChange={(e) => setFormValues({ ...formValues, quantity: Number(e.target.value) })}
                                         min={1}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
 
@@ -319,7 +321,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                         value={formValues.orderValue}
                                         onChange={(e) => setFormValues({ ...formValues, orderValue: Number(e.target.value) })}
                                         min={0}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
 
@@ -333,7 +335,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                         value={formValues.codAmount}
                                         onChange={(e) => setFormValues({ ...formValues, codAmount: Number(e.target.value) })}
                                         min={0}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
                             </div>
@@ -347,7 +349,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                             type="button"
                             onClick={onClose}
                             disabled={isSubmitting}
-                            className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
                             إلغاء
                         </button>
@@ -355,7 +357,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 text-white font-bold text-sm shadow-sm hover:shadow hover:bg-amber-600 transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
                             {isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}
                         </button>
