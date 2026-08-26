@@ -27,12 +27,24 @@ export async function GET(req: NextRequest) {
         const companyId = searchParams.get("companyId");
         const status = searchParams.get("status");
         const city = searchParams.get("city");
+        const search = searchParams.get("search");
         const noPagination = searchParams.get("nopagination") === "true";
 
         const filter: Record<string, any> = { ...ACTIVE };
         if (companyId) filter.companyId = companyId;
-        if (status) filter.status = status;
+        if (status && status !== "all") filter.status = status;
         if (city) filter.recipientCity = { $regex: city, $options: "i" };
+
+        if (search && search.trim() !== "") {
+            const searchRegex = { $regex: search.trim(), $options: "i" };
+            filter.$or = [
+                { orderNumber: searchRegex },
+                { recipientName: searchRegex },
+                { recipientPhone: searchRegex },
+                { recipientCity: searchRegex },
+                { recipientAddress: searchRegex },
+            ];
+        }
 
         if (noPagination) {
             const orders = await Order.find(filter)
@@ -41,7 +53,7 @@ export async function GET(req: NextRequest) {
                 .sort({ createdAt: -1 });
 
             return NextResponse.json(
-                { success: true, data: orders, count: orders.length },
+                { success: true, data: orders, count: orders.length, total: orders.length },
                 { status: 200 }
             );
         }
@@ -70,6 +82,7 @@ export async function GET(req: NextRequest) {
                 success: true,
                 data: orders,
                 count: orders.length,
+                total,
                 stats: { pending, validated, grouped, shipped, delivered, cancelled, total },
             },
             { status: 200 }

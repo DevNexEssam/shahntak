@@ -241,9 +241,9 @@ export default function CompanyUsers() {
                             className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer"
                         >
                             <option value="all">الكل</option>
-                            <option value="owner">مالك (Owner)</option>
-                            <option value="manager">مدير (Manager)</option>
-                            <option value="staff">موظف (Staff)</option>
+                            <option value="owner">مالك</option>
+                            <option value="manager">مدير</option>
+                            <option value="staff">موظف</option>
                         </select>
                     </div>
 

@@ -1,0 +1,178 @@
+"use client"
+import { signIn } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react'
+import { HiArrowLeft, HiEye, HiLockClosed, HiSparkles } from 'react-icons/hi';
+import { HiEnvelope } from 'react-icons/hi2';
+import ErrorMessege from '../ui/ErrorMessege';
+
+const AdminLogin = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!email || !password) {
+      setError("جميع الحقول مطلوبة");
+      setLoading(false);
+      return;
+    }
+
+    const res = await signIn("admin-credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (res?.error) {
+      setError(res?.error || "البريد الإلكتروني أو كلمة المرور غير صحيحة");
+      setTimeout(() => setError(""), 3000);
+    } else if (res?.ok) {
+      router.push("/admin/dashboard");
+    }
+
+    setLoading(false);
+  };
+  return (
+    <section className="min-h-screen bg-linear-to-b from-white to-accent-soft/5 flex items-center justify-center px-4 py-12">
+      {error && <ErrorMessege message={error} />}
+      <div className="w-full max-w-110">
+        {/* Logo and Brand */}
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-flex items-center gap-2 text-accent font-bold text-2xl">
+            <HiSparkles className="size-7" />
+            <span>شحنتك</span>
+          </Link>
+          <h1 className="mt-6 text-3xl font-extrabold text-heading">
+            تسجيل الدخول
+          </h1>
+          <p className="mt-2 text-[15px] text-muted-foreground">
+            مرحباً بك مرة أخرى! سجل الدخول للوصول إلى لوحة التحكم
+          </p>
+        </div>
+
+        {/* Login Card */}
+        <div className="bg-card rounded-[30px] border border-border p-8 shadow-soft">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-heading mb-1.5">
+                البريد الإلكتروني
+              </label>
+              <div className="relative">
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  <HiEnvelope className="size-5" />
+                </div>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@domain.com"
+                  className="w-full rounded-[14px] border border-border bg-surface py-3 pr-11 pl-4 text-heading placeholder:text-muted-foreground/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label htmlFor="password" className="text-sm font-semibold text-heading">
+                  كلمة المرور
+                </label>
+                <Link href="/forgot-password" className="text-sm text-accent hover:underline">
+                  نسيت كلمة المرور؟
+                </Link>
+              </div>
+              <div className="relative">
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  <HiLockClosed className="size-5" />
+                </div>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full rounded-[14px] border border-border bg-surface py-3 pr-11 pl-11 text-heading placeholder:text-muted-foreground/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                />
+                <button
+                  type="button"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-heading transition-colors"
+                >
+                  <HiEye className="size-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Remember Me */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-border text-accent focus:ring-accent/20 focus:ring-2 transition-all"
+                />
+                <span className="text-sm text-muted-foreground">تذكرني</span>
+              </label>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-[100px] bg-accent text-accent-foreground font-bold text-base hover:bg-accent/90 hover:shadow-accent transition-all h-14 px-9"
+            >
+              <span>{loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}</span>
+              <HiArrowLeft className="size-5" />
+            </button>
+
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-card px-4 text-muted-foreground">أو</span>
+              </div>
+            </div>
+
+            {/* Demo Account */}
+            {/* <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                ليس لديك حساب؟{' '}
+                <Link href="/register" className="text-accent font-semibold hover:underline">
+                  إنشاء حساب جديد
+                </Link>
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground/60">
+                حساب تجريبي: demo@shahnetak.com / demo123
+              </p>
+            </div> */}
+          </form>
+        </div>
+
+        {/* Security Badge */}
+        <div className="mt-6 text-center">
+          <span className="inline-flex items-center gap-2 text-xs text-muted-foreground/60">
+            <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <span>محمي بتقنية تشفير SSL</span>
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default AdminLogin

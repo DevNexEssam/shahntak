@@ -3,6 +3,12 @@ import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import { updateCompanyValidationSchema } from "@/lib/validations";
 import Company from "@/models/companies";
+import CompanyUser from "@/models/Companyuser";
+import Invoice from "@/models/invoice";
+import Order from "@/models/order";
+import Payment from "@/models/payment";
+import Shipment from "@/models/shipment";
+import Waybill from "@/models/waybill";
 import User from "@/models/user";
 import { ACTIVE } from "@/utils/constants";
 import { can } from "@/utils/permissions";
@@ -157,7 +163,7 @@ export async function PATCH(req: Request, context: any) {
 }
 
 // DELETE company
-export async function DELETE(_req: Request, context: any) {
+export async function DELETE(req: Request, context: any) {
     try {
         await connectDB();
 
@@ -183,17 +189,68 @@ export async function DELETE(_req: Request, context: any) {
             );
         }
 
+        const { searchParams } = new URL(req.url);
+        const isHardDelete = searchParams.get("hard") === "true";
+
         let deletedCompany;
 
-        // Perform soft delete if permitted, otherwise hard delete
-        if (canSoftDelete) {
+        // Perform hard delete if explicitly requested and permitted, or if soft delete is not permitted
+        if (isHardDelete && canHardDelete) {
+            // Find related shipment & invoice IDs to delete waybills & payments
+            const [companyShipments, companyInvoices] = await Promise.all([
+                Shipment.find({ companyId: id }).select("_id").lean(),
+                Invoice.find({ companyId: id }).select("_id").lean(),
+            ]);
+
+            const shipmentIds = companyShipments.map((s: any) => s._id);
+            const invoiceIds = companyInvoices.map((i: any) => i._id);
+
+            // Execute cascading delete across all related collections
+            const [deletedDoc] = await Promise.all([
+                Company.findByIdAndDelete(id),
+                CompanyUser.deleteMany({ companyId: id }),
+                Order.deleteMany({ companyId: id }),
+                Shipment.deleteMany({ companyId: id }),
+                Invoice.deleteMany({ companyId: id }),
+                Waybill.deleteMany({ shipmentId: { $in: shipmentIds } }),
+                Payment.deleteMany({ invoiceId: { $in: invoiceIds } }),
+            ]);
+
+            deletedCompany = deletedDoc;
+        } else if (canSoftDelete) {
             deletedCompany = await Company.findOneAndUpdate(
                 { _id: id, ...ACTIVE },
                 { status: "archived", deletedAt: new Date() },
                 { new: true }
             );
+
+            // Deactivate company users on soft delete
+            if (deletedCompany) {
+                await CompanyUser.updateMany(
+                    { companyId: id, ...ACTIVE },
+                    { status: "inactive", deletedAt: new Date() }
+                );
+            }
         } else {
-            deletedCompany = await Company.findByIdAndDelete(id);
+            const [companyShipments, companyInvoices] = await Promise.all([
+                Shipment.find({ companyId: id }).select("_id").lean(),
+                Invoice.find({ companyId: id }).select("_id").lean(),
+            ]);
+
+            const shipmentIds = companyShipments.map((s: any) => s._id);
+            const invoiceIds = companyInvoices.map((i: any) => i._id);
+
+            const [deletedDoc] = await Promise.all([
+                Company.findByIdAndDelete(id),
+                CompanyUser.deleteMany({ companyId: id }),
+                Order.deleteMany({ companyId: id }),
+                Shipment.deleteMany({ companyId: id }),
+                Invoice.deleteMany({ companyId: id }),
+                Waybill.deleteMany({ shipmentId: { $in: shipmentIds } }),
+                Payment.deleteMany({ invoiceId: { $in: invoiceIds } }),
+            ]);
+
+            deletedCompany = deletedDoc;
         }
 
         if (!deletedCompany) {
@@ -204,7 +261,7 @@ export async function DELETE(_req: Request, context: any) {
         }
 
         return NextResponse.json(
-            { success: true, message: "تم أرشفة وحذف الشركة بنجاح" },
+            { success: true, message: isHardDelete ? "تم حذف الشركة نهائياً بنجاح" : "تم أرشفة وحذف الشركة بنجاح" },
             { status: 200 }
         );
     } catch (error: any) {

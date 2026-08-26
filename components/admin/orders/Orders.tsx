@@ -7,6 +7,7 @@ import AddOrders from './AddOrders';
 import EditOrders from './EditOrders';
 import DetailsOrders from './DetailsOrders';
 import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
+import ErrorMessege from '@/components/ui/ErrorMessege';
 import EmptyData from '@/components/ui/EmptyData';
 import Loading from '@/components/ui/loading';
 import {
@@ -40,8 +41,8 @@ export default function Orders() {
     const [selectedOrderForDetails, setSelectedOrderForDetails] = useState<Order | null>(null);
     const [selectedOrderForDelete, setSelectedOrderForDelete] = useState<Order | null>(null);
 
-    // 3. React Query Hooks
-    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useOrders(page, limit);
+    // 3. React Query Hooks with server-side search & filtering
+    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useOrders(page, limit, searchQuery, filterStatus);
     const { mutate: deleteOrder, isPending: isDeleting } = useDeleteOrder();
 
     // 4. Initial Loading Check (Standard Rule)
@@ -51,7 +52,7 @@ export default function Orders() {
     const totalRecords = responseData?.total || 0;
     const totalPages = Math.ceil(totalRecords / limit) || 1;
 
-    // Rule 2: Always setPage(1) on search/filter changes
+    // Rule 1: Always setPage(1) on search/filter changes
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         setPage(1);
@@ -62,30 +63,13 @@ export default function Orders() {
         setPage(1);
     };
 
-    // Client side filtering over current page
-    const filteredOrders = ordersList.filter((ord) => {
-        const companyName = typeof ord.companyId === 'object' && ord.companyId !== null
-            ? (ord.companyId as Company).companyName
-            : '';
-
-        const matchesSearch =
-            ord.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            ord.recipientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            ord.recipientPhone.includes(searchQuery) ||
-            ord.recipientCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            companyName.toLowerCase().includes(searchQuery.toLowerCase());
-
-        const matchesStatus = filterStatus === 'all' || ord.status === filterStatus;
-
-        return matchesSearch && matchesStatus;
-    });
-
-    // Stats Calculation
+    // Stats Calculation directly from backend API response stats
+    const serverStats = responseData?.stats;
     const stats = {
-        total: totalRecords || ordersList.length,
-        pending: ordersList.filter(o => o.status === 'pending').length,
-        shipped: ordersList.filter(o => o.status === 'shipped' || o.status === 'grouped').length,
-        delivered: ordersList.filter(o => o.status === 'delivered').length,
+        total: serverStats?.total ?? totalRecords,
+        pending: serverStats?.pending ?? 0,
+        shipped: (serverStats?.shipped ?? 0) + (serverStats?.grouped ?? 0),
+        delivered: serverStats?.delivered ?? 0,
     };
 
     const handleDeleteConfirm = () => {
@@ -155,9 +139,8 @@ export default function Orders() {
 
             {/* Error Notification Banner */}
             {isError && (
-                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-bold flex items-center justify-between">
-                    <span>تعذر جلب بيانات الطلبات: {(error as any)?.message || 'حدث خطأ في الاتصال بالخادم'}</span>
-                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">إعادة المحاولة</button>
+                <div className="mb-4">
+                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات الطلبات من الخادم'} />
                 </div>
             )}
 
@@ -264,7 +247,7 @@ export default function Orders() {
 
             {/* Data Table View */}
             <div className="bg-surface rounded-md border border-border overflow-hidden">
-                {filteredOrders.length === 0 ? (
+                {ordersList.length === 0 ? (
                     <div className="p-12 text-center">
                         <EmptyData message="لا توجد طلبات تطابق خيارات البحث أو التصفية الحالية" icon={LuPackage} />
                     </div>
@@ -284,7 +267,7 @@ export default function Orders() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
-                                {filteredOrders.map((ord) => {
+                                {ordersList.map((ord) => {
                                     const compName = typeof ord.companyId === 'object' && ord.companyId !== null
                                         ? (ord.companyId as Company).companyName
                                         : 'غير محددة';

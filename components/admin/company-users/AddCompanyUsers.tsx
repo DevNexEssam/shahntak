@@ -218,7 +218,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuShieldCheck className="w-3.5 h-3.5 text-body" />
-                                        دور الموظف (Role) <span className="text-red-500">*</span>
+                                        دور الموظف <span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         disabled={isSubmitting}
@@ -226,9 +226,9 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         onChange={(e) => setFormValues({ ...formValues, userRole: e.target.value as 'owner' | 'manager' | 'staff' })}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
-                                        <option value="staff">موظف (Staff)</option>
-                                        <option value="manager">مدير تشغيلي (Manager)</option>
-                                        <option value="owner">مالك شركة (Owner)</option>
+                                        <option value="staff">موظف</option>
+                                        <option value="manager">مدير تشغيلي</option>
+                                        <option value="owner">مالك شركة</option>
                                     </select>
                                     {fieldErrors.userRole && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.userRole}</span>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Navbar } from '@/components/home/Navbar';
-import { Hero } from '@/components/home/Hero';
 import { Features } from '@/components/home/Features';
 import { Integrations } from '@/components/home/Integrations';
 import { HowItWorks } from '@/components/home/HowItWorks';
@@ -11,6 +10,7 @@ import { Testimonials } from '@/components/home/Testimonials';
 import { Faq } from '@/components/home/FAQ';
 import { FinalCta } from '@/components/home/FinalCTA';
 import { Footer } from '@/components/home/Footer';
+import { Hero } from '@/components/home/Hero';
 
 export default function HomePage() {
   return (

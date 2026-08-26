@@ -33,48 +33,48 @@ const navItems: NavItem[] = [
     },
     {
         title: 'الشركات المشتركة',
-        href: '/admin/companies',
+        href: '/admin/dashboard/companies',
         icon: <LuBuilding2 className="w-5 h-5" />,
         badge: '٢٤ شركة',
     },
     {
         title: 'موظفو الشركات',
-        href: '/admin/company-users',
+        href: '/admin/dashboard/company-users',
         icon: <LuUsers className="w-5 h-5" />,
     },
     {
         title: 'الطلبات والشحنات',
-        href: '/admin/orders',
+        href: '/admin/dashboard/orders',
         icon: <LuPackage className="w-5 h-5" />,
     },
     {
         title: 'المسارات والخطوط',
-        href: '/admin/routes',
+        href: '/admin/dashboard/routes',
         icon: <LuRoute className="w-5 h-5" />,
     },
     {
         title: 'الأسطول والشاحنات',
-        href: '/admin/vehicles',
+        href: '/admin/dashboard/vehicles',
         icon: <LuBox className="w-5 h-5" />,
     },
     {
         title: 'البوالص والفواتير',
-        href: '/admin/invoices',
+        href: '/admin/dashboard/invoices',
         icon: <LuReceipt className="w-5 h-5" />,
     },
     {
         title: 'التقارير والإحصائيات',
-        href: '/admin/reports',
+        href: '/admin/dashboard/reports',
         icon: <LuFileSpreadsheet className="w-5 h-5" />,
     },
     {
         title: 'المستخدمون والمدراء',
-        href: '/admin/users',
+        href: '/admin/dashboard/users',
         icon: <LuUser className="w-5 h-5" />,
     },
     {
         title: 'إعدادات المنصة',
-        href: '/admin/settings',
+        href: '/admin/dashboard/settings',
         icon: <LuSettings className="w-5 h-5" />,
     },
 ];

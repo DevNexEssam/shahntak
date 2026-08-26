@@ -2,9 +2,16 @@ import { Order, OrderResponse, OrderSingleResponse, OrderDeleteResponse } from "
 import axios from "axios";
 
 export const orderServices = {
-    // Get paginated orders list
-    getOrders: async (page: number = 1, limit: number = 10): Promise<OrderResponse> => {
-        const { data } = await axios.get(`/api/admin/orders?page=${page}&limit=${limit}`);
+    // Get paginated orders list with server-side search & filtering
+    getOrders: async (page: number = 1, limit: number = 10, search: string = "", status: string = "all"): Promise<OrderResponse> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+        });
+        if (search && search.trim() !== "") params.append("search", search.trim());
+        if (status && status !== "all") params.append("status", status);
+
+        const { data } = await axios.get(`/api/admin/orders?${params.toString()}`);
         return data;
     },
 

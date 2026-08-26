@@ -60,17 +60,17 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 await connectDB();
                 if (!credentials?.email || !credentials.password)
-                    throw new Error("Please provide both email and password");
+                    throw new Error("يرجى ادخال البريد الإلكتروني وكلمة المرور");
 
                 const user = await User.findOne({
                     email: credentials.email.toLowerCase(),
                 }).select("+password");
-                if (!user) throw new Error("No user found with this email");
+                if (!user) throw new Error("لا يوجد مستخدم بهذا الحساب");
                 if (user.status === "inactive")
-                    throw new Error("Your account is inactive. Please contact support.");
+                    throw new Error("حسابك غير نشط، يرجى التواصل مع الدعم الفني");
 
                 const isCorrect = await bcrypt.compare(credentials.password, user.password);
-                if (!isCorrect) throw new Error("Password is incorrect");
+                if (!isCorrect) throw new Error("كلمة المرور غير صحيحة");
 
                 return {
                     id: user._id.toString(),

@@ -28,27 +28,25 @@
 * اجتياز فحص الأنواع بنجاح بدون أخطاء (`npx tsc --noEmit`).
 * اجتياز فحص البناء الإنتاجي الكامل وتوليد الصفحات المجمعة بنجاح (`npm run build`).
 
+### 1.7 بناء وتطوير الحذف الكلي والشلالي لقسم الشركات (Companies Cascading Hard Delete & Soft Delete)
+* دعم التمييز التام بين الحذف المؤقت/الأرشفة (Soft Delete) والحذف النهائي (Hard Delete) عبر معامل الاستعلام `?hard=true`.
+* تنفيذ الحذف الشلالي الكلي (**Cascading Delete**) لجميع البيانات والكيانات التابعة للشركة في الباك إند (`CompanyUser`, `Order`, `Shipment`, `Invoice`, `Waybill`, `Payment`) في حال اختيار الحذف النهائي.
+* تحديث نافذة التأكيد قبل الحذف في الواجهة (`Companies.tsx`) بتوضيح تفصيلي لكافة البيانات التابعة التي سيتم مسحها بشكل نهائي.
+
 ---
 
-## 🎯 2. الخطوة الترتيبية القادمة للمرة القادمة (Next Steps: Completing Remaining Admin Pages)
+## 🎯 2. الخطوة الترتيبية القادمة للمرة القادمة (Next Steps)
 
-في الجلسة القادمة، سيتم استكمال تنميط وربط باقي صفحات لوحة التحكم بـ **React Query Hooks** ومخططات **Zod Validation** بالاعتماد على [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) بحسب الترتيب التالي:
+في الجلسة القادمة، سيتم استكمال تنميط وربط باقي صفحات لوحة التحكم ومراجعة آليات الحذف النهائي (Hard Delete)، الأرشفة (Soft Delete)، والحذف الشلالي (Cascading Delete) في جميع باقي أقسام لوحة التحكم بالاعتماد على [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) بحسب الترتيب التالي:
 
-1. 👥 **قسم موظفي الشركات والصلاحيات (`app/admin/(pages)/company-users/`)**:
-   - ربط `<CompanyUsersSection />` بـ `useCompanyUsers`, `useCreateCompanyUser`, `useUpdateCompanyUserRoleAndPermissions`.
+1. 🔄 **مراجعة وتعميم منطق الحذف والأرشفة الحجمية/الشلالية**: تطبيق نمط التمييز بين الحذف الكلي والمؤقت على باقي الأقسام.
 2. 🚚 **قسم الناقلين المتعاقد معهم (`app/admin/(pages)/carriers/`)**:
    - ربط `<CarriersSection />` بـ `useCarriers`, `useToggleCarrierStatus`, `useDeleteCarrier`.
-3. 🚛 **قسم الأسطول والشاحنات (`app/admin/(pages)/vehicles/`)**:
-   - ربط `<VehiclesSection />` بـ `useVehicles`, `useUpdateVehicleCapacities`, `useCreateVehicle`.
-4. 🗺️ **قسم المسارات والخطوط اللوجستية (`app/admin/(pages)/routes/`)**:
-   - ربط `<RoutesSection />` بـ `useRoutes`, `useUpdateRoutePricing`, `useCreateRoute`.
-5. 📦 **قسم الطلبات والتجميع (`app/admin/(pages)/orders/`)**:
-   - ربط `<OrdersSection />` بـ `useOrders`, `useBulkUploadOrders`, `useGroupOrdersToShipment`.
-6. 🚛 **قسم الشحنات وتعيين الموارد (`app/admin/(pages)/shipments/`)**:
+3. 🚛 **قسم الشحنات وتعيين الموارد (`app/admin/(pages)/shipments/`)**:
    - ربط `<ShipmentsSection />` بـ `useShipments`, `useAssignShipmentResources`, `useUpdateShipmentStatus`.
-7. 💳 **قسم الفواتير والمدفوعات (`app/admin/(pages)/invoices/` & `payments/`)**:
-   - ربط `<InvoicesSection />` بـ `useInvoices`, `useUpdateInvoiceStatus`, `useCreatePayment`.
-8. 📍 **قسم تتبع الشحنات اللحظي (`app/admin/(pages)/tracking/`)**:
+4. 💳 **قسم الفواتير والمدفوعات (`app/admin/(pages)/payments/`)**:
+   - ربط `<PaymentsSection />` بـ `usePayments`, `useCreatePayment`.
+5. 📍 **قسم تتبع الشحنات اللحظي (`app/admin/(pages)/tracking/`)**:
    - ربط `<TrackingSection />` بـ `useShipmentTrackingEvents`, `useLogTrackingEvent`.
 
 ---

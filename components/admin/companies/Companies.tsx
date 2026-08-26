@@ -56,7 +56,6 @@ export default function Companies() {
     const { data: companiesRes, isLoading, isError, error, refetch, isFetching } = useCompanies(page, limit);
     const { mutate: deleteCompany, isPending: isDeleting } = useDeleteCompany();
     const { mutate: approveCompany, isPending: isApproving } = useApproveCompany();
-    const { mutate: updateCompanyStatus } = useUpdateCompanyStatus();
 
     // Initial Loading State
     if (isLoading) return <Loading />;
@@ -583,7 +582,7 @@ export default function Companies() {
                 onConfirm={() => {
                     if (companyToDeleteId) {
                         deleteCompany(
-                            { id: companyToDeleteId },
+                            { id: companyToDeleteId, hard: true },
                             {
                                 onSuccess: () => setCompanyToDeleteId(null),
                             }
@@ -591,8 +590,8 @@ export default function Companies() {
                     }
                 }}
                 isDeleting={isDeleting}
-                title="تأكيد حذف الشركة"
-                description="هل أنت أصلًا متأكد من حذف هذه الشركة؟ سيؤدي هذا الإجراء لإخفاء بيانات الشركة مؤقتاً بالمنظومة (Soft Delete)."
+                title="تأكيد الحذف النهائي للشركة"
+                description="هل أنت متأكد من حذف هذه الشركة نهائياً؟ سيؤدي هذا الإجراء إلى مسح كافة البيانات المرتبطة بالشركة بشكل كامل (الموظفين، الطلبات، الشحنات، الفواتير، والمدفوعات)، ولا يمكن التراجع عن هذا الإجراء."
             />
         </div>
     );
