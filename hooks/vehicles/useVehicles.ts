@@ -8,17 +8,18 @@ import { AxiosError } from "axios";
 export const vehicleKeys = {
     all: ["vehicles"] as const,
     lists: () => [...vehicleKeys.all, "list"] as const,
-    list: (page: number, limit: number) => [...vehicleKeys.lists(), { page, limit }] as const,
+    list: (page: number, limit: number, search: string = "", status: string = "all") =>
+        [...vehicleKeys.lists(), { page, limit, search, status }] as const,
     allList: () => [...vehicleKeys.all, "all-list"] as const,
     details: () => [...vehicleKeys.all, "detail"] as const,
     detail: (id: string) => [...vehicleKeys.details(), id] as const,
 };
 
 // Queries
-export const useVehicles = (page: number = 1, limit: number = 10) => {
+export const useVehicles = (page: number = 1, limit: number = 10, search: string = "", status: string = "all") => {
     return useQuery({
-        queryKey: vehicleKeys.list(page, limit),
-        queryFn: () => vehicleServices.getVehicles(page, limit),
+        queryKey: vehicleKeys.list(page, limit, search, status),
+        queryFn: () => vehicleServices.getVehicles(page, limit, search, status),
         placeholderData: keepPreviousData,
     });
 };

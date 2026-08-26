@@ -2,9 +2,16 @@ import { Vehicle, VehicleResponse, VehicleSingleResponse, VehicleDeleteResponse 
 import axios from "axios";
 
 export const vehicleServices = {
-    // Get paginated vehicles list
-    getVehicles: async (page: number = 1, limit: number = 10): Promise<VehicleResponse> => {
-        const { data } = await axios.get(`/api/admin/vehicles?page=${page}&limit=${limit}`);
+    // Get paginated vehicles list with server-side search & filtering
+    getVehicles: async (page: number = 1, limit: number = 10, search: string = "", status: string = "all"): Promise<VehicleResponse> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+        });
+        if (search && search.trim() !== "") params.append("search", search.trim());
+        if (status && status !== "all") params.append("status", status);
+
+        const { data } = await axios.get(`/api/admin/vehicles?${params.toString()}`);
         return data;
     },
 

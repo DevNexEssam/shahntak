@@ -18,21 +18,40 @@ export async function GET(req: NextRequest) {
         }
 
         const { searchParams } = new URL(req.url);
+        const search = searchParams.get("search");
+        const status = searchParams.get("status");
         const noPagination = searchParams.get("nopagination") === "true";
 
+        const filter: Record<string, any> = { ...ACTIVE };
+        if (status === "active") filter.isActive = true;
+        if (status === "inactive") filter.isActive = false;
+
+        if (search && search.trim() !== "") {
+            filter.type = { $regex: search.trim(), $options: "i" };
+        }
+
         if (noPagination) {
-            const vehicles = await Vehicle.find(ACTIVE).sort({ createdAt: -1 });
-            return NextResponse.json({ success: true, data: vehicles, count: vehicles.length }, { status: 200 });
+            const vehicles = await Vehicle.find(filter).sort({ createdAt: -1 });
+            return NextResponse.json({ success: true, data: vehicles, count: vehicles.length, total: vehicles.length }, { status: 200 });
         }
 
         const page = Number(searchParams.get("page")) || 1;
         const limit = Number(searchParams.get("limit")) || 10;
         const skip = (page - 1) * limit;
 
-        const vehicles = await Vehicle.find(ACTIVE).sort({ createdAt: -1 }).skip(skip).limit(limit);
-        const total = await Vehicle.countDocuments(ACTIVE);
+        const vehicles = await Vehicle.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit);
 
-        return NextResponse.json({ success: true, data: vehicles, count: vehicles.length, total }, { status: 200 });
+        const active = await Vehicle.countDocuments({ ...filter, isActive: true });
+        const inactive = await Vehicle.countDocuments({ ...filter, isActive: false });
+        const total = await Vehicle.countDocuments(filter);
+
+        return NextResponse.json({
+            success: true,
+            data: vehicles,
+            count: vehicles.length,
+            total,
+            stats: { active, inactive, total },
+        }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
     }

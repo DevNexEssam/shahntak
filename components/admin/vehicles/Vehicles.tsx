@@ -9,6 +9,7 @@ import DetailsVehicles from './DetailsVehicles';
 import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
 import EmptyData from '@/components/ui/EmptyData';
 import Loading from '@/components/ui/loading';
+import ErrorMessege from '@/components/ui/ErrorMessege';
 import {
     LuTruck,
     LuPlus,
@@ -39,8 +40,8 @@ export default function Vehicles() {
     const [selectedVehicleForDetails, setSelectedVehicleForDetails] = useState<Vehicle | null>(null);
     const [selectedVehicleForDelete, setSelectedVehicleForDelete] = useState<Vehicle | null>(null);
 
-    // 3. React Query Hooks
-    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useVehicles(page, limit);
+    // 3. React Query Hooks with server-side search & filtering
+    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useVehicles(page, limit, searchQuery, filterStatus);
     const { mutate: deleteVehicle, isPending: isDeleting } = useDeleteVehicle();
 
     // 4. Initial Loading Check (Standard Rule)
@@ -50,7 +51,7 @@ export default function Vehicles() {
     const totalRecords = responseData?.total || 0;
     const totalPages = Math.ceil(totalRecords / limit) || 1;
 
-    // Rule 2: Always setPage(1) on search/filter changes
+    // Rule 1: Always setPage(1) on search/filter changes
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         setPage(1);
@@ -61,22 +62,12 @@ export default function Vehicles() {
         setPage(1);
     };
 
-    // Client side filtering over current page
-    const filteredVehicles = vehiclesList.filter((v) => {
-        const matchesSearch = v.type.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesStatus =
-            filterStatus === 'all' ||
-            (filterStatus === 'active' && v.isActive !== false) ||
-            (filterStatus === 'inactive' && v.isActive === false);
-
-        return matchesSearch && matchesStatus;
-    });
-
-    // Stats Calculation
+    // Stats Calculation from server stats
+    const serverStats = responseData?.stats;
     const stats = {
-        total: totalRecords || vehiclesList.length,
-        active: vehiclesList.filter(v => v.isActive !== false).length,
-        inactive: vehiclesList.filter(v => v.isActive === false).length,
+        total: serverStats?.total ?? totalRecords,
+        active: serverStats?.active ?? 0,
+        inactive: serverStats?.inactive ?? 0,
     };
 
     const handleDeleteConfirm = () => {
@@ -128,9 +119,8 @@ export default function Vehicles() {
 
             {/* Error Notification Banner */}
             {isError && (
-                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-bold flex items-center justify-between">
-                    <span>تعذر جلب بيانات الأسطول: {(error as any)?.message || 'حدث خطأ في الاتصال بالخادم'}</span>
-                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">إعادة المحاولة</button>
+                <div className="mb-4">
+                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات الأسطول من الخادم'} />
                 </div>
             )}
 
@@ -172,7 +162,7 @@ export default function Vehicles() {
                             <span className="text-xs font-semibold text-body block mb-1">الموقوفة / الصيانة</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.inactive}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>غير نشطة حرياً</span>
+                                <span>غير نشطة حالياً</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
@@ -213,7 +203,7 @@ export default function Vehicles() {
 
             {/* Data Table View */}
             <div className="bg-surface rounded-md border border-border overflow-hidden">
-                {filteredVehicles.length === 0 ? (
+                {vehiclesList.length === 0 ? (
                     <div className="p-12 text-center">
                         <EmptyData message="لا توجد مركبات تطابق خيارات البحث أو التصفية الحالية" icon={LuTruck} />
                     </div>
@@ -230,7 +220,7 @@ export default function Vehicles() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
-                                {filteredVehicles.map((v) => (
+                                {vehiclesList.map((v) => (
                                     <tr key={v._id} className="hover:bg-surface-muted/40 transition-colors">
                                         <td className="py-3.5 px-4 font-bold text-heading">
                                             <div className="flex items-center gap-2.5">
