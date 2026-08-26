@@ -2,9 +2,16 @@ import { Invoice, InvoiceResponse, InvoiceSingleResponse, InvoiceDeleteResponse 
 import axios from "axios";
 
 export const invoiceServices = {
-    // Get paginated invoices list
-    getInvoices: async (page: number = 1, limit: number = 10): Promise<InvoiceResponse> => {
-        const { data } = await axios.get(`/api/admin/invoices?page=${page}&limit=${limit}`);
+    // Get paginated invoices list with server-side search & filtering
+    getInvoices: async (page: number = 1, limit: number = 10, search: string = "", status: string = "all"): Promise<InvoiceResponse> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+        });
+        if (search && search.trim() !== "") params.append("search", search.trim());
+        if (status && status !== "all") params.append("status", status);
+
+        const { data } = await axios.get(`/api/admin/invoices?${params.toString()}`);
         return data;
     },
 

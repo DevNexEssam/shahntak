@@ -20,15 +20,20 @@ export async function GET(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const companyId = searchParams.get("companyId");
         const status = searchParams.get("status");
+        const search = searchParams.get("search");
         const noPagination = searchParams.get("nopagination") === "true";
 
         const filter: Record<string, any> = { ...ACTIVE };
         if (companyId) filter.companyId = companyId;
-        if (status) filter.status = status;
+        if (status && status !== "all") filter.status = status;
+
+        if (search && search.trim() !== "") {
+            filter.invoiceNumber = { $regex: search.trim(), $options: "i" };
+        }
 
         if (noPagination) {
             const invoices = await Invoice.find(filter).populate("companyId", "companyName email").sort({ createdAt: -1 });
-            return NextResponse.json({ success: true, data: invoices, count: invoices.length }, { status: 200 });
+            return NextResponse.json({ success: true, data: invoices, count: invoices.length, total: invoices.length }, { status: 200 });
         }
 
         const page = Number(searchParams.get("page")) || 1;
@@ -38,7 +43,26 @@ export async function GET(req: NextRequest) {
         const invoices = await Invoice.find(filter).populate("companyId", "companyName email").sort({ createdAt: -1 }).skip(skip).limit(limit);
         const total = await Invoice.countDocuments(filter);
 
-        return NextResponse.json({ success: true, data: invoices, count: invoices.length, total }, { status: 200 });
+        const draft = await Invoice.countDocuments({ ...filter, status: "draft" });
+        const issued = await Invoice.countDocuments({ ...filter, status: "issued" });
+        const paid = await Invoice.countDocuments({ ...filter, status: "paid" });
+        const overdue = await Invoice.countDocuments({ ...filter, status: "overdue" });
+        const cancelled = await Invoice.countDocuments({ ...filter, status: "cancelled" });
+
+        // Aggregating collected vs pending totals
+        const paidInvoices = await Invoice.find({ ...filter, status: "paid" });
+        const totalCollected = paidInvoices.reduce((sum, inv) => sum + (inv.total || 0), 0);
+
+        const pendingInvoices = await Invoice.find({ ...filter, status: { $in: ["issued", "overdue", "draft"] } });
+        const totalPending = pendingInvoices.reduce((sum, inv) => sum + (inv.total || 0), 0);
+
+        return NextResponse.json({
+            success: true,
+            data: invoices,
+            count: invoices.length,
+            total,
+            stats: { draft, issued, paid, overdue, cancelled, total, totalCollected, totalPending },
+        }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
     }

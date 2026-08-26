@@ -396,6 +396,8 @@ export interface InvoiceResponse {
         overdue: number;
         cancelled: number;
         total: number;
+        totalCollected?: number;
+        totalPending?: number;
     };
 }
 

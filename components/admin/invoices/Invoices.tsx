@@ -9,6 +9,7 @@ import DetailsInvoices from './DetailsInvoices';
 import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
 import EmptyData from '@/components/ui/EmptyData';
 import Loading from '@/components/ui/loading';
+import ErrorMessege from '@/components/ui/ErrorMessege';
 import {
     LuReceipt,
     LuPlus,
@@ -40,8 +41,8 @@ export default function Invoices() {
     const [selectedInvoiceForDetails, setSelectedInvoiceForDetails] = useState<Invoice | null>(null);
     const [selectedInvoiceForDelete, setSelectedInvoiceForDelete] = useState<Invoice | null>(null);
 
-    // 3. React Query Hooks
-    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useInvoices(page, limit);
+    // 3. React Query Hooks with server-side search & filtering
+    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useInvoices(page, limit, searchQuery, filterStatus);
     const { mutate: deleteInvoice, isPending: isDeleting } = useDeleteInvoice();
 
     // 4. Initial Loading Check (Standard Rule)
@@ -51,7 +52,7 @@ export default function Invoices() {
     const totalRecords = responseData?.total || 0;
     const totalPages = Math.ceil(totalRecords / limit) || 1;
 
-    // Rule 2: Always setPage(1) on search/filter changes
+    // Rule 1: Always setPage(1) on search/filter changes
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         setPage(1);
@@ -62,29 +63,10 @@ export default function Invoices() {
         setPage(1);
     };
 
-    // Client side filtering over current page
-    const filteredInvoices = invoicesList.filter((inv) => {
-        const companyName = typeof inv.companyId === 'object' && inv.companyId !== null
-            ? (inv.companyId as Company).companyName
-            : '';
-
-        const matchesSearch =
-            inv.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            companyName.toLowerCase().includes(searchQuery.toLowerCase());
-
-        const matchesStatus = filterStatus === 'all' || inv.status === filterStatus;
-
-        return matchesSearch && matchesStatus;
-    });
-
-    // Financial Stats Calculation
-    const totalCollected = invoicesList
-        .filter(i => i.status === 'paid')
-        .reduce((sum, i) => sum + (i.total || 0), 0);
-
-    const totalPending = invoicesList
-        .filter(i => i.status === 'issued' || i.status === 'overdue' || i.status === 'draft')
-        .reduce((sum, i) => sum + (i.total || 0), 0);
+    // Financial Stats Calculation from Server Response
+    const serverStats = responseData?.stats;
+    const totalCollected = serverStats?.totalCollected ?? 0;
+    const totalPending = serverStats?.totalPending ?? 0;
 
     const handleDeleteConfirm = () => {
         if (!selectedInvoiceForDelete) return;
@@ -151,9 +133,8 @@ export default function Invoices() {
 
             {/* Error Notification Banner */}
             {isError && (
-                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-bold flex items-center justify-between">
-                    <span>تعذر جلب بيانات الفواتير: {(error as any)?.message || 'حدث خطأ في الاتصال بالخادم'}</span>
-                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">إعادة المحاولة</button>
+                <div className="mb-4">
+                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات الفواتير من الخادم'} />
                 </div>
             )}
 
@@ -163,7 +144,7 @@ export default function Invoices() {
                     <div className="flex items-center justify-between gap-4">
                         <div>
                             <span className="text-xs font-semibold text-body block mb-1">إجمالي الفواتير</span>
-                            <h3 className="text-2xl font-bold text-heading my-1">{totalRecords || invoicesList.length}</h3>
+                            <h3 className="text-2xl font-bold text-heading my-1">{serverStats?.total ?? totalRecords}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
                                 <span>المصدرة بالمنصة</span>
                             </p>
@@ -239,7 +220,7 @@ export default function Invoices() {
 
             {/* Data Table View */}
             <div className="bg-surface rounded-md border border-border overflow-hidden">
-                {filteredInvoices.length === 0 ? (
+                {invoicesList.length === 0 ? (
                     <div className="p-12 text-center">
                         <EmptyData message="لا توجد فواتير تطابق خيارات البحث أو التصفية الحالية" icon={LuReceipt} />
                     </div>
@@ -257,7 +238,7 @@ export default function Invoices() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
-                                {filteredInvoices.map((inv) => {
+                                {invoicesList.map((inv) => {
                                     const compName = typeof inv.companyId === 'object' && inv.companyId !== null
                                         ? (inv.companyId as Company).companyName
                                         : 'غير محددة';
