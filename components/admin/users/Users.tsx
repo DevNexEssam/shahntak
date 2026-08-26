@@ -9,6 +9,7 @@ import DetailsUsers from "./DetailsUsers";
 import ConfirmDeletePopup from "@/components/ui/ConfirmDeletePopup";
 import EmptyData from "@/components/ui/EmptyData";
 import Loading from "@/components/ui/loading";
+import ErrorMessege from "@/components/ui/ErrorMessege";
 import {
     LuUser,
     LuPlus,
@@ -114,9 +115,8 @@ export default function Users() {
 
             {/* Error Notification Banner */}
             {isError && (
-                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-bold flex items-center justify-between">
-                    <span>حدث خطأ في تحميل بيانات المستخدمين: {(error as Error)?.message || "خطأ في الاتصال بالخادم"}</span>
-                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">إعادة المحاولة</button>
+                <div className="mb-4">
+                    <ErrorMessege message={(error as Error)?.message || "تعذر جلب بيانات المستخدمين من الخادم"} />
                 </div>
             )}
 

@@ -23,11 +23,25 @@ export async function GET(req: NextRequest) {
         }
 
         const { searchParams } = new URL(req.url);
+        const search = searchParams.get("search");
+        const status = searchParams.get("status");
         const noPagination = searchParams.get("nopagination") === "true";
 
+        const filter: Record<string, any> = { ...ACTIVE };
+        if (status && status !== "all") filter.status = status;
+
+        if (search && search.trim() !== "") {
+            const searchRegex = { $regex: search.trim(), $options: "i" };
+            filter.$or = [
+                { name: searchRegex },
+                { email: searchRegex },
+                { phone: searchRegex },
+            ];
+        }
+
         if (noPagination) {
-            const users = await User.find(ACTIVE).select("-password").sort({ createdAt: -1 });
-            return NextResponse.json({ success: true, data: users, count: users.length }, { status: 200 });
+            const users = await User.find(filter).select("-password").sort({ createdAt: -1 });
+            return NextResponse.json({ success: true, data: users, count: users.length, total: users.length }, { status: 200 });
         }
 
         const page = Number(searchParams.get("page")) || 1;
@@ -35,15 +49,15 @@ export async function GET(req: NextRequest) {
         const skip = (page - 1) * limit;
 
         // Fetch users without passwords
-        const users = await User.find(ACTIVE)
+        const users = await User.find(filter)
             .select("-password")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
 
-        const active = await User.countDocuments({ ...ACTIVE, status: "active" });
-        const inactive = await User.countDocuments({ ...ACTIVE, status: "inactive" });
-        const total = await User.countDocuments(ACTIVE);
+        const active = await User.countDocuments({ ...filter, status: "active" });
+        const inactive = await User.countDocuments({ ...filter, status: "inactive" });
+        const total = await User.countDocuments(filter);
 
         const stats = {
             active,
@@ -56,6 +70,7 @@ export async function GET(req: NextRequest) {
                 success: true,
                 data: users,
                 count: users.length,
+                total,
                 stats
             },
             { status: 200 }
