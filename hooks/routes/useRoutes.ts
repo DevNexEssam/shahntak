@@ -8,17 +8,18 @@ import { AxiosError } from "axios";
 export const routeKeys = {
     all: ["routes"] as const,
     lists: () => [...routeKeys.all, "list"] as const,
-    list: (page: number, limit: number) => [...routeKeys.lists(), { page, limit }] as const,
+    list: (page: number, limit: number, search: string = "", status: string = "all") =>
+        [...routeKeys.lists(), { page, limit, search, status }] as const,
     allList: () => [...routeKeys.all, "all-list"] as const,
     details: () => [...routeKeys.all, "detail"] as const,
     detail: (id: string) => [...routeKeys.details(), id] as const,
 };
 
 // Queries
-export const useRoutes = (page: number = 1, limit: number = 10) => {
+export const useRoutes = (page: number = 1, limit: number = 10, search: string = "", status: string = "all") => {
     return useQuery({
-        queryKey: routeKeys.list(page, limit),
-        queryFn: () => routeServices.getRoutes(page, limit),
+        queryKey: routeKeys.list(page, limit, search, status),
+        queryFn: () => routeServices.getRoutes(page, limit, search, status),
         placeholderData: keepPreviousData,
     });
 };

@@ -9,6 +9,7 @@ import DetailsRoutes from './DetailsRoutes';
 import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
 import EmptyData from '@/components/ui/EmptyData';
 import Loading from '@/components/ui/loading';
+import ErrorMessege from '@/components/ui/ErrorMessege';
 import {
     LuMapPin,
     LuPlus,
@@ -41,8 +42,8 @@ export default function Routes() {
     const [selectedRouteForDetails, setSelectedRouteForDetails] = useState<Route | null>(null);
     const [selectedRouteForDelete, setSelectedRouteForDelete] = useState<Route | null>(null);
 
-    // 3. React Query Hooks
-    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useRoutes(page, limit);
+    // 3. React Query Hooks with server-side search & filtering
+    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useRoutes(page, limit, searchQuery, filterStatus);
     const { mutate: deleteRoute, isPending: isDeleting } = useDeleteRoute();
 
     // 4. Initial Loading Check (Standard Rule)
@@ -52,7 +53,7 @@ export default function Routes() {
     const totalRecords = responseData?.total || 0;
     const totalPages = Math.ceil(totalRecords / limit) || 1;
 
-    // Rule 2: Always setPage(1) on search/filter changes
+    // Rule 1: Always setPage(1) on search/filter changes
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         setPage(1);
@@ -63,26 +64,12 @@ export default function Routes() {
         setPage(1);
     };
 
-    // Client side filtering over current page
-    const filteredRoutes = routesList.filter((rt) => {
-        const matchesSearch =
-            rt.origin.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            rt.destination.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            rt.vehicleType.toLowerCase().includes(searchQuery.toLowerCase());
-
-        const matchesStatus =
-            filterStatus === 'all' ||
-            (filterStatus === 'active' && rt.isActive !== false) ||
-            (filterStatus === 'inactive' && rt.isActive === false);
-
-        return matchesSearch && matchesStatus;
-    });
-
-    // Stats Calculation
+    // Stats Calculation from server stats
+    const serverStats = responseData?.stats;
     const stats = {
-        total: totalRecords || routesList.length,
-        active: routesList.filter(r => r.isActive !== false).length,
-        inactive: routesList.filter(r => r.isActive === false).length,
+        total: serverStats?.total ?? totalRecords,
+        active: serverStats?.active ?? 0,
+        inactive: serverStats?.inactive ?? 0,
     };
 
     const handleDeleteConfirm = () => {
@@ -134,9 +121,8 @@ export default function Routes() {
 
             {/* Error Notification Banner */}
             {isError && (
-                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-bold flex items-center justify-between">
-                    <span>تعذر جلب بيانات المسارات: {(error as any)?.message || 'حدث خطأ في الاتصال بالخادم'}</span>
-                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">إعادة المحاولة</button>
+                <div className="mb-4">
+                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات المسارات من الخادم'} />
                 </div>
             )}
 
@@ -219,7 +205,7 @@ export default function Routes() {
 
             {/* Data Table View */}
             <div className="bg-surface rounded-md border border-border overflow-hidden">
-                {filteredRoutes.length === 0 ? (
+                {routesList.length === 0 ? (
                     <div className="p-12 text-center">
                         <EmptyData message="لا توجد مسارات لوجستية تطابق خيارات البحث أو التصفية الحالية" icon={LuMapPin} />
                     </div>
@@ -238,7 +224,7 @@ export default function Routes() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
-                                {filteredRoutes.map((rt) => {
+                                {routesList.map((rt) => {
                                     const carrierName = typeof rt.carrierId === 'object' && rt.carrierId !== null
                                         ? (rt.carrierId as Carrier).name
                                         : 'جميع الناقلين';

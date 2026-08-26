@@ -2,9 +2,16 @@ import { Route, RouteResponse, RouteSingleResponse, RouteDeleteResponse } from "
 import axios from "axios";
 
 export const routeServices = {
-    // Get paginated logistics routes list
-    getRoutes: async (page: number = 1, limit: number = 10): Promise<RouteResponse> => {
-        const { data } = await axios.get(`/api/admin/routes?page=${page}&limit=${limit}`);
+    // Get paginated logistics routes list with server-side search & filtering
+    getRoutes: async (page: number = 1, limit: number = 10, search: string = "", status: string = "all"): Promise<RouteResponse> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+        });
+        if (search && search.trim() !== "") params.append("search", search.trim());
+        if (status && status !== "all") params.append("status", status);
+
+        const { data } = await axios.get(`/api/admin/routes?${params.toString()}`);
         return data;
     },
 
