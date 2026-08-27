@@ -75,7 +75,7 @@ export default function Orders() {
     const handleDeleteConfirm = () => {
         if (!selectedOrderForDelete) return;
         deleteOrder(
-            { id: selectedOrderForDelete._id, hard: false },
+            { id: selectedOrderForDelete._id, hard: true },
             {
                 onSuccess: () => {
                     setSelectedOrderForDelete(null);
@@ -404,7 +404,7 @@ export default function Orders() {
             <ConfirmDeletePopup
                 isOpen={!!selectedOrderForDelete}
                 title="تأكيد حذف الطلب"
-                description={`هل أنت تأكد من رغبتك في نقل الطلب (${selectedOrderForDelete?.orderNumber}) لسلة المحذوفات؟`}
+                description={`هل أنت تأكد من رغبتك في حذف الطلب (${selectedOrderForDelete?.orderNumber})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedOrderForDelete(null)}
