@@ -54,20 +54,29 @@
   * **البوالص والفواتير المالية (`admin/dashboard/invoices`)**: إرسال `hard: true` لإجراء الحذف المادي والمباشر بـ `Invoice.findByIdAndDelete(id)`.
 * **الربط مع الـ UI والنواحي الفنية**: توحيد نصوص ومظهر مودال `ConfirmDeletePopup` وتصفير الكائنات المحددة فور النجاح، وإتاحة `step="any"` لجميع مدخلات الأرقام والأسعار والأوزان.
 
+### 1.11 تنميط وتخريج قسم الناقلين المتعاقد معهم (`admin/dashboard/carriers`)
+* إنشاء وتنميط مكونات الواجهة الموحدة بالكامل (`Carriers.tsx`, `AddCarriers.tsx`, `EditCarriers.tsx`, `DetailsCarriers.tsx`).
+* إتاحة الفلترة والبحث السيرفري باسم الناقل والجوال والبريد والنوع (`local` / `external_api`).
+* ربط الحذف المادي المباشر وتحديث القائمة الجانبية وإحراز بناء خالي من الأخطاء 100%.
+
+### 1.12 تنميط وتخريج قسم الشحنات وتعيين الموارد (`admin/dashboard/shipments`)
+* إنشاء وتنميط مكونات الواجهة بالكامل (`Shipments.tsx`, `AddShipments.tsx`, `EditShipments.tsx`, `DetailsShipments.tsx`).
+* توليد رقم الشحنة افتراضياً تلقائياً (`SHP-Year-XXX`) لحماية تكرار أو خطأ الإدخال المانوي.
+* ربط اختيار الشركة والمسار والناقل والمركبة وإتاحة `step="any"` لتكلفة وسعر الشحن.
+
+### 1.13 تنميط وتخريج قسم سداد المدفوعات والمعاملات المالية (`admin/dashboard/payments`)
+* إنشاء وتنميط مكونات الواجهة بالكامل (`Payments.tsx`, `AddPayments.tsx`, `EditPayments.tsx`, `DetailsPayments.tsx`).
+* الربط بالفواتير المستحقة وتحديث حالة الفاتورة تلقائياً في الباك إند إلى "مدفوعة ومحصلة" فور إثبات السداد.
+* استخدام `step="any"` لمبالغ التحويلات وإزالة الأقواس واللغة الإنجليزية في الخيارات المنبثقة.
+
 ---
 
 ## 🎯 2. الخطوة الترتيبية القادمة للمرة القادمة (Next Steps)
 
-في الجلسة القادمة، سيتم استكمال تنميط وربط باقي صفحات لوحة التحكم بالاعتماد على [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) بحسب الترتيب التالي:
+في الجلسة القادمة، سيتم استكمال تنميط وربط القسم المتبقي من لوحة التحكم بالاعتماد على [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) بحسب الترتيب التالي:
 
-1. 🚚 **قسم الناقلين المتعاقد معهم (`app/admin/(pages)/carriers/`)**:
-   - ربط `<CarriersSection />` بـ `useCarriers`, `useToggleCarrierStatus`, `useDeleteCarrier`.
-2. 🚛 **قسم الشحنات وتعيين الموارد (`app/admin/(pages)/shipments/`)**:
-   - ربط `<ShipmentsSection />` بـ `useShipments`, `useAssignShipmentResources`, `useUpdateShipmentStatus`.
-3. 💳 **قسم الفواتير والمدفوعات (`app/admin/(pages)/payments/`)**:
-   - ربط `<PaymentsSection />` بـ `usePayments`, `useCreatePayment`.
-4. 📍 **قسم تتبع الشحنات اللحظي (`app/admin/(pages)/tracking/`)**:
-   - ربط `<TrackingSection />` بـ `useShipmentTrackingEvents`, `useLogTrackingEvent`.
+1. 📍 **قسم تتبع الشحنات اللحظي والأحداث (`app/admin/(pages)/tracking/`)**:
+   - ربط المراقبة اللحظية لنقاط الترانزيت وتسجيل الأحداث بـ `useShipmentTrackingEvents`, `useLogTrackingEvent`.
 
 ---
 
