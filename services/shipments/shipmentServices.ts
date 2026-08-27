@@ -2,9 +2,17 @@ import { Shipment, ShipmentResponse, ShipmentSingleResponse, ShipmentDeleteRespo
 import axios from "axios";
 
 export const shipmentServices = {
-    // Get paginated shipments list
-    getShipments: async (page: number = 1, limit: number = 10): Promise<ShipmentResponse> => {
-        const { data } = await axios.get(`/api/admin/shipments?page=${page}&limit=${limit}`);
+    // Get paginated shipments list with server-side search & filtering
+    getShipments: async (page: number = 1, limit: number = 10, search: string = "", status: string = "all", type: string = "all"): Promise<ShipmentResponse> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+        });
+        if (search && search.trim() !== "") params.append("search", search.trim());
+        if (status && status !== "all") params.append("status", status);
+        if (type && type !== "all") params.append("type", type);
+
+        const { data } = await axios.get(`/api/admin/shipments?${params.toString()}`);
         return data;
     },
 

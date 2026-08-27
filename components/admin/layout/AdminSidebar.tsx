@@ -49,8 +49,13 @@ const navItems: NavItem[] = [
         icon: <LuTruck className="w-5 h-5" />,
     },
     {
-        title: 'الطلبات والشحنات',
+        title: 'إدارة الطلبات',
         href: '/admin/dashboard/orders',
+        icon: <LuPackage className="w-5 h-5" />,
+    },
+    {
+        title: 'الشحنات وتعيين الموارد',
+        href: '/admin/dashboard/shipments',
         icon: <LuPackage className="w-5 h-5" />,
     },
     {

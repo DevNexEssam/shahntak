@@ -27,18 +27,30 @@ export async function GET(req: NextRequest) {
         const companyId = searchParams.get("companyId");
         const type = searchParams.get("type");
         const status = searchParams.get("status");
+        const search = searchParams.get("search");
         const noPagination = searchParams.get("nopagination") === "true";
 
         const filter: Record<string, any> = { ...ACTIVE };
-        if (companyId) filter.companyId = companyId;
-        if (type) filter.type = type;
-        if (status) filter.status = status;
+        if (companyId && companyId.trim() !== "") filter.companyId = companyId;
+        if (type && type !== "all") filter.type = type;
+        if (status && status !== "all") filter.status = status;
+
+        if (search && search.trim() !== "") {
+            const regex = new RegExp(search.trim(), "i");
+            filter.$or = [
+                { shipmentNumber: regex },
+                { origin: regex },
+                { destination: regex },
+                { trackingNumber: regex },
+                { waybillNumber: regex },
+            ];
+        }
 
         if (noPagination) {
             const shipments = await Shipment.find(filter)
                 .populate("companyId", "companyName email")
                 .populate("carrierId", "name type")
-                .populate("vehicleId", "type")
+                .populate("vehicleId", "type capacityWeight")
                 .populate("routeId", "origin destination")
                 .sort({ createdAt: -1 });
 
@@ -55,23 +67,28 @@ export async function GET(req: NextRequest) {
         const shipments = await Shipment.find(filter)
             .populate("companyId", "companyName email")
             .populate("carrierId", "name type")
-            .populate("vehicleId", "type")
+            .populate("vehicleId", "type capacityWeight")
             .populate("routeId", "origin destination")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
 
-        const created = await Shipment.countDocuments({ ...filter, status: "created" });
-        const inTransit = await Shipment.countDocuments({ ...filter, status: "in_transit" });
-        const delivered = await Shipment.countDocuments({ ...filter, status: "delivered" });
-        const cancelled = await Shipment.countDocuments({ ...filter, status: "cancelled" });
-        const total = await Shipment.countDocuments(filter);
+        const [created, inTransit, delivered, cancelled, total] = await Promise.all([
+            Shipment.countDocuments({ ...ACTIVE, status: "created" }),
+            Shipment.countDocuments({ ...ACTIVE, status: "in_transit" }),
+            Shipment.countDocuments({ ...ACTIVE, status: "delivered" }),
+            Shipment.countDocuments({ ...ACTIVE, status: "cancelled" }),
+            Shipment.countDocuments(ACTIVE),
+        ]);
+
+        const filteredTotal = await Shipment.countDocuments(filter);
 
         return NextResponse.json(
             {
                 success: true,
                 data: shipments,
                 count: shipments.length,
+                total: filteredTotal,
                 stats: { created, inTransit, delivered, cancelled, total },
             },
             { status: 200 }

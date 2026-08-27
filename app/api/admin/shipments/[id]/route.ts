@@ -173,7 +173,7 @@ export async function PATCH(req: Request, context: any) {
 }
 
 // DELETE shipment
-export async function DELETE(_req: Request, context: any) {
+export async function DELETE(req: Request, context: any) {
     try {
         await connectDB();
 
@@ -199,16 +199,20 @@ export async function DELETE(_req: Request, context: any) {
             );
         }
 
+        const { searchParams } = new URL(req.url);
+        const isHardDelete = searchParams.get("hard") === "true";
+
         let deletedShipment;
 
-        // Perform soft delete if permitted, otherwise hard delete
-        if (canSoftDelete) {
+        if (isHardDelete && canHardDelete) {
+            deletedShipment = await Shipment.findByIdAndDelete(id);
+        } else if (canSoftDelete) {
             deletedShipment = await Shipment.findOneAndUpdate(
                 { _id: id, ...ACTIVE },
                 { status: "cancelled", deletedAt: new Date() },
                 { new: true }
             );
-        } else {
+        } else if (canHardDelete) {
             deletedShipment = await Shipment.findByIdAndDelete(id);
         }
 
