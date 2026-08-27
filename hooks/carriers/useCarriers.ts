@@ -8,17 +8,18 @@ import { AxiosError } from "axios";
 export const carrierKeys = {
     all: ["carriers"] as const,
     lists: () => [...carrierKeys.all, "list"] as const,
-    list: (page: number, limit: number) => [...carrierKeys.lists(), { page, limit }] as const,
+    list: (page: number, limit: number, search: string = "", status: string = "all", type: string = "all") =>
+        [...carrierKeys.lists(), { page, limit, search, status, type }] as const,
     allList: () => [...carrierKeys.all, "all-list"] as const,
     details: () => [...carrierKeys.all, "detail"] as const,
     detail: (id: string) => [...carrierKeys.details(), id] as const,
 };
 
 // Queries
-export const useCarriers = (page: number = 1, limit: number = 10) => {
+export const useCarriers = (page: number = 1, limit: number = 10, search: string = "", status: string = "all", type: string = "all") => {
     return useQuery({
-        queryKey: carrierKeys.list(page, limit),
-        queryFn: () => carrierServices.getCarriers(page, limit),
+        queryKey: carrierKeys.list(page, limit, search, status, type),
+        queryFn: () => carrierServices.getCarriers(page, limit, search, status, type),
         placeholderData: keepPreviousData,
     });
 };

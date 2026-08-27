@@ -15,7 +15,8 @@ import {
     LuLogOut,
     LuShieldAlert,
     LuUser,
-    LuUsers
+    LuUsers,
+    LuTruck
 } from 'react-icons/lu';
 
 interface NavItem {
@@ -41,6 +42,11 @@ const navItems: NavItem[] = [
         title: 'موظفو الشركات',
         href: '/admin/dashboard/company-users',
         icon: <LuUsers className="w-5 h-5" />,
+    },
+    {
+        title: 'الناقلون والشركاء',
+        href: '/admin/dashboard/carriers',
+        icon: <LuTruck className="w-5 h-5" />,
     },
     {
         title: 'الطلبات والشحنات',

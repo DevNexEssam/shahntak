@@ -56,7 +56,9 @@ export interface CarrierResponse {
     count: number;
     stats?: {
         active: number;
-        inactive: number;
+        inactive?: number;
+        local?: number;
+        external?: number;
         total: number;
     };
 }

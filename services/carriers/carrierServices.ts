@@ -2,9 +2,17 @@ import { Carrier, CarrierResponse, CarrierSingleResponse, CarrierDeleteResponse 
 import axios from "axios";
 
 export const carrierServices = {
-    // Get paginated carriers list
-    getCarriers: async (page: number = 1, limit: number = 10): Promise<CarrierResponse> => {
-        const { data } = await axios.get(`/api/admin/carriers?page=${page}&limit=${limit}`);
+    // Get paginated carriers list with server-side search & filtering
+    getCarriers: async (page: number = 1, limit: number = 10, search: string = "", status: string = "all", type: string = "all"): Promise<CarrierResponse> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+        });
+        if (search && search.trim() !== "") params.append("search", search.trim());
+        if (status && status !== "all") params.append("status", status);
+        if (type && type !== "all") params.append("type", type);
+
+        const { data } = await axios.get(`/api/admin/carriers?${params.toString()}`);
         return data;
     },
 

@@ -27,12 +27,55 @@ export async function GET(req: NextRequest) {
 
         const page = Number(searchParams.get("page")) || 1;
         const limit = Number(searchParams.get("limit")) || 10;
+        const search = searchParams.get("search") || "";
+        const status = searchParams.get("status") || "all";
+        const typeFilter = searchParams.get("type") || "all";
         const skip = (page - 1) * limit;
 
-        const carriers = await Carrier.find(ACTIVE).sort({ createdAt: -1 }).skip(skip).limit(limit);
-        const total = await Carrier.countDocuments(ACTIVE);
+        const query: any = { ...ACTIVE };
 
-        return NextResponse.json({ success: true, data: carriers, count: carriers.length, total }, { status: 200 });
+        if (status === "active") {
+            query.isActive = true;
+        } else if (status === "inactive") {
+            query.isActive = false;
+        }
+
+        if (typeFilter === "local" || typeFilter === "external_api") {
+            query.type = typeFilter;
+        }
+
+        if (search.trim() !== "") {
+            const regex = new RegExp(search.trim(), "i");
+            query.$or = [
+                { name: regex },
+                { contactPhone: regex },
+                { contactEmail: regex },
+            ];
+        }
+
+        const [carriers, total, totalAll, localCount, externalCount, activeCount] = await Promise.all([
+            Carrier.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+            Carrier.countDocuments(query),
+            Carrier.countDocuments(ACTIVE),
+            Carrier.countDocuments({ ...ACTIVE, type: "local" }),
+            Carrier.countDocuments({ ...ACTIVE, type: "external_api" }),
+            Carrier.countDocuments({ ...ACTIVE, isActive: true }),
+        ]);
+
+        const stats = {
+            total: totalAll,
+            local: localCount,
+            external: externalCount,
+            active: activeCount,
+        };
+
+        return NextResponse.json({
+            success: true,
+            data: carriers,
+            count: carriers.length,
+            total,
+            stats,
+        }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
     }

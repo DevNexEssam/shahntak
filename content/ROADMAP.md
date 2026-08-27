@@ -46,20 +46,27 @@
 * تصميم وإنشاء صفحة التفاصيل الشاملة بكروت KPI قياسية للبيانات اللوجستية والمالية وسجل الاعتماد الإداري.
 * إضافة الزر الانتقالي المباشر الثاني (`LuExternalLink`) في جدول وبطاقات الشركات.
 
+### 1.10 تعميم وتوثيق آليات الحذف النهائي والدائم (Hard Delete Standardization Across All Sections)
+* تم تعميم وتأمين نمط الحذف الكلي والنهائي المباشر من قاعدة البيانات (**Hard Delete**) لجميع السكاشن الرئيسية في لوحة التحكم:
+  * **الطلبات (`admin/dashboard/orders`)**: إرسال `hard: true` صراحةً وتحديث الـ DELETE API ليقوم بحذف الطلب نهائياً من داتا بيز MongoDB عبر `Order.findByIdAndDelete(id)`.
+  * **المسارات والخطوط اللوجستية (`admin/dashboard/routes`)**: تفعيل `hard: true` لربط مودال الحذف بـ `Route.findByIdAndDelete(id)`.
+  * **أسطول المركبات والشاحنات (`admin/dashboard/vehicles`)**: إرسال `hard: true` لمسح المركبة من القاعدة فوراً عبر `Vehicle.findByIdAndDelete(id)`.
+  * **البوالص والفواتير المالية (`admin/dashboard/invoices`)**: إرسال `hard: true` لإجراء الحذف المادي والمباشر بـ `Invoice.findByIdAndDelete(id)`.
+* **الربط مع الـ UI والنواحي الفنية**: توحيد نصوص ومظهر مودال `ConfirmDeletePopup` وتصفير الكائنات المحددة فور النجاح، وإتاحة `step="any"` لجميع مدخلات الأرقام والأسعار والأوزان.
+
 ---
 
 ## 🎯 2. الخطوة الترتيبية القادمة للمرة القادمة (Next Steps)
 
-في الجلسة القادمة، سيتم استكمال تنميط وربط باقي صفحات لوحة التحكم ومراجعة آليات الحذف النهائي (Hard Delete)، الأرشفة (Soft Delete)، والحذف الشلالي (Cascading Delete) في جميع باقي أقسام لوحة التحكم بالاعتماد على [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) بحسب الترتيب التالي:
+في الجلسة القادمة، سيتم استكمال تنميط وربط باقي صفحات لوحة التحكم بالاعتماد على [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) بحسب الترتيب التالي:
 
-1. 🔄 **مراجعة وتعميم منطق الحذف والأرشفة الحجمية/الشلالية**: تطبيق نمط التمييز بين الحذف الكلي والمؤقت على باقي الأقسام.
-2. 🚚 **قسم الناقلين المتعاقد معهم (`app/admin/(pages)/carriers/`)**:
+1. 🚚 **قسم الناقلين المتعاقد معهم (`app/admin/(pages)/carriers/`)**:
    - ربط `<CarriersSection />` بـ `useCarriers`, `useToggleCarrierStatus`, `useDeleteCarrier`.
-3. 🚛 **قسم الشحنات وتعيين الموارد (`app/admin/(pages)/shipments/`)**:
+2. 🚛 **قسم الشحنات وتعيين الموارد (`app/admin/(pages)/shipments/`)**:
    - ربط `<ShipmentsSection />` بـ `useShipments`, `useAssignShipmentResources`, `useUpdateShipmentStatus`.
-4. 💳 **قسم الفواتير والمدفوعات (`app/admin/(pages)/payments/`)**:
+3. 💳 **قسم الفواتير والمدفوعات (`app/admin/(pages)/payments/`)**:
    - ربط `<PaymentsSection />` بـ `usePayments`, `useCreatePayment`.
-5. 📍 **قسم تتبع الشحنات اللحظي (`app/admin/(pages)/tracking/`)**:
+4. 📍 **قسم تتبع الشحنات اللحظي (`app/admin/(pages)/tracking/`)**:
    - ربط `<TrackingSection />` بـ `useShipmentTrackingEvents`, `useLogTrackingEvent`.
 
 ---
@@ -71,7 +78,7 @@
 | **`Company`** | `/admin/companies` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`User`** | `/admin/users` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`CompanyUser`** | `/admin/company-users` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
-| **`Carrier`** | `/admin/carriers` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Carrier`** | `/admin/carriers` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Vehicle`** | `/admin/vehicles` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Route`** | `/admin/routes` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Order`** | `/admin/orders` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
