@@ -75,7 +75,7 @@ export default function Routes() {
     const handleDeleteConfirm = () => {
         if (!selectedRouteForDelete) return;
         deleteRoute(
-            { id: selectedRouteForDelete._id, hard: false },
+            { id: selectedRouteForDelete._id, hard: true },
             {
                 onSuccess: () => {
                     setSelectedRouteForDelete(null);
@@ -360,7 +360,7 @@ export default function Routes() {
             <ConfirmDeletePopup
                 isOpen={!!selectedRouteForDelete}
                 title="تأكيد حذف المسار"
-                description={`هل أنت تأكد من رغبتك في حذف المسار (${selectedRouteForDelete?.origin} ← ${selectedRouteForDelete?.destination})؟`}
+                description={`هل أنت تأكد من رغبتك في حذف المسار (${selectedRouteForDelete?.origin} ← ${selectedRouteForDelete?.destination})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedRouteForDelete(null)}

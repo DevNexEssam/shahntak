@@ -171,6 +171,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                                     value={formValues.basePrice}
                                     onChange={(e) => setFormValues({ ...formValues, basePrice: Number(e.target.value) })}
                                     min={0}
+                                    step="any"
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.basePrice ? 'border-rose-500' : 'border-border'
                                         }`}
                                 />
