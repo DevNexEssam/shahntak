@@ -120,6 +120,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                                     value={formValues.capacityWeight}
                                     onChange={(e) => setFormValues({ ...formValues, capacityWeight: Number(e.target.value) })}
                                     min={1}
+                                    step="any"
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                 />
                             </div>
@@ -135,6 +136,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                                     value={formValues.capacityVolume}
                                     onChange={(e) => setFormValues({ ...formValues, capacityVolume: Number(e.target.value) })}
                                     min={1}
+                                    step="any"
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                 />
                             </div>

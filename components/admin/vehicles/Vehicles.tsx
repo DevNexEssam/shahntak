@@ -73,7 +73,7 @@ export default function Vehicles() {
     const handleDeleteConfirm = () => {
         if (!selectedVehicleForDelete) return;
         deleteVehicle(
-            { id: selectedVehicleForDelete._id, hard: false },
+            { id: selectedVehicleForDelete._id, hard: true },
             {
                 onSuccess: () => {
                     setSelectedVehicleForDelete(null);
@@ -340,7 +340,7 @@ export default function Vehicles() {
             <ConfirmDeletePopup
                 isOpen={!!selectedVehicleForDelete}
                 title="تأكيد حذف المركبة"
-                description={`هل أنت تأكد من رغبتك في حذف المركبة (${selectedVehicleForDelete?.type})؟`}
+                description={`هل أنت تأكد من رغبتك في حذف المركبة (${selectedVehicleForDelete?.type})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedVehicleForDelete(null)}

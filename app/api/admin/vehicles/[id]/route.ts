@@ -73,7 +73,7 @@ export async function PATCH(req: Request, context: any) {
     }
 }
 
-export async function DELETE(_req: Request, context: any) {
+export async function DELETE(req: Request, context: any) {
     try {
         await connectDB();
         const session = await getServerSession(authOptions);
@@ -91,10 +91,16 @@ export async function DELETE(_req: Request, context: any) {
             return NextResponse.json({ success: false, message: "معرف المركبة غير صالح" }, { status: 400 });
         }
 
+        const { searchParams } = new URL(req.url);
+        const isHardDelete = searchParams.get("hard") === "true";
+
         let deleted;
-        if (canSoftDelete) {
+
+        if (isHardDelete && canHardDelete) {
+            deleted = await Vehicle.findByIdAndDelete(id);
+        } else if (canSoftDelete) {
             deleted = await Vehicle.findOneAndUpdate({ _id: id, ...ACTIVE }, { isActive: false, deletedAt: new Date() }, { new: true });
-        } else {
+        } else if (canHardDelete) {
             deleted = await Vehicle.findByIdAndDelete(id);
         }
 
