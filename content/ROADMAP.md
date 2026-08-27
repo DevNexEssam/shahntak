@@ -84,5 +84,5 @@
 | **`Order`** | `/admin/orders` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Shipment`** | `/admin/shipments` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Invoice`** | `/admin/invoices` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
-| **`Payment`** | `/admin/payments` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Payment`** | `/admin/payments` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`TrackingEvent`**| `/admin/tracking` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |

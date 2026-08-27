@@ -8,16 +8,17 @@ import { AxiosError } from "axios";
 export const paymentKeys = {
     all: ["payments"] as const,
     lists: () => [...paymentKeys.all, "list"] as const,
-    list: (page: number, limit: number) => [...paymentKeys.lists(), { page, limit }] as const,
+    list: (page: number, limit: number, search: string = "", method: string = "all") =>
+        [...paymentKeys.lists(), { page, limit, search, method }] as const,
     details: () => [...paymentKeys.all, "detail"] as const,
     detail: (id: string) => [...paymentKeys.details(), id] as const,
 };
 
 // Queries
-export const usePayments = (page: number = 1, limit: number = 10) => {
+export const usePayments = (page: number = 1, limit: number = 10, search: string = "", method: string = "all") => {
     return useQuery({
-        queryKey: paymentKeys.list(page, limit),
-        queryFn: () => paymentServices.getPayments(page, limit),
+        queryKey: paymentKeys.list(page, limit, search, method),
+        queryFn: () => paymentServices.getPayments(page, limit, search, method),
         placeholderData: keepPreviousData,
     });
 };
@@ -49,7 +50,7 @@ export const useCreatePayment = () => {
 export const useDeletePayment = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (payload: { id: string }) => paymentServices.deletePayment(payload),
+        mutationFn: (payload: { id: string; hard?: boolean }) => paymentServices.deletePayment(payload),
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: paymentKeys.all });
             queryClient.invalidateQueries({ queryKey: ["invoices"] });

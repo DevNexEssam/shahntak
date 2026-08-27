@@ -2,9 +2,16 @@ import { Payment, PaymentResponse, PaymentSingleResponse, PaymentDeleteResponse 
 import axios from "axios";
 
 export const paymentServices = {
-    // Get paginated payments list
-    getPayments: async (page: number = 1, limit: number = 10): Promise<PaymentResponse> => {
-        const { data } = await axios.get(`/api/admin/payments?page=${page}&limit=${limit}`);
+    // Get paginated payments list with server-side search & filtering
+    getPayments: async (page: number = 1, limit: number = 10, search: string = "", method: string = "all"): Promise<PaymentResponse> => {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+        });
+        if (search && search.trim() !== "") params.append("search", search.trim());
+        if (method && method !== "all") params.append("method", method);
+
+        const { data } = await axios.get(`/api/admin/payments?${params.toString()}`);
         return data;
     },
 
@@ -21,8 +28,10 @@ export const paymentServices = {
     },
 
     // Delete payment entry
-    deletePayment: async ({ id }: { id: string }): Promise<PaymentDeleteResponse> => {
-        const { data } = await axios.delete(`/api/admin/payments/${id}`);
+    deletePayment: async ({ id, hard = true }: { id: string; hard?: boolean }): Promise<PaymentDeleteResponse> => {
+        const { data } = await axios.delete(`/api/admin/payments/${id}`, {
+            params: { hard }
+        });
         return data;
     },
 };

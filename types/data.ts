@@ -475,6 +475,13 @@ export interface PaymentResponse {
     data: Payment[];
     total: number;
     count: number;
+    stats?: {
+        total: number;
+        totalAmount: number;
+        bankTransferCount: number;
+        cardCount: number;
+        cashCount: number;
+    };
 }
 
 export interface PaymentSingleResponse {
