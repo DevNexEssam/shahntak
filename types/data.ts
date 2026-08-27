@@ -209,7 +209,8 @@ export interface Order {
     orderNumber: string;
     companyId: string | Company;
     shipmentId?: string | Shipment;
-    createdByUserId: string | CompanyUser;
+    createdByUserId?: string | CompanyUser | User;
+    createdByUserType?: "user" | "company_user";
     recipientName: string;
     recipientPhone: string;
     recipientCity: string;

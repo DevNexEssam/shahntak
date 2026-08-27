@@ -159,13 +159,13 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="pending">معلق (Pending)</option>
-                                <option value="validated">مكتمل الفحص (Validated)</option>
-                                <option value="grouped">مجمع بشحنة (Grouped)</option>
-                                <option value="shipped">جاري الشحن (Shipped)</option>
-                                <option value="delivered">تم التسليم (Delivered)</option>
-                                <option value="cancelled">ملغي (Cancelled)</option>
-                                <option value="error">خطأ (Error)</option>
+                                <option value="pending">معلق</option>
+                                <option value="validated">مكتمل الفحص</option>
+                                <option value="grouped">مجمع بشحنة</option>
+                                <option value="shipped">جاري الشحن</option>
+                                <option value="delivered">تم التسليم</option>
+                                <option value="cancelled">ملغي</option>
+                                <option value="error">خطأ في التوصيل</option>
                             </select>
                         </div>
 
@@ -287,11 +287,11 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                     </label>
                                     <input
                                         type="number"
+                                        step="any"
                                         disabled={isSubmitting}
                                         value={formValues.weight}
                                         onChange={(e) => setFormValues({ ...formValues, weight: Number(e.target.value) })}
-                                        min={0.1}
-                                        step={0.5}
+                                        min={0}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
@@ -317,6 +317,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                     </label>
                                     <input
                                         type="number"
+                                        step="any"
                                         disabled={isSubmitting}
                                         value={formValues.orderValue}
                                         onChange={(e) => setFormValues({ ...formValues, orderValue: Number(e.target.value) })}
@@ -331,6 +332,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                     </label>
                                     <input
                                         type="number"
+                                        step="any"
                                         disabled={isSubmitting}
                                         value={formValues.codAmount}
                                         onChange={(e) => setFormValues({ ...formValues, codAmount: Number(e.target.value) })}

@@ -5,6 +5,7 @@ export interface IOrder extends Document {
     companyId: Types.ObjectId;
     shipmentId?: Types.ObjectId;
     createdByUserId: Types.ObjectId;
+    createdByUserType?: "user" | "company_user";
     recipientName: string;
     recipientPhone: string;
     recipientCity: string;
@@ -25,7 +26,12 @@ const OrderSchema = new Schema<IOrder>(
         orderNumber: { type: String, required: true, unique: true },
         companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true, index: true },
         shipmentId: { type: Schema.Types.ObjectId, ref: "Shipment", index: true },
-        createdByUserId: { type: Schema.Types.ObjectId, ref: "CompanyUser", required: true },
+        createdByUserId: { type: Schema.Types.ObjectId, required: true, index: true },
+        createdByUserType: {
+            type: String,
+            enum: ["user", "company_user"],
+            default: "user",
+        },
         recipientName: { type: String, required: true, minlength: 2, maxlength: 50 },
         recipientPhone: { type: String, required: true, minlength: 8, maxlength: 15 },
         recipientCity: { type: String, required: true, minlength: 2, maxlength: 50 },

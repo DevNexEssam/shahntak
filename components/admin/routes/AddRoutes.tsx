@@ -150,10 +150,10 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.vehicleType ? 'border-rose-500' : 'border-border'
                                         }`}
                                 >
-                                    <option value="شاحنة كبيرة (دينا)">شاحنة كبيرة (دينا - Dyna)</option>
-                                    <option value="شاحنة مغلقة (تريلا)">شاحنة مغلقة (تريلا - Trailer)</option>
-                                    <option value="سيارة نقل صغيرة (وانيت)">سيارة نقل صغيرة (وانيت - Pickup)</option>
-                                    <option value="شاحنة مبردة">شاحنة مبردة (Refrigerated Truck)</option>
+                                    <option value="شاحنة كبيرة (دينا)">شاحنة كبيرة (دينا)</option>
+                                    <option value="شاحنة مغلقة (تريلا)">شاحنة مغلقة (تريلا)</option>
+                                    <option value="سيارة نقل صغيرة (وانيت)">سيارة نقل صغيرة (وانيت)</option>
+                                    <option value="شاحنة مبردة">شاحنة مبردة </option>
                                 </select>
                                 {fieldErrors.vehicleType && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.vehicleType}</span>

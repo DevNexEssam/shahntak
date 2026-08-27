@@ -13,10 +13,11 @@ export const orderStatusEnum = [
 export const orderSourceEnum = ["manual", "bulk_upload"] as const;
 
 export const orderCreateValidationSchema = z.object({
-    orderNumber: z.string("رقم الطلب مطلوب").min(1, "رقم الطلب مطلوب"),
+    orderNumber: z.string().optional().or(z.literal("")),
     companyId: z.string("معرف الشركة مطلوب").min(1, "معرف الشركة مطلوب"),
     shipmentId: z.string().optional().or(z.literal("")),
-    createdByUserId: z.string("معرف منشئ الطلب مطلوب").min(1, "معرف منشئ الطلب مطلوب"),
+    createdByUserId: z.string().optional().or(z.literal("")),
+    createdByUserType: z.enum(["user", "company_user"]).optional(),
     recipientName: z
         .string("اسم المستلم مطلوب")
         .min(2, "اسم المستلم يجب أن يكون على الأقل حرفين")

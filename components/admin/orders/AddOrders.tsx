@@ -24,7 +24,6 @@ interface AddOrdersProps {
 
 export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
     const [formValues, setFormValues] = useState({
-        orderNumber: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
         companyId: '',
         createdByUserId: '',
         recipientName: '',
@@ -54,10 +53,9 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
         e.preventDefault();
         setFieldErrors({});
 
-        // Fill createdByUserId with selected company ID if empty for system record integrity
         const payload = {
             ...formValues,
-            createdByUserId: formValues.createdByUserId || formValues.companyId,
+            createdByUserId: formValues.createdByUserId || undefined,
         };
 
         // 1. Zod Validation Check
@@ -124,21 +122,14 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        <LuHash className="w-3.5 h-3.5 text-body" />
-                                        رقم الطلب <span className="text-red-500">*</span>
+                                        <LuHash className="w-3.5 h-3.5 text-accent" />
+                                        رقم الطلب
                                     </label>
-                                    <input
-                                        type="text"
-                                        disabled={isSubmitting}
-                                        value={formValues.orderNumber}
-                                        onChange={(e) => setFormValues({ ...formValues, orderNumber: e.target.value })}
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.orderNumber ? 'border-rose-500' : 'border-border'
-                                        }`}
-                                    />
-                                    {fieldErrors.orderNumber && (
-                                        <span className="text-xs text-rose-500 font-medium block">{fieldErrors.orderNumber}</span>
-                                    )}
+                                    <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent font-latin flex items-center justify-between">
+                                        <span>توليد تلقائي فريد (ORD-XXXXX)</span>
+                                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-accent-soft text-accent font-bold">توليد تلقائي إجباري</span>
+                                    </div>
+                                    <span className="text-[11px] text-body/70 block">يُنشأ كود الطلب تلقائياً من الخادم بالنمط التسلسلي <b>ORD-XXXXX</b> بناءً على الطلبات المنشأة</span>
                                 </div>
 
                                 <div className="space-y-1.5">
@@ -150,9 +141,8 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         disabled={isSubmitting || isLoadingCompanies}
                                         value={formValues.companyId}
                                         onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
-                                            fieldErrors.companyId ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.companyId ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     >
                                         <option value="">اختر الشركة...</option>
                                         {companies.map((comp) => (
@@ -187,9 +177,8 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.recipientName}
                                         onChange={(e) => setFormValues({ ...formValues, recipientName: e.target.value })}
                                         placeholder="اسم المستلم الثلاثي"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.recipientName && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientName}</span>
@@ -207,9 +196,8 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.recipientPhone}
                                         onChange={(e) => setFormValues({ ...formValues, recipientPhone: e.target.value })}
                                         placeholder="0501234567"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.recipientPhone ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientPhone ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.recipientPhone && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientPhone}</span>
@@ -229,9 +217,8 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         value={formValues.recipientCity}
                                         onChange={(e) => setFormValues({ ...formValues, recipientCity: e.target.value })}
                                         placeholder="الرياض، جدة، الدمام..."
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.recipientCity && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientCity}</span>
@@ -263,9 +250,8 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                     value={formValues.recipientAddress}
                                     onChange={(e) => setFormValues({ ...formValues, recipientAddress: e.target.value })}
                                     placeholder="شارع التخصصي، عمائر النصر..."
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.recipientAddress && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientAddress}</span>
@@ -288,11 +274,11 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                     </label>
                                     <input
                                         type="number"
+                                        step="any"
                                         disabled={isSubmitting}
                                         value={formValues.weight}
                                         onChange={(e) => setFormValues({ ...formValues, weight: Number(e.target.value) })}
-                                        min={0.1}
-                                        step={0.5}
+                                        min={0}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
@@ -318,6 +304,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                     </label>
                                     <input
                                         type="number"
+                                        step="any"
                                         disabled={isSubmitting}
                                         value={formValues.orderValue}
                                         onChange={(e) => setFormValues({ ...formValues, orderValue: Number(e.target.value) })}
@@ -332,6 +319,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                     </label>
                                     <input
                                         type="number"
+                                        step="any"
                                         disabled={isSubmitting}
                                         value={formValues.codAmount}
                                         onChange={(e) => setFormValues({ ...formValues, codAmount: Number(e.target.value) })}

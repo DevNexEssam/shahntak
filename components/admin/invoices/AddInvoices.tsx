@@ -187,11 +187,11 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="issued">صادرة بانتظار التحصيل (Issued)</option>
-                                <option value="paid">مدفوعة ومحصلة (Paid)</option>
-                                <option value="draft">مسودة (Draft)</option>
-                                <option value="overdue">متأخرة السداد (Overdue)</option>
-                                <option value="cancelled">ملغاة (Cancelled)</option>
+                                <option value="issued">صادرة بانتظار التحصيل</option>
+                                <option value="paid">مدفوعة ومحصلة</option>
+                                <option value="draft">مسودة</option>
+                                <option value="overdue">متأخرة السداد</option>
+                                <option value="cancelled">ملغاة</option>
                             </select>
                         </div>
 

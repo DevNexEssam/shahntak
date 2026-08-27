@@ -8,6 +8,7 @@ import Order from "@/models/order";
 import Company from "@/models/companies";
 import CompanyUser from "@/models/Companyuser";
 import Shipment from "@/models/shipment";
+import User from "@/models/user";
 import { can } from "@/utils/permissions";
 import { ACTIVE } from "@/utils/constants";
 import mongoose from "mongoose";
@@ -17,6 +18,7 @@ export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions);
         const role = session?.user?.role;
+        const sessionUserId = (session?.user as any)?.id || (session?.user as any)?._id;
 
         if (!role || !can(role, "order", "create")) {
             return NextResponse.json(
@@ -50,9 +52,9 @@ export async function POST(req: Request) {
 
         const data = validation.data;
 
-        if (!mongoose.Types.ObjectId.isValid(data.companyId) || !mongoose.Types.ObjectId.isValid(data.createdByUserId)) {
+        if (!mongoose.Types.ObjectId.isValid(data.companyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة أو المنشئ غير صالح" },
+                { success: false, message: "معرف الشركة غير صالح" },
                 { status: 400 }
             );
         }
@@ -64,9 +66,48 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" }, { status: 400 });
         }
 
-        const targetUser = await CompanyUser.findOne({ _id: data.createdByUserId, ...ACTIVE }).lean();
-        if (!targetUser) {
-            return NextResponse.json({ success: false, message: "منشئ الطلب (CompanyUser) غير موجود بالنظام" }, { status: 400 });
+        // Resolve creator: check CompanyUser -> User (Admin/SuperAdmin) -> Session User
+        let creatorId: string | null = null;
+        let createdByUserType: "user" | "company_user" = "user";
+
+        const candidateId = data.createdByUserId && mongoose.Types.ObjectId.isValid(data.createdByUserId)
+            ? data.createdByUserId
+            : null;
+
+        if (candidateId) {
+            const companyUserDoc = await CompanyUser.findOne({ _id: candidateId, ...ACTIVE }).lean();
+            if (companyUserDoc) {
+                creatorId = candidateId;
+                createdByUserType = "company_user";
+            } else {
+                const userDoc = await User.findById(candidateId).lean();
+                if (userDoc) {
+                    creatorId = candidateId;
+                    createdByUserType = "user";
+                }
+            }
+        }
+
+        // Fallback to session user if not resolved yet
+        if (!creatorId && sessionUserId && mongoose.Types.ObjectId.isValid(sessionUserId)) {
+            const adminUserDoc = await User.findById(sessionUserId).lean();
+            if (adminUserDoc) {
+                creatorId = sessionUserId;
+                createdByUserType = "user";
+            } else {
+                const compUserDoc = await CompanyUser.findOne({ _id: sessionUserId, ...ACTIVE }).lean();
+                if (compUserDoc) {
+                    creatorId = sessionUserId;
+                    createdByUserType = "company_user";
+                }
+            }
+        }
+
+        if (!creatorId) {
+            return NextResponse.json(
+                { success: false, message: "لم يتم التعرف على حساب منشئ الطلب بنجاح" },
+                { status: 400 }
+            );
         }
 
         if (data.shipmentId && data.shipmentId.trim() !== "") {
@@ -79,20 +120,21 @@ export async function POST(req: Request) {
             }
         }
 
-        const orderExists = await Order.findOne({ orderNumber: data.orderNumber }).lean();
-
-        if (orderExists) {
-            return NextResponse.json(
-                { success: false, message: "رقم الطلب مستخدم بالفعل لطلب آخر" },
-                { status: 409 }
-            );
+        // Mandatory auto-generation of orderNumber based on sequential order count in database
+        const count = await Order.countDocuments();
+        let seq = count + 1;
+        let finalOrderNumber = `ORD-${String(seq).padStart(5, "0")}`;
+        while (await Order.findOne({ orderNumber: finalOrderNumber }).lean()) {
+            seq++;
+            finalOrderNumber = `ORD-${String(seq).padStart(5, "0")}`;
         }
 
         const newOrder = await Order.create({
-            orderNumber: data.orderNumber,
+            orderNumber: finalOrderNumber,
             companyId: data.companyId,
             shipmentId: data.shipmentId || null,
-            createdByUserId: data.createdByUserId,
+            createdByUserId: creatorId,
+            createdByUserType: createdByUserType,
             recipientName: data.recipientName,
             recipientPhone: data.recipientPhone,
             recipientCity: data.recipientCity,
