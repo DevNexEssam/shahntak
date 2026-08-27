@@ -71,7 +71,7 @@ export default function Invoices() {
     const handleDeleteConfirm = () => {
         if (!selectedInvoiceForDelete) return;
         deleteInvoice(
-            { id: selectedInvoiceForDelete._id, hard: false },
+            { id: selectedInvoiceForDelete._id, hard: true },
             {
                 onSuccess: () => {
                     setSelectedInvoiceForDelete(null);
@@ -354,7 +354,7 @@ export default function Invoices() {
             <ConfirmDeletePopup
                 isOpen={!!selectedInvoiceForDelete}
                 title="تأكيد حذف الفاتورة"
-                description={`هل أنت تأكد من رغبتك في نقل الفاتورة رقم (${selectedInvoiceForDelete?.invoiceNumber}) لسلة المحذوفات؟`}
+                description={`هل أنت تأكد من رغبتك في حذف الفاتورة رقم (${selectedInvoiceForDelete?.invoiceNumber})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedInvoiceForDelete(null)}

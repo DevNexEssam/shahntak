@@ -86,7 +86,7 @@ export async function PATCH(req: Request, context: any) {
     }
 }
 
-export async function DELETE(_req: Request, context: any) {
+export async function DELETE(req: Request, context: any) {
     try {
         await connectDB();
         const session = await getServerSession(authOptions);
@@ -104,10 +104,16 @@ export async function DELETE(_req: Request, context: any) {
             return NextResponse.json({ success: false, message: "معرف الفاتورة غير صالح" }, { status: 400 });
         }
 
+        const { searchParams } = new URL(req.url);
+        const isHardDelete = searchParams.get("hard") === "true";
+
         let deleted;
-        if (canSoftDelete) {
+
+        if (isHardDelete && canHardDelete) {
+            deleted = await Invoice.findByIdAndDelete(id);
+        } else if (canSoftDelete) {
             deleted = await Invoice.findOneAndUpdate({ _id: id, ...ACTIVE }, { status: "cancelled", deletedAt: new Date() }, { new: true });
-        } else {
+        } else if (canHardDelete) {
             deleted = await Invoice.findByIdAndDelete(id);
         }
 

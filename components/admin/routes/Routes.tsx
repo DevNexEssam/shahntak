@@ -214,7 +214,7 @@ export default function Routes() {
                         <table className="w-full text-right text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">مسار الخط (Origin ← Destination)</th>
+                                    <th className="py-3.5 px-4">مسار الخط</th>
                                     <th className="py-3.5 px-4">نوع المركبة</th>
                                     <th className="py-3.5 px-4">السعر الأساسي</th>
                                     <th className="py-3.5 px-4">الترانزيت التقديري</th>
