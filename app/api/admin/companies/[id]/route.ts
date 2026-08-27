@@ -41,6 +41,33 @@ export async function GET(_req: Request, context: any) {
             );
         }
 
+        const [
+            employeesCount,
+            ordersCount,
+            shipmentsCount,
+            completedShipmentsCount,
+            activeShipmentsCount,
+            revenueResult,
+            pendingResult,
+        ] = await Promise.all([
+            CompanyUser.countDocuments({ companyId: id, userIsActive: true }),
+            Order.countDocuments({ companyId: id }),
+            Shipment.countDocuments({ companyId: id }),
+            Shipment.countDocuments({ companyId: id, status: "delivered" }),
+            Shipment.countDocuments({
+                companyId: id,
+                status: { $nin: ["delivered", "cancelled", "returned"] },
+            }),
+            Invoice.aggregate([
+                { $match: { companyId: id, status: "paid" } },
+                { $group: { _id: null, total: { $sum: "$total" } } },
+            ]),
+            Invoice.aggregate([
+                { $match: { companyId: id, status: "issued" } },
+                { $group: { _id: null, total: { $sum: "$total" } } },
+            ]),
+        ]);
+
         const company = await Company.findOne({ _id: id, ...ACTIVE }).select("-password");
 
         if (!company) {
@@ -51,7 +78,18 @@ export async function GET(_req: Request, context: any) {
         }
 
         return NextResponse.json(
-            { success: true, data: company },
+            {
+                success: true,
+                data: company,
+                employeesCount,
+                ordersCount,
+                shipmentsCount,
+                completedShipmentsCount,
+                activeShipmentsCount,
+                totalRevenue: revenueResult[0]?.total ?? 0,
+                pendingAmount: pendingResult[0]?.total ?? 0,
+                revenueResult,
+            },
             { status: 200 }
         );
     } catch (error: any) {

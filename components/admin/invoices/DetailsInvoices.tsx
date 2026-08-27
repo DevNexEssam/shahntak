@@ -98,7 +98,7 @@ export default function DetailsInvoices({ isOpen = true, invoice, onClose }: Det
 
                         <div className="p-4 rounded-2xl bg-surface border border-border space-y-1 text-center">
                             <LuCalendar className="w-5 h-5 text-amber-600 mx-auto mb-1" />
-                            <span className="text-xs text-body font-medium block">تاريخ الاستحقاق (Due Date)</span>
+                            <span className="text-xs text-body font-medium block">تاريخ الاستحقاق </span>
                             <span className="text-sm font-bold text-heading block">
                                 {invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString('ar-SA') : 'غير حدد'}
                             </span>

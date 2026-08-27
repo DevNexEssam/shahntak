@@ -4,6 +4,8 @@ import { connectDB } from "@/lib/mongodb";
 import { companyUserUpdateValidationSchema } from "@/lib/validations";
 import CompanyUser from "@/models/Companyuser";
 import Company from "@/models/companies";
+import Order from "@/models/order";
+import User from "@/models/user";
 import { ACTIVE } from "@/utils/constants";
 import { can } from "@/utils/permissions";
 import bcrypt from "bcryptjs";
@@ -37,7 +39,7 @@ export async function GET(_req: Request, context: any) {
 
         const user = await CompanyUser.findOne({ _id: id, ...ACTIVE })
             .select("-password")
-            .populate("companyId", "companyName email");
+            .populate("companyId", "companyName email phone city");
 
         if (!user) {
             return NextResponse.json(
@@ -46,8 +48,52 @@ export async function GET(_req: Request, context: any) {
             );
         }
 
+        const ordersCount = await Order.countDocuments({ createdByUserId: id });
+
+        // Resolve creator details (with fallbacks to get the exact name)
+        let createdByDetails: { _id?: string; name: string; email: string; type: "user" | "company_user" } | undefined = undefined;
+        if (user.createdBy && mongoose.Types.ObjectId.isValid(user.createdBy)) {
+            if (user.createdByType === "company_user") {
+                const creatorCompUser = await CompanyUser.findById(user.createdBy).select("userName userEmail").lean();
+                if (creatorCompUser) {
+                    createdByDetails = {
+                        _id: creatorCompUser._id.toString(),
+                        name: creatorCompUser.userName,
+                        email: creatorCompUser.userEmail,
+                        type: "company_user"
+                    };
+                }
+            }
+            if (!createdByDetails) {
+                const creatorUser = await User.findById(user.createdBy).select("name email").lean();
+                if (creatorUser) {
+                    createdByDetails = {
+                        _id: creatorUser._id.toString(),
+                        name: creatorUser.name,
+                        email: creatorUser.email,
+                        type: "user"
+                    };
+                } else if (user.createdByType !== "company_user") {
+                    const creatorCompUser = await CompanyUser.findById(user.createdBy).select("userName userEmail").lean();
+                    if (creatorCompUser) {
+                        createdByDetails = {
+                            _id: creatorCompUser._id.toString(),
+                            name: creatorCompUser.userName,
+                            email: creatorCompUser.userEmail,
+                            type: "company_user"
+                        };
+                    }
+                }
+            }
+        }
+
         return NextResponse.json(
-            { success: true, data: user },
+            {
+                success: true,
+                data: user,
+                ordersCount,
+                createdByDetails,
+            },
             { status: 200 }
         );
     } catch (error: any) {

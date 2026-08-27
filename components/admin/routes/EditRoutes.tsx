@@ -124,7 +124,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    نقطة الانطلاق (Origin) <span className="text-red-500">*</span>
+                                    نقطة الانطلاق <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -143,7 +143,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    وجهة الوصول (Destination) <span className="text-red-500">*</span>
+                                    وجهة الوصول <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"

@@ -211,7 +211,7 @@ export default function Users() {
                                     <th className="py-3.5 px-4">المستخدم</th>
                                     <th className="py-3.5 px-4">البريد الإلكتروني</th>
                                     <th className="py-3.5 px-4">الجوال</th>
-                                    <th className="py-3.5 px-4">الصلاحية (Role)</th>
+                                    <th className="py-3.5 px-4">الصلاحية</th>
                                     <th className="py-3.5 px-4">الحالة</th>
                                     <th className="py-3.5 px-4 text-center">الإجراءات</th>
                                 </tr>

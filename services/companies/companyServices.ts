@@ -1,4 +1,4 @@
-import { Company, CompanyResponse, CompanySingleResponse, CompanyDeleteResponse } from "@/types/data";
+import { Company, CompanyResponse, CompanySingleResponse, CompanyDeleteResponse, CompanyFullDetailsResponse } from "@/types/data";
 import axios from "axios";
 
 export const companyServices = {
@@ -17,6 +17,12 @@ export const companyServices = {
     // Get single company by ID
     getCompanyById: async (id: string): Promise<CompanySingleResponse> => {
         const { data } = await axios.get(`/api/admin/companies/${id}`);
+        return data;
+    },
+
+    // Get full company details with metrics & stats by ID
+    getCompanyFullDetails: async (id: string): Promise<CompanyFullDetailsResponse> => {
+        const { data } = await axios.get(`/api/admin/companies/${id}/details`);
         return data;
     },
 

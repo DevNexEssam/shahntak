@@ -114,9 +114,8 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                     disabled={isSubmitting || isLoadingCompanies}
                                     value={formValues.companyId}
                                     onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
-                                        fieldErrors.companyId ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.companyId ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 >
                                     <option value="">اختر الشركة...</option>
                                     {companies.map((comp) => (
@@ -142,9 +141,8 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         value={formValues.userName}
                                         onChange={(e) => setFormValues({ ...formValues, userName: e.target.value })}
                                         placeholder="مثال: خالد العتيبي"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.userName ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.userName ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.userName && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.userName}</span>
@@ -162,9 +160,8 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         value={formValues.userEmail}
                                         onChange={(e) => setFormValues({ ...formValues, userEmail: e.target.value })}
                                         placeholder="employee@company.com"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.userEmail ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.userEmail ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.userEmail && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.userEmail}</span>
@@ -184,9 +181,8 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         value={formValues.phone}
                                         onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })}
                                         placeholder="0551234567"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.phone ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.phone ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.phone && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.phone}</span>
@@ -204,9 +200,8 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         value={formValues.password}
                                         onChange={(e) => setFormValues({ ...formValues, password: e.target.value })}
                                         placeholder="••••••••"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.password ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.password ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.password && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.password}</span>
@@ -245,8 +240,8 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         onChange={(e) => setFormValues({ ...formValues, userIsActive: e.target.value === 'active' })}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
-                                        <option value="active">نشط (Active)</option>
-                                        <option value="inactive">غير نشط (Inactive)</option>
+                                        <option value="active">نشط</option>
+                                        <option value="inactive">غير نشط</option>
                                     </select>
                                 </div>
                             </div>

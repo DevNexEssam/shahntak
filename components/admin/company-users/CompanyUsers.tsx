@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useCompanyUsers, useDeleteCompanyUser } from '@/hooks/companyUsers/useCompanyUsers';
 import { CompanyUser, Company } from '@/types/data';
 import AddCompanyUsers from './AddCompanyUsers';
@@ -17,6 +18,7 @@ import {
     LuRefreshCw,
     LuPencil,
     LuEye,
+    LuExternalLink,
     LuTrash2,
     LuChevronRight,
     LuChevronLeft,
@@ -276,7 +278,7 @@ export default function CompanyUsers() {
                                     <th className="py-3.5 px-4">الموظف</th>
                                     <th className="py-3.5 px-4">الشركة التابع لها</th>
                                     <th className="py-3.5 px-4">رقم الجوال</th>
-                                    <th className="py-3.5 px-4">الدور (Role)</th>
+                                    <th className="py-3.5 px-4">الدور</th>
                                     <th className="py-3.5 px-4">الحالة</th>
                                     <th className="py-3.5 px-4 text-center">الإجراءات</th>
                                 </tr>
@@ -354,11 +356,19 @@ export default function CompanyUsers() {
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <button
                                                         onClick={() => setSelectedUserForDetails(user)}
-                                                        title="التفاصيل"
+                                                        title="معاينة سريعة (Popup)"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-colors cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
                                                     </button>
+
+                                                    <Link
+                                                        href={`/admin/dashboard/company-users/${user._id}`}
+                                                        title="عرض الصفحة التفصيلية الكاملة"
+                                                        className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-colors cursor-pointer inline-flex items-center justify-center"
+                                                    >
+                                                        <LuExternalLink className="w-4 h-4" />
+                                                    </Link>
 
                                                     <button
                                                         onClick={() => setSelectedUserForEdit(user)}

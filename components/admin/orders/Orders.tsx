@@ -233,13 +233,13 @@ export default function Orders() {
                             className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer w-full"
                         >
                             <option value="all">جميع الحالات</option>
-                            <option value="pending">معلق (Pending)</option>
-                            <option value="validated">مكتمل الفحص (Validated)</option>
-                            <option value="grouped">مجمع (Grouped)</option>
-                            <option value="shipped">جاري الشحن (Shipped)</option>
-                            <option value="delivered">تم التسليم (Delivered)</option>
-                            <option value="cancelled">ملغي (Cancelled)</option>
-                            <option value="error">خطأ (Error)</option>
+                            <option value="pending">معلق </option>
+                            <option value="validated">مكتمل الفحص</option>
+                            <option value="grouped">مجمع </option>
+                            <option value="shipped">جاري الشحن </option>
+                            <option value="delivered">تم التسليم </option>
+                            <option value="cancelled">ملغي </option>
+                            <option value="error">خطأ</option>
                         </select>
                     </div>
                 </div>

@@ -76,7 +76,7 @@ const DetailsUsers: React.FC<DetailsUsersProps> = ({ user, isOpen, onClose }) =>
                         <div className="flex justify-between items-center pb-2 border-b border-border">
                             <span className="text-xs text-body font-semibold flex items-center gap-1.5">
                                 <LuShieldCheck className="w-3.5 h-3.5 text-accent" />
-                                الدور (Role)
+                                الدور
                             </span>
                             <span className="font-bold text-accent">
                                 {user.role === 'super' ? 'سوبر أدمن (Super Admin)' : 'مدير (Admin)'}

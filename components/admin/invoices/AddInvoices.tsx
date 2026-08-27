@@ -110,9 +110,8 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                 disabled={isSubmitting}
                                 value={formValues.invoiceNumber}
                                 onChange={(e) => setFormValues({ ...formValues, invoiceNumber: e.target.value })}
-                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                    fieldErrors.invoiceNumber ? 'border-rose-500' : 'border-border'
-                                }`}
+                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.invoiceNumber ? 'border-rose-500' : 'border-border'
+                                    }`}
                             />
                             {fieldErrors.invoiceNumber && (
                                 <span className="text-xs text-rose-500 font-medium block">{fieldErrors.invoiceNumber}</span>
@@ -128,9 +127,8 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                 disabled={isSubmitting || isLoadingCompanies}
                                 value={formValues.companyId}
                                 onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
-                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
-                                    fieldErrors.companyId ? 'border-rose-500' : 'border-border'
-                                }`}
+                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.companyId ? 'border-rose-500' : 'border-border'
+                                    }`}
                             >
                                 <option value="">اختر الشركة...</option>
                                 {companies.map((comp) => (
@@ -156,9 +154,8 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                     value={formValues.total}
                                     onChange={(e) => setFormValues({ ...formValues, total: Number(e.target.value) })}
                                     min={0}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.total ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.total ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.total && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.total}</span>
@@ -168,7 +165,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCalendar className="w-3.5 h-3.5 text-body" />
-                                    تاريخ الاستحقاق (Due Date)
+                                    تاريخ الاستحقاق
                                 </label>
                                 <input
                                     type="date"

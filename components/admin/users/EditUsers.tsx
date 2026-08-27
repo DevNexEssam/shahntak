@@ -140,9 +140,8 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                         disabled={isPending}
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.name ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.name ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.name && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.name}</span>
@@ -159,9 +158,8 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                         disabled={isPending}
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.email ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.email ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.email && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.email}</span>
@@ -180,9 +178,8 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                         disabled={isPending}
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.phone ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.phone ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.phone && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.phone}</span>
@@ -192,7 +189,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuShieldCheck className="w-3.5 h-3.5 text-body" />
-                                        الدور والصلاحيات (Role) <span className="text-red-500">*</span>
+                                        الدور والصلاحيات <span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         disabled={isPending}
@@ -221,9 +218,8 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                         placeholder="اتركه فارغاً للإبقاء على الحالية"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.password ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.password ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.password && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.password}</span>
@@ -240,8 +236,8 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                         onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
-                                        <option value="active">نشط (Active)</option>
-                                        <option value="inactive">غير نشط (Inactive)</option>
+                                        <option value="active">نشط</option>
+                                        <option value="inactive">غير نشط</option>
                                     </select>
                                     {fieldErrors.status && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.status}</span>

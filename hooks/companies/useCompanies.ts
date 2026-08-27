@@ -12,6 +12,7 @@ export const companyKeys = {
     allList: () => [...companyKeys.all, "all-list"] as const,
     details: () => [...companyKeys.all, "detail"] as const,
     detail: (id: string) => [...companyKeys.details(), id] as const,
+    fullDetails: (id: string) => [...companyKeys.details(), "full", id] as const,
 };
 
 // Queries
@@ -34,6 +35,14 @@ export const useCompany = (id: string) => {
     return useQuery({
         queryKey: companyKeys.detail(id),
         queryFn: () => companyServices.getCompanyById(id),
+        enabled: !!id,
+    });
+};
+
+export const useCompanyFullDetails = (id: string) => {
+    return useQuery({
+        queryKey: companyKeys.fullDetails(id),
+        queryFn: () => companyServices.getCompanyFullDetails(id),
         enabled: !!id,
     });
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Link from "next/link";
 import Loading from "@/components/ui/loading";
 import EmptyData from "@/components/ui/EmptyData";
 import ConfirmDeletePopup from "@/components/ui/ConfirmDeletePopup";
@@ -24,6 +25,7 @@ import {
     LuPencil,
     LuTrash2,
     LuEye,
+    LuExternalLink,
     LuRefreshCw,
     LuShieldCheck,
     LuMapPin,
@@ -394,16 +396,26 @@ export default function Companies() {
 
                                     {/* Card Footer Actions */}
                                     <div className="px-5 py-3 bg-surface-muted/60 border-t border-border flex items-center justify-between gap-2">
-                                        <button
-                                            onClick={() => {
-                                                setSelectedCompany(comp);
-                                                setIsDetailsModalOpen(true);
-                                            }}
-                                            className="p-2 rounded-xl border border-border bg-surface hover:bg-accent-soft text-body hover:text-accent transition-all cursor-pointer"
-                                            title="التفاصيل"
-                                        >
-                                            <LuEye className="w-4 h-4" />
-                                        </button>
+                                        <div className="flex items-center gap-1.5">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedCompany(comp);
+                                                    setIsDetailsModalOpen(true);
+                                                }}
+                                                className="p-2 rounded-xl border border-border bg-surface hover:bg-accent-soft text-body hover:text-accent transition-all cursor-pointer"
+                                                title="معاينة سريعة (Modal)"
+                                            >
+                                                <LuEye className="w-4 h-4" />
+                                            </button>
+
+                                            <Link
+                                                href={`/admin/dashboard/companies/${comp._id}`}
+                                                className="p-2 rounded-xl border border-border bg-surface hover:bg-accent-soft text-body hover:text-accent transition-all cursor-pointer inline-flex items-center justify-center"
+                                                title="عرض الصفحة التفصيلية الشاملة"
+                                            >
+                                                <LuExternalLink className="w-4 h-4" />
+                                            </Link>
+                                        </div>
 
                                         <button
                                             onClick={() => {
@@ -490,11 +502,18 @@ export default function Companies() {
                                                                 setSelectedCompany(comp);
                                                                 setIsDetailsModalOpen(true);
                                                             }}
-                                                            title="التفاصيل"
+                                                            title="معاينة سريعة (Modal)"
                                                             className="p-2 rounded-xl bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                         >
                                                             <LuEye className="w-4 h-4" />
                                                         </button>
+                                                        <Link
+                                                            href={`/admin/dashboard/companies/${comp._id}`}
+                                                            title="عرض الصفحة التفصيلية الشاملة"
+                                                            className="p-2 rounded-xl bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer inline-flex items-center justify-center"
+                                                        >
+                                                            <LuExternalLink className="w-4 h-4" />
+                                                        </Link>
                                                         <button
                                                             onClick={() => {
                                                                 setSelectedCompany(comp);

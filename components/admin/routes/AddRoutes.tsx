@@ -101,7 +101,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    نقطة الانطلاق (Origin) <span className="text-red-500">*</span>
+                                    نقطة الانطلاق <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -109,9 +109,8 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                                     value={formValues.origin}
                                     onChange={(e) => setFormValues({ ...formValues, origin: e.target.value })}
                                     placeholder="الرياض، جدة، الدمام..."
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.origin ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.origin ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.origin && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.origin}</span>
@@ -121,7 +120,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    وجهة الوصول (Destination) <span className="text-red-500">*</span>
+                                    وجهة الوصول  <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -129,9 +128,8 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                                     value={formValues.destination}
                                     onChange={(e) => setFormValues({ ...formValues, destination: e.target.value })}
                                     placeholder="مكة، المدينة، مجمع الهفوف..."
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.destination ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.destination ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.destination && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.destination}</span>
@@ -149,9 +147,8 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                                     disabled={isSubmitting}
                                     value={formValues.vehicleType}
                                     onChange={(e) => setFormValues({ ...formValues, vehicleType: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
-                                        fieldErrors.vehicleType ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.vehicleType ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 >
                                     <option value="شاحنة كبيرة (دينا)">شاحنة كبيرة (دينا - Dyna)</option>
                                     <option value="شاحنة مغلقة (تريلا)">شاحنة مغلقة (تريلا - Trailer)</option>
@@ -174,9 +171,8 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                                     value={formValues.basePrice}
                                     onChange={(e) => setFormValues({ ...formValues, basePrice: Number(e.target.value) })}
                                     min={0}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.basePrice ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.basePrice ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.basePrice && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.basePrice}</span>

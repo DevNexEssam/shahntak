@@ -1,4 +1,4 @@
-import { CompanyUser, CompanyUserResponse, CompanyUserSingleResponse, CompanyUserDeleteResponse } from "@/types/data";
+import { CompanyUser, CompanyUserResponse, CompanyUserSingleResponse, CompanyUserDeleteResponse, CompanyUserFullDetailsResponse } from "@/types/data";
 import axios from "axios";
 
 export const companyUserServices = {
@@ -20,6 +20,12 @@ export const companyUserServices = {
         return data;
     },
 
+    // Get full company user details (stats, recent orders, creator info) by ID
+    getCompanyUserFullDetails: async (id: string): Promise<CompanyUserFullDetailsResponse> => {
+        const { data } = await axios.get(`/api/admin/company-users/${id}/details`);
+        return data;
+    },
+
     // Create a new company user
     createCompanyUser: async (payload: { data: Partial<CompanyUser> }): Promise<CompanyUserSingleResponse> => {
         const { data } = await axios.post("/api/admin/company-users/new", payload.data);
@@ -29,6 +35,14 @@ export const companyUserServices = {
     // Update company user details by ID
     updateCompanyUser: async (payload: { id: string; updates: Partial<CompanyUser> }): Promise<CompanyUserSingleResponse> => {
         const { data } = await axios.patch(`/api/admin/company-users/${payload.id}`, payload.updates);
+        return data;
+    },
+
+    // Toggle company user active status
+    toggleCompanyUserStatus: async (payload: { id: string; userIsActive: boolean }): Promise<CompanyUserSingleResponse> => {
+        const { data } = await axios.patch(`/api/admin/company-users/${payload.id}`, {
+            userIsActive: payload.userIsActive,
+        });
         return data;
     },
 

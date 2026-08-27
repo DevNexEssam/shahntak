@@ -110,12 +110,33 @@ export interface CompanySingleResponse {
     success: boolean;
     message?: string;
     data: Company;
+    employeesCount?: number;
+    ordersCount?: number;
+    shipmentsCount?: number;
+    completedShipmentsCount?: number;
+    activeShipmentsCount?: number;
+    totalRevenue?: number;
+    pendingAmount?: number;
+    revenueResult?: any[];
 }
 
 export interface CompanyDeleteResponse {
     success: boolean;
     message?: string;
     data?: any;
+}
+
+export interface CompanyFullDetailsResponse {
+    success: boolean;
+    employeesCount: number;
+    ordersCount: number;
+    shipmentsCount: number;
+    completedShipmentsCount: number;
+    activeShipmentsCount: number;
+    totalRevenue: number;
+    pendingAmount: number;
+    company: Company;
+    message?: string;
 }
 
 // 4. CompanyUser Types
@@ -131,6 +152,7 @@ export interface CompanyUser {
     permissions: string[];
     userIsActive: boolean;
     createdBy: string;
+    createdByType?: "user" | "company_user";
     deletedAt?: string | null;
     createdAt?: string;
     updatedAt?: string;
@@ -152,6 +174,27 @@ export interface CompanyUserSingleResponse {
     success: boolean;
     message?: string;
     data: CompanyUser;
+    ordersCount?: number;
+    createdByDetails?: {
+        _id?: string;
+        name: string;
+        email: string;
+        type: "user" | "company_user";
+    };
+}
+
+export interface CompanyUserFullDetailsResponse {
+    success: boolean;
+    companyUser: CompanyUser;
+    ordersCount: number;
+    recentOrders: Order[];
+    createdByDetails?: {
+        _id?: string;
+        name: string;
+        email: string;
+        type: "user" | "company_user";
+    };
+    message?: string;
 }
 
 export interface CompanyUserDeleteResponse {

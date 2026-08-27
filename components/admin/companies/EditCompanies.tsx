@@ -134,9 +134,8 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                         value={formValues.companyName}
                                         onChange={(e) => setFormValues({ ...formValues, companyName: e.target.value })}
                                         placeholder="اسم الشركة"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                            fieldErrors.companyName ? "border-rose-500" : "border-border"
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.companyName ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.companyName && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.companyName}</p>}
                                 </div>
@@ -152,9 +151,8 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                         value={formValues.city}
                                         onChange={(e) => setFormValues({ ...formValues, city: e.target.value })}
                                         placeholder="الرياض"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                            fieldErrors.city ? "border-rose-500" : "border-border"
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.city ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.city && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.city}</p>}
                                 </div>
@@ -172,9 +170,8 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                         value={formValues.email}
                                         onChange={(e) => setFormValues({ ...formValues, email: e.target.value })}
                                         placeholder="contact@company.sa"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${
-                                            fieldErrors.email ? "border-rose-500" : "border-border"
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${fieldErrors.email ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.email && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.email}</p>}
                                 </div>
@@ -190,9 +187,8 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                         value={formValues.phone}
                                         onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })}
                                         placeholder="0501234567"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${
-                                            fieldErrors.phone ? "border-rose-500" : "border-border"
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${fieldErrors.phone ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.phone && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.phone}</p>}
                                 </div>
@@ -220,9 +216,8 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                         value={formValues.taxNumber}
                                         onChange={(e) => setFormValues({ ...formValues, taxNumber: e.target.value })}
                                         placeholder="300000000000003"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                            fieldErrors.taxNumber ? "border-rose-500" : "border-border"
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.taxNumber ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.taxNumber && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.taxNumber}</p>}
                                 </div>
@@ -238,8 +233,8 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                         onChange={(e) => setFormValues({ ...formValues, status: e.target.value as Company["status"] })}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-60"
                                     >
-                                        <option value="active">نشط (Active)</option>
-                                        <option value="inactive">غير نشط (Inactive)</option>
+                                        <option value="active">نشط</option>
+                                        <option value="inactive">غير نشط</option>
                                         <option value="archived">مؤرشف (Archived)</option>
                                         <option value="banned">محظور (Banned)</option>
                                     </select>
@@ -257,9 +252,8 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                     value={formValues.address}
                                     onChange={(e) => setFormValues({ ...formValues, address: e.target.value })}
                                     placeholder="العنوان التفصيلي"
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                        fieldErrors.address ? "border-rose-500" : "border-border"
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.address ? "border-rose-500" : "border-border"
+                                        }`}
                                 />
                                 {fieldErrors.address && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.address}</p>}
                             </div>
@@ -275,9 +269,8 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                     value={formValues.facilityInfo}
                                     onChange={(e) => setFormValues({ ...formValues, facilityInfo: e.target.value })}
                                     placeholder="معلومات عن المنشأة..."
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                        fieldErrors.facilityInfo ? "border-rose-500" : "border-border"
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.facilityInfo ? "border-rose-500" : "border-border"
+                                        }`}
                                 />
                                 {fieldErrors.facilityInfo && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.facilityInfo}</p>}
                             </div>
