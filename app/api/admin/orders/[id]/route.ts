@@ -5,6 +5,7 @@ import Order from "@/models/order";
 import Company from "@/models/companies";
 import CompanyUser from "@/models/Companyuser";
 import Shipment from "@/models/shipment";
+import User from "@/models/user";
 import { ACTIVE } from "@/utils/constants";
 import { can } from "@/utils/permissions";
 import mongoose from "mongoose";
@@ -117,11 +118,18 @@ export async function PATCH(req: Request, context: any) {
 
         if (updatePayload.createdByUserId && updatePayload.createdByUserId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.createdByUserId)) {
-                return NextResponse.json({ success: false, message: "معرف منشئ الطلب (createdByUserId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "معرف منشئ الطلب غير صالح" }, { status: 400 });
             }
-            const targetUser = await CompanyUser.findOne({ _id: updatePayload.createdByUserId, ...ACTIVE }).lean();
-            if (!targetUser) {
-                return NextResponse.json({ success: false, message: "منشئ الطلب (CompanyUser) غير موجود بالنظام" }, { status: 400 });
+            const targetCompUser = await CompanyUser.findOne({ _id: updatePayload.createdByUserId, ...ACTIVE }).lean();
+            if (targetCompUser) {
+                updatePayload.createdByUserType = "company_user";
+            } else {
+                const targetAdmin = await User.findById(updatePayload.createdByUserId).lean();
+                if (targetAdmin) {
+                    updatePayload.createdByUserType = "user";
+                } else {
+                    return NextResponse.json({ success: false, message: "منشئ الطلب غير موجود بالنظام" }, { status: 400 });
+                }
             }
         }
 
@@ -187,16 +195,20 @@ export async function DELETE(_req: Request, context: any) {
             );
         }
 
+        const url = new URL(_req.url);
+        const isHardDelete = url.searchParams.get("hard") === "true";
+
         let deletedOrder;
 
-        // Perform soft delete if permitted, otherwise hard delete
-        if (canSoftDelete) {
+        if (isHardDelete && canHardDelete) {
+            deletedOrder = await Order.findByIdAndDelete(id);
+        } else if (canSoftDelete) {
             deletedOrder = await Order.findOneAndUpdate(
                 { _id: id, ...ACTIVE },
                 { status: "cancelled", deletedAt: new Date() },
                 { new: true }
             );
-        } else {
+        } else if (canHardDelete) {
             deletedOrder = await Order.findByIdAndDelete(id);
         }
 
