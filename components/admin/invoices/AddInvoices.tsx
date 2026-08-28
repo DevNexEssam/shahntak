@@ -21,7 +21,6 @@ interface AddInvoicesProps {
 
 export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps) {
     const [formValues, setFormValues] = useState({
-        invoiceNumber: `INV-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
         companyId: '',
         total: 1000,
         status: 'issued' as const,
@@ -100,22 +99,14 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
                     <div className="p-6 overflow-y-auto space-y-5 flex-1">
 
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                <LuHash className="w-3.5 h-3.5 text-body" />
-                                رقم الفاتورة <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                disabled={isSubmitting}
-                                value={formValues.invoiceNumber}
-                                onChange={(e) => setFormValues({ ...formValues, invoiceNumber: e.target.value })}
-                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.invoiceNumber ? 'border-rose-500' : 'border-border'
-                                    }`}
-                            />
-                            {fieldErrors.invoiceNumber && (
-                                <span className="text-xs text-rose-500 font-medium block">{fieldErrors.invoiceNumber}</span>
-                            )}
+                        <div className="bg-accent-soft/30 border border-accent/30 p-3.5 rounded-xl flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-accent text-accent-foreground flex items-center justify-center shrink-0">
+                                <LuHash className="w-4 h-4" />
+                            </div>
+                            <div>
+                                <span className="text-xs font-bold text-heading block">رقم الفاتورة الآلي</span>
+                                <span className="text-[11px] text-body">سيتم توليد رقم الفاتورة فريداً أوتوماتيكياً من النظام فور الاعتماد (مثال: INV-2026-XXXX)</span>
+                            </div>
                         </div>
 
                         <div className="space-y-1.5">

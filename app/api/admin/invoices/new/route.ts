@@ -47,13 +47,20 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" }, { status: 400 });
         }
 
-        const exists = await Invoice.findOne({ invoiceNumber: data.invoiceNumber }).lean();
+        const finalInvoiceNumber = data.invoiceNumber && data.invoiceNumber.trim() !== ""
+            ? data.invoiceNumber
+            : `INV-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
+
+        const exists = await Invoice.findOne({ invoiceNumber: finalInvoiceNumber }).lean();
         if (exists) {
             return NextResponse.json({ success: false, message: "رقم الفاتورة مستخدم بالفعل" }, { status: 409 });
         }
 
-        const newInvoice = await Invoice.create(data);
-        return NextResponse.json({ success: true, message: "تم إصدار الفاتورة بنجاح", data: newInvoice }, { status: 201 });
+        const newInvoice = await Invoice.create({
+            ...data,
+            invoiceNumber: finalInvoiceNumber,
+        });
+        return NextResponse.json({ success: true, message: `تم إصدار الفاتورة رقم (${finalInvoiceNumber}) بنجاح`, data: newInvoice }, { status: 201 });
     } catch (error: any) {
         return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
     }

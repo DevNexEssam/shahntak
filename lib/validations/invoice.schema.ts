@@ -9,7 +9,7 @@ export const invoiceStatusEnum = [
 ] as const;
 
 export const invoiceCreateValidationSchema = z.object({
-    invoiceNumber: z.string("رقم الفاتورة مطلوب").min(1, "رقم الفاتورة مطلوب"),
+    invoiceNumber: z.string().optional().or(z.literal("")),
     companyId: z.string("معرف الشركة مطلوب").min(1, "معرف الشركة مطلوب"),
     total: z
         .number({ message: "إجمالي الفاتورة مطلوب" })
