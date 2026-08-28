@@ -4,6 +4,7 @@ import { connectDB } from "@/lib/mongodb";
 import { invoiceUpdateValidationSchema } from "@/lib/validations";
 import Invoice from "@/models/invoice";
 import Company from "@/models/companies";
+import Payment from "@/models/payment";
 import { ACTIVE } from "@/utils/constants";
 import { can } from "@/utils/permissions";
 import mongoose from "mongoose";
@@ -75,12 +76,24 @@ export async function PATCH(req: Request, context: any) {
             }
         }
 
-        const updated = await Invoice.findOneAndUpdate({ _id: id, ...ACTIVE }, updatePayload, { new: true });
-        if (!updated) {
+        const existingInvoice = await Invoice.findOne({ _id: id, ...ACTIVE });
+        if (!existingInvoice) {
             return NextResponse.json({ success: false, message: "الفاتورة غير موجودة" }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true, message: "تم تعديل الفاتورة بنجاح", data: updated }, { status: 200 });
+        // Re-evaluate invoice status against total payments if total updated
+        if (updatePayload.total !== undefined) {
+            const payments = await Payment.find({ invoiceId: id });
+            const totalPaid = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+            if (totalPaid >= updatePayload.total && updatePayload.total > 0) {
+                updatePayload.status = "paid";
+            } else if (totalPaid < updatePayload.total && existingInvoice.status === "paid") {
+                updatePayload.status = "issued";
+            }
+        }
+
+        const updated = await Invoice.findOneAndUpdate({ _id: id, ...ACTIVE }, updatePayload, { new: true });
+        return NextResponse.json({ success: true, message: "تم تعديل الفاتورة وإعادة حساب الحالة بنجاح", data: updated }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
     }

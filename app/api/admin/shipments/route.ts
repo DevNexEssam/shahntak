@@ -7,6 +7,10 @@ import { authOptions } from "@/lib/authOptions";
 import { can } from "@/utils/permissions";
 import { ACTIVE } from "@/utils/constants";
 
+import "@/models/shipment";
+import "@/models/order";
+import "@/models/route";
+
 // GET shipments list
 export async function GET(req: NextRequest) {
     try {
@@ -17,7 +21,7 @@ export async function GET(req: NextRequest) {
         const role = session?.user?.role;
 
         if (!role || !can(role, "shipment", "read")) {
-            return NextResponse.json(
+            return NextResponse.json(   
                 { success: false, message: "غير مصرح لك بهذا الإجراء" },
                 { status: 403 }
             );

@@ -29,7 +29,7 @@ export const shipmentServices = {
     },
 
     // Create a new shipment
-    createShipment: async (payload: { data: Partial<Shipment> }): Promise<ShipmentSingleResponse> => {
+    createShipment: async (payload: { data: Partial<Shipment> & { orderIds?: string[] } }): Promise<ShipmentSingleResponse> => {
         const { data } = await axios.post("/api/admin/shipments/new", payload.data);
         return data;
     },

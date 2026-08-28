@@ -25,8 +25,10 @@ import {
     LuClock,
     LuCheck,
     LuTruck,
-    LuMapPin
+    LuMapPin,
+    LuLayers
 } from 'react-icons/lu';
+import AddShipments from '../shipments/AddShipments';
 
 export default function Orders() {
     // 1. Pagination & Search/Filtering States
@@ -37,6 +39,8 @@ export default function Orders() {
 
     // 2. Modals Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
+    const [isGroupShipmentOpen, setIsGroupShipmentOpen] = useState(false);
+    const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
     const [selectedOrderForEdit, setSelectedOrderForEdit] = useState<Order | null>(null);
     const [selectedOrderForDetails, setSelectedOrderForDetails] = useState<Order | null>(null);
     const [selectedOrderForDelete, setSelectedOrderForDelete] = useState<Order | null>(null);
@@ -211,6 +215,35 @@ export default function Orders() {
                 </div>
             </div>
 
+            {/* Batch Action Bar when orders are selected */}
+            {selectedOrderIds.length > 0 && (
+                <div className="bg-accent-soft/30 border border-accent/30 p-4 rounded-xl flex items-center justify-between animate-in fade-in">
+                    <div className="flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-lg bg-accent text-accent-foreground font-bold flex items-center justify-center text-xs">
+                            {selectedOrderIds.length}
+                        </span>
+                        <span className="text-sm font-bold text-heading">طلبات محددة للتجميع</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setSelectedOrderIds([])}
+                            className="px-3 py-1.5 rounded-lg border border-border text-xs font-bold text-body hover:text-heading hover:bg-surface transition-all cursor-pointer"
+                        >
+                            إلغاء التحديد
+                        </button>
+
+                        <button
+                            onClick={() => setIsGroupShipmentOpen(true)}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-accent-foreground font-bold text-xs shadow-xs hover:shadow transition-all cursor-pointer"
+                        >
+                            <LuLayers className="w-4 h-4" />
+                            <span>تجميع الطلبات المحددة في شحنة واحدة</span>
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Filter and Search Controller Header */}
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">
@@ -256,6 +289,20 @@ export default function Orders() {
                         <table className="w-full text-right text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
+                                    <th className="py-3.5 px-4 w-10 text-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={ordersList.length > 0 && selectedOrderIds.length === ordersList.length}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedOrderIds(ordersList.map(o => o._id));
+                                                } else {
+                                                    setSelectedOrderIds([]);
+                                                }
+                                            }}
+                                            className="rounded border-border text-accent focus:ring-accent cursor-pointer"
+                                        />
+                                    </th>
                                     <th className="py-3.5 px-4">رقم الطلب</th>
                                     <th className="py-3.5 px-4">الشركة المنشئة</th>
                                     <th className="py-3.5 px-4">المستلم والجوال</th>
@@ -274,6 +321,20 @@ export default function Orders() {
 
                                     return (
                                         <tr key={ord._id} className="hover:bg-surface-muted/40 transition-colors">
+                                            <td className="py-3.5 px-4 text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedOrderIds.includes(ord._id)}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setSelectedOrderIds((prev) => [...prev, ord._id]);
+                                                        } else {
+                                                            setSelectedOrderIds((prev) => prev.filter((id) => id !== ord._id));
+                                                        }
+                                                    }}
+                                                    className="rounded border-border text-accent focus:ring-accent cursor-pointer"
+                                                />
+                                            </td>
                                             <td className="py-3.5 px-4 font-latin font-bold text-accent">
                                                 {ord.orderNumber}
                                             </td>
@@ -388,6 +449,32 @@ export default function Orders() {
                 isOpen={isAddOpen}
                 onClose={() => setIsAddOpen(false)}
             />
+
+            {/* Calculate common company and destination for selected orders */}
+            {(() => {
+                const selectedOrders = ordersList.filter((o) => selectedOrderIds.includes(o._id));
+                const commonCompanyId = selectedOrders.length > 0
+                    ? (typeof selectedOrders[0].companyId === 'object' && selectedOrders[0].companyId !== null
+                        ? (selectedOrders[0].companyId as Company)._id
+                        : (selectedOrders[0].companyId as string))
+                    : '';
+                const commonDestination = selectedOrders.length > 0 ? selectedOrders[0].recipientCity : 'جدة';
+
+                return (
+                    <AddShipments
+                        isOpen={isGroupShipmentOpen}
+                        initialOrderIds={selectedOrderIds}
+                        initialCompanyId={commonCompanyId}
+                        initialDestination={commonDestination}
+                        isGrouping={true}
+                        onClose={() => {
+                            setIsGroupShipmentOpen(false);
+                            setSelectedOrderIds([]);
+                            refetch();
+                        }}
+                    />
+                );
+            })()}
 
             <EditOrders
                 isOpen={!!selectedOrderForEdit}

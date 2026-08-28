@@ -204,9 +204,9 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="ftl">حمولة كاملة (FTL)</option>
-                                    <option value="ltl">حمولة جزئية (LTL)</option>
-                                    <option value="local_delivery">توصيل محلي (Local Delivery)</option>
+                                    <option value="ftl">حمولة كاملة</option>
+                                    <option value="ltl">حمولة جزئية</option>
+                                    <option value="local_delivery">توصيل محلي</option>
                                 </select>
                             </div>
                         </div>
@@ -359,18 +359,18 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 font-medium"
                             >
-                                <option value="created">تمت الإنشائية مبدئياً (Created)</option>
-                                <option value="confirmed">مؤكدة بانتظار التخصيص (Confirmed)</option>
-                                <option value="assigned">تم تعيين الناقل والمركبة (Assigned)</option>
-                                <option value="ready_for_pickup">جاهزة للتحميل (Ready for Pickup)</option>
-                                <option value="picked_up">تم التحميل بالموقع (Picked Up)</option>
-                                <option value="in_transit">في الطريق اللوجستي (In Transit)</option>
-                                <option value="arrived">وصلت المحطة النهائية (Arrived)</option>
-                                <option value="out_for_delivery">خرجت للتسليم اللحظي (Out for Delivery)</option>
-                                <option value="delivered">تم التسليم بنجاح للعميل (Delivered)</option>
-                                <option value="delivery_failed">فشل التسليم (Delivery Failed)</option>
-                                <option value="cancelled">ملغاة (Cancelled)</option>
-                                <option value="returned">مرجعة للمستودع (Returned)</option>
+                                <option value="created">تمت الإنشائية مبدئياً</option>
+                                <option value="confirmed">مؤكدة بانتظار التخصيص</option>
+                                <option value="assigned">تم تعيين الناقل والمركبة</option>
+                                <option value="ready_for_pickup">جاهزة للتحميل</option>
+                                <option value="picked_up">تم التحميل بالموقع</option>
+                                <option value="in_transit">في الطريق اللوجستي</option>
+                                <option value="arrived">وصلت المحطة النهائية</option>
+                                <option value="out_for_delivery">خرجت للتسليم اللحظي</option>
+                                <option value="delivered">تم التسليم بنجاح للعميل</option>
+                                <option value="delivery_failed">فشل التسليم</option>
+                                <option value="cancelled">ملغاة</option>
+                                <option value="returned">مرجعة للمستودع</option>
                             </select>
                         </div>
 

@@ -24,23 +24,49 @@ import {
 interface AddShipmentsProps {
     isOpen?: boolean;
     onClose: () => void;
+    initialOrderIds?: string[];
+    initialCompanyId?: string;
+    initialDestination?: string;
+    isGrouping?: boolean;
 }
 
-export default function AddShipments({ isOpen = true, onClose }: AddShipmentsProps) {
+export default function AddShipments({
+    isOpen = true,
+    onClose,
+    initialOrderIds,
+    initialCompanyId,
+    initialDestination,
+    isGrouping = false
+}: AddShipmentsProps) {
+    const isGroupingMode = isGrouping || (initialOrderIds && initialOrderIds.length > 0);
+
     const [formValues, setFormValues] = useState({
-        shipmentNumber: `SHP-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
-        companyId: '',
+        shipmentNumber: `SHP-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+        companyId: initialCompanyId || '',
         type: 'ftl' as 'ftl' | 'ltl' | 'local_delivery',
         origin: 'الرياض',
-        destination: 'جدة',
+        destination: initialDestination || 'جدة',
         routeId: '',
         carrierId: '',
         vehicleId: '',
-        ordersCount: 1,
+        ordersCount: initialOrderIds?.length || 1,
         shippingCost: 500,
         customerPrice: 750,
         status: 'created' as any,
     });
+
+    // Sync values when props change or modal opens
+    React.useEffect(() => {
+        if (isOpen) {
+            setFormValues((prev) => ({
+                ...prev,
+                shipmentNumber: `SHP-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+                companyId: initialCompanyId || prev.companyId,
+                destination: initialDestination || prev.destination,
+                ordersCount: initialOrderIds?.length || prev.ordersCount || 1,
+            }));
+        }
+    }, [isOpen, initialCompanyId, initialDestination, initialOrderIds]);
 
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -65,6 +91,7 @@ export default function AddShipments({ isOpen = true, onClose }: AddShipmentsPro
 
         const payload = {
             ...formValues,
+            orderIds: initialOrderIds && initialOrderIds.length > 0 ? initialOrderIds : undefined,
             routeId: formValues.routeId || undefined,
             carrierId: formValues.carrierId || undefined,
             vehicleId: formValues.vehicleId || undefined,
@@ -101,11 +128,17 @@ export default function AddShipments({ isOpen = true, onClose }: AddShipmentsPro
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
                         <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
-                            <LuPackage className="w-6 h-6" />
+                            <LuLayers className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إنشاء شحنة لوجستية جديدة</h2>
-                            <p className="text-xs text-body mt-0.5">تسجيل بيانات الشحنة وتعيين الشركة والمسار والناقل الشريك والمركبة</p>
+                            <h2 className="text-xl font-extrabold text-heading">
+                                {isGroupingMode ? `تجميع ${initialOrderIds?.length || ''} طلبات في شحنة واحدة` : 'إنشاء شحنة لوجستية جديدة'}
+                            </h2>
+                            <p className="text-xs text-body mt-0.5">
+                                {isGroupingMode
+                                    ? 'سيتم توليد رقم الشحنة والبوليصة أوتوماتيكياً وتحويل الطلبات التابعة إلى مجمعة'
+                                    : 'تسجيل بيانات الشحنة وتعيين الشركة والمسار والناقل الشريك والمركبة'}
+                            </p>
                         </div>
                     </div>
 
@@ -128,21 +161,15 @@ export default function AddShipments({ isOpen = true, onClose }: AddShipmentsPro
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    <LuHash className="w-3.5 h-3.5 text-body" />
-                                    رقم الشحنة التلقائي <span className="text-red-500">*</span>
+                                    <LuHash className="w-3.5 h-3.5 text-accent" />
+                                    رقم الشحنة التلقائي <span className="text-xs font-normal text-emerald-600 font-arabic bg-emerald-500/10 px-2 py-0.5 rounded-md">(مولد آلياً)</span>
                                 </label>
                                 <input
                                     type="text"
-                                    disabled={isSubmitting}
+                                    disabled
                                     value={formValues.shipmentNumber}
-                                    onChange={(e) => setFormValues({ ...formValues, shipmentNumber: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.shipmentNumber ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted/80 border border-border text-sm font-bold text-accent font-latin cursor-not-allowed opacity-90"
                                 />
-                                {fieldErrors.shipmentNumber && (
-                                    <span className="text-xs text-rose-500 font-medium block">{fieldErrors.shipmentNumber}</span>
-                                )}
                             </div>
 
                             <div className="space-y-1.5">

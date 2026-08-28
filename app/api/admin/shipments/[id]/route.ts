@@ -6,6 +6,7 @@ import Company from "@/models/companies";
 import Route from "@/models/route";
 import Carrier from "@/models/carrier";
 import Vehicle from "@/models/vehicle";
+import Order from "@/models/order";
 import { ACTIVE } from "@/utils/constants";
 import { can } from "@/utils/permissions";
 import mongoose from "mongoose";
@@ -160,8 +161,24 @@ export async function PATCH(req: Request, context: any) {
             );
         }
 
+        // Cascade update orders linked to this shipment if status changed
+        if (updatePayload.status) {
+            let mappedOrderStatus: "grouped" | "shipped" | "delivered" | "cancelled" = "grouped";
+            if (updatePayload.status === "delivered") {
+                mappedOrderStatus = "delivered";
+            } else if (["in_transit", "out_for_delivery", "picked_up", "ready_for_pickup"].includes(updatePayload.status)) {
+                mappedOrderStatus = "shipped";
+            } else if (["cancelled", "delivery_failed", "returned", "exception"].includes(updatePayload.status)) {
+                mappedOrderStatus = "cancelled";
+            }
+            await Order.updateMany(
+                { shipmentId: id, ...ACTIVE },
+                { status: mappedOrderStatus }
+            );
+        }
+
         return NextResponse.json(
-            { success: true, message: "تم تعديل بيانات الشحنة بنجاح", data: updatedShipment },
+            { success: true, message: "تم تعديل بيانات الشحنة وتحديث حالة الطلبات التابعة لها بنجاح", data: updatedShipment },
             { status: 200 }
         );
     } catch (error: any) {

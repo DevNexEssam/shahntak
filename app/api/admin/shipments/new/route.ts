@@ -9,6 +9,8 @@ import Company from "@/models/companies";
 import Route from "@/models/route";
 import Carrier from "@/models/carrier";
 import Vehicle from "@/models/vehicle";
+import Order from "@/models/order";
+import Waybill from "@/models/waybill";
 import { can } from "@/utils/permissions";
 import { ACTIVE } from "@/utils/constants";
 import mongoose from "mongoose";
@@ -104,6 +106,13 @@ export async function POST(req: Request) {
             );
         }
 
+        const finalWaybillNumber = data.waybillNumber && data.waybillNumber.trim() !== ""
+            ? data.waybillNumber
+            : `WB-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
+
+        const orderIds = data.orderIds || [];
+        const calculatedOrdersCount = orderIds.length > 0 ? orderIds.length : (data.ordersCount || 0);
+
         const newShipment = await Shipment.create({
             shipmentNumber: data.shipmentNumber,
             companyId: data.companyId,
@@ -114,16 +123,39 @@ export async function POST(req: Request) {
             carrierId: data.carrierId || null,
             vehicleId: data.vehicleId || null,
             invoiceId: data.invoiceId || null,
-            ordersCount: data.ordersCount || 0,
+            ordersCount: calculatedOrdersCount,
             shippingCost: data.shippingCost,
             customerPrice: data.customerPrice,
-            waybillNumber: data.waybillNumber || "",
+            waybillNumber: finalWaybillNumber,
             trackingNumber: data.trackingNumber || "",
             status: data.status || "created",
         });
 
+        // 1. Cascade update grouped orders in database
+        if (orderIds.length > 0) {
+            const validObjectIds = orderIds.filter((id) => mongoose.Types.ObjectId.isValid(id));
+            if (validObjectIds.length > 0) {
+                await Order.updateMany(
+                    { _id: { $in: validObjectIds }, ...ACTIVE },
+                    { shipmentId: newShipment._id, status: "grouped" }
+                );
+            }
+        }
+
+        // 2. Auto-create Waybill record for tracking & print
+        try {
+            await Waybill.create({
+                shipmentId: newShipment._id,
+                waybillNumber: finalWaybillNumber,
+                pdfUrl: `/waybills/${finalWaybillNumber}.pdf`,
+                issuedAt: new Date(),
+            });
+        } catch {
+            // Silence if waybill exists
+        }
+
         return NextResponse.json(
-            { success: true, message: "تم إنشاء الشحنة بنجاح", data: newShipment },
+            { success: true, message: "تم إنشاء وتجميع الشحنة بنجاح وتوليد بوليصة الشحن", data: newShipment },
             { status: 201 }
         );
     } catch (error: any) {

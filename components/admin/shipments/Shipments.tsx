@@ -25,7 +25,8 @@ import {
     LuCheck,
     LuClock,
     LuTruck,
-    LuMapPin
+    LuMapPin,
+    LuPrinter
 } from 'react-icons/lu';
 
 export default function Shipments() {
@@ -275,9 +276,10 @@ export default function Shipments() {
                         <table className="w-full text-right text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">رقم الشحنة</th>
+                                    <th className="py-3.5 px-4">رقم الشحنة / البوليصة</th>
                                     <th className="py-3.5 px-4">الشركة المالكة</th>
                                     <th className="py-3.5 px-4">المسار (الانطلاق ➔ الوجهة)</th>
+                                    <th className="py-3.5 px-4">عدد الطلبات</th>
                                     <th className="py-3.5 px-4">تكلفة وسعر السداد</th>
                                     <th className="py-3.5 px-4">الحالة</th>
                                     <th className="py-3.5 px-4 text-center">الإجراءات</th>
@@ -291,8 +293,13 @@ export default function Shipments() {
 
                                     return (
                                         <tr key={shp._id} className="hover:bg-surface-muted/40 transition-colors">
-                                            <td className="py-3.5 px-4 font-latin font-bold text-accent">
-                                                {shp.shipmentNumber}
+                                            <td className="py-3.5 px-4 font-latin">
+                                                <div className="font-bold text-accent">{shp.shipmentNumber}</div>
+                                                {shp.waybillNumber ? (
+                                                    <div className="text-[11px] font-semibold text-purple-600 font-latin">
+                                                        📄 {shp.waybillNumber}
+                                                    </div>
+                                                ) : null}
                                             </td>
 
                                             <td className="py-3.5 px-4">
@@ -312,6 +319,10 @@ export default function Shipments() {
                                                 </div>
                                             </td>
 
+                                            <td className="py-3.5 px-4 text-xs font-latin font-bold text-heading">
+                                                {shp.ordersCount || 1} طلب
+                                            </td>
+
                                             <td className="py-3.5 px-4 text-xs font-latin">
                                                 <div className="flex flex-col">
                                                     <span className="text-heading font-bold">{shp.customerPrice} ر.س <span className="text-[10px] text-body font-arabic font-normal">(للعميل)</span></span>
@@ -325,6 +336,14 @@ export default function Shipments() {
 
                                             <td className="py-3.5 px-4 text-center">
                                                 <div className="flex items-center justify-center gap-1.5">
+                                                    <button
+                                                        onClick={() => window.print()}
+                                                        title="طباعة بوليصة الشحن"
+                                                        className="p-2 rounded-md bg-surface-muted hover:bg-purple-500/10 text-body hover:text-purple-600 border border-border transition-all cursor-pointer"
+                                                    >
+                                                        <LuPrinter className="w-4 h-4" />
+                                                    </button>
+
                                                     <button
                                                         onClick={() => setSelectedShipmentForDetails(shp)}
                                                         title="عرض التفاصيل"

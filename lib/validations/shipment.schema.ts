@@ -38,6 +38,7 @@ export const shipmentCreateValidationSchema = z.object({
     waybillNumber: z.string().optional().or(z.literal("")),
     trackingNumber: z.string().optional().or(z.literal("")),
     status: z.enum(shipmentStatusEnum).default("created"),
+    orderIds: z.array(z.string()).optional(),
 });
 
 export const shipmentUpdateValidationSchema = z.object({
