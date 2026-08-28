@@ -21,6 +21,8 @@ export const useShipments = (page: number = 1, limit: number = 10, search: strin
         queryKey: shipmentKeys.list(page, limit, search, status, type),
         queryFn: () => shipmentServices.getShipments(page, limit, search, status, type),
         placeholderData: keepPreviousData,
+        refetchInterval: 3000, // Live background auto-refetch every 3s
+        refetchOnWindowFocus: true,
     });
 };
 
@@ -28,6 +30,7 @@ export const useAllShipments = () => {
     return useQuery({
         queryKey: shipmentKeys.allList(),
         queryFn: () => shipmentServices.getAllShipments(),
+        refetchInterval: 3000,
     });
 };
 
@@ -36,6 +39,7 @@ export const useShipment = (id: string) => {
         queryKey: shipmentKeys.detail(id),
         queryFn: () => shipmentServices.getShipmentById(id),
         enabled: !!id,
+        refetchInterval: 3000,
     });
 };
 
@@ -46,6 +50,7 @@ export const useCreateShipment = () => {
         mutationFn: (data: Partial<Shipment>) => shipmentServices.createShipment({ data }),
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: shipmentKeys.all });
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
             toast.success(res.message || "تم إنشاء الشحنة بنجاح");
         },
         onError: (error: AxiosError<{ message?: string }>) => {
@@ -61,6 +66,7 @@ export const useUpdateShipment = () => {
         onSuccess: (res, variables) => {
             queryClient.invalidateQueries({ queryKey: shipmentKeys.all });
             queryClient.invalidateQueries({ queryKey: shipmentKeys.detail(variables.id) });
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
             toast.success(res.message || "تم تحديث بيانات الشحنة بنجاح");
         },
         onError: (error: AxiosError<{ message?: string }>) => {
@@ -77,6 +83,7 @@ export const useAssignShipmentResources = () => {
         onSuccess: (res, variables) => {
             queryClient.invalidateQueries({ queryKey: shipmentKeys.all });
             queryClient.invalidateQueries({ queryKey: shipmentKeys.detail(variables.id) });
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
             toast.success(res.message || "تم تعيين الناقل والمسار والمركبة للشحنة بنجاح");
         },
         onError: (error: AxiosError<{ message?: string }>) => {
@@ -92,6 +99,7 @@ export const useUpdateShipmentStatus = () => {
         onSuccess: (res, variables) => {
             queryClient.invalidateQueries({ queryKey: shipmentKeys.all });
             queryClient.invalidateQueries({ queryKey: shipmentKeys.detail(variables.id) });
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
             queryClient.invalidateQueries({ queryKey: ["tracking-events"] });
             toast.success(res.message || "تم تحديث حالة الشحنة بنجاح");
         },
@@ -107,6 +115,7 @@ export const useDeleteShipment = () => {
         mutationFn: (payload: { id: string; hard?: boolean }) => shipmentServices.deleteShipment(payload),
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: shipmentKeys.all });
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
             toast.success(res.message || "تم حذف الشحنة بنجاح");
         },
         onError: (error: AxiosError<{ message?: string }>) => {

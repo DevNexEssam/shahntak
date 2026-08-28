@@ -21,6 +21,8 @@ export const useOrders = (page: number = 1, limit: number = 10, search: string =
         queryKey: orderKeys.list(page, limit, search, status),
         queryFn: () => orderServices.getOrders(page, limit, search, status),
         placeholderData: keepPreviousData,
+        refetchInterval: 3000, // Live background auto-refetch every 3s
+        refetchOnWindowFocus: true,
     });
 };
 
@@ -28,6 +30,7 @@ export const useAllOrders = () => {
     return useQuery({
         queryKey: orderKeys.allList(),
         queryFn: () => orderServices.getAllOrders(),
+        refetchInterval: 3000,
     });
 };
 
@@ -36,6 +39,7 @@ export const useOrder = (id: string) => {
         queryKey: orderKeys.detail(id),
         queryFn: () => orderServices.getOrderById(id),
         enabled: !!id,
+        refetchInterval: 3000,
     });
 };
 
@@ -46,6 +50,7 @@ export const useCreateOrder = () => {
         mutationFn: (data: Partial<Order>) => orderServices.createOrder({ data }),
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: orderKeys.all });
+            queryClient.invalidateQueries({ queryKey: ["shipments"] });
             toast.success(res.message || "تم إنشاء الطلب بنجاح");
         },
         onError: (error: AxiosError<{ message?: string }>) => {
@@ -75,6 +80,7 @@ export const useUpdateOrder = () => {
         onSuccess: (res, variables) => {
             queryClient.invalidateQueries({ queryKey: orderKeys.all });
             queryClient.invalidateQueries({ queryKey: orderKeys.detail(variables.id) });
+            queryClient.invalidateQueries({ queryKey: ["shipments"] });
             toast.success(res.message || "تم تحديث بيانات الطلب بنجاح");
         },
         onError: (error: AxiosError<{ message?: string }>) => {
