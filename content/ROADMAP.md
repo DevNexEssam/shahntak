@@ -77,13 +77,14 @@
 * **التحديث اللحظي المباشر بدون إعادة تحميل (Real-Time Live Updates)**: تفعيل المراقبة بالخلفية (`refetchInterval: 3000`) والربط التبادلي لإبطال الكاش (`Cross-Invalidation`) في React Query بين الطلبات والشحنات، مما يضمن تحديث حالة الطلبات والتوصيل لحظياً وبشكل فوري تلقائياً دون الحاجة لأن يقوم المستخدم بعاقبة الـ Refresh أو الضغط المانوي.
 * **تعريب وتحسين الواجهات (RTL & Clean Dropdowns)**: توحيد الخيارات المنبثقة باللغة العربية الخالصة وتصفية النصوص الإنجليزية في جميع مودالات الشحنات (`AddShipments.tsx`, `EditShipments.tsx`).
 
-### 1.15 بناء نظام الباقات والاشتراكات السحابية وحماية الحصص (`Subscription & Plan System`)
+### 1.15 بناء ونظام الباقات والاشتراكات السحابية وحماية الحصص وتنميط الواجهات (`Subscription & Plan System`)
 * **نمذجة الباقات السحابية (`Plan Model`)**: إنشاء نموذج `Plan` وإتاحة تخصيص أسعار ودورة الفوترة (شهري/سنوي) والحدود الشهرية المسموحة للطلبات والشحنات والموظفين وميزات الباقة.
 * **إدارة اشتراكات الشركات (`Subscription Model`)**: إنشاء نموذج `Subscription` لمتابعة صلاحية اشتراكات الشركات، تاريخ البدء والانتهاء، التجديد التلقائي وعداد الاستهلاك الشهرية.
 * **حماية حصص الاستهلاك (`Quota Enforcement`)**: ربط الباك إند (`orders/new/route.ts`) بفحص حصة الطلبات المتبقية بالباقة النشطة ومنع الإضافة التلقائي وتنبيه الموظف فور تجاوز حد الباقة المسموح.
-* **تطوير شاشات ومودالات لوحة التحكم (`Admin UI & Navigation`)**: 
-  * تطوير قسم إدارة الباقات السحابية (`/admin/dashboard/plans`) بمكونات `AddPlans`, `EditPlans`, `DetailsPlans`, `Plans.tsx`.
-  * تطوير قسم اشتراكات الشركات (`/admin/dashboard/subscriptions`) بمكونات `AddSubscriptions`, `EditSubscriptions`, `DetailsSubscriptions`, `Subscriptions.tsx`.
+* **تطبيق دليل التصاميم المعتمد (`ADMIN_UI_DESIGN_SYSTEM.md`)**:
+  * تطبيق التصميم القياسي الخالي من الظلال (`border border-border rounded-md` و `rounded-sm`) على جداول وكروت وفلاتر الأقسام.
+  * توحيد كروت الـ KPI بأيقونات دائرية ملونة `w-10 h-10 rounded-full bg-accent-soft text-accent`.
+  * تطابق كلي لمودالات الإضافة والتعديل والتفاصيل (`AddPlans`, `EditPlans`, `DetailsPlans`, `AddSubscriptions`, `EditSubscriptions`, `DetailsSubscriptions`).
   * إضافة رابطي "الباقات السحابية" 💳 و "اشتراكات الشركات" 👑 بالقائمة الجانبية (`AdminSidebar.tsx`).
 * **التشغيل والربط والتأكيد**: نجاح كافة فحوصات الأنواع `npx tsc --noEmit` وتأكيد بناء النسخة الإنتاجية `npm run build` بنسبة 100%.
 
@@ -112,4 +113,6 @@
 | **`Shipment`** | `/admin/shipments` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Invoice`** | `/admin/invoices` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
 | **`Payment`** | `/admin/payments` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
+| **`Plan`** | `/admin/dashboard/plans` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_UI_DESIGN_SYSTEM.md`](file:///e:/projects/shahntak/content/ADMIN_UI_DESIGN_SYSTEM.md) |
+| **`Subscription`** | `/admin/dashboard/subscriptions` | ✅ **مكتمل بالكامل 100%** | [`ADMIN_UI_DESIGN_SYSTEM.md`](file:///e:/projects/shahntak/content/ADMIN_UI_DESIGN_SYSTEM.md) |
 | **`TrackingEvent`**| `/admin/tracking` | ⏳ جاري الربط المخطط | [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) |
