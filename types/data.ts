@@ -565,6 +565,92 @@ export interface NotificationDeleteResponse {
     data?: any;
 }
 
+// 14. Plan Types
+export interface Plan {
+    _id: string;
+    name: string;
+    description?: string;
+    price: number;
+    billingCycle: "monthly" | "yearly";
+    maxOrdersPerMonth: number;
+    maxShipmentsPerMonth: number;
+    maxCompanyUsers: number;
+    features: string[];
+    isActive: boolean;
+    deletedAt?: string | null;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface PlanResponse {
+    success: boolean;
+    data: Plan[];
+    total: number;
+    count: number;
+    stats?: {
+        active: number;
+        inactive: number;
+        total: number;
+    };
+}
+
+export interface PlanSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Plan;
+}
+
+export interface PlanDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
+// 15. Subscription Types
+export interface Subscription {
+    _id: string;
+    companyId: string | Company;
+    planId: string | Plan;
+    startDate: string;
+    endDate: string;
+    status: "active" | "expired" | "pending_payment" | "cancelled";
+    ordersUsedThisMonth: number;
+    shipmentsUsedThisMonth: number;
+    autoRenew: boolean;
+    deletedAt?: string | null;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface SubscriptionResponse {
+    success: boolean;
+    data: Subscription[];
+    total: number;
+    count: number;
+    stats?: {
+        active: number;
+        expired: number;
+        pending_payment: number;
+        cancelled: number;
+        total: number;
+    };
+}
+
+export interface SubscriptionSingleResponse {
+    success: boolean;
+    message?: string;
+    data: Subscription;
+    remainingOrders?: number;
+    remainingShipments?: number;
+}
+
+export interface SubscriptionDeleteResponse {
+    success: boolean;
+    message?: string;
+    data?: any;
+}
+
+
 
 
 

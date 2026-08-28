@@ -9,6 +9,7 @@ import Company from "@/models/companies";
 import CompanyUser from "@/models/Companyuser";
 import Shipment from "@/models/shipment";
 import User from "@/models/user";
+import Subscription from "@/models/subscription";
 import { can } from "@/utils/permissions";
 import { ACTIVE } from "@/utils/constants";
 import mongoose from "mongoose";
@@ -64,6 +65,18 @@ export async function POST(req: Request) {
         const targetCompany = await Company.findOne({ _id: data.companyId, ...ACTIVE }).lean();
         if (!targetCompany) {
             return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" }, { status: 400 });
+        }
+
+        // Subscription Quota Check
+        const activeSub: any = await Subscription.findOne({ companyId: data.companyId, status: "active", ...ACTIVE }).populate("planId");
+        if (activeSub && activeSub.planId) {
+            const maxOrders = activeSub.planId.maxOrdersPerMonth;
+            if (maxOrders !== -1 && (activeSub.ordersUsedThisMonth || 0) >= maxOrders) {
+                return NextResponse.json({
+                    success: false,
+                    message: `تجاوزت الشركة الحد الأقصى للطلبات الشهرية المسموح به في باقتها الحالية (${maxOrders} طلب). يرجى ترقية الاشتراك.`
+                }, { status: 403 });
+            }
         }
 
         // Resolve creator: check CompanyUser -> User (Admin/SuperAdmin) -> Session User
@@ -146,8 +159,12 @@ export async function POST(req: Request) {
             orderValue: data.orderValue,
             codAmount: data.codAmount || 0,
             status: data.status || "pending",
-            source: data.source || "manual",
         });
+
+        if (activeSub) {
+            activeSub.ordersUsedThisMonth = (activeSub.ordersUsedThisMonth || 0) + 1;
+            await activeSub.save();
+        }
 
         return NextResponse.json(
             { success: true, message: "تم إنشاء الطلب بنجاح", data: newOrder },

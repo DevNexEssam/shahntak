@@ -1,0 +1,304 @@
+"use client";
+
+import React, { useState } from 'react';
+import { usePlans, useDeletePlan } from '@/hooks/plans/usePlans';
+import { Plan } from '@/types/data';
+import AddPlans from './AddPlans';
+import EditPlans from './EditPlans';
+import DetailsPlans from './DetailsPlans';
+import Loading from '@/components/ui/loading';
+import ErrorMessage from '@/components/ui/ErrorMessege';
+import EmptyData from '@/components/ui/EmptyData';
+import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
+import {
+    LuCreditCard,
+    LuPlus,
+    LuSearch,
+    LuEye,
+    LuPencil,
+    LuTrash2,
+    LuCheck,
+    LuZap,
+    LuBox,
+    LuLayers,
+    LuUsers
+} from 'react-icons/lu';
+
+export default function Plans() {
+    const [page, setPage] = useState(1);
+    const limit = 9;
+    const [search, setSearch] = useState('');
+    const [cycle, setCycle] = useState('all');
+
+    // Modals state
+    const [isAddOpen, setIsAddOpen] = useState(false);
+    const [selectedPlanForEdit, setSelectedPlanForEdit] = useState<Plan | null>(null);
+    const [selectedPlanForDetails, setSelectedPlanForDetails] = useState<Plan | null>(null);
+    const [selectedPlanForDelete, setSelectedPlanForDelete] = useState<Plan | null>(null);
+
+    const { data: plansRes, isLoading, isError, refetch } = usePlans(page, limit, search, cycle);
+    const { mutate: deletePlan, isPending: isDeleting } = useDeletePlan();
+
+    const plansList = plansRes?.data || [];
+    const stats = plansRes?.stats;
+
+    const handleDeleteConfirm = () => {
+        if (!selectedPlanForDelete) return;
+        deletePlan(
+            { id: selectedPlanForDelete._id, hard: false },
+            {
+                onSuccess: () => {
+                    setSelectedPlanForDelete(null);
+                    refetch();
+                },
+            }
+        );
+    };
+
+    return (
+        <div className="space-y-6 text-right font-arabic" dir="rtl">
+
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-extrabold text-heading">إدارة الباقات السحابية</h1>
+                    <p className="text-sm text-body mt-1">تصفح وتخصيص باقات اشتراكات الشركات والحدود المسموحة والأسعار على منصة شحنتك.</p>
+                </div>
+
+                <button
+                    onClick={() => setIsAddOpen(true)}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer hover:bg-accent/90"
+                >
+                    <LuPlus className="w-5 h-5" />
+                    <span>إضافة باقة جديدة</span>
+                </button>
+            </div>
+
+            {/* KPI / Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الباقات</span>
+                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats?.total ?? 0}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>الباقات المتاحة في المنصة</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center shrink-0">
+                            <LuZap className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">الباقات النشطة</span>
+                            <h3 className="text-2xl font-bold text-emerald-600 my-1 font-latin">{stats?.active ?? 0}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>جاهزة لاشتراكات الشركات</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                            <LuCheck className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">الباقات المعطلة</span>
+                            <h3 className="text-2xl font-bold text-rose-600 my-1 font-latin">{stats?.inactive ?? 0}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>غير مجهزة للاشتراك</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+                            <LuCreditCard className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Search and Filters */}
+            <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="relative w-full md:w-96">
+                    <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="ابحث باسم الباقة..."
+                        className="w-full pr-10 pl-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                    />
+                </div>
+
+                <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                    <button
+                        onClick={() => setCycle('all')}
+                        className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${cycle === 'all'
+                            ? 'bg-accent text-accent-foreground'
+                            : 'bg-surface-muted text-body border border-border hover:text-heading'
+                            }`}
+                    >
+                        الكل
+                    </button>
+                    <button
+                        onClick={() => setCycle('monthly')}
+                        className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${cycle === 'monthly'
+                            ? 'bg-accent text-accent-foreground'
+                            : 'bg-surface-muted text-body border border-border hover:text-heading'
+                            }`}
+                    >
+                        فوترة شهرية
+                    </button>
+                    <button
+                        onClick={() => setCycle('yearly')}
+                        className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${cycle === 'yearly'
+                            ? 'bg-accent text-accent-foreground'
+                            : 'bg-surface-muted text-body border border-border hover:text-heading'
+                            }`}
+                    >
+                        فوترة سنوية
+                    </button>
+                </div>
+            </div>
+
+            {/* Plans Grid Display */}
+            {isLoading ? (
+                <Loading />
+            ) : isError ? (
+                <ErrorMessage message="حدث خطأ أثناء تحميل بيانات الباقات" />
+            ) : plansList.length === 0 ? (
+                <EmptyData message="لم يتم إضافة أي باقات سحابية تشتمل على هذه الفلاتر حتى الآن." icon={LuCreditCard} />
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {plansList.map((plan) => (
+                        <div
+                            key={plan._id}
+                            className="bg-surface border border-border rounded-md p-5 flex flex-col justify-between relative overflow-hidden group"
+                        >
+                            <div className="space-y-4">
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <h3 className="text-xl font-extrabold text-heading group-hover:text-accent transition-colors">{plan.name}</h3>
+                                        <span className="text-xs text-body mt-0.5 block">{plan.description || 'باقة خدمات لوجستية سحابية'}</span>
+                                    </div>
+                                    <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${plan.isActive ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border-rose-500/20'}`}>
+                                        {plan.isActive ? 'نشطة' : 'معطلة'}
+                                    </span>
+                                </div>
+
+                                {/* Price tag */}
+                                <div className="p-4 rounded-md bg-surface-muted border border-border flex items-baseline gap-1">
+                                    <span className="text-3xl font-black text-heading font-latin">{plan.price.toLocaleString('ar-SA')}</span>
+                                    <span className="text-xs font-bold text-body">ر.س / {plan.billingCycle === 'monthly' ? 'شهر' : 'سنة'}</span>
+                                </div>
+
+                                {/* Limits */}
+                                <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                                    <div className="p-2 rounded-md bg-surface-muted border border-border">
+                                        <LuBox className="w-4 h-4 text-accent mx-auto mb-1" />
+                                        <span className="font-bold text-heading font-latin">
+                                            {plan.maxOrdersPerMonth === -1 ? '∞' : plan.maxOrdersPerMonth}
+                                        </span>
+                                        <span className="text-[10px] text-body block">طلب/شهر</span>
+                                    </div>
+
+                                    <div className="p-2 rounded-md bg-surface-muted border border-border">
+                                        <LuLayers className="w-4 h-4 text-accent mx-auto mb-1" />
+                                        <span className="font-bold text-heading font-latin">
+                                            {plan.maxShipmentsPerMonth === -1 ? '∞' : plan.maxShipmentsPerMonth}
+                                        </span>
+                                        <span className="text-[10px] text-body block">شحنة/شهر</span>
+                                    </div>
+
+                                    <div className="p-2 rounded-md bg-surface-muted border border-border">
+                                        <LuUsers className="w-4 h-4 text-accent mx-auto mb-1" />
+                                        <span className="font-bold text-heading font-latin">{plan.maxCompanyUsers}</span>
+                                        <span className="text-[10px] text-body block">موظفين</span>
+                                    </div>
+                                </div>
+
+                                {/* Features */}
+                                <div className="space-y-1.5 pt-2 border-t border-border">
+                                    {plan.features?.slice(0, 3).map((f, i) => (
+                                        <div key={i} className="flex items-center gap-2 text-xs text-body">
+                                            <LuCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                                            <span className="truncate">{f}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Card Actions */}
+                            <div className="pt-4 mt-4 border-t border-border flex items-center justify-between gap-2">
+                                <button
+                                    onClick={() => setSelectedPlanForDetails(plan)}
+                                    className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
+                                    title="عرض التفاصيل"
+                                >
+                                    <LuEye className="w-4 h-4" />
+                                </button>
+
+                                <div className="flex items-center gap-1.5">
+                                    <button
+                                        onClick={() => setSelectedPlanForEdit(plan)}
+                                        className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
+                                        title="تعديل البيانات"
+                                    >
+                                        <LuPencil className="w-4 h-4" />
+                                    </button>
+
+                                    <button
+                                        onClick={() => setSelectedPlanForDelete(plan)}
+                                        className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
+                                        title="حذف الباقة"
+                                    >
+                                        <LuTrash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Modals Mounting */}
+            <AddPlans
+                isOpen={isAddOpen}
+                onClose={() => {
+                    setIsAddOpen(false);
+                    refetch();
+                }}
+            />
+
+            <EditPlans
+                isOpen={!!selectedPlanForEdit}
+                plan={selectedPlanForEdit}
+                onClose={() => {
+                    setSelectedPlanForEdit(null);
+                    refetch();
+                }}
+            />
+
+            <DetailsPlans
+                isOpen={!!selectedPlanForDetails}
+                plan={selectedPlanForDetails}
+                onClose={() => setSelectedPlanForDetails(null)}
+            />
+
+            <ConfirmDeletePopup
+                isOpen={!!selectedPlanForDelete}
+                title="تأكيد حذف الباقة السحابية"
+                description={`هل أنت متأكد من رغبتك في حذف الباقة (${selectedPlanForDelete?.name})؟`}
+                isDeleting={isDeleting}
+                onConfirm={handleDeleteConfirm}
+                onClose={() => setSelectedPlanForDelete(null)}
+            />
+
+        </div>
+    );
+}

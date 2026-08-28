@@ -17,7 +17,8 @@ import {
     LuUser,
     LuUsers,
     LuTruck,
-    LuCreditCard
+    LuCreditCard,
+    LuCrown
 } from 'react-icons/lu';
 
 interface NavItem {
@@ -38,6 +39,16 @@ const navItems: NavItem[] = [
         href: '/admin/dashboard/companies',
         icon: <LuBuilding2 className="w-5 h-5" />,
         badge: '٢٤ شركة',
+    },
+    {
+        title: 'الباقات السحابية',
+        href: '/admin/dashboard/plans',
+        icon: <LuCreditCard className="w-5 h-5" />,
+    },
+    {
+        title: 'اشتراكات الشركات',
+        href: '/admin/dashboard/subscriptions',
+        icon: <LuCrown className="w-5 h-5" />,
     },
     {
         title: 'موظفو الشركات',
@@ -130,7 +141,7 @@ export const AdminSidebar: React.FC = () => {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`flex items-center justify-between px-3.5 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${isActive
+                                className={`flex items-center justify-between px-3.5 py-2.5 rounded-md text-xs font-semibold transition-all duration-200 ${isActive
                                     ? 'bg-accent text-white shadow-accent/30'
                                     : 'text-white/70 hover:bg-white/5 hover:text-white'
                                     }`}
