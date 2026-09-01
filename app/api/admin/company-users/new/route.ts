@@ -49,7 +49,7 @@ export async function POST(req: Request) {
 
         const data = validation.data;
 
-        if (!mongoose.Types.ObjectId.isValid(data.companyId)) {
+        if (!data.companyId || !mongoose.Types.ObjectId.isValid(data.companyId)) {
             return NextResponse.json(
                 { success: false, message: "معرف الشركة غير صالح" },
                 { status: 400 }
