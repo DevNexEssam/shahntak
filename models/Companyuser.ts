@@ -11,7 +11,7 @@ export interface ICompanyUser extends Document {
     permissions: string[];
     userIsActive: boolean;
     createdBy: Types.ObjectId;
-    createdByType: "user" | "company_user";
+    createdByType: "user" | "company";
     deletedAt?: Date | null;
 }
 
@@ -32,7 +32,7 @@ const CompanyUserSchema = new Schema<ICompanyUser>(
         createdBy: { type: Schema.Types.ObjectId, required: true },
         createdByType: {
             type: String,
-            enum: ["user", "company_user"],
+            enum: ["user", "company"],
             default: "user",
         },
         deletedAt: { type: Date, default: null },

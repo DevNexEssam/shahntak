@@ -30,6 +30,17 @@ export const permissions = {
         trackingEvent: { read: true, create: true, update: true, softDelete: true, delete: false },
         notification: { read: true, create: true, update: true, softDelete: true, delete: false },
     },
+
+    company: {
+        companyUser: { read: true, create: true, update: true, softDelete: true, delete: true },
+        order: { read: true, create: true, update: true, softDelete: true, delete: true },
+        shipment: { read: true, create: true, update: true, softDelete: true, delete: true },
+        waybill: { read: true, create: true, update: true, softDelete: true, delete: true },
+        invoice: { read: true, create: true, update: true, softDelete: true, delete: true },
+        payment: { read: true, create: true, update: true, softDelete: true, delete: true },
+        trackingEvent: { read: true, create: true, update: true, softDelete: true, delete: true },
+        notification: { read: true, create: true, update: true, softDelete: true, delete: true },
+    }
 };
 
 export function can(role: string, resource: string, action: string): boolean {

@@ -88,6 +88,14 @@
   * إضافة رابطي "الباقات السحابية" 💳 و "اشتراكات الشركات" 👑 بالقائمة الجانبية (`AdminSidebar.tsx`).
 * **التشغيل والربط والتأكيد**: نجاح كافة فحوصات الأنواع `npx tsc --noEmit` وتأكيد بناء النسخة الإنتاجية `npm run build` بنسبة 100%.
 
+### 1.16 إنجاز المرحلة الأولى بالكامل لبوابة الشركة المشتركة (`Company Portal Phase 1`)
+* **التأسيس التقني وعزل المستأجرين**: تطبيق معالج `withCompanyGuard` لـ HOC APIs وإضافة `checkSubscriptionQuota` لفحص الحصص وتأمين الاستعلامات المعزولة بـ `companyId`.
+* **توحيد طبقة الخدمات والهواكس المعيارية (`Services & Custom React Query Hooks`)**:
+  * بناء 6 خدمات مستقلة داخل مجلد [`services/company/`](file:///e:/projects/shahntak/services/company) (`CompanyOrderServices`, `CompanyShipmentServices`, `CompanyInvoiceServices`, `CompanyEmployeeServices`, `CompanyReportServices`, `CompanySettingsServices`).
+  * بناء 6 ملفات Hooks مستقلة داخل مجلد [`hooks/company/`](file:///e:/projects/shahntak/hooks/company) تطبق نمط المفاتيح القياسي `as const` وتدرج `useQuery` و `useMutation` والتنبيهات المباشرة.
+  * إنشاء هوك الصلاحيات `useCompanyPermission`.
+* **التحقق التام**: نجاح كامل لفحوصات الأنواع والبناء الإنتاجي `npm run build` بنسبة 100%.
+
 ---
 
 ## 🎯 2. الخطوة الترتيبية القادمة للمرة القادمة (Next Steps)

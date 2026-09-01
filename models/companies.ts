@@ -10,6 +10,7 @@ export interface ICompany extends Document {
     facilityInfo: string;
     phone: string;
     status: "active" | "inactive" | "archived" | "banned";
+    role : "company"
     approvedBy?: Types.ObjectId;
     approvedAt?: Date;
     deletedAt?: Date | null;
@@ -38,6 +39,7 @@ const CompanySchema = new Schema<ICompany>(
             enum: ["active", "inactive", "archived", "banned"],
             default: "active",
         },
+        role: { type: String, default: "company" },
         approvedBy: { type: Schema.Types.ObjectId, ref: "User" },
         approvedAt: { type: Date },
         deletedAt: { type: Date, default: null },

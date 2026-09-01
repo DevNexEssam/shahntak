@@ -1,47 +1,49 @@
 import { DefaultSession, DefaultUser } from "next-auth";
 
+export type AuthRole =
+  | "super"
+  | "admin"
+  | "company"
+  | "owner"
+  | "manager"
+  | "staff";
+
 declare module "next-auth" {
   interface Session {
     user: {
       id?: string | null;
-      role?: "admin" | "clinic" | "doctor" | "super" | "reception" | "manager" | "worker" | "patient";
-      clinicId?: string;
-      branchId?: string;
-      doctorId?: string;
+      role?: AuthRole;
+      companyId?: string;
       logo?: string | null;
       image?: string | null;
       impersonatedBy?: {
         id: string;
-        role: "admin" | "super";
+        role: string;
       } | null;
     } & DefaultSession["user"];
   }
 
   interface User extends DefaultUser {
-    role?: "admin" | "clinic" | "doctor" | "super" | "reception" | "manager" | "worker" | "patient";
-    clinicId?: string;
-    branchId?: string;
-    doctorId?: string;
+    role?: AuthRole;
+    companyId?: string;
     logo?: string | null;
     image?: string | null;
     impersonatedBy?: {
       id: string;
-      role: "admin" | "super";
+      role: string;
     } | null;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
-    role?: "admin" | "clinic" | "doctor" | "super" | "reception" | "manager" | "worker" | "patient";
-    clinicId?: string;
-    branchId?: string;
-    doctorId?: string;
+    role?: AuthRole;
+    companyId?: string;
     logo?: string | null;
     image?: string | null;
     impersonatedBy?: {
       id: string;
-      role: "admin" | "super";
+      role: string;
     } | null;
   }
 }

@@ -650,7 +650,14 @@ export interface SubscriptionDeleteResponse {
     data?: any;
 }
 
+// Multi-Tenant Roles & Actions
+export type UserRole =
+    | "super_admin"
+    | "admin"
+    | "company_owner"
+    | "company_manager"
+    | "company_staff"
+    | "customer"
+    | "super";
 
-
-
-
+export type PermissionAction = "read" | "create" | "update" | "softDelete" | "delete";
