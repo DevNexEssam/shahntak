@@ -1,0 +1,220 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
+import { connectDB } from "@/lib/mongodb";
+import Order from "@/models/order";
+import { orderUpdateValidationSchema } from "@/lib/validations/order.schema";
+
+// get order
+export async function GET(req: NextRequest) {
+    try {
+        await connectDB();
+
+        const session = await getServerSession(authOptions);
+        if (!session?.user) {
+            return NextResponse.json(
+                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { status: 401 }
+            );
+        }
+
+        const { role, companyId, id: userId } = session.user as any;
+        if (role !== "company") {
+            return NextResponse.json(
+                { success: false, message: "غير مصرح لك" },
+                { status: 403 }
+            );
+        }
+
+        const activeCompanyId = companyId || userId;
+        const { pathname } = new URL(req.url);
+        const id = pathname.split("/").pop();
+
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return NextResponse.json(
+                { success: false, message: "معرف الطلب غير صالح" },
+                { status: 400 }
+            );
+        }
+
+        const order = await Order.findOne({
+            _id: id,
+            companyId: new mongoose.Types.ObjectId(activeCompanyId),
+            deletedAt: null,
+        });
+
+        if (!order) {
+            return NextResponse.json(
+                { success: false, message: "لم يتم العثور على الطلب" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json({ success: true, data: order }, { status: 200 });
+    } catch (error: any) {
+        return NextResponse.json(
+            { success: false, message: "حدث خطأ في الخادم أثناء جلب الطلب", error: error.message },
+            { status: 500 }
+        );
+    }
+}
+
+// update order
+export async function PUT(req: NextRequest) {
+    try {
+        await connectDB();
+
+        const session = await getServerSession(authOptions);
+        if (!session?.user) {
+            return NextResponse.json(
+                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { status: 401 }
+            );
+        }
+
+        const { role, companyId, id: userId } = session.user as any;
+        if (role !== "company") {
+            return NextResponse.json(
+                { success: false, message: "غير مصرح لك" },
+                { status: 403 }
+            );
+        }
+
+        const activeCompanyId = companyId || userId;
+        const { pathname } = new URL(req.url);
+        const id = pathname.split("/").pop();
+
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return NextResponse.json(
+                { success: false, message: "معرف الطلب غير صالح" },
+                { status: 400 }
+            );
+        }
+
+        const order = await Order.findOne({
+            _id: id,
+            companyId: new mongoose.Types.ObjectId(activeCompanyId),
+            deletedAt: null,
+        });
+
+        if (!order) {
+            return NextResponse.json(
+                { success: false, message: "لم يتم العثور على الطلب أو لا تملك صلاحية التعديل عليه" },
+                { status: 404 }
+            );
+        }
+
+        const body = await req.json();
+
+        delete body.companyId;
+        delete body.createdByUserId;
+        delete body._id;
+        delete body.orderNumber;
+
+        const validation = orderUpdateValidationSchema.safeParse(body);
+        if (!validation.success) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "بيانات الإدخال غير صالحة",
+                    errors: validation.error.flatten().fieldErrors,
+                },
+                { status: 422 }
+            );
+        }
+
+        const updatedOrder = await Order.findByIdAndUpdate(
+            id,
+            { $set: validation.data },
+            { new: true, runValidators: true }
+        );
+
+        return NextResponse.json(
+            { success: true, message: "تم تحديث بيانات الطلب بنجاح", data: updatedOrder },
+            { status: 200 }
+        );
+    } catch (error: any) {
+        return NextResponse.json(
+            {
+                success: false,
+                message: "حدث خطأ في الخادم أثناء تحديث الطلب",
+                error: error.message,
+            },
+            { status: 500 }
+        );
+    }
+}
+
+// delete order
+export async function DELETE(req: NextRequest) {
+    try {
+        await connectDB();
+
+        const session = await getServerSession(authOptions);
+        if (!session?.user) {
+            return NextResponse.json(
+                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { status: 401 }
+            );
+        }
+
+        const { role, companyId, id: userId } = session.user as any;
+        if (role !== "company") {
+            return NextResponse.json(
+                { success: false, message: "غير مصرح لك" },
+                { status: 403 }
+            );
+        }
+
+        const activeCompanyId = companyId || userId;
+        const { searchParams, pathname } = new URL(req.url);
+        const id = pathname.split("/").pop();
+        const isHardDelete = searchParams.get("hard") === "true";
+
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return NextResponse.json(
+                { success: false, message: "معرف الطلب غير صالح" },
+                { status: 400 }
+            );
+        }
+
+        const order = await Order.findOne({
+            _id: id,
+            companyId: new mongoose.Types.ObjectId(activeCompanyId),
+        });
+
+        if (!order) {
+            return NextResponse.json(
+                { success: false, message: "لم يتم العثور على الطلب المراد حذفه" },
+                { status: 404 }
+            );
+        }
+
+        if (isHardDelete) {
+            await Order.deleteOne({ _id: id, companyId: new mongoose.Types.ObjectId(activeCompanyId) });
+            return NextResponse.json(
+                { success: true, message: "تم حذف الطلب نهائياً من النظام" },
+                { status: 200 }
+            );
+        } else {
+            order.deletedAt = new Date();
+            order.status = "cancelled";
+            await order.save();
+            return NextResponse.json(
+                { success: true, message: "تم إغلاق وأرشفة الطلب بنجاح" },
+                { status: 200 }
+            );
+        }
+    } catch (error: any) {
+        return NextResponse.json(
+            {
+                success: false,
+                message: "حدث خطأ في الخادم أثناء حذف الطلب",
+                error: error.message,
+            },
+            { status: 500 }
+        );
+    }
+}
