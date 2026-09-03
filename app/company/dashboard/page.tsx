@@ -1,13 +1,15 @@
-"use client"
+import { Metadata } from 'next';
+import CompanyDashboard from '@/components/company/dashboard/CompanyDashboard';
 
-import { useSession } from "next-auth/react"
+export const metadata: Metadata = {
+    title: 'مركز العمليات الرئيسي | شحنتك',
+    description: 'لوحة التحكم والعمليات اللوجستية المباشرة لبوابة الشركة',
+};
 
-const CompanyDashboard = () => {
-  const session = useSession()
-  console.log("session : " , session.data)
-  return (
-    <div>CompanyDashboard</div>
-  )
+export default function DashboardPage() {
+    return (
+        <main className="bg-surface-muted min-h-screen">
+            <CompanyDashboard />
+        </main>
+    );
 }
-
-export default CompanyDashboard
