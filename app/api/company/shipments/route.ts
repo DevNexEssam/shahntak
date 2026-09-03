@@ -7,6 +7,10 @@ import { connectDB } from "@/lib/mongodb";
 import Shipment from "@/models/shipment";
 import Company from "@/models/companies";
 
+import "@/models/vehicle";
+import "@/models/carrier";
+import "@/models/route";
+
 // get shipments
 export async function GET(req: NextRequest) {
     try {
