@@ -21,7 +21,7 @@ export const shipmentStatusEnum = [
 export const shipmentCreateValidationSchema = z.object({
     shipmentNumber: z.string("رقم الشحنة مطلوب").min(1, "رقم الشحنة مطلوب"),
     companyId: z.string("معرف الشركة مطلوب").min(1, "معرف الشركة مطلوب"),
-    type: z.enum(shipmentTypeEnum).default("ftl"),
+    type: z.enum(shipmentTypeEnum, "نوع الشحنة غير صحيح").default("ftl"),
     origin: z.string("نقطة انطلاق الشحنة مطلوبة").min(1, "نقطة انطلاق الشحنة مطلوبة"),
     destination: z.string("وجهة الشحنة مطلوبة").min(1, "وجهة الشحنة مطلوبة"),
     routeId: z.string().optional().or(z.literal("")),
@@ -37,13 +37,13 @@ export const shipmentCreateValidationSchema = z.object({
         .min(0, "السعر لا يمكن أن يكون بالسالب"),
     waybillNumber: z.string().optional().or(z.literal("")),
     trackingNumber: z.string().optional().or(z.literal("")),
-    status: z.enum(shipmentStatusEnum).default("created"),
+    status: z.enum(shipmentStatusEnum, "الحالة المحددة غير صحيحة").default("created"),
     orderIds: z.array(z.string()).optional(),
 });
 
 export const shipmentUpdateValidationSchema = z.object({
     companyId: z.string().optional(),
-    type: z.enum(shipmentTypeEnum).optional(),
+    type: z.enum(shipmentTypeEnum, "نوع الشحنة غير صحيح").optional(),
     origin: z.string().min(1).optional(),
     destination: z.string().min(1).optional(),
     routeId: z.string().optional().or(z.literal("")),
@@ -55,7 +55,7 @@ export const shipmentUpdateValidationSchema = z.object({
     customerPrice: z.number().min(0).optional(),
     waybillNumber: z.string().optional().or(z.literal("")),
     trackingNumber: z.string().optional().or(z.literal("")),
-    status: z.enum(shipmentStatusEnum).optional(),
+    status: z.enum(shipmentStatusEnum, "الحالة المحددة غير صحيحة").optional(),
 });
 
 // Type Inference

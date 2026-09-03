@@ -8,20 +8,24 @@
 
 > [!IMPORTANT]
 > **الهدف المباشر للجلسة القادمة**:
-> 1. البدء في إنشاء واستكمال مسارات الـ Backend المتبقية لبوابة الشركة (`app/api/company/`):
->    - **الطلبات (`Orders`)**: `GET /api/company/orders`, `POST /api/company/orders/new`, `GET/PUT/DELETE /api/company/orders/[id]`.
->    - **الشحنات (`Shipments`)**: `GET /api/company/shipments`, `POST /api/company/shipments/new`, `GET/PUT/DELETE /api/company/shipments/[id]`.
->    - **الفواتير (`Invoices`)**: `GET /api/company/invoices`, `GET /api/company/invoices/[id]`.
->    - **التقارير والإحصائيات (`Reports`)**: `GET /api/company/reports`.
->    - **الإعدادات والبروفايل (`Settings`)**: `GET /api/company/settings`, `PUT /api/company/settings`.
-> 2. ثم الانتقال لـ **المرحلة الثانية: التخطيط والهيكل الرئيسي لبوابة الشركة (Company Portal Layout)** وإنشاء `CompanySidebar.tsx` و `CompanyHeader.tsx`.
+> 1. الانتقال إلى **المرحلة الثانية: التخطيط والهيكل الرئيسي لبوابة الشركة (Company Portal Layout)**:
+>    - إنشاء التخطيط الرئيسي `app/company/layout.tsx` وتخطيط لوحة التحكم `app/company/dashboard/layout.tsx`.
+>    - إنشاء مكون الشريط الجانبي `CompanySidebar.tsx` ومكون الهيدر `CompanyHeader.tsx`.
+> 2. البدء في **المرحلة الثالثة**: بناء وتنميط واجهات الأقسام التفاعلية لبوابة الشركة (`orders`, `shipments`, `invoices`, `employees`, `reports`).
 
 ---
 
 ## ✅ حالة إنجاز المراحل (Phases Completion Status)
 
-* ✅ **المرحلة الأولى: التأسيس التقني المعزول وبنية خدمات وبك-إند الموظفين والمركبات**: **مكتملة بالكامل 100%** (تشمل الأنواع، `withCompanyGuard`، `checkSubscriptionQuota`، `validateRequestBody`، وجميع ملفات الـ Services والـ Hooks، بجانب تنفيذ APIs الموظفين `CompanyUser` والمركبات `Vehicle` بالكامل مع خلو الحقول من الإيموجيات والبناء السليم 100%).
-* ⏳ **استكمال بقية APIs الباك-إند (Orders, Shipments, Invoices, Reports, Settings)**: خطوة الجلسة القادمة.
+* ✅ **المرحلة الأولى: التأسيس التقني المعزول وبنية الخدمات وبك-إند الشركة بالكامل (100%)**:
+  * **تطوير مسارات الـ Backend المعزولة بـ `companyId`**:
+    - **الموظفين (`CompanyUser`)**: `GET`, `POST /new`, `GET/PUT/DELETE /[id]`.
+    - **المركبات (`Vehicle`)**: `GET`, `POST /new`, `GET/PUT/DELETE /[id]`.
+    - **الطلبات (`Orders`)**: `GET`, `POST /new`, `GET/PUT/DELETE /[id]`.
+    - **الشحنات (`Shipments`)**: `GET`, `POST /new`, `GET/PUT/DELETE /[id]`.
+    - **الفواتير (`Invoices`)**: `GET`, `POST /new`, `GET/PUT/DELETE /[id]`.
+    - **التقارير والإحصائيات (`Reports`)**: `GET /api/company/reports`.
+  * تشمل التأسيس التقني والأنواع وحماية `withCompanyGuard` و `checkSubscriptionQuota` مع خلو الكود من الإيموجيات وتأكيد السلامة بـ `npx tsc --noEmit` بنسبة 100%.
 * ⏳ **المرحلة الثانية: التخطيط والهيكل الرئيسي (Company Portal Layout)**: خطوة الجلسة القادمة.
 * ⏳ **المرحلة الثالثة: بناء وتنميط الواجهات التفاعلية للأقسام الستة**: مخطط لها.
 

@@ -14,14 +14,14 @@ export const invoiceCreateValidationSchema = z.object({
     total: z
         .number({ message: "إجمالي الفاتورة مطلوب" })
         .min(0, "الإجمالي لا يمكن أن يكون بالسالب"),
-    status: z.enum(invoiceStatusEnum).default("draft"),
+    status: z.enum(invoiceStatusEnum, "الحالة المحددة غير صالحة").default("draft"),
     dueDate: z.coerce.date().optional(),
 });
 
 export const invoiceUpdateValidationSchema = z.object({
     companyId: z.string().optional(),
     total: z.number().min(0).optional(),
-    status: z.enum(invoiceStatusEnum).optional(),
+    status: z.enum(invoiceStatusEnum, "الحالة المحددة غير صالحة").optional(),
     dueDate: z.coerce.date().optional(),
 });
 

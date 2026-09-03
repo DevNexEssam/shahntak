@@ -40,7 +40,7 @@ export const companyCreateValidationSchema = z.object({
         .max(500, "معلومات المنشأة يجب أن لا تتجاوز 500 حرف")
         .optional()
         .or(z.literal("")),
-    status: z.enum(companyStatusEnum).default("active"),
+    status: z.enum(companyStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive أو archived أو banned").default("active"),
     approvedBy: z.string().optional().or(z.literal("")),
     approvedAt: z.coerce.date().optional(),
 });
@@ -85,7 +85,7 @@ export const updateCompanyValidationSchema = z.object({
         .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف")
         .optional()
         .or(z.literal("")),
-    status: z.enum(companyStatusEnum).optional(),
+    status: z.enum(companyStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive أو archived أو banned").optional(),
     approvedBy: z.string().optional().or(z.literal("")),
     approvedAt: z.coerce.date().optional(),
 });

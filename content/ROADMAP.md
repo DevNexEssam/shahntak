@@ -96,6 +96,14 @@
   * إنشاء هوك الصلاحيات `useCompanyPermission`.
 * **التحقق التام**: نجاح كامل لفحوصات الأنواع والبناء الإنتاجي `npm run build` بنسبة 100%.
 
+### 1.17 استكمال مسارات الـ Backend المعزولة لبوابة الشركة (`Company Portal Backend APIs`)
+* **إنشاء وتأمين مسارات الـ API بالكامل (`app/api/company/*`)**:
+  * **الطلبات (`Orders`)**: `GET`, `POST /new`, `GET/PUT/DELETE /[id]`.
+  * **الشحنات (`Shipments`)**: `GET`, `POST /new`, `GET/PUT/DELETE /[id]`.
+  * **الفواتير (`Invoices`)**: `GET`, `POST /new`, `GET/PUT/DELETE /[id]`.
+  * **التقارير والإحصائيات (`Reports`)**: `GET /api/company/reports`.
+* **الأمان والقواعد القياسية**: تطبيق العزل الشفاف بـ `companyId` المأخوذ من الجلسة الموثقة، Zod validation، وتوليد الأرقام التسلسلية آلياً، والالتزام بكتابة تعليقات إنجليزية مقتضبة وبدون إيموجيات.
+
 ---
 
 ## 🎯 2. الخطوة الترتيبية القادمة للمرة القادمة (Next Steps)

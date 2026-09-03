@@ -58,8 +58,8 @@ export const orderCreateValidationSchema = z.object({
         .number({ message: "مبلغ الدفع عند الاستلام يجب أن يكون رقماً" })
         .min(0, "المبلغ لا يمكن أن يكون بالسالب")
         .default(0),
-    status: z.enum(orderStatusEnum).default("pending"),
-    source: z.enum(orderSourceEnum).default("manual"),
+    status: z.enum(orderStatusEnum, "الحالة المحددة غير صحيحة").default("pending"),
+    source: z.enum(orderSourceEnum, "المصدر المحدد غير صحيح").default("manual"),
 });
 
 export const orderUpdateValidationSchema = z.object({
@@ -99,8 +99,8 @@ export const orderUpdateValidationSchema = z.object({
     weight: z.number().positive().optional(),
     orderValue: z.number().min(0).optional(),
     codAmount: z.number().min(0).optional(),
-    status: z.enum(orderStatusEnum).optional(),
-    source: z.enum(orderSourceEnum).optional(),
+    status: z.enum(orderStatusEnum, "الحالة المحددة غير صحيحة").optional(),
+    source: z.enum(orderSourceEnum, "المصدر المحدد غير صحيح").optional(),
 });
 
 // Type Inference

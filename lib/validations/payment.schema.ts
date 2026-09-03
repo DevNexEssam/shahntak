@@ -7,13 +7,13 @@ export const paymentCreateValidationSchema = z.object({
     amount: z
         .number({ message: "مبلغ الدفعة مطلوب" })
         .positive("المبلغ يجب أن يكون رقماً موجباً"),
-    method: z.enum(paymentMethodEnum, { message: "طريقة الدفع غير صحيحة" }),
+    method: z.enum(paymentMethodEnum, "طريقة الدفع غير صحيحة"),
     paidAt: z.coerce.date().default(() => new Date()),
 });
 
 export const paymentUpdateValidationSchema = z.object({
     amount: z.number().positive().optional(),
-    method: z.enum(paymentMethodEnum).optional(),
+    method: z.enum(paymentMethodEnum, "طريقة الدفع غير صحيحة").optional(),
     paidAt: z.coerce.date().optional(),
 });
 

@@ -21,8 +21,8 @@ export const userCreateValidationSchema = z.object({
         .string("رقم الهاتف مطلوب")
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
         .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم"),
-    role: z.enum(userRoleEnum).default("admin"),
-    status: z.enum(userStatusEnum).default("active"),
+    role: z.enum(userRoleEnum, "الدور المحدد غير صحيح").default("admin"),
+    status: z.enum(userStatusEnum, "الحالة المحددة غير صحيحة").default("active"),
 });
 
 export const userUpdateValidationSchema = z.object({
@@ -45,8 +45,8 @@ export const userUpdateValidationSchema = z.object({
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
         .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم")
         .optional(),
-    role: z.enum(userRoleEnum).optional(),
-    status: z.enum(userStatusEnum).optional(),
+    role: z.enum(userRoleEnum, "الدور المحدد غير صحيح").optional(),
+    status: z.enum(userStatusEnum, "الحالة المحددة غير صحيحة").optional(),
 });
 
 // Type Inference

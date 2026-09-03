@@ -8,7 +8,7 @@ export const planCreateValidationSchema = z.object({
     price: z
         .number({ message: "سعر الباقة مطلوب" })
         .min(0, "السعر لا يمكن أن يكون بالسالب"),
-    billingCycle: z.enum(billingCycleEnum).default("monthly"),
+    billingCycle: z.enum(billingCycleEnum, "دورة الفوترة غير صحيحة").default("monthly"),
     maxOrdersPerMonth: z
         .number({ message: "حد الطلبات الشهرية مطلوب" })
         .min(-1, "الحد الأدنى هو -1 (غير محدود)"),
@@ -26,7 +26,7 @@ export const planUpdateValidationSchema = z.object({
     name: z.string().min(2).max(100).optional(),
     description: z.string().optional().or(z.literal("")),
     price: z.number().min(0).optional(),
-    billingCycle: z.enum(billingCycleEnum).optional(),
+    billingCycle: z.enum(billingCycleEnum , "دورة الفوترة غير صحيحة").optional(),
     maxOrdersPerMonth: z.number().min(-1).optional(),
     maxShipmentsPerMonth: z.number().min(-1).optional(),
     maxCompanyUsers: z.number().min(1).optional(),

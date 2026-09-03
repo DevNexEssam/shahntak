@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 export const companyUserRoleEnum = ["owner", "manager", "staff"] as const;
+export const companyUserStatusEnum = ["active", "inactive"] as const;
+export const companyUserTypeEnum = ["user", "company"] as const;
 
 export const companyUserCreateValidationSchema = z.object({
     companyId: z
@@ -22,9 +24,10 @@ export const companyUserCreateValidationSchema = z.object({
         .string("رقم الهاتف مطلوب")
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
         .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم"),
-    userRole: z.enum(companyUserRoleEnum).default("staff"),
+    userRole: z.enum(companyUserRoleEnum, "الدور المحدد غير صالح، يجب أن يكون owner أو manager أو staff").default("staff"),
     permissions: z.array(z.string()).default([]),
-    userIsActive: z.boolean().default(true),
+    userStatus: z.enum(companyUserStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive").default("active"),
+    userType: z.enum(companyUserTypeEnum, "النوع المحدد غير صالح، يجب أن يكون user أو company").default("user"),
     createdBy: z.string().optional().or(z.literal("")),
 });
 
@@ -49,9 +52,11 @@ export const companyUserUpdateValidationSchema = z.object({
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
         .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم")
         .optional(),
-    userRole: z.enum(companyUserRoleEnum).optional(),
+    userRole: z.enum(companyUserRoleEnum, "الدور المحدد غير صالح، يجب أن يكون owner أو manager أو staff").optional(),
     permissions: z.array(z.string()).optional(),
-    userIsActive: z.boolean().optional(),
+    userStatus: z.enum(companyUserStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive").optional(),
+    userType: z.enum(companyUserTypeEnum, "النوع المحدد غير صالح، يجب أن يكون user أو company").optional(),
+    createdBy: z.string().optional().or(z.literal("")),
 });
 
 // Type Inference

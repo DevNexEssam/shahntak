@@ -7,7 +7,7 @@ export const carrierCreateValidationSchema = z.object({
         .string("اسم الناقل مطلوب")
         .min(2, "اسم الناقل يجب أن يكون على الأقل حرفين")
         .max(50, "اسم الناقل يجب أن لا يتجاوز 50 حرف"),
-    type: z.enum(carrierTypeEnum).default("local"),
+    type: z.enum(carrierTypeEnum, "النوع المحدد غير صالح").default("local"),
     contactPhone: z
         .string()
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
@@ -30,7 +30,7 @@ export const carrierUpdateValidationSchema = z.object({
         .min(2, "اسم الناقل يجب أن يكون على الأقل حرفين")
         .max(50, "اسم الناقل يجب أن لا يتجاوز 50 حرف")
         .optional(),
-    type: z.enum(carrierTypeEnum).optional(),
+    type: z.enum(carrierTypeEnum, "النوع المحدد غير صالح").optional(),
     contactPhone: z
         .string()
         .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")

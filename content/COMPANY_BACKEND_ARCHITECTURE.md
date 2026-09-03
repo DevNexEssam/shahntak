@@ -497,15 +497,26 @@ export async function DELETE(req: NextRequest) {
    - `GET /api/company/vehicles`
    - `POST /api/company/vehicles/new`
    - `GET/PUT/DELETE /api/company/vehicles/[id]`
+3. **الطلبات (`Orders`)**:
+   - `GET /api/company/orders`
+   - `POST /api/company/orders/new`
+   - `GET/PUT/DELETE /api/company/orders/[id]`
+4. **الشحنات (`Shipments`)**:
+   - `GET /api/company/shipments`
+   - `POST /api/company/shipments/new`
+   - `GET/PUT/DELETE /api/company/shipments/[id]`
+5. **الفواتير (`Invoices`)**:
+   - `GET /api/company/invoices`
+   - `POST /api/company/invoices/new`
+   - `GET/PUT/DELETE /api/company/invoices/[id]`
+6. **التقارير والإحصائيات (`Reports`)**:
+   - `GET /api/company/reports`
 
 ---
 
 ### ⏳ هدف الجلسة القادمة (Next Session Target):
-1. **إنشاء مسارات الـ Backend المتبقية للشركة (`app/api/company/`)**:
-   - **الطلبات (`Orders`)**: `GET /api/company/orders`, `POST /api/company/orders/new`, `GET/PUT/DELETE /api/company/orders/[id]`.
-   - **الشحنات (`Shipments`)**: `GET /api/company/shipments`, `POST /api/company/shipments/new`, `GET/PUT/DELETE /api/company/shipments/[id]`.
-   - **الفواتير (`Invoices`)**: `GET /api/company/invoices`, `GET /api/company/invoices/[id]`.
-   - **التقارير والإحصائيات (`Reports`)**: `GET /api/company/reports`.
-   - **الإعدادات والبروفايل (`Settings`)**: `GET /api/company/settings`, `PUT /api/company/settings`.
-2. **الانتقال لبناء لوحة التحكم والـ Layout الرئيسية للشركة**.
+1. **الانتقال لبناء لوحة التحكم والـ Layout الرئيسية للشركة (Company Portal Layout)**:
+   - إنشاء `app/company/layout.tsx` و `app/company/dashboard/layout.tsx`.
+   - بناء مكونات `CompanySidebar.tsx` و `CompanyHeader.tsx`.
+2. **بناء وتنميط الواجهات التفاعلية للأقسام الستة**.
 

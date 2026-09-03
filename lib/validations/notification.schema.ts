@@ -4,9 +4,9 @@ export const notificationRecipientTypeEnum = ["company_user", "user"] as const;
 export const notificationChannelEnum = ["email", "sms", "in_app"] as const;
 
 export const notificationCreateValidationSchema = z.object({
-    recipientType: z.enum(notificationRecipientTypeEnum, { message: "نوع المستلم غير صحيح" }),
+    recipientType: z.enum(notificationRecipientTypeEnum, "نوع المستلم غير صحيح"),
     recipientId: z.string("معرف المستلم مطلوب").min(1, "معرف المستلم مطلوب"),
-    channel: z.enum(notificationChannelEnum, { message: "قناة الإشعار غير صحيحة" }),
+    channel: z.enum(notificationChannelEnum, "قناة الإشعار غير صحيحة"),
     event: z.string("حدث الإشعار مطلوب").min(1, "حدث الإشعار مطلوب"),
     title: z
         .string("عنوان الإشعار مطلوب")
