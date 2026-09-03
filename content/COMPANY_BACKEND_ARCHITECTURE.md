@@ -512,11 +512,16 @@ export async function DELETE(req: NextRequest) {
 6. **التقارير والإحصائيات (`Reports`)**:
    - `GET /api/company/reports`
 
+7. **التخطيط والهيكل الرئيسي لبوابة الشركات (`Company Portal Layout`)**:
+   - `CompanySidebar.tsx`
+   - `CompanyHeader.tsx`
+   - `CompanyClientLayout.tsx`
+   - `app/company/dashboard/layout.tsx`
+
 ---
 
 ### ⏳ هدف الجلسة القادمة (Next Session Target):
-1. **الانتقال لبناء لوحة التحكم والـ Layout الرئيسية للشركة (Company Portal Layout)**:
-   - إنشاء `app/company/layout.tsx` و `app/company/dashboard/layout.tsx`.
-   - بناء مكونات `CompanySidebar.tsx` و `CompanyHeader.tsx`.
-2. **بناء وتنميط الواجهات التفاعلية للأقسام الستة**.
+1. **بناء وتنميط الواجهات التفاعلية للأقسام الستة**:
+   - بناء أقسام الطلبات والشحنات والفواتير والموظفين والمركبات والتقارير والإعدادات بتصاميم متوافقة تماماً.
+
 

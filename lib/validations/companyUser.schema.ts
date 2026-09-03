@@ -27,6 +27,7 @@ export const companyUserCreateValidationSchema = z.object({
     userRole: z.enum(companyUserRoleEnum, "الدور المحدد غير صالح، يجب أن يكون owner أو manager أو staff").default("staff"),
     permissions: z.array(z.string()).default([]),
     userStatus: z.enum(companyUserStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive").default("active"),
+    userIsActive: z.boolean().optional(),
     userType: z.enum(companyUserTypeEnum, "النوع المحدد غير صالح، يجب أن يكون user أو company").default("user"),
     createdBy: z.string().optional().or(z.literal("")),
 });
@@ -55,6 +56,7 @@ export const companyUserUpdateValidationSchema = z.object({
     userRole: z.enum(companyUserRoleEnum, "الدور المحدد غير صالح، يجب أن يكون owner أو manager أو staff").optional(),
     permissions: z.array(z.string()).optional(),
     userStatus: z.enum(companyUserStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive").optional(),
+    userIsActive: z.boolean().optional(),
     userType: z.enum(companyUserTypeEnum, "النوع المحدد غير صالح، يجب أن يكون user أو company").optional(),
     createdBy: z.string().optional().or(z.literal("")),
 });
