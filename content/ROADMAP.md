@@ -104,20 +104,23 @@
   * **التقارير والإحصائيات (`Reports`)**: `GET /api/company/reports`.
 * **الأمان والقواعد القياسية**: تطبيق العزل الشفاف بـ `companyId` المأخوذ من الجلسة الموثقة، Zod validation، وتوليد الأرقام التسلسلية آلياً، والالتزام بكتابة تعليقات إنجليزية مقتضبة وبدون إيموجيات.
 
-### 1.18 بناء وتطبيق التخطيط الرئيسي لبوابة الشركات (`Company Portal Layout - Phase 2`)
-* **تخطيط لوحة الداشبورد (`app/company/dashboard/layout.tsx`)**: دمج السايدبار والهيدر والمحتوى الرئيسي بتأثيرات وقواعد التصميم القياسية RTL.
-* **الشريط الجانبي (`CompanySidebar.tsx`)**: تصميم مطابق لـ `AdminSidebar` مع روابط الأقسام الثمانية المخصصة للشركة وبطاقة الجلسة وتسجيل الخروج.
-* **الهيدر العلوي (`CompanyHeader.tsx`)**: شريط بحث موحد، شارة الباقة النشطة، وزر الإضافة السريعة والإشعارات.
-* **فحص والسلامة البرمجية**: اجتياز فحص الأنواع `npx tsc --noEmit` بنجاح وتأكيد خلو الكود من أي أخطاء بنسبة 100%.
+### 1.19 بناء واجهات ومكونات بوابة الشركة المعزولة (`Company Portal Pages - Phase 3 (50%)`)
+* **قسم الطلبات (`app/company/dashboard/orders`)**: المكون الرئيسي `CompanyOrders.tsx` ومودالات الإضافة `AddCompanyOrderPopup`, التعديل `EditCompanyOrderPopup`, التفاصيل `DetailsCompanyOrderPopup`, والتجميع `GroupCompanyOrdersPopup`.
+* **قسم الشحنات وتعيين الموارد (`app/company/dashboard/shipments`)**: المكون الرئيسي `CompanyShipments.tsx` ومودالات الإضافة `AddCompanyShipmentPopup`, التعديل `EditCompanyShipmentPopup`, التفاصيل `DetailsCompanyShipmentPopup`, وطباعة البولص المباشرة 🖨️.
+* **قسم البوالص والفواتير المالية (`app/company/dashboard/invoices`)**: المكون الرئيسي `CompanyInvoices.tsx` ومودال التفاصيل والطباعة الضريبية `DetailsCompanyInvoicePopup`.
+* **قسم فريق العمل والموظفين (`app/company/dashboard/employees`)**: المكون الرئيسي `CompanyEmployees.tsx` ومودالات الإضافة `AddCompanyEmployeePopup`, التعديل `EditCompanyEmployeePopup`, التفاصيل `DetailsCompanyEmployeePopup`, وإدارة الأدوار والصلاحيات.
+* **التحقق والبناء**: نجاح أوردر `npm run build` وتأطير جميع المسارات (67/67) مع اجتياز فحص `npx tsc --noEmit` بنسبة 100%.
 
 ---
 
 ## 🎯 2. الخطوة الترتيبية القادمة للمرة القادمة (Next Steps)
 
-في الجلسة القادمة، سيتم استكمال تنميط وربط القسم المتبقي من لوحة التحكم بالاعتماد على [`ADMIN_PAGES_MASTER_BLUEPRINT.md`](file:///e:/projects/shahntak/content/ADMIN_PAGES_MASTER_BLUEPRINT.md) بحسب الترتيب التالي:
+في الجلسة القادمة، سيتم استكمال الأقسام الأربعة المتبقية من المرحلة الثالثة لبوابة الشركة المشتركة بحسب الترتيب التالي:
 
-1. 📍 **قسم تتبع الشحنات اللحظي والأحداث (`app/admin/(pages)/tracking/`)**:
-   - ربط المراقبة اللحظية لنقاط الترانزيت وتسجيل الأحداث بـ `useShipmentTrackingEvents`, `useLogTrackingEvent`.
+1. 🚚 **قسم الأسطول والمركبات** (`app/company/dashboard/vehicles`): `CompanyVehicles.tsx` ومودالات الإضافة والتعديل.
+2. 📊 **قسم التقارير والإحصائيات** (`app/company/dashboard/reports`): `CompanyReports.tsx` وتحليلات الأداء.
+3. ⚙️ **قسم إعدادات الشركة والاشتراك** (`app/company/dashboard/settings`): `CompanySettings.tsx` وإدارة السجل وتتبع حدود الباقة.
+4. 📊 **الداشبورد الرئيسية للشركة** (`app/company/dashboard`): `CompanyDashboard.tsx` واللوحة الإحصائية الحية.
 
 ---
 

@@ -8,15 +8,11 @@
 
 > [!IMPORTANT]
 > **الهدف المباشر للجلسة القادمة**:
-> * **البدء في المرحلة الثالثة: بناء وتنميط واجهات الأقسام الثمانية لبوابة الشركة (مربوطة بالـ Hooks)**:
->   1. **قسم الطلبات** (`orders`): `CompanyOrders.tsx` ونماذج الإضافة والتعديل والتفاصيل والتجميع.
->   2. **قسم الشحنات** (`shipments`): `CompanyShipments.tsx` ونماذج التفاصيل والتتبع وطباعة البولص.
->   3. **قسم الفواتير** (`invoices`): `CompanyInvoices.tsx` والتفاصيل المالية.
->   4. **قسم الموظفين** (`employees`): `CompanyEmployees.tsx` ونماذج الإضافة والتعديل والصلاحيات.
->   5. **قسم الأسطول والمركبات** (`vehicles`): `CompanyVehicles.tsx` ونماذج الإضافة والتعديل.
->   6. **قسم التقارير والإحصائيات** (`reports`): `CompanyReports.tsx`.
->   7. **قسم إعدادات الشركة والاشتراك** (`settings`): `CompanySettings.tsx`.
->   8. **لوحة التحكم الرئيسية** (`dashboard`): `CompanyDashboard.tsx`.
+> * **استكمال الأقسام الأربعة المتبقية من المرحلة الثالثة لبوابة الشركة (مربوطة بالـ Hooks)**:
+>   1. 🚚 **قسم الأسطول والمركبات** (`vehicles`): `CompanyVehicles.tsx` ونماذج الإضافة والتعديل والتفاصيل (`CompanyVehicleServices` + `useCompanyVehicle`).
+>   2. 📊 **قسم التقارير والإحصائيات** (`reports`): `CompanyReports.tsx` وتحليلات الأداء.
+>   3. ⚙️ **قسم إعدادات الشركة والاشتراك** (`settings`): `CompanySettings.tsx` وإدارة ملف الشركة وحدود الباقة.
+>   4. 📊 **الداشبورد الرئيسية للشركة** (`dashboard`): `CompanyDashboard.tsx` والملخص الإحصائي اللحظي.
 
 ---
 
@@ -35,7 +31,12 @@
   * إنشاء مكون الشريط الجانبي `CompanySidebar.tsx` بتصميم مطابق لـ `AdminSidebar`.
   * إنشاء مكون الهيدر العلوي `CompanyHeader.tsx` بتصميم مطابق لـ `AdminHeader`.
   * إنشاء التخطيط الشامل `CompanyClientLayout.tsx` وتجميع لوحة التحكم `app/company/dashboard/layout.tsx`.
-* ⏳ **المرحلة الثالثة: بناء وتنميط الواجهات التفاعلية للأقسام الستة**: خطوة الجلسة القادمة.
+* 🔄 **المرحلة الثالثة: بناء وتنميط واجهات بوابة الشركة (تم إنجاز 50% - 4 أقسام من أصل 8)**:
+  * ✅ **قسم الطلبات** (`orders`): `CompanyOrders.tsx` ونماذج الإضافة والتعديل والتفاصيل والتجميع.
+  * ✅ **قسم الشحنات وتعيين الموارد** (`shipments`): `CompanyShipments.tsx` ونماذج التفاصيل والتتبع وطباعة البولص 🖨️.
+  * ✅ **قسم الفواتير والتحصيلات** (`invoices`): `CompanyInvoices.tsx` والتفاصيل المالية وطباعة الفاتورة الضريبية.
+  * ✅ **قسم فريق العمل والموظفين** (`employees`): `CompanyEmployees.tsx` ونماذج الإضافة والتعديل والتفاصيل والأدوار (`owner`, `manager`, `staff`).
+  * ⏳ **الأقسام الأربعة المتبقية** (`vehicles`, `reports`, `settings`, `dashboard`): هدف الجلسة القادمة.
 
 
 ---
@@ -396,36 +397,36 @@ export function useCompanyMutation<TInput, TResponse>({ endpoint, method, invali
 
 مربوطة بالكامل بالـ Custom React Query Hooks والمعزولة بـ `companyId` و `useCompanyPermission`:
 
-### 1️⃣ قسم إدارة الطلبات (`app/company/dashboard/orders`)
+### 1️⃣ قسم إدارة الطلبات (`app/company/dashboard/orders`) - ✅ مكتمل بالكامل
 - **المكون الرئيسي**: `CompanyOrders.tsx` (جدول الطلبات المعزول، الفلترة بالحالة والبحث السيرفري، كروت KPI).
 - **الهواكس**: `useCompanyOrders`, `useCompanyOrderDetails`, `useCreateCompanyOrder`, `useUpdateCompanyOrder`, `useDeleteCompanyOrder`, `useGroupCompanyOrders`.
 - **المودالات المنبثقة**:
-  - `AddCompanyOrder.tsx`: نموذج إضافة طلب فردي أو مجمع للشركة.
-  - `EditCompanyOrder.tsx`: نموذج تعديل بيانات الطلب والمستلم.
-  - `DetailsCompanyOrder.tsx`: تفاصيل الطلب، الوزن، القيمة، والتتبع.
+  - `AddCompanyOrderPopup.tsx`: نموذج إضافة طلب فردي أو مجمع للشركة.
+  - `EditCompanyOrderPopup.tsx`: نموذج تعديل بيانات الطلب والمستلم.
+  - `DetailsCompanyOrderPopup.tsx`: تفاصيل الطلب، الوزن، القيمة، والتتبع.
   - `GroupCompanyOrdersPopup.tsx`: تجميع الطلبات المحددة آلياً في شحنة واحدة.
 
-### 2️⃣ قسم إدارة الشحنات وتعيين الموارد (`app/company/dashboard/shipments`)
+### 2️⃣ قسم إدارة الشحنات وتعيين الموارد (`app/company/dashboard/shipments`) - ✅ مكتمل بالكامل
 - **المكون الرئيسي**: `CompanyShipments.tsx` (جدول الشحنات المجمعة للشركة، تتبع الحالة اللحظي، زر طباعة البوليصة 🖨️).
 - **الهواكس**: `useCompanyShipments`, `useCompanyShipmentDetails`, `useCreateCompanyShipment`, `useUpdateCompanyShipment`, `useDeleteCompanyShipment`.
 - **المودالات المنبثقة**:
-  - `AddCompanyShipment.tsx`: نموذج تجميع/إنشاء شحنة جديدة.
-  - `EditCompanyShipment.tsx`: نموذج تعديل بيانات الشحنة والمركبة والمسار.
-  - `DetailsCompanyShipment.tsx`: تفاصيل الشحنة والبوليصة والناقل.
+  - `AddCompanyShipmentPopup.tsx`: نموذج تجميع/إنشاء شحنة جديدة.
+  - `EditCompanyShipmentPopup.tsx`: نموذج تعديل بيانات الشحنة والمركبة والمسار.
+  - `DetailsCompanyShipmentPopup.tsx`: تفاصيل الشحنة والبوليصة والناقل.
 
-### 3️⃣ قسم البوالص والفواتير المالية (`app/company/dashboard/invoices`)
+### 3️⃣ قسم البوالص والفواتير المالية (`app/company/dashboard/invoices`) - ✅ مكتمل بالكامل
 - **المكون الرئيسي**: `CompanyInvoices.tsx` (فواتير الشحن والفوترة، المبالغ المحصلة والمستحقة).
 - **الهواكس**: `useCompanyInvoices`, `useCompanyInvoiceDetails`.
 - **المودالات المنبثقة**:
-  - `DetailsCompanyInvoice.tsx`: عرض التفاصيل المالية وعناصر الفاتورة وطباعتها.
+  - `DetailsCompanyInvoicePopup.tsx`: عرض التفاصيل المالية وعناصر الفاتورة وطباعتها الضريبية.
 
-### 4️⃣ قسم فريق العمل والموظفين (`app/company/dashboard/employees`)
+### 4️⃣ قسم فريق العمل والموظفين (`app/company/dashboard/employees`) - ✅ مكتمل بالكامل
 - **المكون الرئيسي**: `CompanyEmployees.tsx` (جدول فريق عمل الشركة `CompanyUser`).
 - **الهواكس**: `useCompanyEmployees`, `useCompanyEmployeeDetails`, `useCreateCompanyEmployee`, `useUpdateCompanyEmployee`, `useDeleteCompanyEmployee`.
 - **المودالات المنبثقة**:
-  - `AddCompanyEmployee.tsx`: نموذج إضافة موظف وتحديد دوره (`manager`, `staff`).
-  - `EditCompanyEmployee.tsx`: نموذج تعديل بيانات وتجميد/تفعيل الموظف.
-  - `DetailsCompanyEmployee.tsx`: تفاصيل الموظف وسجل نشاطه.
+  - `AddCompanyEmployeePopup.tsx`: نموذج إضافة موظف وتحديد دوره (`owner`, `manager`, `staff`).
+  - `EditCompanyEmployeePopup.tsx`: نموذج تعديل بيانات وتجميد/تفعيل الموظف.
+  - `DetailsCompanyEmployeePopup.tsx`: تفاصيل الموظف وسجل نشاطه.
 
 ### 5️⃣ قسم الأسطول والشاحنات (`app/company/dashboard/vehicles`)
 - **المكون الرئيسي**: `CompanyVehicles.tsx` (جدول مركبات وشاحنات الشركة).
