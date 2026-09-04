@@ -1,18 +1,13 @@
 "use client";
 
 import React from 'react';
+import { useCompanyShipmentById } from '@/hooks/company/useCompanyShipment';
 import {
     LuTruck,
     LuX,
     LuMapPin,
     LuCoins,
-    LuReceipt,
-    LuCalendar,
-    LuCheck,
-    LuClock,
-    LuPrinter,
-    LuLayers,
-    LuBox
+    LuPrinter
 } from 'react-icons/lu';
 
 interface DetailsCompanyShipmentPopupProps {
@@ -28,41 +23,102 @@ export default function DetailsCompanyShipmentPopup({
     shipmentData,
     onPrintWaybill
 }: DetailsCompanyShipmentPopupProps) {
-    if (!isOpen || !shipmentData) return null;
+    const { data: detailResponse } = useCompanyShipmentById(shipmentData?._id || '');
+    const activeShipment = detailResponse?.data || shipmentData;
+
+    if (!isOpen || !activeShipment) return null;
+
+    const handlePrintInvoice = () => {
+        if (onPrintWaybill) {
+            onPrintWaybill(activeShipment);
+        } else {
+            window.print();
+        }
+    };
 
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'created':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                        <LuClock className="w-3.5 h-3.5" />
-                        حديثة (Created)
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-amber-500/10 text-amber-600">
+                        حديثة
+                    </span>
+                );
+            case 'confirmed':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-500/10 text-indigo-600">
+                        مؤكدة
+                    </span>
+                );
+            case 'assigned':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-blue-500/10 text-blue-600">
+                        معينة لناقل
+                    </span>
+                );
+            case 'ready_for_pickup':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-purple-500/10 text-purple-600">
+                        جاهزة للاستلام
+                    </span>
+                );
+            case 'picked_up':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-teal-500/10 text-teal-600">
+                        تم الاستلام
                     </span>
                 );
             case 'in_transit':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20">
-                        <LuTruck className="w-3.5 h-3.5" />
-                        في الطريق (In Transit)
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-sky-500/10 text-sky-600">
+                        في الطريق
+                    </span>
+                );
+            case 'arrived':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-cyan-500/10 text-cyan-600">
+                        وصلت للمركز
+                    </span>
+                );
+            case 'out_for_delivery':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-orange-500/10 text-orange-600">
+                        خرجت للتوصيل
                     </span>
                 );
             case 'delivered':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                        <LuCheck className="w-3.5 h-3.5" />
-                        تم التسليم (Delivered)
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">
+                        تم التوصيل
+                    </span>
+                );
+            case 'delivery_failed':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
+                        فشل التوصيل
                     </span>
                 );
             case 'cancelled':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                        <LuX className="w-3.5 h-3.5" />
-                        ملغية (Cancelled)
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
+                        ملغية
+                    </span>
+                );
+            case 'returned':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-gray-500/10 text-gray-600">
+                        مرتجعة
+                    </span>
+                );
+            case 'exception':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
+                        حالة استثنائية
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-surface-muted text-muted-foreground">
                         {status}
                     </span>
                 );
@@ -73,137 +129,137 @@ export default function DetailsCompanyShipmentPopup({
         switch (type) {
             case 'ftl': return 'شحن كامل (FTL)';
             case 'ltl': return 'شحن جزئي (LTL)';
-            default: return 'توصيل محلي (Local Delivery)';
+            default: return 'توصيل محلي';
         }
     };
 
+    const vehicleType = typeof activeShipment.vehicleId === 'object' && activeShipment.vehicleId !== null
+        ? activeShipment.vehicleId.type
+        : 'غير معينة';
+    const carrierName = typeof activeShipment.carrierId === 'object' && activeShipment.carrierId !== null
+        ? activeShipment.carrierId.name
+        : 'أسطول الشركة الذاتي';
+
+    const shippingCost = Number(activeShipment.shippingCost || 0);
+    const customerPrice = Number(activeShipment.customerPrice || 0);
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
-            <div className="relative w-full max-w-3xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="rtl">
+            <div className="printable-area w-full max-w-xl bg-surface border border-border rounded-md shadow-xs overflow-hidden flex flex-col">
 
                 {/* Header */}
-                <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
-                    <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
-                            <LuTruck className="w-6 h-6" />
+                <div className="p-5 border-b border-border flex items-center justify-between bg-surface">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                            <LuTruck className="w-5 h-5" />
                         </div>
                         <div>
-                            <div className="flex items-center gap-3">
-                                <h2 className="text-xl font-extrabold text-heading">تفاصيل الشحنة والبوليصة</h2>
-                                {getStatusBadge(shipmentData.status)}
+                            <div className="flex items-center gap-2">
+                                <h2 className="text-base font-bold text-foreground">تفاصيل الشحنة والبوليصة</h2>
+                                {getStatusBadge(activeShipment.status)}
                             </div>
-                            <p className="text-xs text-body mt-0.5 font-latin">رقم الشحنة: <span className="font-bold text-accent">{shipmentData.shipmentNumber}</span></p>
+                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">رقم الشحنة: <span className="font-semibold text-accent">{activeShipment.shipmentNumber}</span></p>
                         </div>
                     </div>
 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
+                        className="p-1.5 rounded-md hover:bg-surface-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
-                {/* Content */}
-                <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                {/* Body Content */}
+                <div className="p-5 space-y-4">
 
-                    {/* Waybill Info Card */}
-                    <div className="p-5 rounded-2xl bg-accent-soft/30 border border-accent/20 flex items-center justify-between">
+                    {/* Waybill & Print Summary Row */}
+                    <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between text-xs">
                         <div>
-                            <span className="text-xs font-bold text-accent block">رقم بوليصة الشحن (Waybill)</span>
-                            <span className="text-lg font-extrabold text-heading font-latin tracking-wide">{shipmentData.waybillNumber || 'WB-PENDING'}</span>
-                            {shipmentData.trackingNumber && (
-                                <span className="text-xs text-body block font-latin mt-0.5">رقم التتبع: {shipmentData.trackingNumber}</span>
+                            <span className="text-muted-foreground block font-medium">رقم بوليصة الشحن (Waybill)</span>
+                            <span className="font-bold text-foreground font-latin text-sm">
+                                {activeShipment.waybillNumber || 'WB-PENDING'}
+                            </span>
+                            {activeShipment.trackingNumber && (
+                                <span className="text-muted-foreground text-[11px] block font-latin mt-0.5">رقم التتبع: {activeShipment.trackingNumber}</span>
                             )}
                         </div>
 
-                        {onPrintWaybill && (
-                            <button
-                                type="button"
-                                onClick={() => onPrintWaybill(shipmentData)}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-accent-foreground font-bold text-xs shadow-xs hover:shadow transition-all cursor-pointer"
-                            >
-                                <LuPrinter className="w-4 h-4" />
-                                <span>طباعة البوليصة</span>
-                            </button>
-                        )}
+                        <button
+                            type="button"
+                            onClick={handlePrintInvoice}
+                            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs"
+                        >
+                            <LuPrinter className="w-4 h-4" />
+                            <span>طباعة البوليصة</span>
+                        </button>
                     </div>
 
-                    {/* Route Card */}
-                    <div className="p-5 rounded-2xl bg-surface-muted/60 border border-border space-y-3">
-                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                            <LuMapPin className="w-4 h-4" />
-                            مسار الشحنة والنوع
+                    {/* Logistics Route & Carrier Box */}
+                    <div className="p-4 rounded-md border border-border bg-surface space-y-3">
+                        <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
+                            <LuMapPin className="w-4 h-4 text-accent" />
+                            <span>مسار الخدمة والناقل</span>
                         </h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                            <div>
-                                <span className="text-xs text-body block font-medium">نوع الخدمة</span>
-                                <span className="font-extrabold text-heading">{getTypeLabel(shipmentData.type)}</span>
+                        <div className="space-y-2 text-xs">
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">نوع الخدمة</span>
+                                <span className="font-semibold text-foreground">{getTypeLabel(activeShipment.type)}</span>
                             </div>
-                            <div>
-                                <span className="text-xs text-body block font-medium">من (المصدر)</span>
-                                <span className="font-extrabold text-heading">{shipmentData.origin}</span>
+
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">خط المسار (المصدر ⬅️ الوجهة)</span>
+                                <span className="font-semibold text-foreground">{activeShipment.origin} ⬅️ {activeShipment.destination}</span>
                             </div>
-                            <div>
-                                <span className="text-xs text-body block font-medium">إلى (الوجهة)</span>
-                                <span className="font-extrabold text-heading">{shipmentData.destination}</span>
+
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">الناقل المعين</span>
+                                <span className="font-semibold text-foreground">{carrierName}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center py-1.5">
+                                <span className="text-muted-foreground">المركبة المعينة</span>
+                                <span className="font-semibold text-foreground">{vehicleType}</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Resources & Financials */}
-                    <div className="p-5 rounded-2xl bg-surface-muted/60 border border-border space-y-3">
-                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                            <LuCoins className="w-4 h-4" />
-                            تعيين الموارد والقيم المالية
+                    {/* Financial Breakdown Box */}
+                    <div className="p-4 rounded-md border border-border bg-surface space-y-3">
+                        <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
+                            <LuCoins className="w-4 h-4 text-accent" />
+                            <span>تفاصيل التكاليف والأسعار</span>
                         </h3>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                            <div className="p-3 rounded-xl bg-surface border border-border text-center">
-                                <span className="text-[11px] text-body block font-medium">عدد الطلبات</span>
-                                <span className="font-extrabold text-heading font-latin">{shipmentData.ordersCount || 1}</span>
+                        <div className="space-y-2 text-xs">
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">عدد الطلبات / الطرود</span>
+                                <span className="font-semibold text-foreground font-latin">{activeShipment.ordersCount || 1}</span>
                             </div>
-                            <div className="p-3 rounded-xl bg-surface border border-border text-center">
-                                <span className="text-[11px] text-body block font-medium">المركبة المعينة</span>
-                                <span className="font-bold text-heading text-xs">
-                                    {typeof shipmentData.vehicleId === 'object' && shipmentData.vehicleId !== null
-                                        ? shipmentData.vehicleId.type
-                                        : 'لم تعين بعد'}
-                                </span>
+
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">تكلفة النقل الفعلي (التشغيلية)</span>
+                                <span className="font-semibold text-amber-600 font-latin">{shippingCost.toFixed(2)} ر.س</span>
                             </div>
-                            <div className="p-3 rounded-xl bg-surface border border-border text-center">
-                                <span className="text-[11px] text-body block font-medium">التكلفة التشغيلية</span>
-                                <span className="font-extrabold text-amber-600 font-latin">{shipmentData.shippingCost || 0} ر.س</span>
-                            </div>
-                            <div className="p-3 rounded-xl bg-surface border border-border text-center">
-                                <span className="text-[11px] text-body block font-medium">سعر العميل</span>
-                                <span className="font-extrabold text-emerald-600 font-latin">{shipmentData.customerPrice || 0} ر.س</span>
+
+                            <div className="flex justify-between items-center pt-1 text-sm font-bold">
+                                <span className="text-foreground">سعر الخدمة للعميل (الإجمالي)</span>
+                                <span className="text-emerald-600 font-latin text-base font-bold">{customerPrice.toFixed(2)} ر.س</span>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Additional Metadata */}
-                    <div className="flex items-center justify-between text-xs text-body border-t border-border pt-4">
-                        <span className="flex items-center gap-1.5 font-latin">
-                            <LuCalendar className="w-4 h-4 text-accent" />
-                            تاريخ الإنشاء: {new Date(shipmentData.createdAt).toLocaleDateString('ar-SA')}
-                        </span>
-                        <span className="px-2.5 py-1 rounded-md bg-surface-muted font-bold text-heading font-latin">
-                            ID: {shipmentData._id}
-                        </span>
                     </div>
 
                 </div>
 
                 {/* Footer */}
-                <div className="p-5 border-t border-border bg-surface-muted/40 flex items-center justify-end shrink-0">
+                <div className="p-4 border-t border-border bg-surface-muted flex justify-end">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
+                        className="px-4 py-1.5 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-border/20 transition-colors text-foreground cursor-pointer"
                     >
                         إغلاق
                     </button>

@@ -69,6 +69,7 @@ export async function GET(req: NextRequest) {
                 shippedOrders,
                 deliveredOrders,
                 cancelledOrders,
+                groupedOrders,
                 orderFinancials,
                 totalShipments,
                 inTransitShipments,
@@ -77,12 +78,14 @@ export async function GET(req: NextRequest) {
                 ltlShipments,
                 localShipments,
                 shipmentFinancials,
+                rawWeeklyOrders,
             ] = await Promise.all([
                 Order.countDocuments(baseFilter),
                 Order.countDocuments({ ...baseFilter, status: "pending" }),
                 Order.countDocuments({ ...baseFilter, status: "shipped" }),
                 Order.countDocuments({ ...baseFilter, status: "delivered" }),
                 Order.countDocuments({ ...baseFilter, status: "cancelled" }),
+                Order.countDocuments({ ...baseFilter, status: "grouped" }),
                 Order.aggregate([
                     { $match: baseFilter },
                     {
@@ -109,11 +112,52 @@ export async function GET(req: NextRequest) {
                         },
                     },
                 ]),
+                Order.aggregate([
+                    { $match: baseFilter },
+                    {
+                        $group: {
+                            _id: { $dayOfWeek: "$createdAt" },
+                            orders: { $sum: 1 },
+                        },
+                    },
+                ]),
             ]);
+
+            const dayMap: Record<number, string> = {
+                1: "الأحد",
+                2: "الإثنين",
+                3: "الثلاثاء",
+                4: "الأربعاء",
+                5: "الخميس",
+                6: "الجمعة",
+                7: "السبت",
+            };
+
+            const ordersByDayMap: Record<string, number> = {};
+            (rawWeeklyOrders || []).forEach((item: any) => {
+                const dayName = dayMap[item._id];
+                if (dayName) {
+                    ordersByDayMap[dayName] = item.orders;
+                }
+            });
+
+            const daysOfWeekOrder = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+            const weeklyOrdersTrend = daysOfWeekOrder.map((day) => ({
+                day,
+                orders: ordersByDayMap[day] || 0,
+            }));
+
+            const shipmentStatusBreakdown = [
+                { name: "تم التوصيل", value: (deliveredOrders || 0) + (deliveredShipments || 0), color: "#7444fd" },
+                { name: "ترانزيت / بالسيارة", value: (inTransitShipments || 0) + (shippedOrders || 0), color: "#a855f7" },
+                { name: "مجمع بشحنة", value: groupedOrders || 0, color: "#3b82f6" },
+                { name: "قيد الانتظار والمعالجة", value: pendingOrders || 0, color: "#f59e0b" },
+            ];
 
             resultData.orders = {
                 total: totalOrders,
                 pending: pendingOrders,
+                grouped: groupedOrders,
                 shipped: shippedOrders,
                 delivered: deliveredOrders,
                 cancelled: cancelledOrders,
@@ -132,6 +176,9 @@ export async function GET(req: NextRequest) {
                 totalCost: shipmentFinancials[0]?.totalShippingCost || 0,
                 totalPrice: shipmentFinancials[0]?.totalCustomerPrice || 0,
             };
+
+            resultData.weeklyOrdersTrend = weeklyOrdersTrend;
+            resultData.shipmentStatusBreakdown = shipmentStatusBreakdown;
         }
 
         if (reportType === "financial" || reportType === "overview") {

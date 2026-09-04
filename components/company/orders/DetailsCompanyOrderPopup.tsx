@@ -5,14 +5,8 @@ import {
     LuPackage,
     LuX,
     LuUser,
-    LuPhone,
-    LuMapPin,
     LuCoins,
-    LuWeight,
-    LuHash,
-    LuCalendar,
-    LuCheck,
-    LuClock
+    LuMapPin
 } from 'react-icons/lu';
 
 interface DetailsCompanyOrderPopupProps {
@@ -28,146 +22,169 @@ export default function DetailsCompanyOrderPopup({ isOpen = true, onClose, order
         switch (status) {
             case 'pending':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                        <LuClock className="w-3.5 h-3.5" />
-                        قيد الانتظار (Pending)
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-amber-500/10 text-amber-600">
+                        قيد الانتظار
+                    </span>
+                );
+            case 'validated':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-500/10 text-indigo-600">
+                        مؤكد
+                    </span>
+                );
+            case 'grouped':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-purple-500/10 text-purple-600">
+                        مجمع بشحنة
                     </span>
                 );
             case 'shipped':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20">
-                        <LuPackage className="w-3.5 h-3.5" />
-                        تم الشحن (Shipped)
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-sky-500/10 text-sky-600">
+                        تم الشحن
                     </span>
                 );
             case 'delivered':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                        <LuCheck className="w-3.5 h-3.5" />
-                        تم التوصيل (Delivered)
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">
+                        تم التوصيل
                     </span>
                 );
             case 'cancelled':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                        <LuX className="w-3.5 h-3.5" />
-                        ملغي (Cancelled)
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
+                        ملغي
+                    </span>
+                );
+            case 'error':
+                return (
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
+                        خطأ في البيانات
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">
+                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-surface-muted text-muted-foreground">
                         {status}
                     </span>
                 );
         }
     };
 
+    const orderValue = Number(orderData.orderValue || 0);
+    const codAmount = Number(orderData.codAmount || 0);
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
-            <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="rtl">
+            <div className="printable-area w-full max-w-xl bg-surface border border-border rounded-md shadow-xs overflow-hidden flex flex-col">
 
                 {/* Header */}
-                <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
-                    <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
-                            <LuPackage className="w-6 h-6" />
+                <div className="p-5 border-b border-border flex items-center justify-between bg-surface">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                            <LuPackage className="w-5 h-5" />
                         </div>
                         <div>
-                            <div className="flex items-center gap-3">
-                                <h2 className="text-xl font-extrabold text-heading">تفاصيل الطلب</h2>
+                            <div className="flex items-center gap-2">
+                                <h2 className="text-base font-bold text-foreground">تفاصيل الطلب</h2>
                                 {getStatusBadge(orderData.status)}
                             </div>
-                            <p className="text-xs text-body mt-0.5 font-latin">رقم الطلب: <span className="font-bold text-accent">{orderData.orderNumber}</span></p>
+                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">رقم الطلب: <span className="font-semibold text-accent">{orderData.orderNumber}</span></p>
                         </div>
                     </div>
 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
+                        className="p-1.5 rounded-md hover:bg-surface-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
-                {/* Content */}
-                <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                {/* Body Content */}
+                <div className="p-5 space-y-4">
 
-                    {/* Recipient Information Card */}
-                    <div className="p-5 rounded-2xl bg-surface-muted/60 border border-border space-y-3">
-                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                            <LuUser className="w-4 h-4" />
-                            بيانات المستلم والتوصيل
+                    {/* Summary Info Row */}
+                    <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between text-xs">
+                        <div>
+                            <span className="text-muted-foreground block">تاريخ تسجيل الطلب</span>
+                            <span className="font-bold text-foreground font-latin text-sm">
+                                {new Date(orderData.createdAt || Date.now()).toLocaleDateString('ar-SA')}
+                            </span>
+                        </div>
+                        <div className="text-left">
+                            <span className="text-muted-foreground block">مصدر الطلب</span>
+                            <span className="font-bold text-foreground text-xs">
+                                {orderData.source === 'bulk_upload' ? 'رفع مجمع (Excel)' : 'إدخال يدوي'}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Recipient & Location Details Box */}
+                    <div className="p-4 rounded-md border border-border bg-surface space-y-3">
+                        <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
+                            <LuUser className="w-4 h-4 text-accent" />
+                            <span>بيانات المستلم وموقع التوصيل</span>
                         </h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <span className="text-xs text-body block font-medium">اسم المستلم</span>
-                                <span className="font-extrabold text-heading">{orderData.recipientName}</span>
+                        <div className="space-y-2 text-xs">
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">اسم المستلم</span>
+                                <span className="font-semibold text-foreground">{orderData.recipientName}</span>
                             </div>
-                            <div>
-                                <span className="text-xs text-body block font-medium">رقم الجوال</span>
-                                <span className="font-bold text-heading font-latin dir-ltr inline-block">{orderData.recipientPhone}</span>
+
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">رقم الجوال</span>
+                                <span className="font-semibold text-foreground font-latin dir-ltr">{orderData.recipientPhone}</span>
                             </div>
-                            <div>
-                                <span className="text-xs text-body block font-medium">المدينة والحي</span>
-                                <span className="font-bold text-heading">{orderData.recipientCity} {orderData.recipientDistrict ? `- ${orderData.recipientDistrict}` : ''}</span>
+
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">المدينة والحي</span>
+                                <span className="font-semibold text-foreground">{orderData.recipientCity} {orderData.recipientDistrict ? `- ${orderData.recipientDistrict}` : ''}</span>
                             </div>
-                            <div>
-                                <span className="text-xs text-body block font-medium">العنوان التفصيلي</span>
-                                <span className="font-bold text-heading">{orderData.recipientAddress}</span>
+
+                            <div className="flex justify-between items-center py-1.5">
+                                <span className="text-muted-foreground">العنوان التفصيلي</span>
+                                <span className="font-semibold text-foreground">{orderData.recipientAddress}</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Financials & Metrics Card */}
-                    <div className="p-5 rounded-2xl bg-surface-muted/60 border border-border space-y-3">
-                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                            <LuCoins className="w-4 h-4" />
-                            المواصفات والقيم المالية
+                    {/* Financial Breakdown & Specifications Box */}
+                    <div className="p-4 rounded-md border border-border bg-surface space-y-3">
+                        <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
+                            <LuCoins className="w-4 h-4 text-accent" />
+                            <span>المواصفات والقيم المالية</span>
                         </h3>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                            <div className="p-3 rounded-xl bg-surface border border-border text-center">
-                                <span className="text-[11px] text-body block font-medium">الوزن</span>
-                                <span className="font-extrabold text-heading font-latin">{orderData.weight} كجم</span>
+                        <div className="space-y-2 text-xs">
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">وزن الطرد / عدد الكميات</span>
+                                <span className="font-semibold text-foreground font-latin">{orderData.weight || 1} كجم ({orderData.quantity || 1} طرد)</span>
                             </div>
-                            <div className="p-3 rounded-xl bg-surface border border-border text-center">
-                                <span className="text-[11px] text-body block font-medium">عدد الطرود</span>
-                                <span className="font-extrabold text-heading font-latin">{orderData.quantity || 1}</span>
+
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">قيمة الطلب المعترفة</span>
+                                <span className="font-semibold text-emerald-600 font-latin">{orderValue.toFixed(2)} ر.س</span>
                             </div>
-                            <div className="p-3 rounded-xl bg-surface border border-border text-center">
-                                <span className="text-[11px] text-body block font-medium">قيمة الطلب</span>
-                                <span className="font-extrabold text-emerald-600 font-latin">{orderData.orderValue} ر.س</span>
-                            </div>
-                            <div className="p-3 rounded-xl bg-surface border border-border text-center">
-                                <span className="text-[11px] text-body block font-medium">مبلغ COD</span>
-                                <span className="font-extrabold text-amber-600 font-latin">{orderData.codAmount || 0} ر.س</span>
+
+                            <div className="flex justify-between items-center pt-1 text-sm font-bold">
+                                <span className="text-foreground">مبلغ التحصيل عند الاستلام (COD)</span>
+                                <span className="text-amber-600 font-latin text-base font-bold">{codAmount.toFixed(2)} ر.س</span>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Additional Metadata */}
-                    <div className="flex items-center justify-between text-xs text-body border-t border-border pt-4">
-                        <span className="flex items-center gap-1.5 font-latin">
-                            <LuCalendar className="w-4 h-4 text-accent" />
-                            تاريخ الإنشاء: {new Date(orderData.createdAt).toLocaleDateString('ar-SA')}
-                        </span>
-                        <span className="px-2.5 py-1 rounded-md bg-surface-muted font-bold text-heading">
-                            المصدر: {orderData.source === 'bulk_upload' ? 'رفع مجمع' : 'إدخال يدوي'}
-                        </span>
                     </div>
 
                 </div>
 
                 {/* Footer */}
-                <div className="p-5 border-t border-border bg-surface-muted/40 flex items-center justify-end shrink-0">
+                <div className="p-4 border-t border-border bg-surface-muted flex justify-end">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
+                        className="px-4 py-1.5 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-border/20 transition-colors text-foreground cursor-pointer"
                     >
                         إغلاق
                     </button>

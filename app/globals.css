@@ -51,3 +51,21 @@
     overflow-x: hidden;
   }
 }
+
+@media print {
+  header,
+  aside,
+  nav,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  body,
+  html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+  }
+
+}

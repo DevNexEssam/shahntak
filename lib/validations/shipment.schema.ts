@@ -31,10 +31,12 @@ export const shipmentCreateValidationSchema = z.object({
     ordersCount: z.number().min(0).default(0),
     shippingCost: z
         .number({ message: "تكلفة الشحن مطلوبة" })
-        .min(0, "التكلفة لا يمكن أن تكون بالسالب"),
+        .min(0, "التكلفة لا يمكن أن تكون بالسالب")
+        .default(0),
     customerPrice: z
         .number({ message: "السعر للعميل مطلوب" })
-        .min(0, "السعر لا يمكن أن يكون بالسالب"),
+        .min(0, "السعر لا يمكن أن يكون بالسالب")
+        .default(0),
     waybillNumber: z.string().optional().or(z.literal("")),
     trackingNumber: z.string().optional().or(z.literal("")),
     status: z.enum(shipmentStatusEnum, "الحالة المحددة غير صحيحة").default("created"),

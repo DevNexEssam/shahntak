@@ -19,6 +19,7 @@ import { useCompanyOrders } from "@/hooks/company/useCompanyOrder";
 import { useCompanyShipments } from "@/hooks/company/useCompanyShipment";
 import { useCompanyInvoices } from "@/hooks/company/useCompanyInvoice";
 import { useCompanyEmployees } from "@/hooks/company/useCompanyEmployee";
+import { useCompanyReports } from "@/hooks/company/useCompanyReport";
 import {
     LuPackage,
     LuTruck,
@@ -42,6 +43,7 @@ export default function CompanyDashboard() {
     const { data: shipmentsData } = useCompanyShipments(1, 5, "");
     const { data: invoicesData } = useCompanyInvoices(1, 5, "");
     const { data: employeesData } = useCompanyEmployees(1, 5, "");
+    const { data: reportsResponse } = useCompanyReports("overview");
 
     const recentOrders = ordersData?.data || [];
     const ordersStats = ordersData?.stats || { total: ordersData?.pagination?.totalRecords || 0, pending: 0, shipped: 0, delivered: 0 };
@@ -49,31 +51,47 @@ export default function CompanyDashboard() {
     const invoicesStats = invoicesData?.stats || { total: invoicesData?.pagination?.totalRecords || 0, paid: 0, issued: 0 };
     const employeesStats = employeesData?.stats || { total: employeesData?.pagination?.totalRecords || 0, active: 0 };
 
-    // Recharts Data Formats
-    const weeklyOrdersTrend = [
-        { day: "الأحد", orders: Math.max(1, Math.round(ordersStats.total * 0.12)) },
-        { day: "الإثنين", orders: Math.max(2, Math.round(ordersStats.total * 0.18)) },
-        { day: "الثلاثاء", orders: Math.max(1, Math.round(ordersStats.total * 0.15)) },
-        { day: "الأربعاء", orders: Math.max(3, Math.round(ordersStats.total * 0.22)) },
-        { day: "الخميس", orders: Math.max(2, Math.round(ordersStats.total * 0.20)) },
-        { day: "الجمعة", orders: Math.max(0, Math.round(ordersStats.total * 0.05)) },
-        { day: "السبت", orders: Math.max(1, Math.round(ordersStats.total * 0.08)) },
+    const reportData = reportsResponse?.data || {};
+
+    // Live Recharts Data Formats from Database
+    const weeklyOrdersTrend = reportData.weeklyOrdersTrend || [
+        { day: "الأحد", orders: 0 },
+        { day: "الإثنين", orders: 0 },
+        { day: "الثلاثاء", orders: 0 },
+        { day: "الأربعاء", orders: 0 },
+        { day: "الخميس", orders: 0 },
+        { day: "الجمعة", orders: 0 },
+        { day: "السبت", orders: 0 },
     ];
 
-    const shipmentStatusBreakdown = [
-        { name: "تم التوصيل", value: ordersStats.delivered || shipmentsStats.delivered || 1, color: "#7444fd" },
-        { name: "ترانزيت / بالسيارة", value: shipmentsStats.in_transit || 1, color: "#a855f7" },
-        { name: "قيد الانتظار والمعالجة", value: ordersStats.pending || 1, color: "#f59e0b" },
+    const rawBreakdown = reportData.shipmentStatusBreakdown || [
+        { name: "تم التوصيل", value: 0, color: "#7444fd" },
+        { name: "ترانزيت / بالسيارة", value: 0, color: "#a855f7" },
+        { name: "مجمع بشحنة", value: 0, color: "#3b82f6" },
+        { name: "قيد الانتظار والمعالجة", value: 0, color: "#f59e0b" },
     ];
+
+    const hasStatusData = rawBreakdown.some((item: any) => item.value > 0);
+    const shipmentStatusBreakdown = hasStatusData
+        ? rawBreakdown
+        : [{ name: "لا توجد شحنات أو طلبات بعد", value: 1, color: "#cbd5e1" }];
 
     const statusBadge = (status?: string) => {
         switch (status) {
             case "pending":
                 return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-amber-500/10 text-amber-600">قيد الانتظار</span>;
+            case "validated":
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-500/10 text-indigo-600">مؤكد</span>;
+            case "grouped":
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-purple-500/10 text-purple-600">مجمع بشحنة</span>;
             case "shipped":
-                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-accent/10 text-accent font-semibold">تم الشحن</span>;
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-sky-500/10 text-sky-600">تم الشحن</span>;
             case "delivered":
                 return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">تم التوصيل</span>;
+            case "cancelled":
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">ملغي</span>;
+            case "error":
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">خطأ في البيانات</span>;
             default:
                 return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-surface-muted text-muted-foreground">{status || "جديد"}</span>;
         }
@@ -244,7 +262,7 @@ export default function CompanyDashboard() {
                                     paddingAngle={4}
                                     dataKey="value"
                                 >
-                                    {shipmentStatusBreakdown.map((entry, index) => (
+                                    {shipmentStatusBreakdown.map((entry: any, index: number) => (
                                         <Cell key={`cell-${index}`} fill={entry.color} />
                                     ))}
                                 </Pie>
@@ -262,7 +280,7 @@ export default function CompanyDashboard() {
 
                     {/* Donut Legend */}
                     <div className="space-y-2 pt-2 text-xs border-t border-border">
-                        {shipmentStatusBreakdown.map((item, idx) => (
+                        {shipmentStatusBreakdown.map((item: any, idx: number) => (
                             <div key={idx} className="flex justify-between items-center">
                                 <div className="flex items-center gap-2">
                                     <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />

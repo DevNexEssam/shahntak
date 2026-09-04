@@ -80,8 +80,10 @@ export default function CompanyShipments() {
     };
 
     const handlePrintWaybill = (shipment: any) => {
-        toast.success(`جاري طباعة بوليصة الشحن (${shipment.waybillNumber || shipment.shipmentNumber})...`);
-        window.print();
+        setSelectedShipmentForDetails(shipment);
+        setTimeout(() => {
+            window.print();
+        }, 300);
     };
 
     const statusBadge = (status?: string) => {
@@ -92,22 +94,76 @@ export default function CompanyShipments() {
                         حديثة
                     </span>
                 );
+            case 'confirmed':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">
+                        مؤكدة
+                    </span>
+                );
+            case 'assigned':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20">
+                        معينة لناقل
+                    </span>
+                );
+            case 'ready_for_pickup':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 border border-purple-500/20">
+                        جاهزة للاستلام
+                    </span>
+                );
+            case 'picked_up':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-600 border border-teal-500/20">
+                        تم الاستلام
+                    </span>
+                );
             case 'in_transit':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20">
                         في الطريق
                     </span>
                 );
+            case 'arrived':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-600 border border-cyan-500/20">
+                        وصلت للمركز
+                    </span>
+                );
+            case 'out_for_delivery':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-500/10 text-orange-600 border border-orange-500/20">
+                        خرجت للتوصيل
+                    </span>
+                );
             case 'delivered':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                        تم التسليم
+                        تم التوصيل
+                    </span>
+                );
+            case 'delivery_failed':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
+                        فشل التوصيل
                     </span>
                 );
             case 'cancelled':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
                         ملغية
+                    </span>
+                );
+            case 'returned':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-500/10 text-gray-600 border border-gray-500/20">
+                        مرتجعة
+                    </span>
+                );
+            case 'exception':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-600 border border-red-500/20">
+                        حالة استثنائية
                     </span>
                 );
             default:

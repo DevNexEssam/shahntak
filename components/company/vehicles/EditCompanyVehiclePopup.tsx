@@ -134,8 +134,8 @@ export default function EditCompanyVehiclePopup({ isOpen = true, onClose, vehicl
                                 onChange={(e) => setFormValues({ ...formValues, isActive: e.target.value === 'active' })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold"
                             >
-                                <option value="active">نشطة ومفعلة (Active)</option>
-                                <option value="inactive">متوقفة / غير نشطة (Inactive)</option>
+                                <option value="active">نشطة ومفعلة</option>
+                                <option value="inactive">متوقفة / غير نشطة</option>
                             </select>
                         </div>
 

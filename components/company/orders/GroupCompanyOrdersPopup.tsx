@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCreateCompanyShipment } from '@/hooks/company/useCompanyShipment';
 import { useQueryClient } from '@tanstack/react-query';
 import { COMPANY_ORDER_KEYS } from '@/hooks/company/useCompanyOrder';
@@ -31,13 +31,26 @@ export default function GroupCompanyOrdersPopup({
     const [originCity, setOriginCity] = useState('الرياض');
     const [destinationCity, setDestinationCity] = useState(selectedOrders[0]?.recipientCity || 'الرياض');
 
+    const totalWeight = selectedOrders.reduce((sum, ord) => sum + (Number(ord.weight) || 0), 0);
+    const totalValue = selectedOrders.reduce((sum, ord) => sum + (Number(ord.orderValue) || 0), 0);
+
+    const [shippingCost, setShippingCost] = useState<number>(0);
+    const [customerPrice, setCustomerPrice] = useState<number>(totalValue);
+
+    useEffect(() => {
+        if (selectedOrders.length > 0) {
+            const calculatedTotalValue = selectedOrders.reduce((sum, ord) => sum + (Number(ord.orderValue) || 0), 0);
+            setCustomerPrice(calculatedTotalValue);
+            if (selectedOrders[0]?.recipientCity) {
+                setDestinationCity(selectedOrders[0].recipientCity);
+            }
+        }
+    }, [selectedOrders]);
+
     const queryClient = useQueryClient();
     const { mutate: createCompanyShipment, isPending: isSubmitting } = useCreateCompanyShipment();
 
     if (!isOpen || selectedOrders.length === 0) return null;
-
-    const totalWeight = selectedOrders.reduce((sum, ord) => sum + (Number(ord.weight) || 0), 0);
-    const totalValue = selectedOrders.reduce((sum, ord) => sum + (Number(ord.orderValue) || 0), 0);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -47,11 +60,13 @@ export default function GroupCompanyOrdersPopup({
 
         const payload = {
             shipmentNumber,
-            shipmentType,
-            originCity,
-            destinationCity,
+            type: shipmentType,
+            origin: originCity,
+            destination: destinationCity,
+            shippingCost: Number(shippingCost) || 0,
+            customerPrice: Number(customerPrice) || totalValue || 0,
             orderIds,
-            status: 'pending',
+            status: 'created',
         };
 
         createCompanyShipment({ data: payload }, {
@@ -156,6 +171,32 @@ export default function GroupCompanyOrdersPopup({
                                         value={destinationCity}
                                         onChange={(e) => setDestinationCity(e.target.value)}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-heading">تكلفة النقل الفعلي (ر.س)</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={shippingCost}
+                                        onChange={(e) => setShippingCost(Number(e.target.value) || 0)}
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
+                                        placeholder="0"
+                                    />
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-heading">سعر الخدمة للعميل (ر.س)</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={customerPrice}
+                                        onChange={(e) => setCustomerPrice(Number(e.target.value) || 0)}
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
+                                        placeholder="0"
                                     />
                                 </div>
                             </div>

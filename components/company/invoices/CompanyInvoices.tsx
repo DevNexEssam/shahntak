@@ -222,9 +222,9 @@ export default function CompanyInvoices() {
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
                                 {invoicesList.map((inv: any) => {
-                                    const subtotal = inv.amount || inv.totalAmount || 0;
-                                    const vat = inv.taxAmount || (subtotal * 0.15);
-                                    const grand = inv.grandTotal || (subtotal + vat);
+                                    const subtotal = Number(inv.total ?? inv.amount ?? inv.totalAmount ?? 0);
+                                    const vat = inv.taxAmount ?? (subtotal * 0.15);
+                                    const grand = inv.grandTotal ?? (subtotal + vat);
 
                                     return (
                                         <tr key={inv._id} className="hover:bg-surface-muted/40 transition-colors">

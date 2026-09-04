@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/order";
+import Shipment from "@/models/shipment";
 import { orderUpdateValidationSchema } from "@/lib/validations/order.schema";
 
 // get order
@@ -108,6 +109,62 @@ export async function PUT(req: NextRequest) {
 
         const body = await req.json();
 
+        // State Machine Integrity Rules & Safeguards (Scenarios 5, 7, 17, 18, 19, 20)
+        const currentStatus = order.status;
+        const newStatus = body.status;
+
+        // Scenario 5: Cannot alter financials on delivered orders
+        if (currentStatus === "delivered") {
+            if (
+                (body.codAmount !== undefined && Number(body.codAmount) !== Number(order.codAmount)) ||
+                (body.orderValue !== undefined && Number(body.orderValue) !== Number(order.orderValue))
+            ) {
+                return NextResponse.json(
+                    { success: false, message: "لا يمكن تعديل القيم المالية أو مبلغ التحصيل (COD) لطلب تم توصيله واستلامه بنجاح" },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // Scenarios 7, 18: Cannot move from delivered backwards
+        if (currentStatus === "delivered" && newStatus && newStatus !== "delivered") {
+            return NextResponse.json(
+                { success: false, message: "لا يمكن تحويل حالة طلب مسلم ومكتمل (Delivered) إلى حالة أخرى مباشرة" },
+                { status: 400 }
+            );
+        }
+
+        // Scenario 19: Cannot jump directly from cancelled to shipped/delivered
+        if (currentStatus === "cancelled" && (newStatus === "shipped" || newStatus === "delivered")) {
+            return NextResponse.json(
+                { success: false, message: "لا يمكن تحويل الطلب الملغي إلى مشحون أو مسلم مباشرة دون إعادته لقيد الانتظار أولاً" },
+                { status: 400 }
+            );
+        }
+
+        // Scenario 17: Cannot status jump directly from pending to delivered without a shipment
+        if (currentStatus === "pending" && newStatus === "delivered" && !order.shipmentId) {
+            return NextResponse.json(
+                { success: false, message: "لا يمكن تحويل الطلب من قيد الانتظار إلى مسلم مباشرة دون تجميعه وشحنه" },
+                { status: 400 }
+            );
+        }
+
+        // Scenario 20: Validate required fields when exiting error state
+        if (currentStatus === "error" && (newStatus === "validated" || newStatus === "pending")) {
+            const mergedRecipientName = body.recipientName || order.recipientName;
+            const mergedPhone = body.recipientPhone || order.recipientPhone;
+            const mergedCity = body.recipientCity || order.recipientCity;
+            const mergedAddress = body.recipientAddress || order.recipientAddress;
+
+            if (!mergedRecipientName || !mergedPhone || !mergedCity || !mergedAddress) {
+                return NextResponse.json(
+                    { success: false, message: "يرجى تصحيح بيانات المستلم الناقصة (الاسم، الجوال، المدينة، والعنوان) قبل تفعيل الطلب" },
+                    { status: 400 }
+                );
+            }
+        }
+
         delete body.companyId;
         delete body.createdByUserId;
         delete body._id;
@@ -192,6 +249,13 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
+        // Scenario 11: Decouple from parent shipment if linked
+        if (order.shipmentId) {
+            await Shipment.findByIdAndUpdate(order.shipmentId, {
+                $inc: { ordersCount: -1 }
+            });
+        }
+
         if (isHardDelete) {
             await Order.deleteOne({ _id: id, companyId: new mongoose.Types.ObjectId(activeCompanyId) });
             return NextResponse.json(
@@ -201,6 +265,7 @@ export async function DELETE(req: NextRequest) {
         } else {
             order.deletedAt = new Date();
             order.status = "cancelled";
+            order.shipmentId = undefined;
             await order.save();
             return NextResponse.json(
                 { success: true, message: "تم إغلاق وأرشفة الطلب بنجاح" },

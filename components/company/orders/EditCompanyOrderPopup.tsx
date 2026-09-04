@@ -120,10 +120,13 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                                     onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
                                 >
-                                    <option value="pending">قيد الانتظار (Pending)</option>
-                                    <option value="shipped">تم الشحن (Shipped)</option>
-                                    <option value="delivered">تم التوصيل (Delivered)</option>
-                                    <option value="cancelled">ملغي (Cancelled)</option>
+                                    <option value="pending">قيد الانتظار</option>
+                                    <option value="validated">مؤكد</option>
+                                    <option value="grouped">مجمع بشحنة</option>
+                                    <option value="shipped">تم الشحن</option>
+                                    <option value="delivered">تم التوصيل</option>
+                                    <option value="cancelled">ملغي</option>
+                                    <option value="error">خطأ في البيانات</option>
                                 </select>
                             </div>
                         </div>

@@ -4,13 +4,7 @@ import React from 'react';
 import {
     LuUsers,
     LuX,
-    LuUser,
-    LuMail,
-    LuPhone,
-    LuShieldCheck,
-    LuCalendar,
-    LuCheck,
-    LuLock
+    LuUser
 } from 'react-icons/lu';
 
 interface DetailsCompanyEmployeePopupProps {
@@ -24,100 +18,108 @@ export default function DetailsCompanyEmployeePopup({ isOpen = true, onClose, em
 
     const getRoleLabel = (role: string) => {
         switch (role) {
-            case 'owner': return 'مالك الشركة (Owner)';
-            case 'manager': return 'مدير (Manager)';
-            default: return 'موظف (Staff)';
+            case 'owner': return 'مالك الشركة';
+            case 'manager': return 'مدير تشغيل';
+            default: return 'موظف';
         }
     };
 
+    const isActive = employeeData.userIsActive !== false && employeeData.status !== 'inactive';
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
-            <div className="relative w-full max-w-xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="rtl">
+            <div className="printable-area w-full max-w-xl bg-surface border border-border rounded-md shadow-xs overflow-hidden flex flex-col">
 
                 {/* Header */}
-                <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
-                    <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
-                            <LuUsers className="w-6 h-6" />
+                <div className="p-5 border-b border-border flex items-center justify-between bg-surface">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                            <LuUsers className="w-5 h-5" />
                         </div>
                         <div>
-                            <div className="flex items-center gap-3">
-                                <h2 className="text-xl font-extrabold text-heading">{employeeData.userName}</h2>
-                                {employeeData.userIsActive !== false ? (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                                        <LuCheck className="w-3.5 h-3.5" />
-                                        نشط
+                            <div className="flex items-center gap-2">
+                                <h2 className="text-base font-bold text-foreground">{employeeData.userName}</h2>
+                                {isActive ? (
+                                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">
+                                        نشط ومفعل
                                     </span>
                                 ) : (
-                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                                        <LuLock className="w-3.5 h-3.5" />
+                                    <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
                                         مجمد
                                     </span>
                                 )}
                             </div>
-                            <p className="text-xs text-body mt-0.5 font-latin">{employeeData.userEmail}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">{employeeData.userEmail}</p>
                         </div>
                     </div>
 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
+                        className="p-1.5 rounded-md hover:bg-surface-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         title="إغلاق"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
-                {/* Content */}
-                <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                {/* Body Content */}
+                <div className="p-5 space-y-4">
 
-                    {/* Profile Summary Card */}
-                    <div className="p-5 rounded-2xl bg-surface-muted/60 border border-border space-y-4">
-                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                            <LuUser className="w-4 h-4" />
-                            بيانات الملف الشخصي والحساب
-                        </h3>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <span className="text-xs text-body block font-medium">اسم الموظف</span>
-                                <span className="font-extrabold text-heading">{employeeData.userName}</span>
-                            </div>
-                            <div>
-                                <span className="text-xs text-body block font-medium">البريد الإلكتروني</span>
-                                <span className="font-bold text-heading font-latin">{employeeData.userEmail}</span>
-                            </div>
-                            <div>
-                                <span className="text-xs text-body block font-medium">رقم الهاتف</span>
-                                <span className="font-bold text-heading font-latin dir-ltr inline-block">{employeeData.phone}</span>
-                            </div>
-                            <div>
-                                <span className="text-xs text-body block font-medium">الدور في النظام</span>
-                                <span className="font-bold text-accent">{getRoleLabel(employeeData.userRole)}</span>
-                            </div>
+                    {/* Summary Info Row */}
+                    <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between text-xs">
+                        <div>
+                            <span className="text-muted-foreground block">تاريخ الإضافة للحساب</span>
+                            <span className="font-bold text-foreground font-latin text-sm">
+                                {new Date(employeeData.createdAt || Date.now()).toLocaleDateString('ar-SA')}
+                            </span>
+                        </div>
+                        <div className="text-left">
+                            <span className="text-muted-foreground block">معرف الموظف</span>
+                            <span className="font-bold text-foreground font-latin text-xs">
+                                {employeeData._id}
+                            </span>
                         </div>
                     </div>
 
-                    {/* Additional Metadata */}
-                    <div className="flex items-center justify-between text-xs text-body border-t border-border pt-4">
-                        <span className="flex items-center gap-1.5 font-latin">
-                            <LuCalendar className="w-4 h-4 text-accent" />
-                            تاريخ الإضافة: {new Date(employeeData.createdAt || Date.now()).toLocaleDateString('ar-SA')}
-                        </span>
-                        <span className="px-2.5 py-1 rounded-md bg-surface-muted font-bold text-heading font-latin">
-                            ID: {employeeData._id}
-                        </span>
+                    {/* Profile Information Box */}
+                    <div className="p-4 rounded-md border border-border bg-surface space-y-3">
+                        <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
+                            <LuUser className="w-4 h-4 text-accent" />
+                            <span>بيانات الملف الشخصي والحساب</span>
+                        </h3>
+
+                        <div className="space-y-2 text-xs">
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">اسم الموظف</span>
+                                <span className="font-semibold text-foreground">{employeeData.userName}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">البريد الإلكتروني</span>
+                                <span className="font-semibold text-foreground font-latin">{employeeData.userEmail}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">رقم الهاتف والجوال</span>
+                                <span className="font-semibold text-foreground font-latin dir-ltr">{employeeData.phone}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center py-1.5">
+                                <span className="text-muted-foreground">الدور الوظيفي في النظام</span>
+                                <span className="font-semibold text-accent">{getRoleLabel(employeeData.userRole)}</span>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
 
                 {/* Footer */}
-                <div className="p-5 border-t border-border bg-surface-muted/40 flex items-center justify-end shrink-0">
+                <div className="p-4 border-t border-border bg-surface-muted flex justify-end">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
+                        className="px-4 py-1.5 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-border/20 transition-colors text-foreground cursor-pointer"
                     >
                         إغلاق
                     </button>

@@ -7,6 +7,7 @@ import { connectDB } from "@/lib/mongodb";
 import Shipment from "@/models/shipment";
 import Order from "@/models/order";
 import Company from "@/models/companies";
+import Invoice from "@/models/invoice";
 import { shipmentCreateValidationSchema } from "@/lib/validations/shipment.schema";
 
 // create shipment
@@ -54,6 +55,14 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
 
+        // Field Aliases & Fallbacks
+        if (body.shipmentType && !body.type) body.type = body.shipmentType;
+        if (body.originCity && !body.origin) body.origin = body.originCity;
+        if (body.destinationCity && !body.destination) body.destination = body.destinationCity;
+        if (body.shippingCost === undefined || body.shippingCost === null) body.shippingCost = 0;
+        if (body.customerPrice === undefined || body.customerPrice === null) body.customerPrice = 0;
+        if (body.status === "pending" || !body.status) body.status = "created";
+
         if (!body.shipmentNumber || body.shipmentNumber.trim() === "") {
             body.shipmentNumber = `SHP-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
         }
@@ -93,6 +102,22 @@ export async function POST(req: NextRequest) {
         const orderIds = data.orderIds || [];
         const ordersCount = orderIds.length > 0 ? orderIds.length : (data.ordersCount || 0);
 
+        let invoiceIdToAssign = data.invoiceId && mongoose.Types.ObjectId.isValid(data.invoiceId) ? new mongoose.Types.ObjectId(data.invoiceId) : undefined;
+
+        if (!invoiceIdToAssign) {
+            const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+            const invoiceTotal = data.customerPrice || data.shippingCost || 0;
+            const newInvoice = await Invoice.create({
+                invoiceNumber,
+                companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                total: invoiceTotal,
+                status: data.status === "delivered" ? "paid" : "issued",
+                dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                deletedAt: null,
+            });
+            invoiceIdToAssign = newInvoice._id;
+        }
+
         const newShipment = await Shipment.create({
             shipmentNumber: data.shipmentNumber,
             companyId: new mongoose.Types.ObjectId(activeCompanyId),
@@ -102,7 +127,7 @@ export async function POST(req: NextRequest) {
             routeId: data.routeId && mongoose.Types.ObjectId.isValid(data.routeId) ? new mongoose.Types.ObjectId(data.routeId) : undefined,
             carrierId: data.carrierId && mongoose.Types.ObjectId.isValid(data.carrierId) ? new mongoose.Types.ObjectId(data.carrierId) : undefined,
             vehicleId: data.vehicleId && mongoose.Types.ObjectId.isValid(data.vehicleId) ? new mongoose.Types.ObjectId(data.vehicleId) : undefined,
-            invoiceId: data.invoiceId && mongoose.Types.ObjectId.isValid(data.invoiceId) ? new mongoose.Types.ObjectId(data.invoiceId) : undefined,
+            invoiceId: invoiceIdToAssign,
             ordersCount,
             shippingCost: data.shippingCost,
             customerPrice: data.customerPrice,
@@ -118,10 +143,12 @@ export async function POST(req: NextRequest) {
                 .map((id) => new mongoose.Types.ObjectId(id));
 
             if (validOrderObjectIds.length > 0) {
+                // Scenarios 8, 9, 10: Enforce Tenant Isolation, City Matching & Non-Grouped Status Check
                 await Order.updateMany(
                     {
                         _id: { $in: validOrderObjectIds },
                         companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                        status: { $in: ["pending", "validated", "error"] },
                         deletedAt: null,
                     },
                     {

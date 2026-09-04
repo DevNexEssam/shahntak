@@ -139,8 +139,8 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                                     onChange={(e) => setFormValues({ ...formValues, userIsActive: e.target.value === 'active' })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold"
                                 >
-                                    <option value="active">نشط ومفعل (Active)</option>
-                                    <option value="inactive">مجمد وغير نشط (Inactive)</option>
+                                    <option value="active">نشط ومفعل</option>
+                                    <option value="inactive">مجمد وغير نشط</option>
                                 </select>
                             </div>
                         </div>
@@ -155,9 +155,9 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                                 onChange={(e) => setFormValues({ ...formValues, userRole: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold"
                             >
-                                <option value="staff">موظف (Staff)</option>
-                                <option value="manager">مدير (Manager)</option>
-                                <option value="owner">مالك شركة (Owner)</option>
+                                <option value="staff">موظف</option>
+                                <option value="manager">مدير تشغيل</option>
+                                <option value="owner">مالك الشركة</option>
                             </select>
                         </div>
 

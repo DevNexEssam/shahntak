@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import Shipment from "@/models/shipment";
 import Order from "@/models/order";
+import Invoice from "@/models/invoice";
 import { shipmentUpdateValidationSchema } from "@/lib/validations/shipment.schema";
 
 // get shipment
@@ -128,6 +129,70 @@ export async function PUT(req: NextRequest) {
                 },
                 { status: 422 }
             );
+        }
+
+        const newStatus = validation.data.status;
+        let calculatedTotal = (validation.data.customerPrice !== undefined ? validation.data.customerPrice : shipment.customerPrice) || shipment.shippingCost || 0;
+
+        if (calculatedTotal === 0) {
+            const linkedOrders = await Order.find({
+                shipmentId: id,
+                companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                deletedAt: null,
+            }).lean();
+            if (linkedOrders.length > 0) {
+                calculatedTotal = linkedOrders.reduce((sum: number, ord: any) => sum + (Number(ord.orderValue) || Number(ord.codAmount) || 0), 0);
+            }
+        }
+
+        if (newStatus === "delivered") {
+            await Order.updateMany(
+                { shipmentId: id, companyId: new mongoose.Types.ObjectId(activeCompanyId), deletedAt: null },
+                { $set: { status: "delivered" } }
+            );
+
+            let existingInvoice = shipment.invoiceId
+                ? await Invoice.findOne({ _id: shipment.invoiceId, deletedAt: null })
+                : null;
+
+            if (existingInvoice) {
+                existingInvoice.status = "paid";
+                existingInvoice.total = calculatedTotal;
+                await existingInvoice.save();
+            } else {
+                const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+                const newInvoice = await Invoice.create({
+                    invoiceNumber,
+                    companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                    total: calculatedTotal,
+                    status: "paid",
+                    dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                    deletedAt: null,
+                });
+                (validation.data as any).invoiceId = newInvoice._id;
+            }
+        } else if (newStatus === "in_transit") {
+            await Order.updateMany(
+                { shipmentId: id, companyId: new mongoose.Types.ObjectId(activeCompanyId), deletedAt: null },
+                { $set: { status: "shipped" } }
+            );
+        } else if (newStatus === "cancelled") {
+            await Order.updateMany(
+                { shipmentId: id, companyId: new mongoose.Types.ObjectId(activeCompanyId), deletedAt: null },
+                { $set: { status: "cancelled" } }
+            );
+        } else if (!shipment.invoiceId) {
+            // Ensure invoice exists even if created/pending
+            const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+            const newInvoice = await Invoice.create({
+                invoiceNumber,
+                companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                total: calculatedTotal,
+                status: "issued",
+                dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                deletedAt: null,
+            });
+            (validation.data as any).invoiceId = newInvoice._id;
         }
 
         const updatedShipment = await Shipment.findByIdAndUpdate(

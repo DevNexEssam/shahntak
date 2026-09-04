@@ -87,6 +87,18 @@ export default function CompanyOrders() {
                         قيد الانتظار
                     </span>
                 );
+            case 'validated':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">
+                        مؤكد
+                    </span>
+                );
+            case 'grouped':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 border border-purple-500/20">
+                        مجمع بشحنة
+                    </span>
+                );
             case 'shipped':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20">
@@ -103,6 +115,12 @@ export default function CompanyOrders() {
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
                         ملغي
+                    </span>
+                );
+            case 'error':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-600 border border-red-500/20">
+                        خطأ في البيانات
                     </span>
                 );
             default:

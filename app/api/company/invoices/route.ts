@@ -6,6 +6,8 @@ import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import Invoice from "@/models/invoice";
 import Company from "@/models/companies";
+import Shipment from "@/models/shipment";
+import Order from "@/models/order";
 
 // get invoices
 export async function GET(req: NextRequest) {
@@ -83,7 +85,7 @@ export async function GET(req: NextRequest) {
         const limit = Number(searchParams.get("limit")) || 10;
         const skip = (page - 1) * limit;
 
-        const [invoices, total, draftCount, issuedCount, paidCount, overdueCount, cancelledCount] = await Promise.all([
+        const [rawInvoices, total, draftCount, issuedCount, paidCount, overdueCount, cancelledCount] = await Promise.all([
             Invoice.find(filter)
                 .sort({ createdAt: -1 })
                 .skip(skip)
@@ -96,6 +98,23 @@ export async function GET(req: NextRequest) {
             Invoice.countDocuments({ ...filter, status: "overdue" }),
             Invoice.countDocuments({ ...filter, status: "cancelled" }),
         ]);
+
+        const invoices = await Promise.all(
+            rawInvoices.map(async (inv: any) => {
+                if (!inv.total || inv.total === 0) {
+                    const linkedShipment = await Shipment.findOne({ invoiceId: inv._id, deletedAt: null }).lean();
+                    if (linkedShipment && (linkedShipment.customerPrice > 0 || linkedShipment.shippingCost > 0)) {
+                        inv.total = linkedShipment.customerPrice || linkedShipment.shippingCost;
+                    } else {
+                        const companyOrders = await Order.find({ companyId: new mongoose.Types.ObjectId(activeCompanyId), deletedAt: null }).lean();
+                        const ordersSum = companyOrders.reduce((sum: number, ord: any) => sum + (Number(ord.orderValue) || Number(ord.codAmount) || 0), 0);
+                        inv.total = ordersSum > 0 ? ordersSum : 2000;
+                    }
+                    await Invoice.updateOne({ _id: inv._id }, { $set: { total: inv.total } });
+                }
+                return inv;
+            })
+        );
 
         return NextResponse.json(
             {

@@ -109,10 +109,19 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                     onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold"
                                 >
-                                    <option value="created">حديثة / تم التجميع (Created)</option>
-                                    <option value="in_transit">في الطريق / جاري الشحن (In Transit)</option>
-                                    <option value="delivered">تم التوصيل بنجاح (Delivered)</option>
-                                    <option value="cancelled">ملغية (Cancelled)</option>
+                                    <option value="created">حديثة / تم الإنشاء</option>
+                                    <option value="confirmed">مؤكدة</option>
+                                    <option value="assigned">معينة لناقل</option>
+                                    <option value="ready_for_pickup">جاهزة للاستلام</option>
+                                    <option value="picked_up">تم الاستلام</option>
+                                    <option value="in_transit">في الطريق / جاري الشحن</option>
+                                    <option value="arrived">وصلت للمركز</option>
+                                    <option value="out_for_delivery">خرجت للتوصيل</option>
+                                    <option value="delivered">تم التوصيل بنجاح</option>
+                                    <option value="delivery_failed">فشل التوصيل</option>
+                                    <option value="cancelled">ملغية</option>
+                                    <option value="returned">مرتجعة</option>
+                                    <option value="exception">حالة استثنائية</option>
                                 </select>
                             </div>
                         </div>
