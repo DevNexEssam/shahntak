@@ -54,143 +54,162 @@ export async function GET(req: NextRequest) {
             );
         }
 
+        const { searchParams } = new URL(req.url);
+        const reportType = searchParams.get("type") || "overview";
+
         const companyObjId = new mongoose.Types.ObjectId(activeCompanyId);
         const baseFilter = { companyId: companyObjId, deletedAt: null };
 
-        const [
-            totalOrders,
-            pendingOrders,
-            shippedOrders,
-            deliveredOrders,
-            cancelledOrders,
-            orderFinancials,
-            totalShipments,
-            inTransitShipments,
-            deliveredShipments,
-            ftlShipments,
-            ltlShipments,
-            localShipments,
-            shipmentFinancials,
-            totalInvoices,
-            paidInvoices,
-            issuedInvoices,
-            overdueInvoices,
-            invoiceFinancials,
-            totalVehicles,
-            activeVehicles,
-            totalEmployees,
-            activeEmployees,
-        ] = await Promise.all([
-            // Orders counts
-            Order.countDocuments(baseFilter),
-            Order.countDocuments({ ...baseFilter, status: "pending" }),
-            Order.countDocuments({ ...baseFilter, status: "shipped" }),
-            Order.countDocuments({ ...baseFilter, status: "delivered" }),
-            Order.countDocuments({ ...baseFilter, status: "cancelled" }),
-            Order.aggregate([
-                { $match: baseFilter },
-                {
-                    $group: {
-                        _id: null,
-                        totalOrderValue: { $sum: "$orderValue" },
-                        totalCodAmount: { $sum: "$codAmount" },
+        let resultData: Record<string, any> = {};
+
+        if (reportType === "operations" || reportType === "overview") {
+            const [
+                totalOrders,
+                pendingOrders,
+                shippedOrders,
+                deliveredOrders,
+                cancelledOrders,
+                orderFinancials,
+                totalShipments,
+                inTransitShipments,
+                deliveredShipments,
+                ftlShipments,
+                ltlShipments,
+                localShipments,
+                shipmentFinancials,
+            ] = await Promise.all([
+                Order.countDocuments(baseFilter),
+                Order.countDocuments({ ...baseFilter, status: "pending" }),
+                Order.countDocuments({ ...baseFilter, status: "shipped" }),
+                Order.countDocuments({ ...baseFilter, status: "delivered" }),
+                Order.countDocuments({ ...baseFilter, status: "cancelled" }),
+                Order.aggregate([
+                    { $match: baseFilter },
+                    {
+                        $group: {
+                            _id: null,
+                            totalOrderValue: { $sum: "$orderValue" },
+                            totalCodAmount: { $sum: "$codAmount" },
+                        },
                     },
-                },
-            ]),
-
-            // Shipments counts
-            Shipment.countDocuments(baseFilter),
-            Shipment.countDocuments({ ...baseFilter, status: "in_transit" }),
-            Shipment.countDocuments({ ...baseFilter, status: "delivered" }),
-            Shipment.countDocuments({ ...baseFilter, type: "ftl" }),
-            Shipment.countDocuments({ ...baseFilter, type: "ltl" }),
-            Shipment.countDocuments({ ...baseFilter, type: "local_delivery" }),
-            Shipment.aggregate([
-                { $match: baseFilter },
-                {
-                    $group: {
-                        _id: null,
-                        totalShippingCost: { $sum: "$shippingCost" },
-                        totalCustomerPrice: { $sum: "$customerPrice" },
+                ]),
+                Shipment.countDocuments(baseFilter),
+                Shipment.countDocuments({ ...baseFilter, status: "in_transit" }),
+                Shipment.countDocuments({ ...baseFilter, status: "delivered" }),
+                Shipment.countDocuments({ ...baseFilter, type: "ftl" }),
+                Shipment.countDocuments({ ...baseFilter, type: "ltl" }),
+                Shipment.countDocuments({ ...baseFilter, type: "local_delivery" }),
+                Shipment.aggregate([
+                    { $match: baseFilter },
+                    {
+                        $group: {
+                            _id: null,
+                            totalShippingCost: { $sum: "$shippingCost" },
+                            totalCustomerPrice: { $sum: "$customerPrice" },
+                        },
                     },
-                },
-            ]),
+                ]),
+            ]);
 
-            // Invoices counts
-            Invoice.countDocuments(baseFilter),
-            Invoice.countDocuments({ ...baseFilter, status: "paid" }),
-            Invoice.countDocuments({ ...baseFilter, status: "issued" }),
-            Invoice.countDocuments({ ...baseFilter, status: "overdue" }),
-            Invoice.aggregate([
-                { $match: baseFilter },
-                {
-                    $group: {
-                        _id: null,
-                        totalInvoicedAmount: { $sum: "$total" },
+            resultData.orders = {
+                total: totalOrders,
+                pending: pendingOrders,
+                shipped: shippedOrders,
+                delivered: deliveredOrders,
+                cancelled: cancelledOrders,
+                totalValue: orderFinancials[0]?.totalOrderValue || 0,
+                totalCod: orderFinancials[0]?.totalCodAmount || 0,
+                successRate: totalOrders > 0 ? Math.round((deliveredOrders / totalOrders) * 100) : 0,
+            };
+
+            resultData.shipments = {
+                total: totalShipments,
+                inTransit: inTransitShipments,
+                delivered: deliveredShipments,
+                ftl: ftlShipments,
+                ltl: ltlShipments,
+                localDelivery: localShipments,
+                totalCost: shipmentFinancials[0]?.totalShippingCost || 0,
+                totalPrice: shipmentFinancials[0]?.totalCustomerPrice || 0,
+            };
+        }
+
+        if (reportType === "financial" || reportType === "overview") {
+            const [
+                totalInvoices,
+                paidInvoices,
+                issuedInvoices,
+                overdueInvoices,
+                invoiceFinancials,
+                orderCod,
+            ] = await Promise.all([
+                Invoice.countDocuments(baseFilter),
+                Invoice.countDocuments({ ...baseFilter, status: "paid" }),
+                Invoice.countDocuments({ ...baseFilter, status: "issued" }),
+                Invoice.countDocuments({ ...baseFilter, status: "overdue" }),
+                Invoice.aggregate([
+                    { $match: baseFilter },
+                    {
+                        $group: {
+                            _id: null,
+                            totalInvoicedAmount: { $sum: "$total" },
+                        },
                     },
-                },
-            ]),
+                ]),
+                Order.aggregate([
+                    { $match: baseFilter },
+                    {
+                        $group: {
+                            _id: null,
+                            totalCod: { $sum: "$codAmount" },
+                        },
+                    },
+                ]),
+            ]);
 
-            // Vehicles counts
-            Vehicle.countDocuments(baseFilter),
-            Vehicle.countDocuments({ ...baseFilter, isActive: true }),
+            resultData.invoices = {
+                total: totalInvoices,
+                paid: paidInvoices,
+                issued: issuedInvoices,
+                overdue: overdueInvoices,
+                totalInvoiced: invoiceFinancials[0]?.totalInvoicedAmount || 0,
+                collectionRate: totalInvoices > 0 ? Math.round((paidInvoices / totalInvoices) * 100) : 0,
+                totalCod: orderCod[0]?.totalCod || 0,
+            };
+        }
 
-            // Employees counts
-            CompanyUser.countDocuments(baseFilter),
-            CompanyUser.countDocuments({ ...baseFilter, userIsActive: true }),
-        ]);
+        if (reportType === "fleet" || reportType === "overview") {
+            const [
+                totalVehicles,
+                activeVehicles,
+                totalEmployees,
+                activeEmployees,
+            ] = await Promise.all([
+                Vehicle.countDocuments(baseFilter),
+                Vehicle.countDocuments({ ...baseFilter, isActive: true }),
+                CompanyUser.countDocuments(baseFilter),
+                CompanyUser.countDocuments({ ...baseFilter, userIsActive: true }),
+            ]);
 
-        const orderStats = {
-            total: totalOrders,
-            pending: pendingOrders,
-            shipped: shippedOrders,
-            delivered: deliveredOrders,
-            cancelled: cancelledOrders,
-            totalValue: orderFinancials[0]?.totalOrderValue || 0,
-            totalCod: orderFinancials[0]?.totalCodAmount || 0,
-        };
+            resultData.vehicles = {
+                total: totalVehicles,
+                active: activeVehicles,
+                inactive: totalVehicles - activeVehicles,
+                utilizationRate: totalVehicles > 0 ? Math.round((activeVehicles / totalVehicles) * 100) : 0,
+            };
 
-        const shipmentStats = {
-            total: totalShipments,
-            inTransit: inTransitShipments,
-            delivered: deliveredShipments,
-            ftl: ftlShipments,
-            ltl: ltlShipments,
-            localDelivery: localShipments,
-            totalCost: shipmentFinancials[0]?.totalShippingCost || 0,
-            totalPrice: shipmentFinancials[0]?.totalCustomerPrice || 0,
-        };
-
-        const invoiceStats = {
-            total: totalInvoices,
-            paid: paidInvoices,
-            issued: issuedInvoices,
-            overdue: overdueInvoices,
-            totalInvoiced: invoiceFinancials[0]?.totalInvoicedAmount || 0,
-        };
-
-        const vehicleStats = {
-            total: totalVehicles,
-            active: activeVehicles,
-            inactive: totalVehicles - activeVehicles,
-        };
-
-        const employeeStats = {
-            total: totalEmployees,
-            active: activeEmployees,
-            inactive: totalEmployees - activeEmployees,
-        };
+            resultData.employees = {
+                total: totalEmployees,
+                active: activeEmployees,
+                inactive: totalEmployees - activeEmployees,
+            };
+        }
 
         return NextResponse.json(
             {
                 success: true,
-                data: {
-                    orders: orderStats,
-                    shipments: shipmentStats,
-                    invoices: invoiceStats,
-                    vehicles: vehicleStats,
-                    employees: employeeStats,
-                },
+                type: reportType,
+                data: resultData,
             },
             { status: 200 }
         );

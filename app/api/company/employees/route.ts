@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
     try {
         await connectDB();
 
-        // 1️⃣ فحص التوثيق والجلسة
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
@@ -22,7 +21,6 @@ export async function GET(req: NextRequest) {
 
         const { role, companyId, id: userId } = session.user as any;
 
-        // 2️⃣ فحص صلاحية حساب الشركة الحصري
         if (role !== "company") {
             return NextResponse.json(
                 { success: false, message: "غير مصرح لك: عرض الموظفين مخصص لحسابات الشركات فقط" },
@@ -30,7 +28,6 @@ export async function GET(req: NextRequest) {
             );
         }
 
-        // 3️⃣ استخراج والتحقق من معرف الشركة المعزول
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
@@ -39,7 +36,6 @@ export async function GET(req: NextRequest) {
             );
         }
 
-        // 4️⃣ التأكد من أن حساب الشركة نشط وغير محذوف
         const company = await Company.findOne({
             _id: activeCompanyId,
             status: "active",
@@ -58,7 +54,6 @@ export async function GET(req: NextRequest) {
         const noPagination = searchParams.get("nopagination") === "true";
         const statusFilter = searchParams.get("status");
 
-        // 5️⃣ بناء فلتر الاستعلام المعزول تلقائياً للشركة الحالية فقط
         const filter: Record<string, any> = {
             companyId: new mongoose.Types.ObjectId(activeCompanyId),
             deletedAt: null,
@@ -76,7 +71,6 @@ export async function GET(req: NextRequest) {
             ];
         }
 
-        // 6️⃣ الاستعلام بدون ترقيم عند إرسال nopagination=true
         if (noPagination) {
             const users = await CompanyUser.find(filter)
                 .select("-password")
@@ -90,7 +84,6 @@ export async function GET(req: NextRequest) {
             );
         }
 
-        // 7️⃣ الترقيم الافتراضي والاستعلام المقسم
         const page = Number(searchParams.get("page")) || 1;
         const limit = Number(searchParams.get("limit")) || 10;
         const skip = (page - 1) * limit;
