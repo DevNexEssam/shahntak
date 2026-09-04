@@ -113,23 +113,10 @@ export async function PUT(req: NextRequest) {
         const currentStatus = order.status;
         const newStatus = body.status;
 
-        // Scenario 5: Cannot alter financials on delivered orders
+        // Strict Lock: Delivered orders cannot be modified in any way
         if (currentStatus === "delivered") {
-            if (
-                (body.codAmount !== undefined && Number(body.codAmount) !== Number(order.codAmount)) ||
-                (body.orderValue !== undefined && Number(body.orderValue) !== Number(order.orderValue))
-            ) {
-                return NextResponse.json(
-                    { success: false, message: "لا يمكن تعديل القيم المالية أو مبلغ التحصيل (COD) لطلب تم توصيله واستلامه بنجاح" },
-                    { status: 400 }
-                );
-            }
-        }
-
-        // Scenarios 7, 18: Cannot move from delivered backwards
-        if (currentStatus === "delivered" && newStatus && newStatus !== "delivered") {
             return NextResponse.json(
-                { success: false, message: "لا يمكن تحويل حالة طلب مسلم ومكتمل (Delivered) إلى حالة أخرى مباشرة" },
+                { success: false, message: "الطلب مسلّم بالكامل (Delivered) ومقفل نهائياً، لا يمكن إجراء أي تعديل عليه أو تغيير حالته." },
                 { status: 400 }
             );
         }

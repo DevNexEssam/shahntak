@@ -44,10 +44,17 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
 
     const { mutate: updateShipment, isPending: isSubmitting } = useUpdateCompanyShipment();
 
+    const isDelivered = shipmentData?.status === 'delivered';
+
     if (!isOpen || !shipmentData) return null;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (isDelivered) {
+            toast.error("الشحنة مسلّمة بالكامل ومقفلة، لا يمكن التعديل عليها.");
+            return;
+        }
 
         updateShipment(
             { id: shipmentData._id, updates: formValues },
@@ -90,6 +97,12 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
                     <div className="p-6 overflow-y-auto space-y-6 flex-1">
 
+                        {isDelivered && (
+                            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold flex items-center gap-2">
+                                <span>⚠️ هذه الشحنة تم تسليمها بنجاح (Delivered) وهي مقفلة نهائياً لحماية الفواتير والبيانات المالية. لا يمكن إجراء أي تعديل عليها.</span>
+                            </div>
+                        )}
+
                         {/* Shipment Info */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
@@ -105,9 +118,10 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading">حالة الشحنة والتتبع</label>
                                 <select
+                                    disabled={isDelivered || isSubmitting}
                                     value={formValues.status}
                                     onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
-                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold"
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     <option value="created">حديثة / تم الإنشاء</option>
                                     <option value="confirmed">مؤكدة</option>
@@ -136,9 +150,10 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading">نوع الشحنة</label>
                                 <select
+                                    disabled={isDelivered || isSubmitting}
                                     value={formValues.type}
                                     onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
-                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     <option value="local_delivery">توصيل محلي (Local Delivery)</option>
                                     <option value="ltl">شحن جزئي (LTL)</option>
@@ -154,10 +169,10 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                     </label>
                                     <input
                                         type="text"
-                                        disabled={isSubmitting}
+                                        disabled={isDelivered || isSubmitting}
                                         value={formValues.origin}
                                         onChange={(e) => setFormValues({ ...formValues, origin: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-60 disabled:cursor-not-allowed"
                                     />
                                 </div>
 
@@ -168,10 +183,10 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                     </label>
                                     <input
                                         type="text"
-                                        disabled={isSubmitting}
+                                        disabled={isDelivered || isSubmitting}
                                         value={formValues.destination}
                                         onChange={(e) => setFormValues({ ...formValues, destination: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-60 disabled:cursor-not-allowed"
                                     />
                                 </div>
                             </div>
@@ -193,10 +208,10 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                     <input
                                         type="number"
                                         step="any"
-                                        disabled={isSubmitting}
+                                        disabled={isDelivered || isSubmitting}
                                         value={formValues.shippingCost}
                                         onChange={(e) => setFormValues({ ...formValues, shippingCost: Number(e.target.value) })}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-60 disabled:cursor-not-allowed"
                                     />
                                 </div>
 
@@ -208,10 +223,10 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                     <input
                                         type="number"
                                         step="any"
-                                        disabled={isSubmitting}
+                                        disabled={isDelivered || isSubmitting}
                                         value={formValues.customerPrice}
                                         onChange={(e) => setFormValues({ ...formValues, customerPrice: Number(e.target.value) })}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-60 disabled:cursor-not-allowed"
                                     />
                                 </div>
                             </div>
@@ -232,8 +247,8 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
 
                         <button
                             type="submit"
-                            disabled={isSubmitting}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
+                            disabled={isDelivered || isSubmitting}
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? "جاري التحديث..." : "حفظ التعديلات"}
                         </button>

@@ -115,6 +115,28 @@ export async function PUT(req: NextRequest) {
 
         const body = await req.json();
 
+        // Strict Lock: Delivered shipments cannot be modified in any way
+        if (shipment.status === "delivered") {
+            return NextResponse.json(
+                { success: false, message: "الشحنة مسلّمة بالكامل (Delivered) ومقفلة نهائياً، لا يمكن إجراء أي تعديل عليها أو تغيير حالتها." },
+                { status: 400 }
+            );
+        }
+
+        // Scenario 8: Block Route edits once goods are picked up / in transit
+        const inTransitStates = ["picked_up", "in_transit", "arrived", "out_for_delivery"];
+        if (inTransitStates.includes(shipment.status)) {
+            if (
+                (body.origin && body.origin.trim() !== shipment.origin) ||
+                (body.destination && body.destination.trim() !== shipment.destination)
+            ) {
+                return NextResponse.json(
+                    { success: false, message: "لا يمكن تعديل مدينة المصدر أو الوجهة لشحنة تم استلامها وتحريكها بالفعل على الطريق" },
+                    { status: 400 }
+                );
+            }
+        }
+
         delete body.companyId;
         delete body._id;
         delete body.shipmentNumber;
@@ -132,6 +154,23 @@ export async function PUT(req: NextRequest) {
         }
 
         const newStatus = validation.data.status;
+
+        // Prevent moving directly from cancelled to delivered or in_transit
+        if (shipment.status === "cancelled" && (newStatus === "delivered" || newStatus === "in_transit")) {
+            return NextResponse.json(
+                { success: false, message: "لا يمكن تحويل الشحنة الملغية إلى في الطريق أو تم التوصيل مباشرة دون إعادة إطلاقها أولاً" },
+                { status: 400 }
+            );
+        }
+
+        // Scenario 5: Prevent Jumping directly from delivery_failed to delivered without re-attempt
+        if (shipment.status === "delivery_failed" && newStatus === "delivered") {
+            return NextResponse.json(
+                { success: false, message: "لا يمكن تحويل شحنة فاشلة التوصيل مباشرة إلى تم التوصيل دون خروجها للتوصيل مجدداً" },
+                { status: 400 }
+            );
+        }
+
         let calculatedTotal = (validation.data.customerPrice !== undefined ? validation.data.customerPrice : shipment.customerPrice) || shipment.shippingCost || 0;
 
         if (calculatedTotal === 0) {
@@ -177,9 +216,10 @@ export async function PUT(req: NextRequest) {
                 { $set: { status: "shipped" } }
             );
         } else if (newStatus === "cancelled") {
+            // Scenario 6: Reset attached orders back to pending when shipment is cancelled
             await Order.updateMany(
                 { shipmentId: id, companyId: new mongoose.Types.ObjectId(activeCompanyId), deletedAt: null },
-                { $set: { status: "cancelled" } }
+                { $set: { shipmentId: null, status: "pending" } }
             );
         } else if (!shipment.invoiceId) {
             // Ensure invoice exists even if created/pending
@@ -262,10 +302,19 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        // Unlink associated orders
+        // Scenario 2: Restrict deleting active in-transit or delivered shipments
+        const activeShipmentStates = ["delivered", "in_transit", "out_for_delivery"];
+        if (activeShipmentStates.includes(shipment.status)) {
+            return NextResponse.json(
+                { success: false, message: "لا يمكن حذف شحنة في الطريق أو تم تسليمها بالفعل للعملاء. يرجى استخدام إجراءات الإلغاء أو الإرجاع الرسمية" },
+                { status: 400 }
+            );
+        }
+
+        // Unlink associated orders and return them to pending
         await Order.updateMany(
             { shipmentId: id },
-            { $unset: { shipmentId: 1 }, $set: { status: "pending" } }
+            { $set: { shipmentId: null, status: "pending" } }
         );
 
         if (isHardDelete) {

@@ -86,6 +86,21 @@ export async function PATCH(req: Request, context: any) {
             );
         }
 
+        const existingShipment = await Shipment.findOne({ _id: id, ...ACTIVE });
+        if (!existingShipment) {
+            return NextResponse.json(
+                { success: false, message: "الشحنة غير موجودة" },
+                { status: 404 }
+            );
+        }
+
+        if (existingShipment.status === "delivered") {
+            return NextResponse.json(
+                { success: false, message: "الشحنة مسلّمة بالكامل (Delivered) ومقفلة نهائياً، لا يمكن إجراء أي تعديل عليها أو تغيير حالتها." },
+                { status: 400 }
+            );
+        }
+
         let updates;
         try {
             updates = await req.json();
