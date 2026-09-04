@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
@@ -76,7 +77,7 @@ export async function GET() {
     }
 }
 
-// update settings
+// update settings & change password
 export async function PUT(req: NextRequest) {
     try {
         await connectDB();
@@ -108,13 +109,54 @@ export async function PUT(req: NextRequest) {
 
         const body = await req.json();
 
-        const allowedFields = ["companyName", "phone", "city", "taxNumber", "address", "facilityInfo"];
+        const allowedFields = ["phone", "city", "address", "facilityInfo"];
         const updateData: Record<string, any> = {};
 
         for (const key of allowedFields) {
             if (body[key] !== undefined) {
                 updateData[key] = typeof body[key] === "string" ? body[key].trim() : body[key];
             }
+        }
+
+        // Change Password Logic
+        if (body.currentPassword || body.newPassword) {
+            if (!body.currentPassword || !body.newPassword) {
+                return NextResponse.json(
+                    { success: false, message: "تغيير كلمة المرور يستوجب إدخال كلمة المرور الحالية والجديدة" },
+                    { status: 400 }
+                );
+            }
+
+            if (body.newPassword.length < 6) {
+                return NextResponse.json(
+                    { success: false, message: "كلمة المرور الجديدة يجب أن تكون على الأقل 6 أحرف" },
+                    { status: 400 }
+                );
+            }
+
+            const companyAccount = await Company.findOne({
+                _id: activeCompanyId,
+                status: "active",
+                deletedAt: null,
+            }).select("+password");
+
+            if (!companyAccount) {
+                return NextResponse.json(
+                    { success: false, message: "حساب الشركة غير موجود أو غير نشط" },
+                    { status: 404 }
+                );
+            }
+
+            const isPasswordValid = await bcrypt.compare(body.currentPassword, companyAccount.password);
+            if (!isPasswordValid) {
+                return NextResponse.json(
+                    { success: false, message: "كلمة المرور الحالية غير صحيحة" },
+                    { status: 400 }
+                );
+            }
+
+            const hashedNewPassword = await bcrypt.hash(body.newPassword, 10);
+            updateData.password = hashedNewPassword;
         }
 
         const updatedCompany = await Company.findByIdAndUpdate(
@@ -126,7 +168,7 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json(
             {
                 success: true,
-                message: "تم تحديث بيانات وملف الشركة بنجاح",
+                message: body.newPassword ? "تم تحديث إعدادات الشركة وكلمة المرور بنجاح" : "تم تحديث بيانات الشركة بنجاح",
                 data: updatedCompany,
             },
             { status: 200 }
