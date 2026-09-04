@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from 'react';
@@ -137,12 +138,12 @@ export default function CompanyOrders() {
                         title="تحديث البيانات"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
-                        <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
+                        <LuRefreshCw className={`text-sm font-bold ${isFetching ? 'animate-spin text-accent' : ''}`} />
                     </button>
 
                     <button
                         onClick={() => setIsAddOpen(true)}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all"
                     >
                         <LuPlus className="w-4 h-4" />
                         <span>إضافة طلب جديد</span>
@@ -168,7 +169,7 @@ export default function CompanyOrders() {
                                 <span>مسجلة لشركتك</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuPackage className="w-5 h-5" />
                         </div>
                     </div>
@@ -183,7 +184,7 @@ export default function CompanyOrders() {
                                 <span>جاهزة للتجميع والشحن</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuClock className="w-5 h-5" />
                         </div>
                     </div>
@@ -198,7 +199,7 @@ export default function CompanyOrders() {
                                 <span>في الطريق للعميل</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-sky-500/10 text-sky-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuTruck className="w-5 h-5" />
                         </div>
                     </div>
@@ -213,7 +214,7 @@ export default function CompanyOrders() {
                                 <span>مكتملة ومسلمة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuCheck className="w-5 h-5" />
                         </div>
                     </div>

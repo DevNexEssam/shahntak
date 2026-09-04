@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from 'react';
@@ -110,7 +111,7 @@ export default function CompanyInvoices() {
                         title="تحديث البيانات"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
-                        <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
+                        <LuRefreshCw className={`text-sm font-bold ${isFetching ? 'animate-spin text-accent' : ''}`} />
                     </button>
                 </div>
             </div>
@@ -133,7 +134,7 @@ export default function CompanyInvoices() {
                                 <span>مسجلة لشركتك</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuReceipt className="w-5 h-5" />
                         </div>
                     </div>
@@ -148,7 +149,7 @@ export default function CompanyInvoices() {
                                 <span>تم سدادها بنجاح</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuCheck className="w-5 h-5" />
                         </div>
                     </div>
@@ -163,7 +164,7 @@ export default function CompanyInvoices() {
                                 <span>في انتظار التحصيل</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-sky-500/10 text-sky-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuFileText className="w-5 h-5" />
                         </div>
                     </div>
@@ -178,7 +179,7 @@ export default function CompanyInvoices() {
                                 <span>تستوجب المتابعة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-rose-500/10 text-rose-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuClock className="w-5 h-5" />
                         </div>
                     </div>

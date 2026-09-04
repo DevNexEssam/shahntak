@@ -40,7 +40,7 @@ export const CompanySettings: React.FC = () => {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
 
-    const companyProfile = responseData?.data?.profile || {};
+    const profile = responseData?.data?.profile;
 
     const {
         register,
@@ -51,21 +51,21 @@ export const CompanySettings: React.FC = () => {
     } = useForm<SettingsFormInputs>();
 
     useEffect(() => {
-        if (companyProfile) {
+        if (profile) {
             reset({
-                companyName: companyProfile.companyName || "",
-                email: companyProfile.email || "",
-                phone: companyProfile.phone || "",
-                city: companyProfile.city || "",
-                taxNumber: companyProfile.taxNumber || "",
-                address: companyProfile.address || "",
-                facilityInfo: companyProfile.facilityInfo || "",
+                companyName: profile.companyName || "",
+                email: profile.email || "",
+                phone: profile.phone || "",
+                city: profile.city || "",
+                taxNumber: profile.taxNumber || "",
+                address: profile.address || "",
+                facilityInfo: profile.facilityInfo || "",
                 currentPassword: "",
                 newPassword: "",
                 confirmPassword: "",
             });
         }
-    }, [companyProfile, reset]);
+    }, [profile, reset]);
 
     const onSubmit = (data: SettingsFormInputs) => {
         const payload: Record<string, any> = {
