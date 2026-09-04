@@ -115,6 +115,18 @@
 * **قسم إعدادات الشركة والاشتراك السحابي (`app/company/dashboard/settings`)**: المكون الرئيسي `CompanySettings.tsx` ونموذج تعديل بيانات ملف الشركة والاطلاع على الباقة النشطة والحدود والأحصاص الشهرية ومسار `GET/PUT /api/company/settings`.
 * **التحقق والبناء الكامل**: اجتياز فحص الأنواع `npx tsc --noEmit` بنجاح 100%، ونجاح بناء النسخة الإنتاجية `npm run build` وتجميع كافة المسارات الـ (71/71) بنسبة 100% بدون أي أخطاء.
 
+### 1.20 دمج Recharts وتوحيد الهوية البصرية وإصلاح أخطاء الـ Render في بوابة الشركة (`Company Portal Refinements & Recharts Integration`)
+* **دمج واستخدام مكتبة الرسوم البيانية التفاعلية Recharts (`recharts`)**:
+  * بناء منحنى التدفق والطلب الأسبوعي (`AreaChart` مع `monotone` وتدرج شعاعي بلون الهوية الأساسي `accent` `#7444fd`).
+  * بناء الرسم البياني للحالات اللوجستية (`PieChart / Donut`) بالألوان الرسمية المعتمدة والتلميحات العربي التفاعلية (`Custom Tooltip`).
+* **توحيد المظهر البصري لجميع أقسام الشركة (Design System Standardization)**:
+  * تعميم أيقونات كروت الـ KPI الدائرية الموحدة (`w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center`) عبر كافة الصفحات والسكاشن الرئيسية (`CompanyOrders`, `CompanyShipments`, `CompanyInvoices`, `CompanyVehicles`, `CompanyEmployees`, `CompanyDashboard`).
+  * توحيد أزرار الإجراءات والتحديث والإضافة بحجم `text-xs font-bold` ونمط `rounded-md` بدون ظلال معقدة.
+* **حماية حقول الملف التعريفي وإصلاح خطأ التكرار اللانهائي (Security & Render Fixes)**:
+  * حماية حقول اسم الشركة، البريد الإلكتروني، والرقم الضريبي للشركة في الباك إند ومنع تعديلها من واجهة المستخدم لسلامة الفواتير.
+  * إتاحة تغيير كلمة المرور وتأمينها عبر التشفير المباشر بـ `bcrypt`.
+  * علاج وإصلاح خطأ `Maximum update depth exceeded` في صفحة الإعدادات (`CompanySettings.tsx`) بإزالة المرجع المتغير الدائم في ذاكرة الـ `useEffect`.
+
 ---
 
 ## 🎯 2. الخطوة الترتيبية القادمة للمرة القادمة (Next Steps)
