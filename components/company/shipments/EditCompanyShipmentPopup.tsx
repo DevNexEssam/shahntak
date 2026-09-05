@@ -156,8 +156,8 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     <option value="local_delivery">توصيل محلي (Local Delivery)</option>
-                                    <option value="ltl">شحن جزئي (LTL)</option>
-                                    <option value="ftl">شحن كامل (FTL)</option>
+                                    <option value="ltl">شحن جزئي </option>
+                                    <option value="ftl">شحن كامل </option>
                                 </select>
                             </div>
 
@@ -203,7 +203,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuCoins className="w-3.5 h-3.5 text-body" />
-                                        التكلفة التشغيلية (ر.س)
+                                        التكلفة التشغيلية
                                     </label>
                                     <input
                                         type="number"

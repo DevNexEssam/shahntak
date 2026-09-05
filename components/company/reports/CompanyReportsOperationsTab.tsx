@@ -97,7 +97,7 @@ export const CompanyReportsOperationsTab: React.FC<OperationsTabProps> = ({ data
                     <div className="space-y-4">
                         <div>
                             <div className="flex justify-between text-sm mb-1">
-                                <span className="text-muted-foreground">شحنات كاملة الحجم (FTL)</span>
+                                <span className="text-muted-foreground">شحنات كاملة الحجم </span>
                                 <span className="font-semibold">{shipments.ftl || 0} شحنة</span>
                             </div>
                             <div className="w-full bg-border/40 h-2.5 rounded-full overflow-hidden">
@@ -112,7 +112,7 @@ export const CompanyReportsOperationsTab: React.FC<OperationsTabProps> = ({ data
 
                         <div>
                             <div className="flex justify-between text-sm mb-1">
-                                <span className="text-muted-foreground">شحنات جزئية مجمعة (LTL)</span>
+                                <span className="text-muted-foreground">شحنات جزئية مجمعة </span>
                                 <span className="font-semibold">{shipments.ltl || 0} شحنة</span>
                             </div>
                             <div className="w-full bg-border/40 h-2.5 rounded-full overflow-hidden">

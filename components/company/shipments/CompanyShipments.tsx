@@ -80,6 +80,10 @@ export default function CompanyShipments() {
     };
 
     const handlePrintWaybill = (shipment: any) => {
+        if (shipment?.status === 'cancelled') {
+            toast.error('حماية نزاهة البوالص: لا يمكن طباعة بوليصة شحن لشحنة ملغية');
+            return;
+        }
         setSelectedShipmentForDetails(shipment);
         setTimeout(() => {
             window.print();
@@ -177,8 +181,8 @@ export default function CompanyShipments() {
 
     const getTypeBadge = (type: string) => {
         switch (type) {
-            case 'ftl': return 'شحن كامل (FTL)';
-            case 'ltl': return 'شحن جزئي (LTL)';
+            case 'ftl': return 'شحن كامل ';
+            case 'ltl': return 'شحن جزئي ';
             default: return 'توصيل محلي';
         }
     };

@@ -127,8 +127,8 @@ export default function DetailsCompanyShipmentPopup({
 
     const getTypeLabel = (type: string) => {
         switch (type) {
-            case 'ftl': return 'شحن كامل (FTL)';
-            case 'ltl': return 'شحن جزئي (LTL)';
+            case 'ftl': return 'شحن كامل ';
+            case 'ltl': return 'شحن جزئي ';
             default: return 'توصيل محلي';
         }
     };
@@ -190,10 +190,12 @@ export default function DetailsCompanyShipmentPopup({
                         <button
                             type="button"
                             onClick={handlePrintInvoice}
-                            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs"
+                            disabled={activeShipment.status === 'cancelled'}
+                            title={activeShipment.status === 'cancelled' ? 'لا يمكن طباعة بوليصة لشحنة ملغية' : 'طباعة بوليصة الشحن'}
+                            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                             <LuPrinter className="w-4 h-4" />
-                            <span>طباعة البوليصة</span>
+                            <span>{activeShipment.status === 'cancelled' ? 'بوليصة ملغية' : 'طباعة البوليصة'}</span>
                         </button>
                     </div>
 

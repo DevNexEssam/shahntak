@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { useCompanyInvoices } from '@/hooks/company/useCompanyInvoice';
 import DetailsCompanyInvoicePopup from './DetailsCompanyInvoicePopup';
+import EditCompanyInvoicePopup from './EditCompanyInvoicePopup';
 import ErrorMessege from '@/components/ui/ErrorMessege';
 import EmptyData from '@/components/ui/EmptyData';
 import Loading from '@/components/ui/loading';
@@ -19,7 +20,8 @@ import {
     LuClock,
     LuCoins,
     LuPrinter,
-    LuFileText
+    LuFileText,
+    LuPencil
 } from 'react-icons/lu';
 
 export default function CompanyInvoices() {
@@ -31,6 +33,7 @@ export default function CompanyInvoices() {
 
     // 2. Control States
     const [selectedInvoiceForDetails, setSelectedInvoiceForDetails] = useState<any | null>(null);
+    const [selectedInvoiceForEdit, setSelectedInvoiceForEdit] = useState<any | null>(null);
 
     // 3. Custom React Query Hook for Company Invoices
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyInvoices(page, limit, searchQuery);
@@ -222,9 +225,9 @@ export default function CompanyInvoices() {
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
                                 {invoicesList.map((inv: any) => {
-                                    const subtotal = Number(inv.total ?? inv.amount ?? inv.totalAmount ?? 0);
-                                    const vat = inv.taxAmount ?? (subtotal * 0.15);
-                                    const grand = inv.grandTotal ?? (subtotal + vat);
+                                    const grand = Number(inv.total ?? inv.amount ?? inv.totalAmount ?? 0);
+                                    const subtotal = inv.subtotal ?? (grand / 1.15);
+                                    const vat = inv.vatAmount ?? (grand - subtotal);
 
                                     return (
                                         <tr key={inv._id} className="hover:bg-surface-muted/40 transition-colors">
@@ -268,6 +271,14 @@ export default function CompanyInvoices() {
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => setSelectedInvoiceForEdit(inv)}
+                                                        title={inv.status === 'paid' ? 'فاتورة محصلة لا يمكن تعديلها' : 'تعديل الفاتورة'}
+                                                        className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer disabled:opacity-40"
+                                                    >
+                                                        <LuPencil className="w-4 h-4" />
                                                     </button>
                                                 </div>
                                             </td>
@@ -316,6 +327,13 @@ export default function CompanyInvoices() {
                 onClose={() => setSelectedInvoiceForDetails(null)}
             />
 
+            <EditCompanyInvoicePopup
+                isOpen={!!selectedInvoiceForEdit}
+                invoiceData={selectedInvoiceForEdit}
+                onClose={() => setSelectedInvoiceForEdit(null)}
+            />
+
         </div>
     );
 }
+

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { companyInvoiceServices } from "@/services/company/CompanyInvoiceServices";
+import toast from "react-hot-toast";
 
 // Object as const pattern for Query Keys
 export const COMPANY_INVOICE_KEYS = {
@@ -32,5 +33,21 @@ export const useCompanyInvoiceById = (id: string) => {
         staleTime: 1000 * 60 * 5,
         gcTime: 1000 * 60 * 10,
         enabled: !!id,
+    });
+};
+
+// Update Company Invoice Hook
+export const useUpdateCompanyInvoice = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, data }: { id: string; data: any }) =>
+            companyInvoiceServices.updateInvoice(id, data),
+        onSuccess: (res: any) => {
+            toast.success(res.message || "تم تحديث بيانات الفاتورة بنجاح");
+            queryClient.invalidateQueries({ queryKey: COMPANY_INVOICE_KEYS.all });
+        },
+        onError: (err: any) => {
+            toast.error(err.response?.data?.message || err.message || "فشلت عملية التعديل");
+        },
     });
 };

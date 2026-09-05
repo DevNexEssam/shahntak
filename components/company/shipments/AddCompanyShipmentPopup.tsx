@@ -129,9 +129,9 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                                     onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
                                 >
-                                    <option value="local_delivery">توصيل محلي (Local Delivery)</option>
-                                    <option value="ltl">شحن جزئي (LTL)</option>
-                                    <option value="ftl">شحن كامل (FTL)</option>
+                                    <option value="local_delivery">توصيل محلي</option>
+                                    <option value="ltl">شحن جزئي </option>
+                                    <option value="ftl">شحن كامل </option>
                                 </select>
                             </div>
 
@@ -196,7 +196,7 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuCoins className="w-3.5 h-3.5 text-body" />
-                                        التكلفة التشغيلية (ر.س)
+                                        التكلفة التشغيلية
                                     </label>
                                     <input
                                         type="number"
@@ -212,7 +212,7 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuCoins className="w-3.5 h-3.5 text-body" />
-                                        سعر العميل النهائي (ر.س)
+                                        سعر العميل النهائي
                                     </label>
                                     <input
                                         type="number"

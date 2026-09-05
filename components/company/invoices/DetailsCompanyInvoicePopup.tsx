@@ -54,9 +54,9 @@ export default function DetailsCompanyInvoicePopup({
         }
     };
 
-    const subtotal = Number(invoiceData.total ?? invoiceData.amount ?? invoiceData.totalAmount ?? 0);
-    const vatAmount = invoiceData.taxAmount ?? (subtotal * 0.15);
-    const finalTotal = invoiceData.grandTotal ?? (subtotal + vatAmount);
+    const finalTotal = Number(invoiceData.total ?? invoiceData.amount ?? invoiceData.totalAmount ?? 0);
+    const subtotal = Number(invoiceData.subtotal ?? (finalTotal / 1.15));
+    const vatAmount = Number(invoiceData.vatAmount ?? (finalTotal - subtotal));
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="rtl">
