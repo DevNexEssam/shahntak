@@ -107,7 +107,28 @@ export async function PUT(req: NextRequest) {
             );
         }
 
+        const { userRole } = session.user as any;
+        if (userRole === "staff") {
+            return NextResponse.json(
+                { success: false, message: "غير مصرح لك: حظر تعديل الإعدادات المالية والضريبية على حسابات الموظفين" },
+                { status: 403 }
+            );
+        }
+
         const body = await req.json();
+
+        const company = await Company.findOne({
+            _id: activeCompanyId,
+            status: "active",
+            deletedAt: null,
+        });
+
+        if (!company) {
+            return NextResponse.json(
+                { success: false, message: "حساب الشركة غير موجود أو غير نشط" },
+                { status: 404 }
+            );
+        }
 
         const allowedFields = ["phone", "city", "address", "facilityInfo"];
         const updateData: Record<string, any> = {};
@@ -115,6 +136,63 @@ export async function PUT(req: NextRequest) {
         for (const key of allowedFields) {
             if (body[key] !== undefined) {
                 updateData[key] = typeof body[key] === "string" ? body[key].trim() : body[key];
+            }
+        }
+
+        // Tax Rate & ZATCA Settings Validation
+        if (body.vatRate !== undefined) {
+            const parsedRate = Number(body.vatRate);
+
+            if (parsedRate !== 15 && parsedRate !== 0) {
+                return NextResponse.json(
+                    { success: false, message: "نسبة ضريبة القيمة المضافة غير مقبولة. النسب المعتمدة هي 15% أساسية أو 0% معفاة وفقاً للائحة ZATCA" },
+                    { status: 400 }
+                );
+            }
+
+            // Check Tax Number when rate is 15%
+            const currentTaxNumber = company.taxNumber || body.taxNumber;
+            if (parsedRate === 15 && (!currentTaxNumber || currentTaxNumber.trim() === "")) {
+                return NextResponse.json(
+                    { success: false, message: "حماية النزاهة الضريبية: يجب تسجيل وتوثيق الرقم الضريبي للشركة (VAT Registration Number) أولاً لتفعيل نسبة ضريبة 15%" },
+                    { status: 400 }
+                );
+            }
+
+            if (parsedRate === 0) {
+                if (!body.vatExemptionReason || body.vatExemptionReason.trim().length < 3) {
+                    return NextResponse.json(
+                        { success: false, message: "عند اختيار نسبة ضريبة 0% (معفاة)، يجب اختيار أو كتابة سبب الإعفاء الضريبي الرسمي" },
+                        { status: 400 }
+                    );
+                }
+                updateData.vatExemptionReason = body.vatExemptionReason.trim();
+            } else {
+                updateData.vatExemptionReason = "";
+            }
+
+            // If rate changes, require reason & push to Audit Log
+            const previousRate = company.vatRate !== undefined ? company.vatRate : 15;
+            if (parsedRate !== previousRate) {
+                if (!body.vatRateReason || body.vatRateReason.trim().length < 3) {
+                    return NextResponse.json(
+                        { success: false, message: "حماية النزاهة الضريبية (ZATCA Audit Log): يجب إدخال سبب تعديل نسبة الضريبة حتمياً لحفظ السجل التاريخي للتغيير" },
+                        { status: 400 }
+                    );
+                }
+
+                updateData.vatRate = parsedRate;
+                const newAuditLogEntry = {
+                    rate: parsedRate,
+                    changedAt: new Date(),
+                    changedBy: new mongoose.Types.ObjectId(String(userId || (session.user as any).id)),
+                    changedByName: session.user.name || session.user.email || "حساب الشركة الرئيسي",
+                    reason: body.vatRateReason.trim(),
+                };
+
+                company.taxRateAuditLog = company.taxRateAuditLog || [];
+                company.taxRateAuditLog.unshift(newAuditLogEntry);
+                await company.save();
             }
         }
 
@@ -168,7 +246,7 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json(
             {
                 success: true,
-                message: body.newPassword ? "تم تحديث إعدادات الشركة وكلمة المرور بنجاح" : "تم تحديث بيانات الشركة بنجاح",
+                message: body.newPassword ? "تم تحديث إعدادات الشركة وكلمة المرور بنجاح" : "تم تحديث بيانات ونسب الضريبة للشركة بنجاح",
                 data: updatedCompany,
             },
             { status: 200 }

@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import Invoice from "@/models/invoice";
 import Shipment from "@/models/shipment";
+import Company from "@/models/companies";
 import { invoiceUpdateValidationSchema } from "@/lib/validations/invoice.schema";
 
 // get invoice
@@ -56,16 +57,42 @@ export async function GET(req: NextRequest) {
             );
         }
 
-        // 🟢 الشرط 8: حساب مبالغ ضريبة القيمة المضافة 15% والصافي موحداً من الباك إند
-        const total = Number(invoice.total || 0);
-        const subtotal = Math.round((total / 1.15) * 100) / 100;
-        const vatAmount = Math.round((total - subtotal) * 100) / 100;
+        // 🟢 الشرط 8: حساب مبالغ الخصم وضريبة القيمة المضافة طبقاً للقطة التاريخية المجمدة taxRateSnapshot
+        const companyRecord = await Company.findById(activeCompanyId).lean();
+        const effectiveTaxRate = invoice.taxRateSnapshot !== undefined 
+            ? Number(invoice.taxRateSnapshot) 
+            : (companyRecord?.vatRate !== undefined ? Number(companyRecord.vatRate) : 15);
+
+        const discount = Number(invoice.discount || 0);
+        let basePrice = Number(invoice.subtotal || 0);
+
+        const linkedShipment = invoice.invoiceShipments && invoice.invoiceShipments.length > 0 
+            ? invoice.invoiceShipments[0] 
+            : await Shipment.findOne({ invoiceId: invoice._id, deletedAt: null }).lean();
+
+        if (linkedShipment && (linkedShipment.customerPrice > 0 || linkedShipment.shippingCost > 0)) {
+            basePrice = Number(linkedShipment.customerPrice || linkedShipment.shippingCost);
+        } else if (basePrice === 0) {
+            const rawTotal = Number(invoice.total || 0);
+            const rateMultiplier = 1 + (effectiveTaxRate / 100);
+            basePrice = Math.round(((rawTotal / rateMultiplier) + discount) * 100) / 100;
+        }
+
+        const validDiscount = Math.min(basePrice, Math.max(0, discount));
+        const discountedSubtotal = Math.max(0, basePrice - validDiscount);
+        const vatAmount = Math.round(discountedSubtotal * (effectiveTaxRate / 100) * 100) / 100;
+        const computedTotal = Math.round((discountedSubtotal + vatAmount) * 100) / 100;
 
         const enrichedInvoice = {
             ...invoice,
-            subtotal,
+            subtotal: basePrice,
+            discount: validDiscount,
+            discountedSubtotal,
             vatAmount,
-            taxRate: 15,
+            taxRateSnapshot: effectiveTaxRate,
+            taxRate: effectiveTaxRate,
+            vatExemptionReason: effectiveTaxRate === 0 ? (companyRecord?.vatExemptionReason || "خدمات نقل معفاة بموجب اللائحة") : "",
+            total: computedTotal,
         };
 
         return NextResponse.json({ success: true, data: enrichedInvoice }, { status: 200 });
@@ -146,7 +173,6 @@ export async function PUT(req: NextRequest) {
 
         // 🔴 الشرط 6: حظر التغيير غير الشرعي للحالة إلى مدفوع يدوياً دون إجراء تسليم
         if (body.status === "paid" && invoice.status !== "paid") {
-            // للتأكد من أن السداد تم عبر نظام التسليم أو الدفع وليس تعديل يدوياً
             const linkedShipment = await Shipment.findOne({ invoiceId: invoice._id, deletedAt: null }).lean();
             if (linkedShipment && linkedShipment.status !== "delivered") {
                 return NextResponse.json(
@@ -159,11 +185,40 @@ export async function PUT(req: NextRequest) {
             }
         }
 
-        // 🟠 الشرط 7: مطابقة إجمالي الفاتورة مع مجموع قيم الطلبات/الشحنة المرفقة
+        // 🟠 الشرط 7: مطابقة إجمالي الفاتورة وحساب الخصم والضريبة طبقاً لـ taxRateSnapshot
+        const companyRecord = await Company.findById(activeCompanyId).lean();
+        const effectiveTaxRate = invoice.taxRateSnapshot !== undefined 
+            ? Number(invoice.taxRateSnapshot) 
+            : (companyRecord?.vatRate !== undefined ? Number(companyRecord.vatRate) : 15);
+
         const linkedShipment = await Shipment.findOne({ invoiceId: invoice._id, deletedAt: null }).lean();
+
+        let basePrice = Number(invoice.subtotal || 0);
         if (linkedShipment && (linkedShipment.customerPrice > 0 || linkedShipment.shippingCost > 0)) {
-            body.total = linkedShipment.customerPrice || linkedShipment.shippingCost;
+            basePrice = Number(linkedShipment.customerPrice || linkedShipment.shippingCost);
+        } else if (basePrice === 0) {
+            const currentDiscount = Number(invoice.discount || 0);
+            const rateMultiplier = 1 + (effectiveTaxRate / 100);
+            basePrice = Math.round(((Number(invoice.total || 0) / rateMultiplier) + currentDiscount) * 100) / 100;
         }
+
+        let newDiscount = body.discount !== undefined ? Number(body.discount) : Number(invoice.discount || 0);
+        if (isNaN(newDiscount) || newDiscount < 0) {
+            newDiscount = 0;
+        }
+        if (newDiscount > basePrice) {
+            newDiscount = basePrice;
+        }
+
+        const discountedSubtotal = Math.max(0, basePrice - newDiscount);
+        const vatAmount = Math.round(discountedSubtotal * (effectiveTaxRate / 100) * 100) / 100;
+        const computedTotal = Math.round((discountedSubtotal + vatAmount) * 100) / 100;
+
+        body.subtotal = basePrice;
+        body.discount = newDiscount;
+        body.vatAmount = vatAmount;
+        body.taxRateSnapshot = effectiveTaxRate;
+        body.total = computedTotal;
 
         const validation = invoiceUpdateValidationSchema.safeParse(body);
         if (!validation.success) {

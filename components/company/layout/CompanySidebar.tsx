@@ -62,7 +62,7 @@ const navItems: NavItem[] = [
         icon: <LuFileSpreadsheet className="w-5 h-5" />,
     },
     {
-        title: 'إعدادات الشركة والاشتراك',
+        title: 'إعدادات الشركة',
         href: '/company/dashboard/settings',
         icon: <LuSettings className="w-5 h-5" />,
     },

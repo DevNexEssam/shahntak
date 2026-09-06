@@ -10,7 +10,9 @@ import {
     LuCalendar,
     LuTriangleAlert,
     LuCheck,
-    LuClock
+    LuClock,
+    LuTag,
+    LuCoins
 } from 'react-icons/lu';
 
 interface EditCompanyInvoicePopupProps {
@@ -28,10 +30,12 @@ export default function EditCompanyInvoicePopup({
 
     const [status, setStatus] = useState<string>('draft');
     const [dueDate, setDueDate] = useState<string>('');
+    const [discount, setDiscount] = useState<number | string>(0);
 
     useEffect(() => {
         if (invoiceData) {
             setStatus(invoiceData.status || 'draft');
+            setDiscount(invoiceData.discount !== undefined ? invoiceData.discount : 0);
             if (invoiceData.dueDate) {
                 setDueDate(new Date(invoiceData.dueDate).toISOString().split('T')[0]);
             } else {
@@ -44,11 +48,25 @@ export default function EditCompanyInvoicePopup({
 
     const isPaid = invoiceData.status === 'paid';
 
+    // الحسابات المحاسبية التفاعلية طبقاً للقطة التاريخية المجمدة بالفاتورة
+    const taxRate = Number(invoiceData.taxRateSnapshot ?? invoiceData.taxRate ?? 15);
+    const rateMultiplier = 1 + (taxRate / 100);
+    const basePrice = Number(invoiceData.subtotal || invoiceData.customerPrice || Math.round(((Number(invoiceData.total || 0) / rateMultiplier) + Number(invoiceData.discount || 0)) * 100) / 100);
+    const parsedDiscount = Math.max(0, Number(discount) || 0);
+    const validDiscount = Math.min(basePrice, parsedDiscount);
+    const discountedSubtotal = Math.max(0, basePrice - validDiscount);
+    const vatAmount = Math.round(discountedSubtotal * (taxRate / 100) * 100) / 100;
+    const computedTotal = Math.round((discountedSubtotal + vatAmount) * 100) / 100;
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (isPaid) return;
 
-        const payload: any = { status };
+        const payload: any = {
+            status,
+            discount: validDiscount,
+        };
+
         if (dueDate) {
             payload.dueDate = dueDate;
         }
@@ -99,14 +117,14 @@ export default function EditCompanyInvoicePopup({
                             <div className="text-xs">
                                 <span className="font-bold block mb-1">فاتورة مدفوعة ومحصلة نهائياً</span>
                                 <p className="leading-relaxed">
-                                    وفقاً لقواعد النزاهة المالية والضريبية (ZATCA)، لا يمكن تعديل بيانات أو حالة أو تاريخ استحقاق الفواتير المدفوعة بعد تحصيل مبالغها.
+                                    وفقاً لقواعد النزاهة المالية والضريبية ، لا يمكن تعديل بيانات أو حالة أو تاريخ استحقاق الفواتير المدفوعة بعد تحصيل مبالغها.
                                 </p>
                             </div>
                         </div>
                     ) : (
                         <div className="p-3 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs flex items-center gap-2">
                             <LuCheck className="w-4 h-4 shrink-0" />
-                            <span>يمكنك تحديث حالة الفاتورة وتاريخ استحقاق السداد للفواتير غير المدفوعة.</span>
+                            <span>يمكنك تحديث حالة الفاتورة، تاريخ استحقاق السداد، ومبلغ الخصم للفواتير غير المدفوعة.</span>
                         </div>
                     )}
 
@@ -129,6 +147,24 @@ export default function EditCompanyInvoicePopup({
                         </select>
                     </div>
 
+                    {/* Discount Input */}
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                            <LuTag className="w-3.5 h-3.5 text-accent" />
+                            مبلغ الخصم المالي (ر.س)
+                        </label>
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            disabled={isPaid}
+                            value={discount}
+                            onChange={(e) => setDiscount(e.target.value)}
+                            placeholder="أدخل قيمة الخصم المالي"
+                            className="w-full px-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 font-latin"
+                        />
+                    </div>
+
                     {/* Due Date */}
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-heading flex items-center gap-1.5">
@@ -142,6 +178,34 @@ export default function EditCompanyInvoicePopup({
                             onChange={(e) => setDueDate(e.target.value)}
                             className="w-full px-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 font-latin"
                         />
+                    </div>
+
+                    {/* Live Calculation Preview */}
+                    <div className="p-3.5 rounded-md border border-border bg-surface-muted space-y-2 text-xs">
+                        <div className="flex items-center gap-1.5 font-bold text-heading border-b border-border pb-1.5">
+                            <LuCoins className="w-3.5 h-3.5 text-accent" />
+                            <span>معاينة المعادلة المحاسبية المعدلة</span>
+                        </div>
+                        <div className="flex justify-between items-center text-body">
+                            <span>المبلغ الأساسي (قبل الخصم والضريبة):</span>
+                            <span className="font-bold text-heading font-latin">{basePrice.toFixed(2)} ر.س</span>
+                        </div>
+                        <div className="flex justify-between items-center text-emerald-600">
+                            <span>قيمة الخصم المالي المطبق:</span>
+                            <span className="font-bold font-latin">-{validDiscount.toFixed(2)} ر.س</span>
+                        </div>
+                        <div className="flex justify-between items-center text-body">
+                            <span>الصافي الخاضع للضريبة:</span>
+                            <span className="font-bold text-heading font-latin">{discountedSubtotal.toFixed(2)} ر.س</span>
+                        </div>
+                        <div className="flex justify-between items-center text-body">
+                            <span>ضريبة القيمة المضافة:</span>
+                            <span className="font-bold text-heading font-latin">{vatAmount.toFixed(2)} ر.س</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm font-bold text-accent pt-1.5 border-t border-border">
+                            <span>الإجمالي الكلي الجديد:</span>
+                            <span className="font-latin text-base">{computedTotal.toFixed(2)} ر.س</span>
+                        </div>
                     </div>
 
                     {/* Footer Actions */}

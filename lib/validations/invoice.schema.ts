@@ -14,6 +14,9 @@ export const invoiceCreateValidationSchema = z.object({
     total: z
         .number({ message: "إجمالي الفاتورة مطلوب" })
         .min(0, "الإجمالي لا يمكن أن يكون بالسالب"),
+    discount: z.number().min(0, "مبلغ الخصم لا يمكن أن يكون بالسالب").optional().default(0),
+    subtotal: z.number().min(0).optional(),
+    vatAmount: z.number().min(0).optional(),
     status: z.enum(invoiceStatusEnum, "الحالة المحددة غير صالحة").default("draft"),
     dueDate: z.coerce.date().optional(),
 });
@@ -21,6 +24,9 @@ export const invoiceCreateValidationSchema = z.object({
 export const invoiceUpdateValidationSchema = z.object({
     companyId: z.string().optional(),
     total: z.number().min(0).optional(),
+    discount: z.number().min(0, "مبلغ الخصم لا يمكن أن يكون بالسالب").optional(),
+    subtotal: z.number().min(0).optional(),
+    vatAmount: z.number().min(0).optional(),
     status: z.enum(invoiceStatusEnum, "الحالة المحددة غير صالحة").optional(),
     dueDate: z.coerce.date().optional(),
 });

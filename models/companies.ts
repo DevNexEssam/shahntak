@@ -1,5 +1,13 @@
 import mongoose, { Schema, Types } from "mongoose";
 
+export interface ITaxAuditLog {
+    rate: number;
+    changedAt: Date;
+    changedBy: Types.ObjectId;
+    changedByName?: string;
+    reason: string;
+}
+
 export interface ICompany extends Document {
     companyName: string;
     email: string;
@@ -10,7 +18,10 @@ export interface ICompany extends Document {
     facilityInfo: string;
     phone: string;
     status: "active" | "inactive" | "archived" | "banned";
-    role : "company"
+    role : "company";
+    vatRate?: number;
+    vatExemptionReason?: string;
+    taxRateAuditLog?: ITaxAuditLog[];
     approvedBy?: Types.ObjectId;
     approvedAt?: Date;
     deletedAt?: Date | null;
@@ -34,6 +45,17 @@ const CompanySchema = new Schema<ICompany>(
         taxNumber: { type: String, maxlength: 50 },
         address: { type: String, maxlength: 255 },
         facilityInfo: { type: String, maxlength: 500 },
+        vatRate: { type: Number, default: 15 },
+        vatExemptionReason: { type: String, maxlength: 255 },
+        taxRateAuditLog: [
+            {
+                rate: { type: Number, required: true },
+                changedAt: { type: Date, default: Date.now },
+                changedBy: { type: Schema.Types.ObjectId },
+                changedByName: { type: String },
+                reason: { type: String, required: true },
+            },
+        ],
         status: {
             type: String,
             enum: ["active", "inactive", "archived", "banned"],

@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-
+"use client"
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -17,6 +15,9 @@ import {
     LuKeyRound,
     LuEye,
     LuEyeOff,
+    LuPercent,
+    LuShieldAlert,
+    LuHistory,
 } from "react-icons/lu";
 import { useCompanySettings, useUpdateCompanySettings } from "@/hooks/company/useCompanySettings";
 
@@ -28,6 +29,9 @@ interface SettingsFormInputs {
     taxNumber: string;
     address: string;
     facilityInfo: string;
+    vatRate: number;
+    vatExemptionReason?: string;
+    vatRateReason?: string;
     currentPassword?: string;
     newPassword?: string;
     confirmPassword?: string;
@@ -39,19 +43,26 @@ export const CompanySettings: React.FC = () => {
 
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
+    const [selectedVatRate, setSelectedVatRate] = useState<number>(15);
 
     const profile = responseData?.data?.profile;
+    const auditLogs = profile?.taxRateAuditLog || [];
 
     const {
         register,
         handleSubmit,
         reset,
         setValue,
+        watch,
         formState: { isSubmitting },
     } = useForm<SettingsFormInputs>();
 
+    const watchedVatRate = watch("vatRate", selectedVatRate);
+
     useEffect(() => {
         if (profile) {
+            const currentRate = profile.vatRate !== undefined ? profile.vatRate : 15;
+            setSelectedVatRate(currentRate);
             reset({
                 companyName: profile.companyName || "",
                 email: profile.email || "",
@@ -60,6 +71,9 @@ export const CompanySettings: React.FC = () => {
                 taxNumber: profile.taxNumber || "",
                 address: profile.address || "",
                 facilityInfo: profile.facilityInfo || "",
+                vatRate: currentRate,
+                vatExemptionReason: profile.vatExemptionReason || "خدمات نقل لوجستي معفاة بموجب اللائحة",
+                vatRateReason: "",
                 currentPassword: "",
                 newPassword: "",
                 confirmPassword: "",
@@ -74,6 +88,27 @@ export const CompanySettings: React.FC = () => {
             address: data.address,
             facilityInfo: data.facilityInfo,
         };
+
+        const targetRate = Number(data.vatRate);
+        const originalRate = profile?.vatRate !== undefined ? profile.vatRate : 15;
+
+        // Check if rate changed
+        if (targetRate !== originalRate) {
+            if (!data.vatRateReason || data.vatRateReason.trim().length < 3) {
+                toast.error("حماية النزاهة الضريبية : يجب إدخال سبب تعديل نسبة الضريبة حتمياً توثيقاً للسجل التاريخي");
+                return;
+            }
+            payload.vatRate = targetRate;
+            payload.vatRateReason = data.vatRateReason.trim();
+
+            if (targetRate === 0) {
+                if (!data.vatExemptionReason || data.vatExemptionReason.trim().length < 3) {
+                    toast.error("يرجى إدخال أو اختيار سبب الإعفاء الضريبي الرسمي عند تفعيل نسبة 0%");
+                    return;
+                }
+                payload.vatExemptionReason = data.vatExemptionReason.trim();
+            }
+        }
 
         if (data.currentPassword || data.newPassword || data.confirmPassword) {
             if (!data.currentPassword) {
@@ -104,6 +139,7 @@ export const CompanySettings: React.FC = () => {
                     setValue("currentPassword", "");
                     setValue("newPassword", "");
                     setValue("confirmPassword", "");
+                    setValue("vatRateReason", "");
                 },
             }
         );
@@ -256,6 +292,105 @@ export const CompanySettings: React.FC = () => {
                             className="w-full px-3 py-2 text-sm rounded-md border border-border bg-surface text-foreground focus:outline-none focus:border-accent"
                         />
                     </div>
+                </div>
+
+                {/* VAT & ZATCA Governance Section */}
+                <div className="p-6 bg-surface border border-border rounded-md space-y-6">
+                    <div className="flex items-center gap-2 text-foreground font-semibold border-b border-border pb-4">
+                        <LuPercent className="w-5 h-5 text-accent" />
+                        <span>إعدادات ضريبة القيمة المضافة </span>
+                    </div>
+
+                    <div className="p-4 rounded-md bg-accent-soft/30 border border-accent/20 text-xs text-foreground space-y-1.5">
+                        <div className="flex items-center gap-2 font-bold text-accent">
+                            <LuShieldAlert className="w-4 h-4" />
+                            <span>تنبيه أمني وإشعار الحماية الضريبية:</span>
+                        </div>
+                        <p className="leading-relaxed">
+                            تعديل نسبة الضريبة التشغيلية للشركة ينطبق **حصرياً على الفواتير المستقبلية الجديدة**. الفواتير الصادرة مسبقاً والمسددة تحتفظ بنسبتها ومبالغها التاريخية المطبوعة فور الإصدار دون تأثر.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* VAT Rate Selection */}
+                        <div>
+                            <label className="block text-xs font-semibold text-muted-foreground mb-1">
+                                نسبة ضريبة القيمة المضافة التشغيلية المعتمدة <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                {...register("vatRate", { valueAsNumber: true })}
+                                onChange={(e) => setSelectedVatRate(Number(e.target.value))}
+                                className="w-full px-3 py-2 text-sm rounded-md border border-border bg-surface text-foreground focus:outline-none focus:border-accent cursor-pointer"
+                            >
+                                <option value={15}>15% - النسبة الأساسية القياسية (المملكة العربية السعودية)</option>
+                                <option value={0}>0% - معفى ضريبياً / نسبة صفرية</option>
+                            </select>
+                        </div>
+
+                        {/* Exemption Reason (Shows when rate is 0%) */}
+                        {Number(watchedVatRate) === 0 && (
+                            <div>
+                                <label className="block text-xs font-semibold text-muted-foreground mb-1">
+                                    سبب الإعفاء الضريبي الرسمي <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    {...register("vatExemptionReason")}
+                                    placeholder="مثال: تصدير خدمات لوجستية، منشأة معفاة..."
+                                    className="w-full px-3 py-2 text-sm rounded-md border border-border bg-surface text-foreground focus:outline-none focus:border-accent"
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Tax Rate Change Reason (Shows when changing rate) */}
+                    {Number(watchedVatRate) !== (profile?.vatRate !== undefined ? profile.vatRate : 15) && (
+                        <div className="p-4 rounded-md border border-rose-500/30 bg-rose-500/5 space-y-2">
+                            <label className="block text-xs font-bold text-rose-600 flex items-center gap-1.5">
+                                <LuShieldAlert className="w-4 h-4" />
+                                سبب تعديل نسبة الضريبة <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                {...register("vatRateReason")}
+                                placeholder="اكتب سبب تغيير نسبة الضريبة بالشركة (مثال: صدور شهادة التسجيل الضريبي أو الإعفاء)..."
+                                className="w-full px-3 py-2 text-sm rounded-md border border-rose-500/40 bg-surface text-foreground focus:outline-none focus:border-rose-500"
+                            />
+                        </div>
+                    )}
+
+                    {/* Audit Log Table */}
+                    {auditLogs.length > 0 && (
+                        <div className="space-y-3 pt-2">
+                            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground border-t border-border pt-4">
+                                <LuHistory className="w-4 h-4 text-accent" />
+                                <span>سجل تدقيق وتغييرات نسبة الضريبة التاريخية (Tax Rate Audit Log)</span>
+                            </div>
+
+                            <div className="overflow-x-auto border border-border rounded-md">
+                                <table className="w-full text-right text-xs">
+                                    <thead className="bg-surface-muted text-muted-foreground font-semibold border-b border-border">
+                                        <tr>
+                                            <th className="p-2.5">تاريخ التعديل</th>
+                                            <th className="p-2.5">النسبة الجديدة</th>
+                                            <th className="p-2.5">سبب التعديل</th>
+                                            <th className="p-2.5">المنفذ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-border text-foreground">
+                                        {auditLogs.map((log: any, idx: number) => (
+                                            <tr key={idx} className="hover:bg-surface-muted/50">
+                                                <td className="p-2.5 font-latin">{new Date(log.changedAt).toLocaleString('ar-SA')}</td>
+                                                <td className="p-2.5 font-bold font-latin text-accent">{log.rate}%</td>
+                                                <td className="p-2.5">{log.reason}</td>
+                                                <td className="p-2.5 text-muted-foreground">{log.changedByName || 'مالك الشركة'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Password Change Section */}

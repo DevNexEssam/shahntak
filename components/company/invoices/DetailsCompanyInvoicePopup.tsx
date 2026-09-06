@@ -54,9 +54,14 @@ export default function DetailsCompanyInvoicePopup({
         }
     };
 
-    const finalTotal = Number(invoiceData.total ?? invoiceData.amount ?? invoiceData.totalAmount ?? 0);
-    const subtotal = Number(invoiceData.subtotal ?? (finalTotal / 1.15));
-    const vatAmount = Number(invoiceData.vatAmount ?? (finalTotal - subtotal));
+    const taxRate = Number(invoiceData.taxRateSnapshot ?? invoiceData.taxRate ?? 15);
+    const discount = Number(invoiceData.discount || 0);
+    const rawTotal = Number(invoiceData.total ?? invoiceData.amount ?? invoiceData.totalAmount ?? 0);
+    const rateMultiplier = 1 + (taxRate / 100);
+    const basePrice = Number(invoiceData.subtotal ?? Math.round(((rawTotal / rateMultiplier) + discount) * 100) / 100);
+    const discountedSubtotal = Math.max(0, basePrice - discount);
+    const vatAmount = Number(invoiceData.vatAmount ?? Math.round((discountedSubtotal * (taxRate / 100)) * 100) / 100);
+    const finalTotal = Number(invoiceData.total ?? Math.round((discountedSubtotal + vatAmount) * 100) / 100);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="rtl">
@@ -111,19 +116,43 @@ export default function DetailsCompanyInvoicePopup({
 
                     {/* Financial Breakdown Table */}
                     <div className="p-4 rounded-md border border-border bg-surface space-y-3">
-                        <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
-                            <LuCoins className="w-4 h-4 text-accent" />
-                            <span>تفاصيل المبالغ وضريبة القيمة المضافة (VAT 15%)</span>
-                        </h3>
+                        <div className="flex items-center justify-between border-b border-border pb-2">
+                            <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                                <LuCoins className="w-4 h-4 text-accent" />
+                                <span>تفاصيل المبالغ والخصم والضريبة</span>
+                            </h3>
+                            <span className="text-[10px] font-extrabold text-accent px-2 py-0.5 rounded bg-accent/10 font-latin">
+                                النسبة وقت الإصدار: {taxRate}%
+                            </span>
+                        </div>
+
+                        {taxRate === 0 && invoiceData.vatExemptionReason && (
+                            <div className="p-2.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-700 text-xs">
+                                <span className="font-bold block mb-0.5">سبب الإعفاء الضريبي الرسمي (ZATCA Exemption):</span>
+                                <p>{invoiceData.vatExemptionReason}</p>
+                            </div>
+                        )}
 
                         <div className="space-y-2 text-xs">
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">المبلغ الأساسي (قبل الضريبة)</span>
-                                <span className="font-semibold text-foreground font-latin">{subtotal.toFixed(2)} ر.س</span>
+                                <span className="text-muted-foreground">المبلغ الأساسي (قبل الخصم والضريبة)</span>
+                                <span className="font-semibold text-foreground font-latin">{basePrice.toFixed(2)} ر.س</span>
+                            </div>
+
+                            {discount > 0 && (
+                                <div className="flex justify-between items-center py-1.5 border-b border-border text-emerald-600 bg-emerald-500/10 px-2 rounded">
+                                    <span className="font-semibold">مبلغ الخصم التجاري/المالي</span>
+                                    <span className="font-bold font-latin">-{discount.toFixed(2)} ر.س</span>
+                                </div>
+                            )}
+
+                            <div className="flex justify-between items-center py-1.5 border-b border-border">
+                                <span className="text-muted-foreground">الصافي الخاضع للضريبة</span>
+                                <span className="font-semibold text-foreground font-latin">{discountedSubtotal.toFixed(2)} ر.س</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">ضريبة القيمة المضافة (15%)</span>
+                                <span className="text-muted-foreground">ضريبة القيمة المضافة ({taxRate}%)</span>
                                 <span className="font-semibold text-foreground font-latin">{vatAmount.toFixed(2)} ر.س</span>
                             </div>
 

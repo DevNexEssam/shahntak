@@ -127,7 +127,7 @@ export const CompanyReportsOperationsTab: React.FC<OperationsTabProps> = ({ data
 
                         <div>
                             <div className="flex justify-between text-sm mb-1">
-                                <span className="text-muted-foreground">توصيل محلي سريع (Local Delivery)</span>
+                                <span className="text-muted-foreground">توصيل محلي سريع </span>
                                 <span className="font-semibold">{shipments.localDelivery || 0} شحنة</span>
                             </div>
                             <div className="w-full bg-border/40 h-2.5 rounded-full overflow-hidden">

@@ -155,7 +155,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                     onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
-                                    <option value="local_delivery">توصيل محلي (Local Delivery)</option>
+                                    <option value="local_delivery">توصيل محلي </option>
                                     <option value="ltl">شحن جزئي </option>
                                     <option value="ftl">شحن كامل </option>
                                 </select>

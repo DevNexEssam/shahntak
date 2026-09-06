@@ -119,9 +119,8 @@ export default function EditCarriers({ isOpen = true, carrier, onClose }: EditCa
                                 disabled={isSubmitting}
                                 value={formValues.name}
                                 onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
-                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                    fieldErrors.name ? 'border-rose-500' : 'border-border'
-                                }`}
+                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.name ? 'border-rose-500' : 'border-border'
+                                    }`}
                             />
                             {fieldErrors.name && (
                                 <span className="text-xs text-rose-500 font-medium block">{fieldErrors.name}</span>
@@ -139,8 +138,8 @@ export default function EditCarriers({ isOpen = true, carrier, onClose }: EditCa
                                 onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="local">ناقل محلي مباشر (Local Carrier)</option>
-                                <option value="external_api">ربط خارجي عبر البرمجيات (External API Integration)</option>
+                                <option value="local">ناقل محلي مباشر </option>
+                                <option value="external_api">ربط خارجي عبر البرمجيات </option>
                             </select>
                         </div>
 
@@ -155,9 +154,8 @@ export default function EditCarriers({ isOpen = true, carrier, onClose }: EditCa
                                     disabled={isSubmitting}
                                     value={formValues.contactPhone}
                                     onChange={(e) => setFormValues({ ...formValues, contactPhone: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.contactPhone ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.contactPhone ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.contactPhone && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.contactPhone}</span>
@@ -174,9 +172,8 @@ export default function EditCarriers({ isOpen = true, carrier, onClose }: EditCa
                                     disabled={isSubmitting}
                                     value={formValues.contactEmail}
                                     onChange={(e) => setFormValues({ ...formValues, contactEmail: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.contactEmail ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.contactEmail ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.contactEmail && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.contactEmail}</span>
