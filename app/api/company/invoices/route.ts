@@ -57,6 +57,9 @@ export async function GET(req: NextRequest) {
         const status = searchParams.get("status");
         const noPagination = searchParams.get("nopagination") === "true";
 
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
+
         const filter: Record<string, any> = {
             companyId: new mongoose.Types.ObjectId(activeCompanyId),
             deletedAt: null,
@@ -68,6 +71,20 @@ export async function GET(req: NextRequest) {
 
         if (search) {
             filter.invoiceNumber = { $regex: search, $options: "i" };
+        }
+
+        if (startDate || endDate) {
+            filter.createdAt = {};
+            if (startDate) {
+                filter.createdAt.$gte = new Date(startDate);
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                if (endDate.length === 10) {
+                    end.setHours(23, 59, 59, 999);
+                }
+                filter.createdAt.$lte = end;
+            }
         }
 
         if (noPagination) {
