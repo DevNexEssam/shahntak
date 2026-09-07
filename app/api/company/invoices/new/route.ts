@@ -60,7 +60,6 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json();
 
-        // 🔴 حظر التكرار: الفحص الأمني للشحنة
         let targetShipment: any = null;
         let basePrice = 0;
 
@@ -85,7 +84,6 @@ export async function POST(req: NextRequest) {
                 );
             }
 
-            // فحص وجود فاتورة سابقة للشحنة (سواء بـ invoiceId في الشحنة أو فاتورة قائمة بنفس shipmentId)
             const existingLinkedInvoice = await Invoice.findOne({
                 companyId: new mongoose.Types.ObjectId(activeCompanyId),
                 $or: [
@@ -119,7 +117,6 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // حسابات الضريبة واللقطة التاريخية المجمدة
         const effectiveTaxRate = company.vatRate !== undefined ? Number(company.vatRate) : 15;
         const inputDiscount = Number(body.discount || 0);
         const discount = Math.min(basePrice, Math.max(0, isNaN(inputDiscount) ? 0 : inputDiscount));
@@ -156,7 +153,6 @@ export async function POST(req: NextRequest) {
             deletedAt: null,
         });
 
-        // ربط الفاتورة بالشحنة تلقائياً
         if (targetShipment) {
             targetShipment.invoiceId = newInvoice._id;
             await targetShipment.save();
