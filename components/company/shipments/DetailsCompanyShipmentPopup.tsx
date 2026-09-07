@@ -222,34 +222,9 @@ export default function DetailsCompanyShipmentPopup({
                                 <span className="font-semibold text-foreground">{carrierName}</span>
                             </div>
 
-                            <div className="flex justify-between items-center py-1.5">
-                                <span className="text-muted-foreground">المركبة المعينة</span>
-                                <span className="font-semibold text-foreground">{vehicleType}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Financial Breakdown Box */}
-                    <div className="p-4 rounded-md border border-border bg-surface space-y-3">
-                        <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
-                            <LuCoins className="w-4 h-4 text-accent" />
-                            <span>تفاصيل التكاليف والأسعار</span>
-                        </h3>
-
-                        <div className="space-y-2 text-xs">
-                            <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">عدد الطلبات / الطرود</span>
-                                <span className="font-semibold text-foreground font-latin">{activeShipment.ordersCount || 1}</span>
-                            </div>
-
-                            <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">تكلفة النقل الفعلي (التشغيلية)</span>
-                                <span className="font-semibold text-amber-600 font-latin">{shippingCost.toFixed(2)} ر.س</span>
-                            </div>
-
-                            <div className="flex justify-between items-center pt-1 text-sm font-bold">
-                                <span className="text-foreground">سعر الخدمة للعميل (الإجمالي)</span>
-                                <span className="text-emerald-600 font-latin text-base font-bold">{customerPrice.toFixed(2)} ر.س</span>
+                            <div className="flex justify-between items-center py-1.5 font-semibold text-foreground">
+                                <span className="text-muted-foreground font-normal">عدد الطلبات / الطرود</span>
+                                <span className="font-latin">{activeShipment.ordersCount || 1}</span>
                             </div>
                         </div>
                     </div>

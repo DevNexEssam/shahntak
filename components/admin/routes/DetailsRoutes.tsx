@@ -106,7 +106,7 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                         <div className="p-4 rounded-2xl bg-surface border border-border space-y-1">
                             <span className="text-xs text-body font-medium flex items-center gap-1.5">
                                 <LuBuilding2 className="w-4 h-4 text-accent" />
-                                الناقل المعين (Carrier)
+                                الناقل المعين
                             </span>
                             <span className="text-sm font-bold text-heading block">{carrierName}</span>
                         </div>
@@ -115,11 +115,10 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                     {/* Status Badge */}
                     <div className="p-4 rounded-2xl bg-surface border border-border flex items-center justify-between">
                         <span className="text-xs font-bold text-body">حالة المسار اللوجستي:</span>
-                        <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold border ${
-                            route.isActive !== false
+                        <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold border ${route.isActive !== false
                                 ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
                                 : 'bg-rose-500/10 text-rose-600 border-rose-200'
-                        }`}>
+                            }`}>
                             {route.isActive !== false ? 'نشط ومتاح' : 'موقوف مؤقتاً'}
                         </span>
                     </div>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useCreateCompanyShipment } from '@/hooks/company/useCompanyShipment';
+import { useAllCompanyRoutes } from '@/hooks/company/useCompanyRoute';
 import { useQueryClient } from '@tanstack/react-query';
 import { COMPANY_ORDER_KEYS } from '@/hooks/company/useCompanyOrder';
 import toast from 'react-hot-toast';
@@ -11,7 +12,8 @@ import {
     LuPackage,
     LuWeight,
     LuCoins,
-    LuLayers
+    LuLayers,
+    LuRoute
 } from 'react-icons/lu';
 
 interface GroupCompanyOrdersPopupProps {
@@ -27,20 +29,29 @@ export default function GroupCompanyOrdersPopup({
     selectedOrders,
     onSuccessGroup
 }: GroupCompanyOrdersPopupProps) {
+    const [selectedRouteId, setSelectedRouteId] = useState<string>('');
     const [shipmentType, setShipmentType] = useState<'ftl' | 'ltl' | 'local_delivery'>('local_delivery');
-    const [originCity, setOriginCity] = useState('الرياض');
-    const [destinationCity, setDestinationCity] = useState(selectedOrders[0]?.recipientCity || 'الرياض');
+    const [originCity, setOriginCity] = useState('');
+    const [destinationCity, setDestinationCity] = useState(selectedOrders[0]?.recipientCity || '');
+
+    const { data: routesResponse } = useAllCompanyRoutes();
+    const routesList = routesResponse?.data || [];
+
+    const handleRouteSelect = (routeId: string) => {
+        setSelectedRouteId(routeId);
+        if (!routeId) return;
+
+        const route = routesList.find((r: any) => r._id === routeId);
+        if (route) {
+            if (route.origin) setOriginCity(route.origin);
+            if (route.destination) setDestinationCity(route.destination);
+        }
+    };
 
     const totalWeight = selectedOrders.reduce((sum, ord) => sum + (Number(ord.weight) || 0), 0);
-    const totalValue = selectedOrders.reduce((sum, ord) => sum + (Number(ord.orderValue) || 0), 0);
-
-    const [shippingCost, setShippingCost] = useState<number>(0);
-    const [customerPrice, setCustomerPrice] = useState<number>(totalValue);
 
     useEffect(() => {
         if (selectedOrders.length > 0) {
-            const calculatedTotalValue = selectedOrders.reduce((sum, ord) => sum + (Number(ord.orderValue) || 0), 0);
-            setCustomerPrice(calculatedTotalValue);
             if (selectedOrders[0]?.recipientCity) {
                 setDestinationCity(selectedOrders[0].recipientCity);
             }
@@ -63,8 +74,7 @@ export default function GroupCompanyOrdersPopup({
             type: shipmentType,
             origin: originCity,
             destination: destinationCity,
-            shippingCost: Number(shippingCost) || 0,
-            customerPrice: Number(customerPrice) || totalValue || 0,
+            routeId: selectedRouteId || undefined,
             orderIds,
             status: 'created',
         };
@@ -122,7 +132,7 @@ export default function GroupCompanyOrdersPopup({
                                 </span>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-3 text-center">
+                            <div className="grid grid-cols-2 gap-3 text-center">
                                 <div className="p-2.5 rounded-xl bg-surface border border-border">
                                     <span className="text-[10px] text-body block font-medium">عدد الطلبات</span>
                                     <span className="font-extrabold text-heading font-latin">{selectedOrders.length}</span>
@@ -131,15 +141,32 @@ export default function GroupCompanyOrdersPopup({
                                     <span className="text-[10px] text-body block font-medium">إجمالي الوزن</span>
                                     <span className="font-extrabold text-heading font-latin">{totalWeight} كجم</span>
                                 </div>
-                                <div className="p-2.5 rounded-xl bg-surface border border-border">
-                                    <span className="text-[10px] text-body block font-medium">إجمالي القيمة</span>
-                                    <span className="font-extrabold text-emerald-600 font-latin">{totalValue} ر.س</span>
-                                </div>
                             </div>
                         </div>
 
                         {/* Shipment Setup Form */}
                         <div className="space-y-4">
+
+                            {/* Optional Pre-defined Route Select */}
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                    <LuRoute className="w-3.5 h-3.5 text-accent" />
+                                    تحديد مسار من المسارات المسجلة لدى الشركة (اختياري)
+                                </label>
+                                <select
+                                    value={selectedRouteId}
+                                    onChange={(e) => handleRouteSelect(e.target.value)}
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
+                                >
+                                    <option value="">-- مسار مخصص / إدخال يدوي --</option>
+                                    {routesList.map((rt: any) => (
+                                        <option key={rt._id} value={rt._id}>
+                                            {rt.origin} ⬅️ {rt.destination} ({rt.vehicleType || "عام"})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading">نوع الشحنة المجمعة</label>
                                 <select
@@ -160,6 +187,7 @@ export default function GroupCompanyOrdersPopup({
                                         type="text"
                                         value={originCity}
                                         onChange={(e) => setOriginCity(e.target.value)}
+                                        placeholder="مثال: الرياض"
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                     />
                                 </div>
@@ -170,33 +198,8 @@ export default function GroupCompanyOrdersPopup({
                                         type="text"
                                         value={destinationCity}
                                         onChange={(e) => setDestinationCity(e.target.value)}
+                                        placeholder="مثال: جدة"
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-heading">تكلفة النقل الفعلي (ر.س)</label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        value={shippingCost}
-                                        onChange={(e) => setShippingCost(Number(e.target.value) || 0)}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
-                                        placeholder="0"
-                                    />
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-heading">سعر الخدمة للعميل (ر.س)</label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        value={customerPrice}
-                                        onChange={(e) => setCustomerPrice(Number(e.target.value) || 0)}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
-                                        placeholder="0"
                                     />
                                 </div>
                             </div>

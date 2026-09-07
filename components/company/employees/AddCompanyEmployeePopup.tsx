@@ -42,6 +42,14 @@ export default function AddCompanyEmployeePopup({ isOpen = true, onClose }: AddC
 
         createEmployee({ data: formValues }, {
             onSuccess: () => {
+                setFormValues({
+                    userName: '',
+                    userEmail: '',
+                    phone: '',
+                    password: '',
+                    userRole: 'staff',
+                    userIsActive: true,
+                });
                 onClose();
             },
         });

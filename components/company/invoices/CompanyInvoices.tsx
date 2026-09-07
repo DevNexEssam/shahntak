@@ -242,7 +242,7 @@ export default function CompanyInvoices() {
             )}
 
             {/* Date Range Selector Header Bar */}
-            <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
+            <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-heading">
                     <LuCalendar className="w-4 h-4 text-accent shrink-0" />
                     <span>تصفية الفترات المالية:</span>

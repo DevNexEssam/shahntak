@@ -2,17 +2,16 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useCompanyShipments, useDeleteCompanyShipment } from '@/hooks/company/useCompanyShipment';
-import AddCompanyShipmentPopup from './AddCompanyShipmentPopup';
-import EditCompanyShipmentPopup from './EditCompanyShipmentPopup';
-import DetailsCompanyShipmentPopup from './DetailsCompanyShipmentPopup';
+import { useCompanyRoutes, useDeleteCompanyRoute } from '@/hooks/company/useCompanyRoute';
+import AddCompanyRoutePopup from './AddCompanyRoutePopup';
+import EditCompanyRoutePopup from './EditCompanyRoutePopup';
+import DetailsCompanyRoutePopup from './DetailsCompanyRoutePopup';
 import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
 import ErrorMessege from '@/components/ui/ErrorMessege';
 import EmptyData from '@/components/ui/EmptyData';
 import Loading from '@/components/ui/loading';
-import toast from 'react-hot-toast';
 import {
-    LuTruck,
+    LuMapPin,
     LuPlus,
     LuSearch,
     LuRefreshCw,
@@ -21,22 +20,18 @@ import {
     LuTrash2,
     LuChevronRight,
     LuChevronLeft,
-    LuClock,
     LuCheck,
-    LuMapPin,
-    LuPrinter,
-    LuReceipt,
-    LuBox,
+    LuTruck,
     LuCalendar,
-    LuFilter
+    LuCoins,
+    LuClock
 } from 'react-icons/lu';
 
-export default function CompanyShipments() {
+export default function CompanyRoutes() {
     // 1. Pagination & Search States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
-    const [filterStatus, setFilterStatus] = useState<string>('all');
 
     // 2. Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
@@ -46,13 +41,25 @@ export default function CompanyShipments() {
 
     // 3. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
-    const [selectedShipmentForEdit, setSelectedShipmentForEdit] = useState<any | null>(null);
-    const [selectedShipmentForDetails, setSelectedShipmentForDetails] = useState<any | null>(null);
-    const [selectedShipmentForDelete, setSelectedShipmentForDelete] = useState<any | null>(null);
+    const [selectedRouteForEdit, setSelectedRouteForEdit] = useState<any | null>(null);
+    const [selectedRouteForDetails, setSelectedRouteForDetails] = useState<any | null>(null);
+    const [selectedRouteForDelete, setSelectedRouteForDelete] = useState<any | null>(null);
 
-    // 4. Custom React Query Hook for Company Shipments
-    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyShipments(page, limit, searchQuery, startDate, endDate);
-    const { mutate: deleteShipment, isPending: isDeleting } = useDeleteCompanyShipment();
+    // 4. Custom React Query Hook for Company Routes
+    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyRoutes(page, limit, searchQuery, startDate, endDate);
+    const { mutate: deleteRoute, isPending: isDeleting } = useDeleteCompanyRoute();
+
+    if (isLoading) return <Loading />;
+
+    const routesList = responseData?.data || [];
+    const pagination = responseData?.pagination;
+    const totalRecords = pagination?.totalRecords || responseData?.count || 0;
+    const totalPages = pagination?.totalPages || Math.ceil(totalRecords / limit) || 1;
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+        setPage(1);
+    };
 
     const handlePresetToday = () => {
         setStartDate(todayStr);
@@ -77,144 +84,23 @@ export default function CompanyShipments() {
         setPage(1);
     };
 
-    if (isLoading) return <Loading />;
-
-    const shipmentsList = responseData?.data || [];
-    const pagination = responseData?.pagination;
-    const totalRecords = pagination?.totalRecords || responseData?.count || 0;
-    const totalPages = pagination?.totalPages || Math.ceil(totalRecords / limit) || 1;
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-        setPage(1);
-    };
-
     const serverStats = responseData?.stats;
     const stats = {
         total: serverStats?.total ?? totalRecords,
-        created: serverStats?.created ?? 0,
-        in_transit: serverStats?.in_transit ?? 0,
-        delivered: serverStats?.delivered ?? 0,
+        active: serverStats?.active ?? 0,
+        inactive: serverStats?.inactive ?? 0,
     };
 
     const handleDeleteConfirm = () => {
-        if (!selectedShipmentForDelete) return;
-        deleteShipment(
-            { id: selectedShipmentForDelete._id },
+        if (!selectedRouteForDelete) return;
+        deleteRoute(
+            { id: selectedRouteForDelete._id },
             {
                 onSuccess: () => {
-                    setSelectedShipmentForDelete(null);
+                    setSelectedRouteForDelete(null);
                 },
             }
         );
-    };
-
-    const handlePrintWaybill = (shipment: any) => {
-        if (shipment?.status === 'cancelled') {
-            toast.error('حماية نزاهة البوالص: لا يمكن طباعة بوليصة شحن لشحنة ملغية');
-            return;
-        }
-        setSelectedShipmentForDetails(shipment);
-        setTimeout(() => {
-            window.print();
-        }, 300);
-    };
-
-    const statusBadge = (status?: string) => {
-        switch (status) {
-            case 'created':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                        حديثة
-                    </span>
-                );
-            case 'confirmed':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">
-                        مؤكدة
-                    </span>
-                );
-            case 'assigned':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20">
-                        معينة لناقل
-                    </span>
-                );
-            case 'ready_for_pickup':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 border border-purple-500/20">
-                        جاهزة للاستلام
-                    </span>
-                );
-            case 'picked_up':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-600 border border-teal-500/20">
-                        تم الاستلام
-                    </span>
-                );
-            case 'in_transit':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20">
-                        في الطريق
-                    </span>
-                );
-            case 'arrived':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-600 border border-cyan-500/20">
-                        وصلت للمركز
-                    </span>
-                );
-            case 'out_for_delivery':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-500/10 text-orange-600 border border-orange-500/20">
-                        خرجت للتوصيل
-                    </span>
-                );
-            case 'delivered':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                        تم التوصيل
-                    </span>
-                );
-            case 'delivery_failed':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                        فشل التوصيل
-                    </span>
-                );
-            case 'cancelled':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                        ملغية
-                    </span>
-                );
-            case 'returned':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-500/10 text-gray-600 border border-gray-500/20">
-                        مرتجعة
-                    </span>
-                );
-            case 'exception':
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-600 border border-red-500/20">
-                        حالة استثنائية
-                    </span>
-                );
-            default:
-                return (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">
-                        {status || 'جديد'}
-                    </span>
-                );
-        }
-    };
-
-    const getTypeBadge = (type: string) => {
-        switch (type) {
-            case 'ftl': return 'شحن كامل ';
-            case 'ltl': return 'شحن جزئي ';
-            default: return 'توصيل محلي';
-        }
     };
 
     return (
@@ -225,11 +111,11 @@ export default function CompanyShipments() {
                 <div>
                     <h1 className="text-2xl font-extrabold text-heading flex items-center gap-3">
                         <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
-                            <LuTruck className="w-5 h-5" />
+                            <LuMapPin className="w-5 h-5" />
                         </span>
-                        إدارة الشحنات وتعيين الموارد
+                        إدارة المسارات والخطوط اللوجستية
                     </h1>
-                    <p className="text-xs text-body mt-1">مراقبة الشحنات المجمعة والمسارات وتعيين الناقلين والمركبات وطباعة البوالص</p>
+                    <p className="text-xs text-body mt-1">إدارة خطوط النقل والربط بين المدن والوجهات وتحديد الأسعار الأساسية وأوقات الترانزيت</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -247,7 +133,7 @@ export default function CompanyShipments() {
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>إنشاء شحنة جديدة</span>
+                        <span>إضافة مسار جديد</span>
                     </button>
                 </div>
             </div>
@@ -255,7 +141,7 @@ export default function CompanyShipments() {
             {/* Error Notification Banner */}
             {isError && (
                 <div className="mb-4">
-                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات الشحنات من الخادم'} />
+                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات المسارات من الخادم'} />
                 </div>
             )}
 
@@ -263,7 +149,7 @@ export default function CompanyShipments() {
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-heading">
                     <LuCalendar className="w-4 h-4 text-accent shrink-0" />
-                    <span>تصفية الفترات الزمنية للشحنات:</span>
+                    <span>تصفية الفترات الزمنية للمسارات:</span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -329,18 +215,18 @@ export default function CompanyShipments() {
             </div>
 
             {/* KPI Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الشحنات</span>
+                            <span className="text-xs font-semibold text-body block mb-1">إجمالي المسارات المسجلة</span>
                             <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.total}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>مسجلة لشركتك</span>
+                                <span>مسارات محددة لشركتك</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
-                            <LuTruck className="w-5 h-5" />
+                            <LuMapPin className="w-5 h-5" />
                         </div>
                     </div>
                 </div>
@@ -348,10 +234,26 @@ export default function CompanyShipments() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">شحنات جديدة</span>
-                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.created}</h3>
+                            <span className="text-xs font-semibold text-body block mb-1">مسارات نشطة تشغيلياً</span>
+                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.active}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>تم التجميع حديثاً</span>
+                                <span>جاهزة لحجز الشحنات</span>
+                            </p>
+
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
+                            <LuCheck className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">مسارات معطلة / متوقفة</span>
+                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.inactive}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>موقوفة مؤقتاً</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -359,39 +261,9 @@ export default function CompanyShipments() {
                         </div>
                     </div>
                 </div>
-
-                <div className="border border-border rounded-sm p-5 bg-surface">
-                    <div className="flex items-center justify-between gap-4">
-                        <div>
-                            <span className="text-xs font-semibold text-body block mb-1">في الطريق / ترانزيت</span>
-                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.in_transit}</h3>
-                            <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>جاري النقل والتحريك</span>
-                            </p>
-                        </div>
-                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
-                            <LuBox className="w-5 h-5" />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="border border-border rounded-sm p-5 bg-surface">
-                    <div className="flex items-center justify-between gap-4">
-                        <div>
-                            <span className="text-xs font-semibold text-body block mb-1">تم التوصيل</span>
-                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.delivered}</h3>
-                            <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>مكتملة ومسلمة للعملاء</span>
-                            </p>
-                        </div>
-                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
-                            <LuCheck className="w-5 h-5" />
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            {/* Controller Header */}
+            {/* Search Controller Header */}
             <div className="bg-surface p-4 rounded-md border border-border flex items-center justify-between">
                 <div className="relative w-full md:w-96">
                     <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
@@ -399,7 +271,7 @@ export default function CompanyShipments() {
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        placeholder="بحث برقم الشحنة، البوليصة، التتبع، الوجهة..."
+                        placeholder="بحث بالانطلاق، الوجهة، نوع المركبة..."
                         className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </div>
@@ -407,71 +279,65 @@ export default function CompanyShipments() {
 
             {/* Data Table View */}
             <div className="bg-surface rounded-md border border-border overflow-hidden">
-                {shipmentsList.length === 0 ? (
+                {routesList.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا توجد شحنات مسجلة للشركة تطابق خيارات البحث الحالية" icon={LuTruck} />
+                        <EmptyData message="لا توجد مسارات لوجستية مسجلة للشركة تطابق خيارات البحث والتاريخ الحالية" icon={LuMapPin} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-right text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">رقم الشحنة</th>
-                                    <th className="py-3.5 px-4">نوع الخدمة والمسار</th>
-                                    <th className="py-3.5 px-4">البوليصة والتتبع</th>
-                                    <th className="py-3.5 px-4">الطلبات / المركبة المعينة</th>
+                                    <th className="py-3.5 px-4">المسار والاتجاه</th>
+                                    <th className="py-3.5 px-4">نوع المركبة</th>
+                                    <th className="py-3.5 px-4">السعر الأساسي</th>
+                                    <th className="py-3.5 px-4">زمن الترانزيت المتوقع</th>
                                     <th className="py-3.5 px-4">الحالة</th>
                                     <th className="py-3.5 px-4 text-center">الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
-                                {shipmentsList.map((shp: any) => {
-                                    const vehicleName = typeof shp.vehicleId === 'object' && shp.vehicleId !== null
-                                        ? shp.vehicleId.type
-                                        : 'غير معينة';
-
+                                {routesList.map((route: any) => {
                                     return (
-                                        <tr key={shp._id} className="hover:bg-surface-muted/40 transition-colors">
-                                            <td className="py-3.5 px-4 font-latin font-bold text-accent">
-                                                {shp.shipmentNumber}
-                                            </td>
-
-                                            <td className="py-3.5 px-4">
-                                                <div>
-                                                    <span className="font-bold text-heading flex items-center gap-1">
-                                                        <LuMapPin className="w-3.5 h-3.5 text-accent" />
-                                                        {shp.origin} ⬅️ {shp.destination}
-                                                    </span>
-                                                    <span className="text-[11px] text-body block mt-0.5">{getTypeBadge(shp.type)}</span>
+                                        <tr key={route._id} className="hover:bg-surface-muted/40 transition-colors">
+                                            <td className="py-3.5 px-4 font-bold text-heading">
+                                                <div className="flex items-center gap-1.5 text-accent">
+                                                    <LuMapPin className="w-4 h-4" />
+                                                    <span>{route.origin} ⬅️ {route.destination}</span>
                                                 </div>
                                             </td>
 
-                                            <td className="py-3.5 px-4 font-latin text-xs">
-                                                <div className="font-extrabold text-heading">{shp.waybillNumber || 'WB-XXXX'}</div>
-                                                <div className="text-[11px] text-body">{shp.trackingNumber || 'TRK-XXXX'}</div>
+                                            <td className="py-3.5 px-4 text-xs font-semibold text-heading">
+                                                <span className="inline-flex items-center gap-1">
+                                                    <LuTruck className="w-3.5 h-3.5 text-body" />
+                                                    {route.vehicleType}
+                                                </span>
                                             </td>
 
-                                            <td className="py-3.5 px-4 text-xs font-semibold text-heading">
-                                                <div>{shp.ordersCount || 1} طلبات مرفقة</div>
-                                                <div className="text-body text-[11px]">مركبة: {vehicleName}</div>
+                                            <td className="py-3.5 px-4 font-latin text-xs font-extrabold text-emerald-600">
+                                                {Number(route.basePrice || 0).toFixed(2)} ر.س
+                                            </td>
+
+                                            <td className="py-3.5 px-4 text-xs text-body">
+                                                {route.estimatedTransitTime || '—'}
                                             </td>
 
                                             <td className="py-3.5 px-4">
-                                                {statusBadge(shp.status)}
+                                                {route.isActive ? (
+                                                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                                                        نشط
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
+                                                        معطل
+                                                    </span>
+                                                )}
                                             </td>
 
                                             <td className="py-3.5 px-4 text-center">
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <button
-                                                        onClick={() => handlePrintWaybill(shp)}
-                                                        title="طباعة البوليصة"
-                                                        className="p-2 rounded-md bg-accent-soft hover:bg-accent hover:text-white text-accent border border-accent/20 transition-all cursor-pointer"
-                                                    >
-                                                        <LuPrinter className="w-4 h-4" />
-                                                    </button>
-
-                                                    <button
-                                                        onClick={() => setSelectedShipmentForDetails(shp)}
+                                                        onClick={() => setSelectedRouteForDetails(route)}
                                                         title="عرض التفاصيل"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                     >
@@ -479,16 +345,16 @@ export default function CompanyShipments() {
                                                     </button>
 
                                                     <button
-                                                        onClick={() => setSelectedShipmentForEdit(shp)}
-                                                        title="تعديل البيانات وتعين الموارد"
+                                                        onClick={() => setSelectedRouteForEdit(route)}
+                                                        title="تعديل المسار"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
                                                     </button>
 
                                                     <button
-                                                        onClick={() => setSelectedShipmentForDelete(shp)}
-                                                        title="حذف الشحنة"
+                                                        onClick={() => setSelectedRouteForDelete(route)}
+                                                        title="حذف المسار"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuTrash2 className="w-4 h-4" />
@@ -507,7 +373,7 @@ export default function CompanyShipments() {
                 {totalPages > 1 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
-                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} شحنة)
+                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} مسار)
                         </span>
 
                         <div className="flex items-center gap-2">
@@ -534,31 +400,30 @@ export default function CompanyShipments() {
             </div>
 
             {/* Modals */}
-            <AddCompanyShipmentPopup
+            <AddCompanyRoutePopup
                 isOpen={isAddOpen}
                 onClose={() => setIsAddOpen(false)}
             />
 
-            <EditCompanyShipmentPopup
-                isOpen={!!selectedShipmentForEdit}
-                shipmentData={selectedShipmentForEdit}
-                onClose={() => setSelectedShipmentForEdit(null)}
+            <EditCompanyRoutePopup
+                isOpen={!!selectedRouteForEdit}
+                routeData={selectedRouteForEdit}
+                onClose={() => setSelectedRouteForEdit(null)}
             />
 
-            <DetailsCompanyShipmentPopup
-                isOpen={!!selectedShipmentForDetails}
-                shipmentData={selectedShipmentForDetails}
-                onPrintWaybill={handlePrintWaybill}
-                onClose={() => setSelectedShipmentForDetails(null)}
+            <DetailsCompanyRoutePopup
+                isOpen={!!selectedRouteForDetails}
+                routeData={selectedRouteForDetails}
+                onClose={() => setSelectedRouteForDetails(null)}
             />
 
             <ConfirmDeletePopup
-                isOpen={!!selectedShipmentForDelete}
-                title="تأكيد حذف الشحنة"
-                description={`هل أنت تأكد من رغبتك في حذف الشحنة (${selectedShipmentForDelete?.shipmentNumber})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
+                isOpen={!!selectedRouteForDelete}
+                title="تأكيد حذف المسار اللوجستي"
+                description={`هل أنت تأكد من رغبتك في حذف المسار (${selectedRouteForDelete?.origin} ⬅️ ${selectedRouteForDelete?.destination})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
-                onClose={() => setSelectedShipmentForDelete(null)}
+                onClose={() => setSelectedRouteForDelete(null)}
             />
 
         </div>

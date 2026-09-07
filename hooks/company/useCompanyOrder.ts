@@ -7,17 +7,23 @@ import { companyOrderServices } from "@/services/company/CompanyOrderServices";
 export const COMPANY_ORDER_KEYS = {
     all: ["companyOrders"] as const,
     lists: () => [...COMPANY_ORDER_KEYS.all, "list"] as const,
-    list: (page: number, limit: number, search: string) =>
-        [...COMPANY_ORDER_KEYS.lists(), { page, limit, search }] as const,
+    list: (page: number, limit: number, search: string, startDate?: string, endDate?: string) =>
+        [...COMPANY_ORDER_KEYS.lists(), { page, limit, search, startDate, endDate }] as const,
     details: () => [...COMPANY_ORDER_KEYS.all, "detail"] as const,
     detail: (id: string) => [...COMPANY_ORDER_KEYS.details(), id] as const,
 } as const;
 
-// Fetch Company Orders Hook (Supports Pagination and Search)
-export const useCompanyOrders = (page: number = 1, limit: number = 10, search: string = "") => {
+// Fetch Company Orders Hook (Supports Pagination, Search and Date Range Filtering)
+export const useCompanyOrders = (
+    page: number = 1,
+    limit: number = 10,
+    search: string = "",
+    startDate: string = "",
+    endDate: string = ""
+) => {
     return useQuery({
-        queryKey: COMPANY_ORDER_KEYS.list(page, limit, search),
-        queryFn: () => companyOrderServices.getOrders(page, limit, search),
+        queryKey: COMPANY_ORDER_KEYS.list(page, limit, search, startDate, endDate),
+        queryFn: () => companyOrderServices.getOrders(page, limit, search, startDate, endDate),
         staleTime: 1000 * 60 * 5, // 5 minutes
         gcTime: 1000 * 60 * 10, // 10 minutes
         refetchOnWindowFocus: true,

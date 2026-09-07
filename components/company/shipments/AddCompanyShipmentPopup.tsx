@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCreateCompanyShipment } from '@/hooks/company/useCompanyShipment';
+import { useAllCompanyRoutes } from '@/hooks/company/useCompanyRoute';
 import toast from 'react-hot-toast';
 import {
     LuTruck,
@@ -10,7 +11,8 @@ import {
     LuCoins,
     LuHash,
     LuReceipt,
-    LuLayers
+    LuLayers,
+    LuRoute
 } from 'react-icons/lu';
 
 interface AddCompanyShipmentPopupProps {
@@ -19,17 +21,38 @@ interface AddCompanyShipmentPopupProps {
 }
 
 export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddCompanyShipmentPopupProps) {
+    const [selectedRouteId, setSelectedRouteId] = useState<string>('');
     const [formValues, setFormValues] = useState({
         type: 'local_delivery' as 'ftl' | 'ltl' | 'local_delivery',
-        origin: 'الرياض',
-        destination: 'جدة',
+        origin: '',
+        destination: '',
+        routeId: '' as string,
         ordersCount: 1,
-        shippingCost: 0,
-        customerPrice: 0,
         status: 'created' as const,
     });
 
+    const { data: routesResponse } = useAllCompanyRoutes();
+    const routesList = routesResponse?.data || [];
+
     const { mutate: createShipment, isPending: isSubmitting } = useCreateCompanyShipment();
+
+    const handleRouteSelect = (routeId: string) => {
+        setSelectedRouteId(routeId);
+        if (!routeId) {
+            setFormValues(prev => ({ ...prev, routeId: '' }));
+            return;
+        }
+
+        const selectedRoute = routesList.find((r: any) => r._id === routeId);
+        if (selectedRoute) {
+            setFormValues(prev => ({
+                ...prev,
+                routeId: selectedRoute._id,
+                origin: selectedRoute.origin || prev.origin,
+                destination: selectedRoute.destination || prev.destination,
+            }));
+        }
+    };
 
     if (!isOpen) return null;
 
@@ -49,6 +72,15 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
 
         createShipment({ data: payload }, {
             onSuccess: () => {
+                setSelectedRouteId('');
+                setFormValues({
+                    type: 'local_delivery',
+                    origin: '',
+                    destination: '',
+                    routeId: '',
+                    ordersCount: 1,
+                    status: 'created',
+                });
                 onClose();
             },
         });
@@ -66,7 +98,7 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                         </div>
                         <div>
                             <h2 className="text-xl font-extrabold text-heading">إنشاء شحنة جديدة</h2>
-                            <p className="text-xs text-body mt-0.5">تأطير بيانات الشحنة والمسار والتكلفة المالية لشركتك</p>
+                            <p className="text-xs text-body mt-0.5">تأطير بيانات الشحنة والمسار والتفاصيل اللوجستية لشركتك</p>
                         </div>
                     </div>
 
@@ -122,6 +154,26 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                                 نوع الشحنة والمسار اللوجستي
                             </h3>
 
+                            {/* Optional Pre-defined Route Select */}
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                    <LuRoute className="w-3.5 h-3.5 text-accent" />
+                                    تحديد مسار من المسارات المسجلة لدى الشركة (اختياري)
+                                </label>
+                                <select
+                                    value={selectedRouteId}
+                                    onChange={(e) => handleRouteSelect(e.target.value)}
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
+                                >
+                                    <option value="">-- مسار مخصص / إدخال يدوي --</option>
+                                    {routesList.map((rt: any) => (
+                                        <option key={rt._id} value={rt._id}>
+                                            {rt.origin} ⬅️ {rt.destination} ({rt.vehicleType || "عام"})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading">نوع الشحنة <span className="text-red-500">*</span></label>
                                 <select
@@ -170,60 +222,21 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                             </div>
                         </div>
 
-                        {/* Financial Metrics */}
+                        {/* Shipment Specifications */}
                         <div className="space-y-4 pt-2 border-t border-border">
-                            <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-accent" />
-                                المواصفات المالية للعميل والناقل
-                            </h3>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        <LuLayers className="w-3.5 h-3.5 text-body" />
-                                        عدد الطلبات المرفقة
-                                    </label>
-                                    <input
-                                        type="number"
-                                        disabled={isSubmitting}
-                                        value={formValues.ordersCount}
-                                        onChange={(e) => setFormValues({ ...formValues, ordersCount: Number(e.target.value) })}
-                                        min={1}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
-                                    />
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        <LuCoins className="w-3.5 h-3.5 text-body" />
-                                        التكلفة التشغيلية
-                                    </label>
-                                    <input
-                                        type="number"
-                                        step="any"
-                                        disabled={isSubmitting}
-                                        value={formValues.shippingCost}
-                                        onChange={(e) => setFormValues({ ...formValues, shippingCost: Number(e.target.value) })}
-                                        min={0}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
-                                    />
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        <LuCoins className="w-3.5 h-3.5 text-body" />
-                                        سعر العميل النهائي
-                                    </label>
-                                    <input
-                                        type="number"
-                                        step="any"
-                                        disabled={isSubmitting}
-                                        value={formValues.customerPrice}
-                                        onChange={(e) => setFormValues({ ...formValues, customerPrice: Number(e.target.value) })}
-                                        min={0}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
-                                    />
-                                </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-heading flex items-center gap-1.5">
+                                    <LuLayers className="w-3.5 h-3.5 text-body" />
+                                    عدد الطلبات المرفقة
+                                </label>
+                                <input
+                                    type="number"
+                                    disabled={isSubmitting}
+                                    value={formValues.ordersCount}
+                                    onChange={(e) => setFormValues({ ...formValues, ordersCount: Number(e.target.value) })}
+                                    min={1}
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                />
                             </div>
                         </div>
 

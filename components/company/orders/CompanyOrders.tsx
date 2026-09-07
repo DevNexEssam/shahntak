@@ -26,6 +26,7 @@ import {
     LuTruck,
     LuMapPin,
     LuLayers,
+    LuCalendar,
     LuX
 } from 'react-icons/lu';
 
@@ -35,7 +36,13 @@ export default function CompanyOrders() {
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
 
-    // 2. Control States
+    // 2. Date Range Filter States (Default to TODAY's date)
+    const todayStr = new Date().toISOString().split('T')[0];
+    const [startDate, setStartDate] = useState<string>(todayStr);
+    const [endDate, setEndDate] = useState<string>(todayStr);
+    const [datePreset, setDatePreset] = useState<'today' | 'month' | 'all'>('today');
+
+    // 3. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isGroupShipmentOpen, setIsGroupShipmentOpen] = useState(false);
     const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
@@ -43,9 +50,32 @@ export default function CompanyOrders() {
     const [selectedOrderForDetails, setSelectedOrderForDetails] = useState<any | null>(null);
     const [selectedOrderForDelete, setSelectedOrderForDelete] = useState<any | null>(null);
 
-    // 3. Custom React Query Hook for Company Orders
-    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyOrders(page, limit, searchQuery);
+    // 4. Custom React Query Hook for Company Orders
+    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyOrders(page, limit, searchQuery, startDate, endDate);
     const { mutate: deleteOrder, isPending: isDeleting } = useDeleteCompanyOrder();
+
+    const handlePresetToday = () => {
+        setStartDate(todayStr);
+        setEndDate(todayStr);
+        setDatePreset('today');
+        setPage(1);
+    };
+
+    const handlePresetMonth = () => {
+        const now = new Date();
+        const firstDay = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+        setStartDate(firstDay);
+        setEndDate(todayStr);
+        setDatePreset('month');
+        setPage(1);
+    };
+
+    const handlePresetAll = () => {
+        setStartDate('');
+        setEndDate('');
+        setDatePreset('all');
+        setPage(1);
+    };
 
     if (isLoading) return <Loading />;
 
@@ -175,6 +205,75 @@ export default function CompanyOrders() {
                     <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات الطلبات من الخادم'} />
                 </div>
             )}
+
+            {/* Date Range Selector Header Bar */}
+            <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-heading">
+                    <LuCalendar className="w-4 h-4 text-accent shrink-0" />
+                    <span>تصفية الفترات الزمنية للطلبات:</span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+
+                    {/* Preset Buttons */}
+                    <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-md border border-border">
+                        <button
+                            onClick={handlePresetToday}
+                            className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'today'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
+                                }`}
+                        >
+                            اليوم (تلقائي)
+                        </button>
+                        <button
+                            onClick={handlePresetMonth}
+                            className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'month'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
+                                }`}
+                        >
+                            هذا الشهر
+                        </button>
+                        <button
+                            onClick={handlePresetAll}
+                            className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'all'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
+                                }`}
+                        >
+                            جميع الفترات
+                        </button>
+                    </div>
+
+                    {/* Date Inputs */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-body">من:</span>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => {
+                                setStartDate(e.target.value);
+                                setDatePreset('all');
+                                setPage(1);
+                            }}
+                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-heading focus:outline-none focus:border-accent"
+                        />
+                        <span className="text-xs text-body">إلى:</span>
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => {
+                                setEndDate(e.target.value);
+                                setDatePreset('all');
+                                setPage(1);
+                            }}
+                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-heading focus:outline-none focus:border-accent"
+                        />
+                    </div>
+
+                </div>
+            </div>
 
             {/* KPI Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

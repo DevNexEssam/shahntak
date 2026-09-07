@@ -118,16 +118,29 @@ export async function GET(req: NextRequest) {
 
         const invoices = await Promise.all(
             rawInvoices.map(async (inv: any) => {
-                if (!inv.total || inv.total === 0) {
-                    const linkedShipment = await Shipment.findOne({ invoiceId: inv._id, deletedAt: null }).lean();
-                    if (linkedShipment && (linkedShipment.customerPrice > 0 || linkedShipment.shippingCost > 0)) {
-                        inv.total = linkedShipment.customerPrice || linkedShipment.shippingCost;
-                    } else {
-                        const companyOrders = await Order.find({ companyId: new mongoose.Types.ObjectId(activeCompanyId), deletedAt: null }).lean();
-                        const ordersSum = companyOrders.reduce((sum: number, ord: any) => sum + (Number(ord.orderValue) || Number(ord.codAmount) || 0), 0);
-                        inv.total = ordersSum > 0 ? ordersSum : 2000;
+                const linkedShipment = await Shipment.findOne({
+                    $or: [{ invoiceId: inv._id }, { _id: inv.shipmentId }],
+                    deletedAt: null,
+                }).populate('routeId').lean();
+
+                let shipPrice = linkedShipment ? Number(linkedShipment.customerPrice || linkedShipment.shippingCost || 0) : 0;
+
+                if (shipPrice === 0 && linkedShipment && (linkedShipment.routeId as any)?.basePrice) {
+                    shipPrice = Number((linkedShipment.routeId as any).basePrice);
+                }
+
+                if (!inv.subtotal || inv.subtotal === 0 || !inv.total || inv.total === 0) {
+                    const finalVal = shipPrice > 0 ? shipPrice : (inv.subtotal || inv.total || 0);
+                    inv.subtotal = finalVal;
+                    inv.total = finalVal;
+                    await Invoice.updateOne({ _id: inv._id }, { $set: { subtotal: inv.subtotal, total: inv.total } });
+                }
+
+                if (linkedShipment) {
+                    if (!linkedShipment.waybillNumber || linkedShipment.waybillNumber.trim() === '') {
+                        linkedShipment.waybillNumber = `WB-${new Date().getFullYear()}-${linkedShipment._id.toString().slice(-6).toUpperCase()}`;
                     }
-                    await Invoice.updateOne({ _id: inv._id }, { $set: { total: inv.total } });
+                    inv.shipment = linkedShipment;
                 }
                 return inv;
             })

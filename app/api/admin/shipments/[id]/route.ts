@@ -7,6 +7,7 @@ import Route from "@/models/route";
 import Carrier from "@/models/carrier";
 import Vehicle from "@/models/vehicle";
 import Order from "@/models/order";
+import Invoice from "@/models/invoice";
 import { ACTIVE } from "@/utils/constants";
 import { can } from "@/utils/permissions";
 import mongoose from "mongoose";
@@ -255,8 +256,28 @@ export async function DELETE(req: Request, context: any) {
             );
         }
 
+        // Unlink associated orders and return them to pending
+        await Order.updateMany(
+            { shipmentId: id },
+            { $set: { shipmentId: null, status: "pending" } }
+        );
+
+        // Cascade delete or cancel associated unpaid invoice
+        if (deletedShipment.invoiceId) {
+            const linkedInvoice = await Invoice.findOne({ _id: deletedShipment.invoiceId, deletedAt: null });
+            if (linkedInvoice && linkedInvoice.status !== "paid") {
+                if (isHardDelete && canHardDelete) {
+                    await Invoice.deleteOne({ _id: linkedInvoice._id });
+                } else {
+                    linkedInvoice.deletedAt = new Date();
+                    linkedInvoice.status = "cancelled";
+                    await linkedInvoice.save();
+                }
+            }
+        }
+
         return NextResponse.json(
-            { success: true, message: "تم إلغاء وحذف الشحنة بنجاح" },
+            { success: true, message: "تم إلغاء وحذف الشحنة والفاتورة غير المدفوعة وإعادة الطلبات لقائمة الانتظار بنجاح" },
             { status: 200 }
         );
     } catch (error: any) {

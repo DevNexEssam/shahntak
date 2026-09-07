@@ -2,8 +2,17 @@
 import axios from "axios";
 
 export const companyShipmentServices = {
-    getShipments: async (page: number = 1, limit: number = 10, search: string = ""): Promise<any> => {
-        const { data } = await axios.get(`/api/company/shipments?page=${page}&limit=${limit}&search=${search}`);
+    getShipments: async (
+        page: number = 1,
+        limit: number = 10,
+        search: string = "",
+        startDate: string = "",
+        endDate: string = ""
+    ): Promise<any> => {
+        let url = `/api/company/shipments?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`;
+        if (startDate) url += `&startDate=${encodeURIComponent(startDate)}`;
+        if (endDate) url += `&endDate=${encodeURIComponent(endDate)}`;
+        const { data } = await axios.get(url);
         return data;
     },
 

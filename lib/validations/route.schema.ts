@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 export const routeCreateValidationSchema = z.object({
+    companyId: z.string().optional().or(z.literal("")),
+    createdBy: z.string().optional().or(z.literal("")),
     origin: z
         .string("نقطة الانطلاق مطلوبة")
         .min(2, "نقطة الانطلاق يجب أن تكون على الأقل حرفين")
@@ -19,6 +21,8 @@ export const routeCreateValidationSchema = z.object({
 });
 
 export const routeUpdateValidationSchema = z.object({
+    companyId: z.string().optional().or(z.literal("")),
+    createdBy: z.string().optional().or(z.literal("")),
     origin: z
         .string()
         .min(2, "نقطة الانطلاق يجب أن تكون على الأقل حرفين")

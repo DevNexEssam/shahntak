@@ -16,6 +16,7 @@ import {
     LuUsers,
     LuTruck,
     LuCrown,
+    LuMapPin,
 } from 'react-icons/lu';
 
 interface NavItem {
@@ -45,6 +46,11 @@ const navItems: NavItem[] = [
         title: 'البوالص والفواتير',
         href: '/company/dashboard/invoices',
         icon: <LuReceipt className="w-5 h-5" />,
+    },
+    {
+        title: 'إدارة المسارات والخطوط',
+        href: '/company/dashboard/routes',
+        icon: <LuMapPin className="w-5 h-5" />,
     },
     {
         title: 'فريق العمل والموظفين',

@@ -20,8 +20,8 @@ interface AddCompanyVehiclePopupProps {
 export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCompanyVehiclePopupProps) {
     const [formValues, setFormValues] = useState({
         type: '',
-        capacityWeight: 1000,
-        capacityVolume: 10,
+        capacityWeight: 0,
+        capacityVolume: 0,
         isActive: true,
     });
 
@@ -39,6 +39,12 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
 
         createVehicle({ data: formValues }, {
             onSuccess: () => {
+                setFormValues({
+                    type: '',
+                    capacityWeight: 0,
+                    capacityVolume: 0,
+                    isActive: true,
+                });
                 onClose();
             },
         });
@@ -102,8 +108,8 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                                     disabled={isSubmitting}
                                     value={formValues.capacityWeight}
                                     onChange={(e) => setFormValues({ ...formValues, capacityWeight: Number(e.target.value) })}
-                                    placeholder="1000"
-                                    min={1}
+                                    placeholder="0"
+                                    min={0}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
                                 />
                             </div>
@@ -118,8 +124,8 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                                     disabled={isSubmitting}
                                     value={formValues.capacityVolume}
                                     onChange={(e) => setFormValues({ ...formValues, capacityVolume: Number(e.target.value) })}
-                                    placeholder="10"
-                                    min={1}
+                                    placeholder="0"
+                                    min={0}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
                                 />
                             </div>
@@ -132,8 +138,8 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                                 onChange={(e) => setFormValues({ ...formValues, isActive: e.target.value === 'active' })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold"
                             >
-                                <option value="active">نشطة وجاهزة للتشغيل (Active)</option>
-                                <option value="inactive">متوقفة / قيد الصيانة (Inactive)</option>
+                                <option value="active">نشطة وجاهزة للتشغيل</option>
+                                <option value="inactive">متوقفة / قيد الصيانة</option>
                             </select>
                         </div>
 

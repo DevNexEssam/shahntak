@@ -29,7 +29,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
         recipientAddress: '',
         description: '',
         quantity: 1,
-        weight: 1,
+        weight: 0,
         orderValue: 0,
         codAmount: 0,
         status: 'pending' as const,
@@ -69,6 +69,21 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
         // 2. Trigger Mutation
         createCompanyOrder({ data: formValues }, {
             onSuccess: () => {
+                setFormValues({
+                    recipientName: '',
+                    recipientPhone: '',
+                    recipientCity: '',
+                    recipientDistrict: '',
+                    recipientAddress: '',
+                    description: '',
+                    quantity: 1,
+                    weight: 0,
+                    orderValue: 0,
+                    codAmount: 0,
+                    status: 'pending',
+                    source: 'manual',
+                });
+                setFieldErrors({});
                 onClose();
             },
         });
@@ -144,7 +159,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         disabled={isSubmitting}
                                         value={formValues.recipientName}
                                         onChange={(e) => setFormValues({ ...formValues, recipientName: e.target.value })}
-                                        placeholder="اسم المستلم الثلاثي"
+                                        placeholder="مثال: محمد أحمد"
                                         className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
                                         }`}
@@ -164,7 +179,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         disabled={isSubmitting}
                                         value={formValues.recipientPhone}
                                         onChange={(e) => setFormValues({ ...formValues, recipientPhone: e.target.value })}
-                                        placeholder="0501234567"
+                                        placeholder="مثال: 0501234567"
                                         className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.recipientPhone ? 'border-rose-500' : 'border-border'
                                         }`}
@@ -186,7 +201,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         disabled={isSubmitting}
                                         value={formValues.recipientCity}
                                         onChange={(e) => setFormValues({ ...formValues, recipientCity: e.target.value })}
-                                        placeholder="الرياض، جدة، الدمام..."
+                                        placeholder="مثال: الرياض"
                                         className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
                                             fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
                                         }`}
@@ -205,7 +220,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         disabled={isSubmitting}
                                         value={formValues.recipientDistrict}
                                         onChange={(e) => setFormValues({ ...formValues, recipientDistrict: e.target.value })}
-                                        placeholder="حي النرجس..."
+                                        placeholder="مثال: حي النرجس"
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
@@ -220,7 +235,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                     disabled={isSubmitting}
                                     value={formValues.recipientAddress}
                                     onChange={(e) => setFormValues({ ...formValues, recipientAddress: e.target.value })}
-                                    placeholder="شارع التخصصي، مبنى رقم 12..."
+                                    placeholder="مثال: شارع التخصصي، مبنى 12"
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
                                         fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
                                     }`}
@@ -250,6 +265,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         disabled={isSubmitting}
                                         value={formValues.weight}
                                         onChange={(e) => setFormValues({ ...formValues, weight: Number(e.target.value) })}
+                                        placeholder="0"
                                         min={0}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
@@ -264,6 +280,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         disabled={isSubmitting}
                                         value={formValues.quantity}
                                         onChange={(e) => setFormValues({ ...formValues, quantity: Number(e.target.value) })}
+                                        placeholder="1"
                                         min={1}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
@@ -280,6 +297,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         disabled={isSubmitting}
                                         value={formValues.orderValue}
                                         onChange={(e) => setFormValues({ ...formValues, orderValue: Number(e.target.value) })}
+                                        placeholder="0"
                                         min={0}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
@@ -295,6 +313,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         disabled={isSubmitting}
                                         value={formValues.codAmount}
                                         onChange={(e) => setFormValues({ ...formValues, codAmount: Number(e.target.value) })}
+                                        placeholder="0"
                                         min={0}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50"
                                     />

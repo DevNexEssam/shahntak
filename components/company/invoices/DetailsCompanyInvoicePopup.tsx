@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from 'react';
@@ -5,7 +6,11 @@ import {
     LuReceipt,
     LuX,
     LuCoins,
-    LuPrinter
+    LuPrinter,
+    LuTruck,
+    LuMapPin,
+    LuPackage,
+    LuFileText
 } from 'react-icons/lu';
 
 interface DetailsCompanyInvoicePopupProps {
@@ -54,21 +59,40 @@ export default function DetailsCompanyInvoicePopup({
         }
     };
 
+    const linkedShipment = invoiceData.shipment || (invoiceData.invoiceShipments && invoiceData.invoiceShipments[0]);
+
     const taxRate = Number(invoiceData.taxRateSnapshot ?? invoiceData.taxRate ?? 15);
     const discount = Number(invoiceData.discount || 0);
     const rawTotal = Number(invoiceData.total ?? invoiceData.amount ?? invoiceData.totalAmount ?? 0);
     const rateMultiplier = 1 + (taxRate / 100);
-    const basePrice = Number(invoiceData.subtotal ?? Math.round(((rawTotal / rateMultiplier) + discount) * 100) / 100);
+
+    const shippingCost = linkedShipment ? Number(linkedShipment.customerPrice || linkedShipment.shippingCost || 0) : 0;
+    const subtotalVal = Number(invoiceData.subtotal || 0);
+    const basePrice = subtotalVal > 0
+        ? subtotalVal
+        : (shippingCost > 0
+            ? shippingCost
+            : (rawTotal > 0 ? Math.round(((rawTotal / rateMultiplier) + discount) * 100) / 100 : 0));
+
     const discountedSubtotal = Math.max(0, basePrice - discount);
     const vatAmount = Number(invoiceData.vatAmount ?? Math.round((discountedSubtotal * (taxRate / 100)) * 100) / 100);
     const finalTotal = Number(invoiceData.total ?? Math.round((discountedSubtotal + vatAmount) * 100) / 100);
 
+    const getShipmentTypeName = (type?: string) => {
+        switch (type) {
+            case 'ftl': return 'شحن نقل كامل (FTL)';
+            case 'ltl': return 'شحن طرود جزئية (LTL)';
+            case 'local_delivery': return 'توصيل محلي للميل الأخير';
+            default: return 'خدمة نقل شحن لوجستي';
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="rtl">
-            <div className="printable-area w-full max-w-xl bg-surface border border-border rounded-md shadow-xs overflow-hidden flex flex-col">
+            <div className="printable-area w-full max-w-xl bg-surface border border-border rounded-md shadow-xs overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Header */}
-                <div className="p-5 border-b border-border flex items-center justify-between bg-surface">
+                <div className="p-5 border-b border-border flex items-center justify-between bg-surface shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
                             <LuReceipt className="w-5 h-5" />
@@ -93,7 +117,7 @@ export default function DetailsCompanyInvoicePopup({
                 </div>
 
                 {/* Body Content */}
-                <div className="p-5 space-y-4">
+                <div className="p-5 space-y-4 overflow-y-auto">
 
                     {/* Summary Info Row */}
                     <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between text-xs">
@@ -107,11 +131,59 @@ export default function DetailsCompanyInvoicePopup({
                         <button
                             type="button"
                             onClick={handlePrintInvoice}
-                            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs"
+                            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs cursor-pointer"
                         >
                             <LuPrinter className="w-4 h-4" />
                             <span>طباعة الفاتورة</span>
                         </button>
+                    </div>
+
+                    {/* Shipment & Shipping Details Card */}
+                    <div className="p-4 rounded-md border border-accent/30 bg-accent/5 space-y-3">
+                        <div className="flex items-center justify-between border-b border-accent/20 pb-2">
+                            <h3 className="text-xs font-extrabold text-foreground flex items-center gap-1.5">
+                                <LuTruck className="w-4 h-4 text-accent" />
+                                <span>تفاصيل الشحنة وتكلفة النقل اللوجستي</span>
+                            </h3>
+                            {linkedShipment?.type && (
+                                <span className="text-[11px] font-bold text-accent px-2 py-0.5 rounded bg-surface border border-accent/20">
+                                    {getShipmentTypeName(linkedShipment.type)}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 text-xs">
+                            <div className="bg-surface p-2.5 rounded border border-border">
+                                <span className="text-muted-foreground block text-[11px] mb-0.5">رقم الشحنة المربوطة</span>
+                                <span className="font-bold text-accent font-latin text-sm">
+                                    {linkedShipment?.shipmentNumber || invoiceData.shipmentNumber || 'شحنة عامة'}
+                                </span>
+                            </div>
+
+                            <div className="bg-surface p-2.5 rounded border border-border">
+                                <span className="text-muted-foreground block text-[11px] mb-0.5">مسار النقل</span>
+                                <span className="font-bold text-foreground flex items-center gap-1">
+                                    <LuMapPin className="w-3.5 h-3.5 text-accent shrink-0" />
+                                    <span>{linkedShipment?.origin || 'الرياض'} ⬅️ {linkedShipment?.destination || 'جدة'}</span>
+                                </span>
+                            </div>
+
+                            <div className="bg-surface p-2.5 rounded border border-border">
+                                <span className="text-muted-foreground block text-[11px] mb-0.5">رقم بوليسة الشحن</span>
+                                <span className="font-semibold text-foreground font-latin flex items-center gap-1">
+                                    <LuFileText className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                                    <span>{linkedShipment?.waybillNumber || (linkedShipment ? `WB-${new Date().getFullYear()}-${linkedShipment._id?.toString().slice(-6).toUpperCase()}` : 'فاتورة غير مرتبطة بشحنة')}</span>
+                                </span>
+                            </div>
+
+                            <div className="bg-surface p-2.5 rounded border border-border">
+                                <span className="text-muted-foreground block text-[11px] mb-0.5">عدد الطلبات / الطرود</span>
+                                <span className="font-semibold text-foreground font-latin flex items-center gap-1">
+                                    <LuPackage className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                                    <span>{linkedShipment?.ordersCount || 1} طرد</span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Financial Breakdown Table */}
@@ -119,7 +191,7 @@ export default function DetailsCompanyInvoicePopup({
                         <div className="flex items-center justify-between border-b border-border pb-2">
                             <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5">
                                 <LuCoins className="w-4 h-4 text-accent" />
-                                <span>تفاصيل المبالغ والخصم والضريبة</span>
+                                <span>جدول رسوم الشحن والضريبة المستحقة</span>
                             </h3>
                             <span className="text-[10px] font-extrabold text-accent px-2 py-0.5 rounded bg-accent/10 font-latin">
                                 النسبة وقت الإصدار: {taxRate}%
@@ -134,9 +206,12 @@ export default function DetailsCompanyInvoicePopup({
                         )}
 
                         <div className="space-y-2 text-xs">
-                            <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">المبلغ الأساسي (قبل الخصم والضريبة)</span>
-                                <span className="font-semibold text-foreground font-latin">{basePrice.toFixed(2)} ر.س</span>
+                            <div className="flex justify-between items-center py-2 border-b border-border">
+                                <div>
+                                    <span className="font-bold text-foreground block">تكلفة خدمة الشحن والنقل اللوجستي</span>
+                                    <span className="text-[10px] text-muted-foreground block">المبلغ الأساسي للشحنة (قبل الخصم والضريبة)</span>
+                                </div>
+                                <span className="font-bold text-foreground font-latin text-sm">{basePrice.toFixed(2)} ر.س</span>
                             </div>
 
                             {discount > 0 && (
@@ -157,7 +232,7 @@ export default function DetailsCompanyInvoicePopup({
                             </div>
 
                             <div className="flex justify-between items-center pt-2 text-sm font-bold">
-                                <span className="text-foreground">الإجمالي الكلي المستحق</span>
+                                <span className="text-foreground">الإجمالي الكلي المستحق (شامل الشحن والضريبة)</span>
                                 <span className="text-accent font-latin text-base font-bold">{finalTotal.toFixed(2)} ر.س</span>
                             </div>
                         </div>
@@ -166,11 +241,11 @@ export default function DetailsCompanyInvoicePopup({
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-border bg-surface-muted flex justify-end">
+                <div className="p-4 border-t border-border bg-surface-muted flex justify-end shrink-0">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-1.5 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-border/20 transition-colors text-foreground"
+                        className="px-4 py-1.5 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-border/20 transition-colors text-foreground cursor-pointer"
                     >
                         إغلاق
                     </button>
@@ -180,3 +255,4 @@ export default function DetailsCompanyInvoicePopup({
         </div>
     );
 }
+

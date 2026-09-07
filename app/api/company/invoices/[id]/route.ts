@@ -68,7 +68,11 @@ export async function GET(req: NextRequest) {
 
         const linkedShipment = invoice.invoiceShipments && invoice.invoiceShipments.length > 0 
             ? invoice.invoiceShipments[0] 
-            : await Shipment.findOne({ invoiceId: invoice._id, deletedAt: null }).lean();
+            : await Shipment.findOne({ $or: [{ invoiceId: invoice._id }, { _id: (invoice as any).shipmentId }], deletedAt: null }).lean();
+
+        if (linkedShipment && (!linkedShipment.waybillNumber || linkedShipment.waybillNumber.trim() === '')) {
+            linkedShipment.waybillNumber = `WB-${new Date().getFullYear()}-${linkedShipment._id.toString().slice(-6).toUpperCase()}`;
+        }
 
         if (linkedShipment && (linkedShipment.customerPrice > 0 || linkedShipment.shippingCost > 0)) {
             basePrice = Number(linkedShipment.customerPrice || linkedShipment.shippingCost);
@@ -93,6 +97,7 @@ export async function GET(req: NextRequest) {
             taxRate: effectiveTaxRate,
             vatExemptionReason: effectiveTaxRate === 0 ? (companyRecord?.vatExemptionReason || "خدمات نقل معفاة بموجب اللائحة") : "",
             total: computedTotal,
+            shipment: linkedShipment || (invoice.invoiceShipments && invoice.invoiceShipments[0]) || null,
         };
 
         return NextResponse.json({ success: true, data: enrichedInvoice }, { status: 200 });
@@ -193,8 +198,11 @@ export async function PUT(req: NextRequest) {
 
         const linkedShipment = await Shipment.findOne({ invoiceId: invoice._id, deletedAt: null }).lean();
 
-        let basePrice = Number(invoice.subtotal || 0);
-        if (linkedShipment && (linkedShipment.customerPrice > 0 || linkedShipment.shippingCost > 0)) {
+        let basePrice = body.subtotal !== undefined && Number(body.subtotal) >= 0
+            ? Number(body.subtotal)
+            : Number(invoice.subtotal || 0);
+
+        if (basePrice === 0 && linkedShipment && (linkedShipment.customerPrice > 0 || linkedShipment.shippingCost > 0)) {
             basePrice = Number(linkedShipment.customerPrice || linkedShipment.shippingCost);
         } else if (basePrice === 0) {
             const currentDiscount = Number(invoice.discount || 0);

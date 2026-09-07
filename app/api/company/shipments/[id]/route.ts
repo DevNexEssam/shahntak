@@ -7,6 +7,7 @@ import { connectDB } from "@/lib/mongodb";
 import Shipment from "@/models/shipment";
 import Order from "@/models/order";
 import Invoice from "@/models/invoice";
+import Route from "@/models/route";
 import { shipmentUpdateValidationSchema } from "@/lib/validations/shipment.schema";
 
 // get shipment
@@ -141,6 +142,35 @@ export async function PUT(req: NextRequest) {
         delete body._id;
         delete body.shipmentNumber;
 
+        // Auto-recalculate prices based on Route & Orders (block manual edits)
+        const targetRouteId = body.routeId !== undefined ? body.routeId : shipment.routeId;
+        let routeBasePrice = 0;
+
+        if (targetRouteId && mongoose.Types.ObjectId.isValid(targetRouteId)) {
+            const routeObj = await Route.findOne({
+                _id: targetRouteId,
+                companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                deletedAt: null,
+            });
+            if (routeObj) {
+                routeBasePrice = Number(routeObj.basePrice || 0);
+            }
+        }
+
+        const linkedOrders = await Order.find({
+            shipmentId: id,
+            companyId: new mongoose.Types.ObjectId(activeCompanyId),
+            deletedAt: null,
+        }).lean();
+
+        const ordersValueSum = linkedOrders.reduce(
+            (sum: number, ord: any) => sum + (Number(ord.orderValue) || Number(ord.codAmount) || 0),
+            0
+        );
+
+        body.shippingCost = routeBasePrice;
+        body.customerPrice = ordersValueSum + routeBasePrice;
+
         const validation = shipmentUpdateValidationSchema.safeParse(body);
         if (!validation.success) {
             return NextResponse.json(
@@ -171,18 +201,7 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        let calculatedTotal = (validation.data.customerPrice !== undefined ? validation.data.customerPrice : shipment.customerPrice) || shipment.shippingCost || 0;
-
-        if (calculatedTotal === 0) {
-            const linkedOrders = await Order.find({
-                shipmentId: id,
-                companyId: new mongoose.Types.ObjectId(activeCompanyId),
-                deletedAt: null,
-            }).lean();
-            if (linkedOrders.length > 0) {
-                calculatedTotal = linkedOrders.reduce((sum: number, ord: any) => sum + (Number(ord.orderValue) || Number(ord.codAmount) || 0), 0);
-            }
-        }
+        const calculatedTotal = validation.data.customerPrice;
 
         if (newStatus === "delivered") {
             await Order.updateMany(
@@ -196,13 +215,13 @@ export async function PUT(req: NextRequest) {
 
             if (existingInvoice) {
                 existingInvoice.status = "paid";
-                existingInvoice.total = calculatedTotal;
                 await existingInvoice.save();
             } else {
                 const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
                 const newInvoice = await Invoice.create({
                     invoiceNumber,
                     companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                    subtotal: calculatedTotal,
                     total: calculatedTotal,
                     status: "paid",
                     dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
@@ -227,6 +246,7 @@ export async function PUT(req: NextRequest) {
             const newInvoice = await Invoice.create({
                 invoiceNumber,
                 companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                subtotal: calculatedTotal,
                 total: calculatedTotal,
                 status: "issued",
                 dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
@@ -317,10 +337,25 @@ export async function DELETE(req: NextRequest) {
             { $set: { shipmentId: null, status: "pending" } }
         );
 
+        // Cascade delete or cancel associated unpaid invoice
+        const linkedInvoice = shipment.invoiceId
+            ? await Invoice.findOne({ _id: shipment.invoiceId, companyId: new mongoose.Types.ObjectId(activeCompanyId), deletedAt: null })
+            : await Invoice.findOne({ companyId: new mongoose.Types.ObjectId(activeCompanyId), deletedAt: null, $or: [{ _id: shipment.invoiceId }] });
+
+        if (linkedInvoice && linkedInvoice.status !== "paid") {
+            if (isHardDelete) {
+                await Invoice.deleteOne({ _id: linkedInvoice._id, companyId: new mongoose.Types.ObjectId(activeCompanyId) });
+            } else {
+                linkedInvoice.deletedAt = new Date();
+                linkedInvoice.status = "cancelled";
+                await linkedInvoice.save();
+            }
+        }
+
         if (isHardDelete) {
             await Shipment.deleteOne({ _id: id, companyId: new mongoose.Types.ObjectId(activeCompanyId) });
             return NextResponse.json(
-                { success: true, message: "تم حذف الشحنة نهائياً وإلغاء تجميع الطلبات المرتبطة" },
+                { success: true, message: "تم حذف الشحنة وإلغاء الفاتورة غير المدفوعة وإعادة فك الطلبات بنجاح" },
                 { status: 200 }
             );
         } else {
@@ -328,7 +363,7 @@ export async function DELETE(req: NextRequest) {
             shipment.status = "cancelled";
             await shipment.save();
             return NextResponse.json(
-                { success: true, message: "تمت أرشفة الشحنة وإلغاء تجميع الطلبات المرتبطة بها" },
+                { success: true, message: "تمت أرشفة الشحنة وإلغاء الفاتورة غير المدفوعة وإعادة فك الطلبات بنجاح" },
                 { status: 200 }
             );
         }

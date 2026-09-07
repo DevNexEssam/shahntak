@@ -7,17 +7,23 @@ import { companyShipmentServices } from "@/services/company/CompanyShipmentServi
 export const COMPANY_SHIPMENT_KEYS = {
     all: ["companyShipments"] as const,
     lists: () => [...COMPANY_SHIPMENT_KEYS.all, "list"] as const,
-    list: (page: number, limit: number, search: string) =>
-        [...COMPANY_SHIPMENT_KEYS.lists(), { page, limit, search }] as const,
+    list: (page: number, limit: number, search: string, startDate?: string, endDate?: string) =>
+        [...COMPANY_SHIPMENT_KEYS.lists(), { page, limit, search, startDate, endDate }] as const,
     details: () => [...COMPANY_SHIPMENT_KEYS.all, "detail"] as const,
     detail: (id: string) => [...COMPANY_SHIPMENT_KEYS.details(), id] as const,
 } as const;
 
-// Fetch Company Shipments Hook (Supports Pagination and Search)
-export const useCompanyShipments = (page: number = 1, limit: number = 10, search: string = "") => {
+// Fetch Company Shipments Hook (Supports Pagination, Search and Date Range Filtering)
+export const useCompanyShipments = (
+    page: number = 1,
+    limit: number = 10,
+    search: string = "",
+    startDate: string = "",
+    endDate: string = ""
+) => {
     return useQuery({
-        queryKey: COMPANY_SHIPMENT_KEYS.list(page, limit, search),
-        queryFn: () => companyShipmentServices.getShipments(page, limit, search),
+        queryKey: COMPANY_SHIPMENT_KEYS.list(page, limit, search, startDate, endDate),
+        queryFn: () => companyShipmentServices.getShipments(page, limit, search, startDate, endDate),
         staleTime: 1000 * 60 * 5,
         gcTime: 1000 * 60 * 10,
         refetchOnWindowFocus: true,

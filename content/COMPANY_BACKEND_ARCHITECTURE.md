@@ -497,23 +497,29 @@ export async function DELETE(req: NextRequest) {
    - `GET /api/company/vehicles`
    - `POST /api/company/vehicles/new`
    - `GET/PUT/DELETE /api/company/vehicles/[id]`
-3. **الطلبات (`Orders`)**:
+3. **المسارات والخطوط اللوجستية (`Route`)**:
+   - `GET /api/company/routes` (يدعم التصفية، البحث، الفترات الزمنية، وحصوة بدون صفحات `nopagination=true`)
+   - `POST /api/company/routes/new` (تحقق من فرادة المسار لنفس الشركة ومنع تزوير `companyId`)
+   - `GET/PUT/DELETE /api/company/routes/[id]`
+4. **الطلبات (`Orders`)**:
    - `GET /api/company/orders`
    - `POST /api/company/orders/new`
    - `GET/PUT/DELETE /api/company/orders/[id]`
-4. **الشحنات (`Shipments`)**:
+5. **الشحنات (`Shipments`)**:
    - `GET /api/company/shipments`
-   - `POST /api/company/shipments/new`
-   - `GET/PUT/DELETE /api/company/shipments/[id]`
-5. **الفواتير (`Invoices`)**:
+   - `POST /api/company/shipments/new` (دعم ربط `routeId` اختياري وإنشاء فواتير تلقائية)
+   - `GET/PUT/DELETE /api/company/shipments/[id]` (تفكيك وإعادة الطلبات المرتبطة تلقائياً إلى `pending` عند مسح أو إلغاء شحنة حديثة)
+6. **الفواتير والمصروفات (`Invoices & Expenses`)**:
    - `GET /api/company/invoices`
    - `POST /api/company/invoices/new`
    - `GET/PUT/DELETE /api/company/invoices/[id]`
-6. **التقارير والإحصائيات (`Reports`)**:
+   - `GET /api/company/expenses` & `POST /api/company/expenses` & `PUT/DELETE /[id]`
+7. **التقارير والتحليلات الموزعة (`Analytics & Reports`)**:
+   - `GET /api/company/analytics?tab=financial|operational|expenses|zatca_tax`
    - `GET /api/company/reports`
 
-7. **التخطيط والهيكل الرئيسي لبوابة الشركات (`Company Portal Layout`)**:
-   - `CompanySidebar.tsx`
+8. **التخطيط والهيكل الرئيسي لبوابة الشركات (`Company Portal Layout`)**:
+   - `CompanySidebar.tsx` (تنشيط رابط إدارة المسارات والخطوط أيقونة `LuMapPin`)
    - `CompanyHeader.tsx`
    - `CompanyClientLayout.tsx`
    - `app/company/dashboard/layout.tsx`
@@ -521,7 +527,7 @@ export async function DELETE(req: NextRequest) {
 ---
 
 ### ⏳ هدف الجلسة القادمة (Next Session Target):
-1. **بناء وتنميط الواجهات التفاعلية للأقسام الستة**:
-   - بناء أقسام الطلبات والشحنات والفواتير والموظفين والمركبات والتقارير والإعدادات بتصاميم متوافقة تماماً.
+1. **تطوير قوالب الطباعة الرسمية للورق (`@media print` CSS)**:
+   - تخصيص وتطوير قوالب طباعة الفواتير الضريبية ZATCA المعتمدة وبوالص الشحن الرسمية.
 
 

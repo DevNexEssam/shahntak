@@ -8,6 +8,7 @@ import Shipment from "@/models/shipment";
 import Order from "@/models/order";
 import Company from "@/models/companies";
 import Invoice from "@/models/invoice";
+import Route from "@/models/route";
 import { shipmentCreateValidationSchema } from "@/lib/validations/shipment.schema";
 
 // create shipment
@@ -59,8 +60,6 @@ export async function POST(req: NextRequest) {
         if (body.shipmentType && !body.type) body.type = body.shipmentType;
         if (body.originCity && !body.origin) body.origin = body.originCity;
         if (body.destinationCity && !body.destination) body.destination = body.destinationCity;
-        if (body.shippingCost === undefined || body.shippingCost === null) body.shippingCost = 0;
-        if (body.customerPrice === undefined || body.customerPrice === null) body.customerPrice = 0;
         if (body.status === "pending" || !body.status) body.status = "created";
 
         if (!body.shipmentNumber || body.shipmentNumber.trim() === "") {
@@ -72,6 +71,50 @@ export async function POST(req: NextRequest) {
         }
 
         body.companyId = activeCompanyId.toString();
+
+        // Auto-calculate shippingCost & customerPrice from Route & Linked Orders
+        let routeBasePrice = 0;
+        if (body.routeId && mongoose.Types.ObjectId.isValid(body.routeId)) {
+            const routeObj = await Route.findOne({
+                _id: body.routeId,
+                companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                deletedAt: null,
+            });
+            if (routeObj) {
+                routeBasePrice = Number(routeObj.basePrice || 0);
+                if (!body.origin || body.origin.trim() === "") body.origin = routeObj.origin;
+                if (!body.destination || body.destination.trim() === "") body.destination = routeObj.destination;
+            }
+        }
+
+        const orderIds = body.orderIds || [];
+        let ordersValueSum = 0;
+        const validOrderObjectIds: mongoose.Types.ObjectId[] = [];
+
+        if (Array.isArray(orderIds) && orderIds.length > 0) {
+            orderIds.forEach((id: string) => {
+                if (mongoose.Types.ObjectId.isValid(id)) {
+                    validOrderObjectIds.push(new mongoose.Types.ObjectId(id));
+                }
+            });
+
+            if (validOrderObjectIds.length > 0) {
+                const linkedOrders = await Order.find({
+                    _id: { $in: validOrderObjectIds },
+                    companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                    deletedAt: null,
+                }).lean();
+
+                ordersValueSum = linkedOrders.reduce(
+                    (sum: number, ord: any) => sum + (Number(ord.orderValue) || Number(ord.codAmount) || 0),
+                    0
+                );
+            }
+        }
+
+        // Force exact calculation logic
+        body.shippingCost = routeBasePrice;
+        body.customerPrice = ordersValueSum + routeBasePrice;
 
         const validation = shipmentCreateValidationSchema.safeParse(body);
         if (!validation.success) {
@@ -99,18 +142,24 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const orderIds = data.orderIds || [];
-        const ordersCount = orderIds.length > 0 ? orderIds.length : (data.ordersCount || 0);
+        const ordersCount = validOrderObjectIds.length > 0 ? validOrderObjectIds.length : (data.ordersCount || 0);
 
         let invoiceIdToAssign = data.invoiceId && mongoose.Types.ObjectId.isValid(data.invoiceId) ? new mongoose.Types.ObjectId(data.invoiceId) : undefined;
 
         if (!invoiceIdToAssign) {
             const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
-            const invoiceTotal = data.customerPrice || data.shippingCost || 0;
+            const subtotal = data.customerPrice;
+            const vatRate = company.vatRate !== undefined ? Number(company.vatRate) : 15;
+            const vatAmount = Math.round(subtotal * (vatRate / 100) * 100) / 100;
+            const total = Math.round((subtotal + vatAmount) * 100) / 100;
+
             const newInvoice = await Invoice.create({
                 invoiceNumber,
                 companyId: new mongoose.Types.ObjectId(activeCompanyId),
-                total: invoiceTotal,
+                subtotal,
+                vatAmount,
+                taxRateSnapshot: vatRate,
+                total,
                 status: data.status === "delivered" ? "paid" : "issued",
                 dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
                 deletedAt: null,
@@ -137,28 +186,22 @@ export async function POST(req: NextRequest) {
             deletedAt: null,
         });
 
-        if (orderIds.length > 0) {
-            const validOrderObjectIds = orderIds
-                .filter((id) => mongoose.Types.ObjectId.isValid(id))
-                .map((id) => new mongoose.Types.ObjectId(id));
-
-            if (validOrderObjectIds.length > 0) {
-                // update linked orders
-                await Order.updateMany(
-                    {
-                        _id: { $in: validOrderObjectIds },
-                        companyId: new mongoose.Types.ObjectId(activeCompanyId),
-                        status: { $in: ["pending", "validated", "error"] },
-                        deletedAt: null,
+        if (validOrderObjectIds.length > 0) {
+            // update linked orders
+            await Order.updateMany(
+                {
+                    _id: { $in: validOrderObjectIds },
+                    companyId: new mongoose.Types.ObjectId(activeCompanyId),
+                    status: { $in: ["pending", "validated", "error"] },
+                    deletedAt: null,
+                },
+                {
+                    $set: {
+                        shipmentId: newShipment._id,
+                        status: "grouped",
                     },
-                    {
-                        $set: {
-                            shipmentId: newShipment._id,
-                            status: "grouped",
-                        },
-                    }
-                );
-            }
+                }
+            );
         }
 
         return NextResponse.json(
