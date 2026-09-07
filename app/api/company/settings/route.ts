@@ -77,7 +77,7 @@ export async function GET() {
     }
 }
 
-// update settings & change password
+// update settings
 export async function PUT(req: NextRequest) {
     try {
         await connectDB();
@@ -150,7 +150,6 @@ export async function PUT(req: NextRequest) {
                 );
             }
 
-            // Check Tax Number when rate is 15%
             const currentTaxNumber = company.taxNumber || body.taxNumber;
             if (parsedRate === 15 && (!currentTaxNumber || currentTaxNumber.trim() === "")) {
                 return NextResponse.json(
@@ -171,7 +170,6 @@ export async function PUT(req: NextRequest) {
                 updateData.vatExemptionReason = "";
             }
 
-            // If rate changes, require reason & push to Audit Log
             const previousRate = company.vatRate !== undefined ? company.vatRate : 15;
             if (parsedRate !== previousRate) {
                 if (!body.vatRateReason || body.vatRateReason.trim().length < 3) {
