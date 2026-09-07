@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
             );
         }
 
-        // 🟢 الشرط 8: حساب مبالغ الخصم وضريبة القيمة المضافة طبقاً للقطة التاريخية المجمدة taxRateSnapshot
+        // calculate discount and vat
         const companyRecord = await Company.findById(activeCompanyId).lean();
         const effectiveTaxRate = invoice.taxRateSnapshot !== undefined 
             ? Number(invoice.taxRateSnapshot) 
@@ -149,7 +149,7 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        // 🔴 الشرط 1 والشرط 6: قفل الفواتير المدفوعة نهائياً وحظر إعادة الفتح والتراجع بالحالة
+        // check paid invoice lock
         if (invoice.status === "paid") {
             return NextResponse.json(
                 {
@@ -162,7 +162,7 @@ export async function PUT(req: NextRequest) {
 
         const body = await req.json();
 
-        // 🟢 الشرط 4 والشرط 5: حظر وتصفية أي محاولة لتغيير رقم الفاتورة، تاريخ الإصدار، أو معرف الشركة
+        // strip read-only fields
         delete body.companyId;
         delete body._id;
         delete body.invoiceNumber;
@@ -171,7 +171,7 @@ export async function PUT(req: NextRequest) {
         delete body.issuedDate;
         delete body.updatedAt;
 
-        // 🔴 الشرط 6: حظر التغيير غير الشرعي للحالة إلى مدفوع يدوياً دون إجراء تسليم
+        // check status change
         if (body.status === "paid" && invoice.status !== "paid") {
             const linkedShipment = await Shipment.findOne({ invoiceId: invoice._id, deletedAt: null }).lean();
             if (linkedShipment && linkedShipment.status !== "delivered") {
@@ -185,7 +185,7 @@ export async function PUT(req: NextRequest) {
             }
         }
 
-        // 🟠 الشرط 7: مطابقة إجمالي الفاتورة وحساب الخصم والضريبة طبقاً لـ taxRateSnapshot
+        // calculate totals
         const companyRecord = await Company.findById(activeCompanyId).lean();
         const effectiveTaxRate = invoice.taxRateSnapshot !== undefined 
             ? Number(invoice.taxRateSnapshot) 
@@ -299,7 +299,7 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        // 🟠 الشرط 2: حظر حذف أو إلغاء الفاتورة إذا كانت مدفوعة أو مرتبطة بشحنة مكتملة ومسلمة
+        // check deletion safety
         if (invoice.status === "paid") {
             return NextResponse.json(
                 { success: false, message: "حماية النزاهة المالية: لا يمكن حذف أو إلغاء فاتورة تم تحصيلها وبحالة مدفوعة" },
