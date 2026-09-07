@@ -109,11 +109,11 @@ export async function PUT(req: NextRequest) {
 
         const body = await req.json();
 
-        // State Machine Integrity Rules & Safeguards (Scenarios 5, 7, 17, 18, 19, 20)
+        // State Machine
         const currentStatus = order.status;
         const newStatus = body.status;
 
-        // Strict Lock: Delivered orders cannot be modified in any way
+        // Strict Lock
         if (currentStatus === "delivered") {
             return NextResponse.json(
                 { success: false, message: "الطلب مسلّم بالكامل (Delivered) ومقفل نهائياً، لا يمكن إجراء أي تعديل عليه أو تغيير حالته." },
@@ -121,7 +121,6 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        // Scenario 19: Cannot jump directly from cancelled to shipped/delivered
         if (currentStatus === "cancelled" && (newStatus === "shipped" || newStatus === "delivered")) {
             return NextResponse.json(
                 { success: false, message: "لا يمكن تحويل الطلب الملغي إلى مشحون أو مسلم مباشرة دون إعادته لقيد الانتظار أولاً" },
@@ -129,7 +128,6 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        // Scenario 17: Cannot status jump directly from pending to delivered without a shipment
         if (currentStatus === "pending" && newStatus === "delivered" && !order.shipmentId) {
             return NextResponse.json(
                 { success: false, message: "لا يمكن تحويل الطلب من قيد الانتظار إلى مسلم مباشرة دون تجميعه وشحنه" },
@@ -137,7 +135,6 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        // Scenario 20: Validate required fields when exiting error state
         if (currentStatus === "error" && (newStatus === "validated" || newStatus === "pending")) {
             const mergedRecipientName = body.recipientName || order.recipientName;
             const mergedPhone = body.recipientPhone || order.recipientPhone;
@@ -236,7 +233,6 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        // Scenario 11: Decouple from parent shipment if linked
         if (order.shipmentId) {
             await Shipment.findByIdAndUpdate(order.shipmentId, {
                 $inc: { ordersCount: -1 }
