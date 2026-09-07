@@ -294,7 +294,7 @@ export const CompanySettings: React.FC = () => {
                     </div>
                 </div>
 
-                {/* VAT & ZATCA Governance Section */}
+                {/* VAT &  Governance Section */}
                 <div className="p-6 bg-surface border border-border rounded-md space-y-6">
                     <div className="flex items-center gap-2 text-foreground font-semibold border-b border-border pb-4">
                         <LuPercent className="w-5 h-5 text-accent" />

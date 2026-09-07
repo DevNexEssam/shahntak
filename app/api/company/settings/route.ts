@@ -139,13 +139,13 @@ export async function PUT(req: NextRequest) {
             }
         }
 
-        // Tax Rate & ZATCA Settings Validation
+        // Tax Rate &  Settings Validation
         if (body.vatRate !== undefined) {
             const parsedRate = Number(body.vatRate);
 
             if (parsedRate !== 15 && parsedRate !== 0) {
                 return NextResponse.json(
-                    { success: false, message: "نسبة ضريبة القيمة المضافة غير مقبولة. النسب المعتمدة هي 15% أساسية أو 0% معفاة وفقاً للائحة ZATCA" },
+                    { success: false, message: "نسبة ضريبة القيمة المضافة غير مقبولة. النسب المعتمدة هي 15% أساسية أو 0% معفاة وفقاً للائحة " },
                     { status: 400 }
                 );
             }
@@ -174,7 +174,7 @@ export async function PUT(req: NextRequest) {
             if (parsedRate !== previousRate) {
                 if (!body.vatRateReason || body.vatRateReason.trim().length < 3) {
                     return NextResponse.json(
-                        { success: false, message: "حماية النزاهة الضريبية (ZATCA Audit Log): يجب إدخال سبب تعديل نسبة الضريبة حتمياً لحفظ السجل التاريخي للتغيير" },
+                        { success: false, message: "حماية النزاهة الضريبية ( Audit Log): يجب إدخال سبب تعديل نسبة الضريبة حتمياً لحفظ السجل التاريخي للتغيير" },
                         { status: 400 }
                     );
                 }

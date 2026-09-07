@@ -304,7 +304,7 @@ export async function GET(req: NextRequest) {
         }
 
 
-        //  TAX (الضريبي - ZATCA VAT Report)
+        //  TAX (الضريبي -  VAT Report)
 
         if (tab === "tax") {
             const [invoices, expenses, company] = await Promise.all([

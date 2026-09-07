@@ -200,7 +200,7 @@ export default function DetailsCompanyInvoicePopup({
 
                         {taxRate === 0 && invoiceData.vatExemptionReason && (
                             <div className="p-2.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-700 text-xs">
-                                <span className="font-bold block mb-0.5">سبب الإعفاء الضريبي الرسمي (ZATCA Exemption):</span>
+                                <span className="font-bold block mb-0.5">سبب الإعفاء الضريبي الرسمي ( Exemption):</span>
                                 <p>{invoiceData.vatExemptionReason}</p>
                             </div>
                         )}

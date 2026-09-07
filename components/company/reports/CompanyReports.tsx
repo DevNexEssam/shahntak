@@ -7,21 +7,24 @@ import {
     LuDollarSign,
     LuTruck,
     LuRefreshCw,
+    LuTrendingUp,
 } from "react-icons/lu";
 import { useCompanyReports } from "@/hooks/company/useCompanyReport";
 import { CompanyReportsOverviewTab } from "./CompanyReportsOverviewTab";
 import { CompanyReportsOperationsTab } from "./CompanyReportsOperationsTab";
 import { CompanyReportsFinancialTab } from "./CompanyReportsFinancialTab";
 import { CompanyReportsFleetTab } from "./CompanyReportsFleetTab";
+import CompanyAnalyticsDashboard from "../analytics/CompanyAnalyticsDashboard";
 
 export const CompanyReports: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<"overview" | "operations" | "financial" | "fleet">("overview");
+    const [activeTab, setActiveTab] = useState<"analytics" | "overview" | "operations" | "financial" | "fleet">("analytics");
 
-    const { data: responseData, isLoading, refetch, isFetching } = useCompanyReports(activeTab);
+    const { data: responseData, isLoading, refetch, isFetching } = useCompanyReports(activeTab === "analytics" ? "overview" : activeTab);
 
     const reportData = responseData?.data || {};
 
     const tabs = [
+        { id: "analytics", label: " التحليلات الشاملة", icon: LuTrendingUp },
         { id: "overview", label: "النظرة العامة الإحصائية", icon: LuChartPie },
         { id: "operations", label: "تقارير العمليات والطلبات", icon: LuPackage },
         { id: "financial", label: "التقارير المالية والفواتير", icon: LuDollarSign },
@@ -75,6 +78,9 @@ export const CompanyReports: React.FC = () => {
 
             {/* Tab Content Display */}
             <div className="pt-2">
+                {activeTab === "analytics" && (
+                    <CompanyAnalyticsDashboard />
+                )}
                 {activeTab === "overview" && (
                     <CompanyReportsOverviewTab data={reportData} isLoading={isLoading} />
                 )}

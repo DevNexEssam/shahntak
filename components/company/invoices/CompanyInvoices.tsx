@@ -13,7 +13,6 @@ import ErrorMessege from '@/components/ui/ErrorMessege';
 import EmptyData from '@/components/ui/EmptyData';
 import Loading from '@/components/ui/loading';
 import { defaultExpenseCategories } from '@/lib/validations/expense.schema';
-import CompanyAnalyticsDashboard from '../analytics/CompanyAnalyticsDashboard';
 import toast from 'react-hot-toast';
 import {
     LuReceipt,
@@ -34,13 +33,12 @@ import {
     LuTrendingDown,
     LuTag,
     LuCalendar,
-    LuFilter,
-    LuChartPie
+    LuFilter
 } from 'react-icons/lu';
 
 export default function CompanyInvoices() {
-    // 0. Active Tab State ('invoices' | 'expenses' | 'analytics')
-    const [activeTab, setActiveTab] = useState<'invoices' | 'expenses' | 'analytics'>('invoices');
+    // 0. Active Tab State ('invoices' | 'expenses')
+    const [activeTab, setActiveTab] = useState<'invoices' | 'expenses'>('invoices');
 
     // 1. Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
@@ -410,25 +408,9 @@ export default function CompanyInvoices() {
                         {totalExpenseRecords}
                     </span>
                 </button>
-
-                <button
-                    onClick={() => setActiveTab('analytics')}
-                    className={`flex items-center gap-2.5 px-5 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer ${activeTab === 'analytics'
-                        ? 'border-accent text-accent bg-accent/5'
-                        : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
-                        }`}
-                >
-                    <LuChartPie className="w-4 h-4" />
-                    <span>📊 التقارير والتحليلات الشاملة</span>
-                </button>
             </div>
 
-            {/*  ANALYTICS DASHBOARD */}
-            {activeTab === 'analytics' && (
-                <CompanyAnalyticsDashboard />
-            )}
-
-            {/*  INVOICES TAB */}
+            {/* INVOICES TAB */}
             {activeTab === 'invoices' && (
                 <div className="space-y-4 animate-in fade-in duration-150">
 
