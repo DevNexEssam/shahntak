@@ -6,6 +6,7 @@ import { useCompanyShipments, useDeleteCompanyShipment } from '@/hooks/company/u
 import AddCompanyShipmentPopup from './AddCompanyShipmentPopup';
 import EditCompanyShipmentPopup from './EditCompanyShipmentPopup';
 import DetailsCompanyShipmentPopup from './DetailsCompanyShipmentPopup';
+import BulkImportShipmentsPopup from './BulkImportShipmentsPopup';
 import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
 import ErrorMessege from '@/components/ui/ErrorMessege';
 import EmptyData from '@/components/ui/EmptyData';
@@ -28,7 +29,8 @@ import {
     LuReceipt,
     LuBox,
     LuCalendar,
-    LuFilter
+    LuFilter,
+    LuUpload
 } from 'react-icons/lu';
 
 export default function CompanyShipments() {
@@ -46,6 +48,7 @@ export default function CompanyShipments() {
 
     // 3. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
+    const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
     const [selectedShipmentForEdit, setSelectedShipmentForEdit] = useState<any | null>(null);
     const [selectedShipmentForDetails, setSelectedShipmentForDetails] = useState<any | null>(null);
     const [selectedShipmentForDelete, setSelectedShipmentForDelete] = useState<any | null>(null);
@@ -243,8 +246,16 @@ export default function CompanyShipments() {
                     </button>
 
                     <button
+                        onClick={() => setIsBulkImportOpen(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold hover:shadow-md transition-all cursor-pointer"
+                    >
+                        <LuUpload className="w-4 h-4" />
+                        <span>استيراد شحنات من Excel</span>
+                    </button>
+
+                    <button
                         onClick={() => setIsAddOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
                         <span>إنشاء شحنة جديدة</span>
@@ -537,6 +548,11 @@ export default function CompanyShipments() {
             <AddCompanyShipmentPopup
                 isOpen={isAddOpen}
                 onClose={() => setIsAddOpen(false)}
+            />
+
+            <BulkImportShipmentsPopup
+                isOpen={isBulkImportOpen}
+                onClose={() => setIsBulkImportOpen(false)}
             />
 
             <EditCompanyShipmentPopup
