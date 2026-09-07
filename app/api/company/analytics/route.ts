@@ -102,9 +102,9 @@ export async function GET(req: NextRequest) {
             };
         }
 
-        // -------------------------------------------------------------
-        // TAB 0: SUMMARY (Fixed Executive Top Cards)
-        // -------------------------------------------------------------
+
+        //  SUMMARY (Fixed Executive Top Cards)
+
         if (tab === "summary") {
             const [
                 currentInvoices,
@@ -158,9 +158,9 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        // -------------------------------------------------------------
-        // TAB 1: FINANCIAL (الإيرادات والتحصيل)
-        // -------------------------------------------------------------
+
+        //  FINANCIAL (الإيرادات والتحصيل)
+
         if (tab === "financial") {
             const invoices = await Invoice.find(invoiceBase).lean();
 
@@ -213,9 +213,9 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        // -------------------------------------------------------------
-        // TAB 2: OPERATIONAL (التشغیلي والأسطول)
-        // -------------------------------------------------------------
+
+        //  OPERATIONAL (التشغیلي والأسطول)
+
         if (tab === "operational") {
             const [shipments, invoices, expenses] = await Promise.all([
                 Shipment.find(shipmentBase).select("customerPrice shippingCost originCity vehicleId createdAt").lean(),
@@ -255,9 +255,9 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        // -------------------------------------------------------------
-        // TAB 3: EXPENSES (المصروفات والنفقات)
-        // -------------------------------------------------------------
+
+        //  EXPENSES (المصروفات والنفقات)
+
         if (tab === "expenses") {
             const [expenses, shipments] = await Promise.all([
                 Expense.find(expenseBase).lean(),
@@ -303,9 +303,9 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        // -------------------------------------------------------------
-        // TAB 4: TAX (الضريبي - ZATCA VAT Report)
-        // -------------------------------------------------------------
+
+        //  TAX (الضريبي - ZATCA VAT Report)
+
         if (tab === "tax") {
             const [invoices, expenses, company] = await Promise.all([
                 Invoice.find(invoiceBase).select("subtotal vatAmount total taxRateSnapshot").lean(),
