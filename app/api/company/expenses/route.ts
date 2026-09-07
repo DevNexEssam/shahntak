@@ -8,7 +8,7 @@ import Expense from "@/models/expense";
 import Company from "@/models/companies";
 import { createExpenseSchema } from "@/lib/validations/expense.schema";
 
-// GET /api/company/expenses - List company expenses with pagination & search
+// GET
 export async function GET(req: NextRequest) {
     try {
         await connectDB();
@@ -117,7 +117,7 @@ export async function GET(req: NextRequest) {
     }
 }
 
-// POST /api/company/expenses - Create new expense
+// POST
 export async function POST(req: NextRequest) {
     try {
         await connectDB();
