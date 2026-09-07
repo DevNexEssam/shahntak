@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
                 .map((id) => new mongoose.Types.ObjectId(id));
 
             if (validOrderObjectIds.length > 0) {
-                // Scenarios 8, 9, 10: Enforce Tenant Isolation, City Matching & Non-Grouped Status Check
+                // update linked orders
                 await Order.updateMany(
                     {
                         _id: { $in: validOrderObjectIds },

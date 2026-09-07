@@ -255,8 +255,8 @@ export default function CompanyInvoices() {
                         <button
                             onClick={handlePresetToday}
                             className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'today'
-                                    ? 'bg-accent text-accent-foreground shadow-xs'
-                                    : 'text-body hover:text-heading'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
                                 }`}
                         >
                             اليوم (تلقائي)
@@ -264,8 +264,8 @@ export default function CompanyInvoices() {
                         <button
                             onClick={handlePresetMonth}
                             className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'month'
-                                    ? 'bg-accent text-accent-foreground shadow-xs'
-                                    : 'text-body hover:text-heading'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
                                 }`}
                         >
                             هذا الشهر
@@ -273,8 +273,8 @@ export default function CompanyInvoices() {
                         <button
                             onClick={handlePresetAll}
                             className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'all'
-                                    ? 'bg-accent text-accent-foreground shadow-xs'
-                                    : 'text-body hover:text-heading'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
                                 }`}
                         >
                             جميع الفترات
@@ -386,8 +386,8 @@ export default function CompanyInvoices() {
                 <button
                     onClick={() => setActiveTab('invoices')}
                     className={`flex items-center gap-2.5 px-5 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer ${activeTab === 'invoices'
-                            ? 'border-accent text-accent bg-accent/5'
-                            : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
+                        ? 'border-accent text-accent bg-accent/5'
+                        : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
                         }`}
                 >
                     <LuReceipt className="w-4 h-4" />
@@ -400,8 +400,8 @@ export default function CompanyInvoices() {
                 <button
                     onClick={() => setActiveTab('expenses')}
                     className={`flex items-center gap-2.5 px-5 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer ${activeTab === 'expenses'
-                            ? 'border-rose-600 text-rose-600 bg-rose-500/5'
-                            : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
+                        ? 'border-rose-600 text-rose-600 bg-rose-500/5'
+                        : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
                         }`}
                 >
                     <LuCoins className="w-4 h-4" />
@@ -414,8 +414,8 @@ export default function CompanyInvoices() {
                 <button
                     onClick={() => setActiveTab('analytics')}
                     className={`flex items-center gap-2.5 px-5 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer ${activeTab === 'analytics'
-                            ? 'border-accent text-accent bg-accent/5'
-                            : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
+                        ? 'border-accent text-accent bg-accent/5'
+                        : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
                         }`}
                 >
                     <LuChartPie className="w-4 h-4" />
@@ -423,12 +423,12 @@ export default function CompanyInvoices() {
                 </button>
             </div>
 
-            {/* TAB 3: ANALYTICS DASHBOARD */}
+            {/*  ANALYTICS DASHBOARD */}
             {activeTab === 'analytics' && (
                 <CompanyAnalyticsDashboard />
             )}
 
-            {/* TAB 1: INVOICES TAB */}
+            {/*  INVOICES TAB */}
             {activeTab === 'invoices' && (
                 <div className="space-y-4 animate-in fade-in duration-150">
 
@@ -568,7 +568,7 @@ export default function CompanyInvoices() {
                 </div>
             )}
 
-            {/* TAB 2: EXPENSES TAB */}
+            {/*  EXPENSES TAB */}
             {activeTab === 'expenses' && (
                 <div className="space-y-4 animate-in fade-in duration-150">
 

@@ -155,8 +155,8 @@ export default function CompanyAnalyticsDashboard() {
                         <button
                             onClick={handlePresetToday}
                             className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'today'
-                                    ? 'bg-accent text-accent-foreground shadow-xs'
-                                    : 'text-body hover:text-heading'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
                                 }`}
                         >
                             اليوم (تلقائي)
@@ -164,8 +164,8 @@ export default function CompanyAnalyticsDashboard() {
                         <button
                             onClick={handlePresetMonth}
                             className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'month'
-                                    ? 'bg-accent text-accent-foreground shadow-xs'
-                                    : 'text-body hover:text-heading'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
                                 }`}
                         >
                             هذا الشهر
@@ -173,8 +173,8 @@ export default function CompanyAnalyticsDashboard() {
                         <button
                             onClick={handlePresetAll}
                             className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'all'
-                                    ? 'bg-accent text-accent-foreground shadow-xs'
-                                    : 'text-body hover:text-heading'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
                                 }`}
                         >
                             جميع الفترات
@@ -309,8 +309,8 @@ export default function CompanyAnalyticsDashboard() {
                 <button
                     onClick={() => setActiveTab('financial')}
                     className={`flex items-center gap-2.5 px-5 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer ${activeTab === 'financial'
-                            ? 'border-accent text-accent bg-accent/5'
-                            : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
+                        ? 'border-accent text-accent bg-accent/5'
+                        : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
                         }`}
                 >
                     <LuReceipt className="w-4 h-4" />
@@ -320,8 +320,8 @@ export default function CompanyAnalyticsDashboard() {
                 <button
                     onClick={() => setActiveTab('operational')}
                     className={`flex items-center gap-2.5 px-5 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer ${activeTab === 'operational'
-                            ? 'border-accent text-accent bg-accent/5'
-                            : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
+                        ? 'border-accent text-accent bg-accent/5'
+                        : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
                         }`}
                 >
                     <LuTruck className="w-4 h-4" />
@@ -331,8 +331,8 @@ export default function CompanyAnalyticsDashboard() {
                 <button
                     onClick={() => setActiveTab('expenses')}
                     className={`flex items-center gap-2.5 px-5 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer ${activeTab === 'expenses'
-                            ? 'border-accent text-accent bg-accent/5'
-                            : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
+                        ? 'border-accent text-accent bg-accent/5'
+                        : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
                         }`}
                 >
                     <LuCoins className="w-4 h-4" />
@@ -342,8 +342,8 @@ export default function CompanyAnalyticsDashboard() {
                 <button
                     onClick={() => setActiveTab('tax')}
                     className={`flex items-center gap-2.5 px-5 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer ${activeTab === 'tax'
-                            ? 'border-accent text-accent bg-accent/5'
-                            : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
+                        ? 'border-accent text-accent bg-accent/5'
+                        : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
                         }`}
                 >
                     <LuShieldCheck className="w-4 h-4" />
@@ -358,7 +358,7 @@ export default function CompanyAnalyticsDashboard() {
                 <div className="animate-in fade-in duration-200">
 
                     {/* ======================================================== */}
-                    {/* TAB 1: FINANCIAL (المالي) */}
+                    {/*  FINANCIAL (المالي) */}
                     {/* ======================================================== */}
                     {activeTab === 'financial' && (
                         <div className="space-y-6">
@@ -422,7 +422,7 @@ export default function CompanyAnalyticsDashboard() {
                     )}
 
                     {/* ======================================================== */}
-                    {/* TAB 2: OPERATIONAL (التشغيلي والأسطول) */}
+                    {/*  OPERATIONAL (التشغيلي والأسطول) */}
                     {/* ======================================================== */}
                     {activeTab === 'operational' && (
                         <div className="space-y-6">
@@ -474,7 +474,7 @@ export default function CompanyAnalyticsDashboard() {
                     )}
 
                     {/* ======================================================== */}
-                    {/* TAB 3: EXPENSES (المصروفات) */}
+                    {/*  EXPENSES (المصروفات) */}
                     {/* ======================================================== */}
                     {activeTab === 'expenses' && (
                         <div className="space-y-6">
@@ -557,7 +557,7 @@ export default function CompanyAnalyticsDashboard() {
                     )}
 
                     {/* ======================================================== */}
-                    {/* TAB 4: TAX (ZATCA الإقرار الضريبي) */}
+                    {/*  TAX (ZATCA الإقرار الضريبي) */}
                     {/* ======================================================== */}
                     {activeTab === 'tax' && (
                         <div className="space-y-6">
