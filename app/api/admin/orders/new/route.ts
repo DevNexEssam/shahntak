@@ -136,10 +136,10 @@ export async function POST(req: Request) {
         // Mandatory auto-generation of orderNumber based on sequential order count in database
         const count = await Order.countDocuments();
         let seq = count + 1;
-        let finalOrderNumber = `ORD-${String(seq).padStart(5, "0")}`;
+        let finalOrderNumber = `ORD-${String(seq).padStart(4, "0")}`;
         while (await Order.findOne({ orderNumber: finalOrderNumber }).lean()) {
             seq++;
-            finalOrderNumber = `ORD-${String(seq).padStart(5, "0")}`;
+            finalOrderNumber = `ORD-${String(seq).padStart(4, "0")}`;
         }
 
         const newOrder = await Order.create({

@@ -105,3 +105,24 @@ export const useDeleteCompanyOrder = () => {
         },
     });
 };
+
+// Bulk Import Company Orders Mutation
+export const useBulkImportCompanyOrders = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: companyOrderServices.bulkImportOrders,
+        onSuccess: (response) => {
+            if (response.success) {
+                toast.success(response.message || "تم استيراد الطلبات بنجاح");
+                queryClient.invalidateQueries({ queryKey: COMPANY_ORDER_KEYS.lists() });
+            } else {
+                toast.error(response.message || "حدث خطأ أثناء الاستيراد");
+            }
+        },
+        onError: (error: any) => {
+            const message = error.response?.data?.message || error.message || "حدث خطأ أثناء الاستيراد";
+            toast.error(message);
+        },
+    });
+};

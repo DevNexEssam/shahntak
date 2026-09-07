@@ -7,6 +7,7 @@ import AddCompanyOrderPopup from './AddCompanyOrderPopup';
 import EditCompanyOrderPopup from './EditCompanyOrderPopup';
 import DetailsCompanyOrderPopup from './DetailsCompanyOrderPopup';
 import GroupCompanyOrdersPopup from './GroupCompanyOrdersPopup';
+import BulkImportOrdersPopup from './BulkImportOrdersPopup';
 import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
 import ErrorMessege from '@/components/ui/ErrorMessege';
 import EmptyData from '@/components/ui/EmptyData';
@@ -27,7 +28,8 @@ import {
     LuMapPin,
     LuLayers,
     LuCalendar,
-    LuX
+    LuX,
+    LuFileSpreadsheet
 } from 'react-icons/lu';
 
 export default function CompanyOrders() {
@@ -44,6 +46,7 @@ export default function CompanyOrders() {
 
     // 3. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
+    const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
     const [isGroupShipmentOpen, setIsGroupShipmentOpen] = useState(false);
     const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
     const [selectedOrderForEdit, setSelectedOrderForEdit] = useState<any | null>(null);
@@ -190,8 +193,16 @@ export default function CompanyOrders() {
                     </button>
 
                     <button
+                        onClick={() => setIsBulkImportOpen(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent-soft text-accent text-xs font-bold hover:bg-accent hover:text-white transition-all cursor-pointer border border-accent/20"
+                    >
+                        <LuFileSpreadsheet className="w-4 h-4" />
+                        <span>استيراد من Excel</span>
+                    </button>
+
+                    <button
                         onClick={() => setIsAddOpen(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
                         <span>إضافة طلب جديد</span>
@@ -539,6 +550,11 @@ export default function CompanyOrders() {
             <AddCompanyOrderPopup
                 isOpen={isAddOpen}
                 onClose={() => setIsAddOpen(false)}
+            />
+
+            <BulkImportOrdersPopup
+                isOpen={isBulkImportOpen}
+                onClose={() => setIsBulkImportOpen(false)}
             />
 
             <GroupCompanyOrdersPopup

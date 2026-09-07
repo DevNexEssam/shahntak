@@ -126,10 +126,10 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         رقم الطلب
                                     </label>
                                     <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent font-latin flex items-center justify-between">
-                                        <span>توليد تلقائي فريد (ORD-XXXXX)</span>
+                                        <span>توليد تلقائي فريد (ORD-0001)</span>
                                         <span className="text-[10px] px-2 py-0.5 rounded-md bg-accent-soft text-accent font-bold">توليد تلقائي إجباري</span>
                                     </div>
-                                    <span className="text-[11px] text-body/70 block">يُنشأ كود الطلب تلقائياً من الخادم بالنمط التسلسلي <b>ORD-XXXXX</b> بناءً على الطلبات المنشأة</span>
+                                    <span className="text-[11px] text-body/70 block">يُنشأ كود الطلب تلقائياً من الخادم بالنمط التسلسلي <b>ORD-0001</b> بناءً على الطلبات المنشأة</span>
                                 </div>
 
                                 <div className="space-y-1.5">

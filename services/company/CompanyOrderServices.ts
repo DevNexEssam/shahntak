@@ -34,5 +34,10 @@ export const companyOrderServices = {
     deleteOrder: async ({ id }: { id: string }): Promise<any> => {
         const { data } = await axios.delete(`/api/company/orders/${id}`);
         return data;
+    },
+
+    bulkImportOrders: async (orders: any[]): Promise<any> => {
+        const { data } = await axios.post("/api/company/orders/bulk", { orders });
+        return data;
     }
 };

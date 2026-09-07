@@ -54,7 +54,14 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
 
         if (!body.orderNumber || body.orderNumber.trim() === "") {
-            body.orderNumber = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+            const count = await Order.countDocuments();
+            let seq = count + 1;
+            let autoNum = `ORD-${String(seq).padStart(4, "0")}`;
+            while (await Order.findOne({ orderNumber: autoNum }).lean()) {
+                seq++;
+                autoNum = `ORD-${String(seq).padStart(4, "0")}`;
+            }
+            body.orderNumber = autoNum;
         }
 
         body.companyId = activeCompanyId.toString();

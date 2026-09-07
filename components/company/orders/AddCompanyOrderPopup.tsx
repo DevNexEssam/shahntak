@@ -134,10 +134,10 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                     رقم الطلب
                                 </label>
                                 <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent font-latin flex items-center justify-between">
-                                    <span>توليد تلقائي فريد (ORD-XXXXX)</span>
+                                    <span>توليد تلقائي فريد (ORD-0001)</span>
                                     <span className="text-[10px] px-2 py-0.5 rounded-md bg-accent-soft text-accent font-bold">توليد تلقائي آلي</span>
                                 </div>
-                                <span className="text-[11px] text-body/70 block">يُنشأ كود الطلب تلقائياً من الخادم بالنمط التسلسلي <b>ORD-XXXXX</b> لحساب شحنات شركتك</span>
+                                <span className="text-[11px] text-body/70 block">يُنشأ كود الطلب تلقائياً من الخادم بالنمط التسلسلي <b>ORD-0001</b> لحساب شحنات شركتك</span>
                             </div>
                         </div>
 
