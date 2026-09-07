@@ -123,7 +123,7 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        // Scenario 8: Block Route edits once goods are picked up / in transit
+        // block route edits in transit
         const inTransitStates = ["picked_up", "in_transit", "arrived", "out_for_delivery"];
         if (inTransitStates.includes(shipment.status)) {
             if (
@@ -163,7 +163,7 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        // Scenario 5: Prevent Jumping directly from delivery_failed to delivered without re-attempt
+        // check delivery retry state
         if (shipment.status === "delivery_failed" && newStatus === "delivered") {
             return NextResponse.json(
                 { success: false, message: "لا يمكن تحويل شحنة فاشلة التوصيل مباشرة إلى تم التوصيل دون خروجها للتوصيل مجدداً" },
@@ -216,7 +216,7 @@ export async function PUT(req: NextRequest) {
                 { $set: { status: "shipped" } }
             );
         } else if (newStatus === "cancelled") {
-            // Scenario 6: Reset attached orders back to pending when shipment is cancelled
+            // reset attached orders
             await Order.updateMany(
                 { shipmentId: id, companyId: new mongoose.Types.ObjectId(activeCompanyId), deletedAt: null },
                 { $set: { shipmentId: null, status: "pending" } }
@@ -302,7 +302,7 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        // Scenario 2: Restrict deleting active in-transit or delivered shipments
+        // check deletion state
         const activeShipmentStates = ["delivered", "in_transit", "out_for_delivery"];
         if (activeShipmentStates.includes(shipment.status)) {
             return NextResponse.json(
