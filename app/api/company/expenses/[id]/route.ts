@@ -7,7 +7,6 @@ import { connectDB } from "@/lib/mongodb";
 import Expense from "@/models/expense";
 import { updateExpenseSchema } from "@/lib/validations/expense.schema";
 
-// PUT /api/company/expenses/[id] - Edit existing expense
 export async function PUT(
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
@@ -99,7 +98,7 @@ export async function PUT(
     }
 }
 
-// DELETE /api/company/expenses/[id] - Soft delete expense
+// DELETE
 export async function DELETE(
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
