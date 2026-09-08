@@ -1,35 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  /* الأساسي */
   --color-primary: #000000;
   --color-primary-foreground: #ffffff;
 
-  /* المميز */
   --color-accent: #7444fd;
   --color-accent-foreground: #ffffff;
   --color-accent-soft: #efe9ff;
   --color-lime: #77D725;
   --color-gold: #EFB828;
 
-  /* ألوان ثانوية */
   --color-warning: #f3ba0e;
   --color-warning-soft: #fff4d9;
   --color-success: #70d715;
   --color-success-soft: #e6fbd4;
 
-  /* النصوص */
   --color-heading: #1f1f1f;
   --color-body: #5c6574;
 
-  /* السطوح والحدود */
   --color-surface: #ffffff;
   --color-surface-muted: #f8f8f8;
   --color-border: #e0e0e0;
 
-  /* الخطوط */
   --font-arabic: "Cairo", "IBM Plex Sans Arabic", sans-serif;
   --font-latin: "DM Sans", sans-serif;
+  --font-secondary: "DM Sans", sans-serif;
 }
 
 @layer base {
@@ -52,7 +47,61 @@
   }
 }
 
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium text-sm transition-all duration-200 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-6 py-3 rounded-lg font-medium text-sm transition-all duration-200 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 border border-border bg-surface text-heading px-6 py-3 rounded-lg font-medium text-sm transition-all duration-200 hover:border-heading hover:bg-surface-muted active:scale-[0.98];
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-secondary font-medium;
+  }
+
+  .badge-success {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-secondary font-medium bg-success-soft text-heading;
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-secondary font-medium bg-warning-soft text-heading;
+  }
+
+  .badge-accent {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-secondary font-medium bg-accent-soft text-heading;
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(224, 224, 224, 0.6) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(224, 224, 224, 0.6) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .card {
+    @apply bg-surface border border-border rounded-xl transition-all duration-300;
+  }
+
+  .container-narrow {
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent to-heading;
+  }
+
+  .section-padding {
+    @apply py-20 px-4 sm:px-6 lg:px-8;
+  }
+}
+
 @media print {
+
   header,
   aside,
   nav,
@@ -67,5 +116,4 @@
     color: #000000 !important;
     overflow: visible !important;
   }
-
 }
