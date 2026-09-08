@@ -1,108 +1,152 @@
-import React from 'react';
-import Link from 'next/link';
-import { FaCheck } from 'react-icons/fa6';
+import { FaCheck, FaArrowRight, FaStar } from 'react-icons/fa';
 
-export const Pricing: React.FC = () => {
+const plans = [
+  {
+    name: 'المبتدئ',
+    description: 'لشركات الشحن الصغيرة التي تبدأ عملياتها الرقمية.',
+    price: '٤٩٩',
+    period: '/شهر',
+    badge: null,
+    features: [
+      'حتى ٥٠٠ شحنة / شهر',
+      'إدارة الأسطول والمسارات',
+      'لوحة تحليلات أساسية',
+      '٥ أعضاء فريق',
+      'دعم عبر البريد الإلكتروني',
+    ],
+    cta: 'ابدأ الآن',
+    ctaStyle: 'outline',
+    highlighted: false,
+  },
+  {
+    name: 'المحترف',
+    description: 'للشركات المتنامية التي تحتاج إلى أتمتة لوجستية وفوترة كاملة.',
+    price: '١٬٢٩٩',
+    period: '/شهر',
+    badge: 'الأكثر شيوعاً',
+    features: [
+      'حتى ٥٬٠٠٠ شحنة / شهر',
+      'جميع ميزات المبتدئ مشمولة',
+      'فوترة متوافقة مع هيئة الزكاة (١٥٪ / ٠٪)',
+      'استيراد وتصدير مجمّع عبر Excel',
+      'تحليلات وتقارير متقدمة',
+      '٢٠ عضو فريق',
+      'دعم أولوي',
+    ],
+    cta: 'اطلب عرضاً توضيحياً',
+    ctaStyle: 'accent',
+    highlighted: true,
+  },
+  {
+    name: 'الشركات',
+    description: 'للأسطول الكبير والعمليات متعددة الفروع ذات الاحتياجات المخصصة.',
+    price: 'مخصص',
+    period: '',
+    badge: null,
+    features: [
+      'شحنات غير محدودة',
+      'جميع ميزات المحترف مشمولة',
+      'إدارة متعددة الفروع',
+      'تكاملات مخصصة ووصول API',
+      'مدير حساب مخصص',
+      'أعضاء فريق غير محدودين',
+      'دعم على مدار الساعة عبر الهاتف والبريد الإلكتروني',
+    ],
+    cta: 'تواصل مع المبيعات',
+    ctaStyle: 'outline',
+    highlighted: false,
+  },
+];
+
+export default function Pricing() {
   return (
-    <section className="py-[100px]" id="pricing">
-      <div className="max-w-[1240px] mx-auto px-6">
-        
-        <div className="max-w-[640px] mx-auto text-center mb-14">
-          <span className="text-accent font-extrabold text-[13.5px] tracking-[0.5px] mb-3.5 block">
-            الأسعار
+    <section id="pricing" className="section-padding bg-surface-muted relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-accent-soft rounded-full blur-[150px] opacity-40" />
+
+      <div className="container-narrow relative">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <span className="text-sm font-semibold uppercase tracking-widest text-accent">
+             خطط الأسعار
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-heading tracking-[-0.4px] mb-3.5">
-            خطط تناسب حجم شركتك
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-heading tracking-tight mb-4">
+            أسعار بسيطة وشفافة
           </h2>
-          <p className="text-[16.5px] text-body">
-            ابدأ مجاناً، وارتقِ بخطتك مع نمو عملياتك. جميع الأسعار بالريال السعودي.
+          <p className="text-lg text-body leading-relaxed">
+            اختر الخطة التي تناسب حجم شركتك. قم بالترقية أو التخفيض في أي وقت —
+            بدون عقود طويلة الأجل.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-[420px] lg:max-w-none mx-auto items-stretch">
-          {/* Starter Tier */}
-          <div className="bg-surface border-[1.5px] border-border rounded-[24px] p-[36px_30px] flex flex-col transition-all duration-300 hover:-translate-y-1.5">
-            <h3 className="text-[19px] font-extrabold text-heading mb-1.5">البداية</h3>
-            <p className="text-[13.5px] text-body mb-[22px]">لشركات الشحن الناشئة وفرع واحد</p>
-            
-            <div className="flex items-baseline gap-1.5 mb-[26px]">
-              <b className="font-latin text-[42px] font-bold text-heading">٢٩٩</b>
-              <span className="text-sm font-semibold text-body">ر.س / شهرياً</span>
-            </div>
-
-            <ul className="mb-[30px] flex-grow space-y-[13px]">
-              {['حتى ٣٠٠ طلب شهرياً', 'فرع واحد و٥ سائقين', 'تتبع لحظي أساسي', 'فوترة تلقائية'].map((feat, i) => (
-                <li key={i} className="flex items-center gap-2.5 text-[14.5px] text-body">
-                  <span className="w-[18px] h-[18px] rounded-full bg-success-soft text-success flex items-center justify-center shrink-0">
-                    <FaCheck className="w-2.5 h-2.5" />
+        <div className="grid lg:grid-cols-3 gap-6">
+          {plans.map((plan, idx) => (
+            <div
+              key={plan.name}
+              className={`relative card p-7 transition-all duration-300 ${plan.highlighted
+                ? 'border-accent shadow-lg lg:scale-[1.03] bg-surface'
+                : 'hover:shadow-lg hover:border-border'
+                }`}
+              style={{ transitionDelay: `${idx * 100}ms` }}
+            >
+              {plan.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="badge-accent text-xs px-4 py-1.5 shadow-sm">
+                    <FaStar className="w-3 h-3 text-accent" />
+                    {plan.badge}
                   </span>
-                  <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
+                </div>
+              )}
 
-            <Link href="#" className="w-full inline-flex items-center justify-center py-3.5 rounded-full border-[1.5px] border-border text-heading hover:border-heading font-bold text-[15px] transition-colors">
-              ابدأ مجاناً
-            </Link>
-          </div>
+              <h3 className="text-xl font-semibold text-heading mb-2">{plan.name}</h3>
+              <p className="text-sm text-body leading-relaxed mb-5 min-h-[40px]">
+                {plan.description}
+              </p>
 
-          {/* Pro / Featured Tier */}
-          <div className="bg-heading border-[1.5px] border-heading rounded-[24px] p-[36px_30px] flex flex-col text-white shadow-[0_40px_70px_-25px_rgba(0,0,0,0.35)] relative transition-all duration-300 hover:-translate-y-1.5">
-            <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-accent text-white text-[12.5px] font-bold px-[18px] py-1.5 rounded-full whitespace-nowrap">
-              الأكثر طلباً
-            </span>
-            
-            <h3 className="text-[19px] font-extrabold text-white mb-1.5">النمو</h3>
-            <p className="text-[13.5px] text-white/60 mb-[22px]">لشركات الشحن متعددة الفروع</p>
-            
-            <div className="flex items-baseline gap-1.5 mb-[26px]">
-              <b className="font-latin text-[42px] font-bold text-white">٧٩٩</b>
-              <span className="text-sm font-semibold text-white/55">ر.س / شهرياً</span>
+              <div className="flex items-baseline gap-1 mb-1">
+                {plan.price !== 'مخصص' && (
+                  <span className="text-lg font-secondary font-medium text-body">ر.س</span>
+                )}
+                <span className="text-4xl font-bold text-heading font-secondary tracking-tight">
+                  {plan.price}
+                </span>
+                {plan.period && (
+                  <span className="text-sm text-body">{plan.period}</span>
+                )}
+              </div>
+              <p className="text-xs text-body mb-6">
+                {plan.price === 'مخصص' ? 'مصمم حسب احتياجاتك' : 'فوترة شهرية، إلغاء في أي وقت'}
+              </p>
+
+              <a
+                href="#cta"
+                className={`w-full mb-6 ${plan.ctaStyle === 'accent' ? 'btn-accent' : 'btn-outline'}`}
+              >
+                {plan.cta}
+                <FaArrowRight className="w-4 h-4" />
+              </a>
+
+              <ul className="space-y-3">
+                {plan.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2.5 text-sm text-body">
+                    <div
+                      className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${plan.highlighted ? 'bg-accent-soft' : 'bg-surface-muted'
+                        }`}
+                    >
+                      <FaCheck
+                        className={`w-3 h-3 ${plan.highlighted ? 'text-accent' : 'text-heading'}`}
+                      />
+                    </div>
+                    {f}
+                  </li>
+                ))}
+              </ul>
             </div>
-
-            <ul className="mb-[30px] flex-grow space-y-[13px]">
-              {['طلبات غير محدودة', 'حتى ١٠ فروع و٥٠ سائق', 'تتبع لحظي متقدم + خرائط', 'تقارير أداء تفصيلية', 'دعم فني مخصص'].map((feat, i) => (
-                <li key={i} className="flex items-center gap-2.5 text-[14.5px] text-white/80">
-                  <span className="w-[18px] h-[18px] rounded-full bg-white/15 text-white flex items-center justify-center shrink-0">
-                    <FaCheck className="w-2.5 h-2.5" />
-                  </span>
-                  <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Link href="#" className="w-full inline-flex items-center justify-center py-3.5 rounded-full bg-accent text-white font-bold text-[15px] hover:shadow-[0_12px_28px_rgba(116,68,253,0.4)] transition-all">
-              ابدأ الآن
-            </Link>
-          </div>
-
-          {/* Enterprise Tier */}
-          <div className="bg-surface border-[1.5px] border-border rounded-[24px] p-[36px_30px] flex flex-col transition-all duration-300 hover:-translate-y-1.5">
-            <h3 className="text-[19px] font-extrabold text-heading mb-1.5">المؤسسات</h3>
-            <p className="text-[13.5px] text-body mb-[22px]">لشركات الشحن الكبرى والشبكات الوطنية</p>
-            
-            <div className="flex items-baseline gap-1.5 mb-[26px]">
-              <b className="font-latin text-[42px] font-bold text-heading">مخصص</b>
-            </div>
-
-            <ul className="mb-[30px] flex-grow space-y-[13px]">
-              {['فروع وسائقين غير محدودين', 'واجهة API مخصصة', 'إدارة صلاحيات متقدمة', 'مدير حساب مخصص'].map((feat, i) => (
-                <li key={i} className="flex items-center gap-2.5 text-[14.5px] text-body">
-                  <span className="w-[18px] h-[18px] rounded-full bg-success-soft text-success flex items-center justify-center shrink-0">
-                    <FaCheck className="w-2.5 h-2.5" />
-                  </span>
-                  <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Link href="#" className="w-full inline-flex items-center justify-center py-3.5 rounded-full border-[1.5px] border-border text-heading hover:border-heading font-bold text-[15px] transition-colors">
-              تواصل مع المبيعات
-            </Link>
-          </div>
+          ))}
         </div>
 
+        <p className="text-center text-sm text-body mt-10">
+          جميع الخطط تشمل نسخة تجريبية مجانية لمدة ١٤ يوماً. لا حاجة لبطاقة ائتمان.
+        </p>
       </div>
     </section>
   );
-};
+}
