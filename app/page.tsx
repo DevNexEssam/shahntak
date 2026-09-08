@@ -1,16 +1,12 @@
 import React from 'react';
 import { Navbar } from '@/components/home/Navbar';
-import { Features } from '@/components/home/Features';
-import { Integrations } from '@/components/home/Integrations';
-import { HowItWorks } from '@/components/home/HowItWorks';
-import { Stats } from '@/components/home/Stats';
-import { Security } from '@/components/home/Security';
-import { Pricing } from '@/components/home/Pricing';
-import { Testimonials } from '@/components/home/Testimonials';
+import Features from '@/components/home/Features';
+import HowItWorks from '@/components/home/HowItWorks';
+import Pricing from '@/components/home/Pricing';
 import { Faq } from '@/components/home/FAQ';
-import { FinalCta } from '@/components/home/FinalCTA';
-import { Footer } from '@/components/home/Footer';
-import { Hero } from '@/components/home/Hero';
+import Footer  from '@/components/home/Footer';
+import Hero from '@/components/home/Hero';
+import CTA from '@/components/home/Cta';
 
 export default function HomePage() {
   return (
@@ -19,14 +15,15 @@ export default function HomePage() {
       <main>
         <Hero />
         <Features />
-        <Integrations />
         <HowItWorks />
+        <Pricing />
+        {/* <Integrations />
         <Stats />
         <Security />
-        <Pricing />
-        <Testimonials />
+        <Testimonials /> */}
         <Faq />
-        <FinalCta />
+        <CTA />
+        {/* <FinalCta /> */}
       </main>
       <Footer />
     </div>
