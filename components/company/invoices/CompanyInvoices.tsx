@@ -33,8 +33,11 @@ import {
     LuTrendingDown,
     LuTag,
     LuCalendar,
-    LuFilter
+    LuFilter,
+    LuDownload,
+    LuLoader
 } from 'react-icons/lu';
+import { InvoicePDFDocument } from './InvoicePDFDocument';
 
 export default function CompanyInvoices() {
     // 0. Active Tab State ('invoices' | 'expenses')
@@ -60,6 +63,7 @@ export default function CompanyInvoices() {
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
     const [selectedExpenseForEdit, setSelectedExpenseForEdit] = useState<any | null>(null);
     const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
+    const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(null);
 
     // 4. React Query Hooks with Date Range Filtering
     const {
@@ -177,6 +181,29 @@ export default function CompanyInvoices() {
     const handlePrintInvoice = (inv: any) => {
         toast.success(`جاري طباعة الفاتورة (${inv.invoiceNumber})...`);
         window.print();
+    };
+
+    const handleDownloadPdf = async (inv: any) => {
+        try {
+            setDownloadingInvoiceId(inv._id);
+            toast.loading(`جاري تجهيز وتنزيل الفاتورة PDF (${inv.invoiceNumber})...`, { id: 'pdf-toast' });
+            const { pdf } = await import('@react-pdf/renderer');
+            const blob = await pdf(<InvoicePDFDocument invoiceData={inv} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Invoice_${inv.invoiceNumber || 'download'}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            toast.success(`تم تحميل الفاتورة (${inv.invoiceNumber}) بنجاح!`, { id: 'pdf-toast' });
+        } catch (err) {
+            console.error('Failed to generate PDF:', err);
+            toast.error('حدث خطأ أثناء إنشاء ملف الـ PDF', { id: 'pdf-toast' });
+        } finally {
+            setDownloadingInvoiceId(null);
+        }
     };
 
     return (
@@ -484,6 +511,19 @@ export default function CompanyInvoices() {
 
                                                     <td className="py-3.5 px-4 text-center">
                                                         <div className="flex items-center justify-center gap-1.5">
+                                                            <button
+                                                                onClick={() => handleDownloadPdf(inv)}
+                                                                disabled={downloadingInvoiceId === inv._id}
+                                                                title="تنزيل الفاتورة بصيغة PDF"
+                                                                className="p-2 rounded-md bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-600 border border-emerald-500/20 transition-all cursor-pointer disabled:opacity-50"
+                                                            >
+                                                                {downloadingInvoiceId === inv._id ? (
+                                                                    <LuLoader className="w-4 h-4 animate-spin" />
+                                                                ) : (
+                                                                    <LuDownload className="w-4 h-4" />
+                                                                )}
+                                                            </button>
+
                                                             <button
                                                                 onClick={() => handlePrintInvoice(inv)}
                                                                 title="طباعة الفاتورة"

@@ -89,6 +89,7 @@ export async function GET(req: NextRequest) {
 
         if (noPagination) {
             const invoices = await Invoice.find(filter)
+                .populate("companyId", "companyName taxNumber city address phone email vatRate vatExemptionReason")
                 .sort({ createdAt: -1 })
                 .lean();
 
@@ -104,6 +105,7 @@ export async function GET(req: NextRequest) {
 
         const [rawInvoices, total, draftCount, issuedCount, paidCount, overdueCount, cancelledCount] = await Promise.all([
             Invoice.find(filter)
+                .populate("companyId", "companyName taxNumber city address phone email vatRate vatExemptionReason")
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
@@ -121,7 +123,11 @@ export async function GET(req: NextRequest) {
                 const linkedShipment = await Shipment.findOne({
                     $or: [{ invoiceId: inv._id }, { _id: inv.shipmentId }],
                     deletedAt: null,
-                }).populate('routeId').lean();
+                })
+                    .populate("routeId")
+                    .populate("carrierId", "name phone email")
+                    .populate("vehicleId", "type capacityWeight plateNumber model year")
+                    .lean();
 
                 let shipPrice = linkedShipment ? Number(linkedShipment.customerPrice || linkedShipment.shippingCost || 0) : 0;
 

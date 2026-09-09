@@ -101,9 +101,10 @@ export async function GET(req: NextRequest) {
 
         if (noPagination) {
             const shipments = await Shipment.find(filter)
-                .populate("vehicleId", "type capacityWeight")
-                .populate("carrierId", "name phone")
-                .populate("routeId", "name origin destination")
+                .populate("companyId", "companyName taxNumber city address phone email")
+                .populate("vehicleId", "type capacityWeight plateNumber model year")
+                .populate("carrierId", "name phone email")
+                .populate("routeId", "name routeName origin destination basePrice distance estimatedHours")
                 .sort({ createdAt: -1 })
                 .lean();
 
@@ -119,9 +120,10 @@ export async function GET(req: NextRequest) {
 
         const [shipments, total, createdCount, inTransitCount, deliveredCount, cancelledCount] = await Promise.all([
             Shipment.find(filter)
-                .populate("vehicleId", "type capacityWeight")
-                .populate("carrierId", "name phone")
-                .populate("routeId", "name origin destination")
+                .populate("companyId", "companyName taxNumber city address phone email")
+                .populate("vehicleId", "type capacityWeight plateNumber model year")
+                .populate("carrierId", "name phone email")
+                .populate("routeId", "name routeName origin destination basePrice distance estimatedHours")
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)

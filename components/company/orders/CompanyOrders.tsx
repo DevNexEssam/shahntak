@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useCompanyOrders, useDeleteCompanyOrder } from '@/hooks/company/useCompanyOrder';
 import AddCompanyOrderPopup from './AddCompanyOrderPopup';
 import EditCompanyOrderPopup from './EditCompanyOrderPopup';
@@ -29,8 +30,12 @@ import {
     LuLayers,
     LuCalendar,
     LuX,
-    LuFileSpreadsheet
+    LuFileSpreadsheet,
+    LuDownload,
+    LuPrinter,
+    LuLoader
 } from 'react-icons/lu';
+import { OrderPDFDocument } from './OrderPDFDocument';
 
 export default function CompanyOrders() {
     // 1. Pagination & Search States
@@ -52,6 +57,7 @@ export default function CompanyOrders() {
     const [selectedOrderForEdit, setSelectedOrderForEdit] = useState<any | null>(null);
     const [selectedOrderForDetails, setSelectedOrderForDetails] = useState<any | null>(null);
     const [selectedOrderForDelete, setSelectedOrderForDelete] = useState<any | null>(null);
+    const [downloadingOrderId, setDownloadingOrderId] = useState<string | null>(null);
 
     // 4. Custom React Query Hook for Company Orders
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyOrders(page, limit, searchQuery, startDate, endDate);
@@ -110,6 +116,36 @@ export default function CompanyOrders() {
                 },
             }
         );
+    };
+
+    const handlePrintOrder = (order: any) => {
+        setSelectedOrderForDetails(order);
+        setTimeout(() => {
+            window.print();
+        }, 300);
+    };
+
+    const handleDownloadOrderPdf = async (order: any) => {
+        try {
+            setDownloadingOrderId(order._id);
+            toast.loading(`جاري تجهيز وتنزيل سند الطلب PDF (${order.orderNumber})...`, { id: 'order-pdf' });
+            const { pdf } = await import('@react-pdf/renderer');
+            const blob = await pdf(<OrderPDFDocument orderData={order} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Order_${order.orderNumber || 'download'}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            toast.success(`تم تحميل سند الطلب (${order.orderNumber}) بنجاح!`, { id: 'order-pdf' });
+        } catch (err) {
+            console.error('Failed to generate Order PDF:', err);
+            toast.error('حدث خطأ أثناء إنشاء سند الطلب PDF', { id: 'order-pdf' });
+        } finally {
+            setDownloadingOrderId(null);
+        }
     };
 
     const statusBadge = (status?: string) => {
@@ -483,6 +519,26 @@ export default function CompanyOrders() {
 
                                             <td className="py-3.5 px-4 text-center">
                                                 <div className="flex items-center justify-center gap-1.5">
+                                                    <button
+                                                        onClick={() => handleDownloadOrderPdf(ord)}
+                                                        disabled={downloadingOrderId === ord._id}
+                                                        title="تنزيل سند الطلب بصيغة PDF"
+                                                        className="p-2 rounded-md bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-600 border border-emerald-500/20 transition-all cursor-pointer disabled:opacity-40"
+                                                    >
+                                                        {downloadingOrderId === ord._id ? (
+                                                            <LuLoader className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <LuDownload className="w-4 h-4" />
+                                                        )}
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => handlePrintOrder(ord)}
+                                                        title="طباعة سند الطلب"
+                                                        className="p-2 rounded-md bg-accent-soft hover:bg-accent hover:text-white text-accent border border-accent/20 transition-all cursor-pointer"
+                                                    >
+                                                        <LuPrinter className="w-4 h-4" />
+                                                    </button>
                                                     <button
                                                         onClick={() => setSelectedOrderForDetails(ord)}
                                                         title="عرض التفاصيل"

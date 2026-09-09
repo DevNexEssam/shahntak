@@ -1,14 +1,17 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useCompanyShipmentById } from '@/hooks/company/useCompanyShipment';
 import {
     LuTruck,
     LuX,
     LuMapPin,
     LuCoins,
-    LuPrinter
+    LuPrinter,
+    LuDownload,
+    LuLoader
 } from 'react-icons/lu';
+import { WaybillPDFDocument } from './WaybillPDFDocument';
 
 interface DetailsCompanyShipmentPopupProps {
     isOpen?: boolean;
@@ -26,6 +29,8 @@ export default function DetailsCompanyShipmentPopup({
     const { data: detailResponse } = useCompanyShipmentById(shipmentData?._id || '');
     const activeShipment = detailResponse?.data || shipmentData;
 
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
     if (!isOpen || !activeShipment) return null;
 
     const handlePrintInvoice = () => {
@@ -33,6 +38,26 @@ export default function DetailsCompanyShipmentPopup({
             onPrintWaybill(activeShipment);
         } else {
             window.print();
+        }
+    };
+
+    const handleDownloadPdf = async () => {
+        try {
+            setIsGeneratingPdf(true);
+            const { pdf } = await import('@react-pdf/renderer');
+            const blob = await pdf(<WaybillPDFDocument shipmentData={activeShipment} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Waybill_${activeShipment.waybillNumber || activeShipment.shipmentNumber || 'details'}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Failed to generate Waybill PDF:', err);
+        } finally {
+            setIsGeneratingPdf(false);
         }
     };
 
@@ -187,16 +212,32 @@ export default function DetailsCompanyShipmentPopup({
                             )}
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={handlePrintInvoice}
-                            disabled={activeShipment.status === 'cancelled'}
-                            title={activeShipment.status === 'cancelled' ? 'لا يمكن طباعة بوليصة لشحنة ملغية' : 'طباعة بوليصة الشحن'}
-                            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                            <LuPrinter className="w-4 h-4" />
-                            <span>{activeShipment.status === 'cancelled' ? 'بوليصة ملغية' : 'طباعة البوليصة'}</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={handleDownloadPdf}
+                                disabled={isGeneratingPdf || activeShipment.status === 'cancelled'}
+                                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-xs cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                                {isGeneratingPdf ? (
+                                    <LuLoader className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <LuDownload className="w-4 h-4" />
+                                )}
+                                <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handlePrintInvoice}
+                                disabled={activeShipment.status === 'cancelled'}
+                                title={activeShipment.status === 'cancelled' ? 'لا يمكن طباعة بوليصة لشحنة ملغية' : 'طباعة بوليصة الشحن'}
+                                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                                <LuPrinter className="w-4 h-4" />
+                                <span>{activeShipment.status === 'cancelled' ? 'بوليصة ملغية' : 'طباعة البوليصة'}</span>
+                            </button>
+                        </div>
                     </div>
 
                     {/* Logistics Route & Carrier Box */}

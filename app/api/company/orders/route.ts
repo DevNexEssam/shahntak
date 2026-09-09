@@ -91,6 +91,7 @@ export async function GET(req: NextRequest) {
 
         if (noPagination) {
             const orders = await Order.find(filter)
+                .populate("companyId", "companyName taxNumber city address phone email")
                 .sort({ createdAt: -1 })
                 .lean();
 
@@ -105,7 +106,12 @@ export async function GET(req: NextRequest) {
         const skip = (page - 1) * limit;
 
         const [orders, total, pendingCount, shippedCount, deliveredCount, cancelledCount] = await Promise.all([
-            Order.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+            Order.find(filter)
+                .populate("companyId", "companyName taxNumber city address phone email")
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
             Order.countDocuments(filter),
             Order.countDocuments({ ...filter, status: "pending" }),
             Order.countDocuments({ ...filter, status: "shipped" }),

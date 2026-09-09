@@ -30,8 +30,11 @@ import {
     LuBox,
     LuCalendar,
     LuFilter,
-    LuUpload
+    LuUpload,
+    LuDownload,
+    LuLoader
 } from 'react-icons/lu';
+import { WaybillPDFDocument } from './WaybillPDFDocument';
 
 export default function CompanyShipments() {
     // 1. Pagination & Search States
@@ -52,6 +55,7 @@ export default function CompanyShipments() {
     const [selectedShipmentForEdit, setSelectedShipmentForEdit] = useState<any | null>(null);
     const [selectedShipmentForDetails, setSelectedShipmentForDetails] = useState<any | null>(null);
     const [selectedShipmentForDelete, setSelectedShipmentForDelete] = useState<any | null>(null);
+    const [downloadingShipmentId, setDownloadingShipmentId] = useState<string | null>(null);
 
     // 4. Custom React Query Hook for Company Shipments
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyShipments(page, limit, searchQuery, startDate, endDate);
@@ -121,6 +125,33 @@ export default function CompanyShipments() {
         setTimeout(() => {
             window.print();
         }, 300);
+    };
+
+    const handleDownloadWaybillPdf = async (shipment: any) => {
+        if (shipment?.status === 'cancelled') {
+            toast.error('حماية نزاهة البوالص: لا يمكن تنزيل بوليصة شحن لشحنة ملغية');
+            return;
+        }
+        try {
+            setDownloadingShipmentId(shipment._id);
+            toast.loading(`جاري تجهيز وتنزيل بوليصة الشحن PDF (${shipment.waybillNumber || shipment.shipmentNumber})...`, { id: 'waybill-pdf' });
+            const { pdf } = await import('@react-pdf/renderer');
+            const blob = await pdf(<WaybillPDFDocument shipmentData={shipment} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Waybill_${shipment.waybillNumber || shipment.shipmentNumber || 'download'}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            toast.success(`تم تحميل بوليصة الشحن (${shipment.waybillNumber || shipment.shipmentNumber}) بنجاح!`, { id: 'waybill-pdf' });
+        } catch (err) {
+            console.error('Failed to generate Waybill PDF:', err);
+            toast.error('حدث خطأ أثناء إنشاء بوليصة الشحن PDF', { id: 'waybill-pdf' });
+        } finally {
+            setDownloadingShipmentId(null);
+        }
     };
 
     const statusBadge = (status?: string) => {
@@ -473,6 +504,19 @@ export default function CompanyShipments() {
 
                                             <td className="py-3.5 px-4 text-center">
                                                 <div className="flex items-center justify-center gap-1.5">
+                                                    <button
+                                                        onClick={() => handleDownloadWaybillPdf(shp)}
+                                                        disabled={downloadingShipmentId === shp._id || shp.status === 'cancelled'}
+                                                        title={shp.status === 'cancelled' ? 'بوليصة شحن ملغية' : 'تنزيل البوليصة بصيغة PDF'}
+                                                        className="p-2 rounded-md bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-600 border border-emerald-500/20 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                                    >
+                                                        {downloadingShipmentId === shp._id ? (
+                                                            <LuLoader className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <LuDownload className="w-4 h-4" />
+                                                        )}
+                                                    </button>
+
                                                     <button
                                                         onClick={() => handlePrintWaybill(shp)}
                                                         title="طباعة البوليصة"

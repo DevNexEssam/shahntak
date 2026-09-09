@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
             companyId: new mongoose.Types.ObjectId(activeCompanyId),
             deletedAt: null,
         })
+            .populate("companyId", "companyName taxNumber city address phone email vatRate vatExemptionReason")
             .populate("invoicePayments")
             .populate("invoiceShipments")
             .lean();

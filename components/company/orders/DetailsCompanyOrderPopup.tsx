@@ -1,13 +1,17 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
     LuPackage,
     LuX,
     LuUser,
     LuCoins,
-    LuMapPin
+    LuMapPin,
+    LuPrinter,
+    LuDownload,
+    LuLoader
 } from 'react-icons/lu';
+import { OrderPDFDocument } from './OrderPDFDocument';
 
 interface DetailsCompanyOrderPopupProps {
     isOpen?: boolean;
@@ -16,7 +20,33 @@ interface DetailsCompanyOrderPopupProps {
 }
 
 export default function DetailsCompanyOrderPopup({ isOpen = true, onClose, orderData }: DetailsCompanyOrderPopupProps) {
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
     if (!isOpen || !orderData) return null;
+
+    const handlePrintOrder = () => {
+        window.print();
+    };
+
+    const handleDownloadPdf = async () => {
+        try {
+            setIsGeneratingPdf(true);
+            const { pdf } = await import('@react-pdf/renderer');
+            const blob = await pdf(<OrderPDFDocument orderData={orderData} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Order_${orderData.orderNumber || 'details'}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Failed to generate Order PDF:', err);
+        } finally {
+            setIsGeneratingPdf(false);
+        }
+    };
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -107,18 +137,43 @@ export default function DetailsCompanyOrderPopup({ isOpen = true, onClose, order
                 <div className="p-5 space-y-4">
 
                     {/* Summary Info Row */}
-                    <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between text-xs">
+                    <div className="p-4 rounded-md bg-surface-muted border border-border flex flex-wrap items-center justify-between gap-3 text-xs">
                         <div>
                             <span className="text-muted-foreground block">تاريخ تسجيل الطلب</span>
                             <span className="font-bold text-foreground font-latin text-sm">
                                 {new Date(orderData.createdAt || Date.now()).toLocaleDateString('ar-SA')}
                             </span>
                         </div>
-                        <div className="text-left">
+                        <div>
                             <span className="text-muted-foreground block">مصدر الطلب</span>
                             <span className="font-bold text-foreground text-xs">
                                 {orderData.source === 'bulk_upload' ? 'رفع مجمع (Excel)' : 'إدخال يدوي'}
                             </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={handleDownloadPdf}
+                                disabled={isGeneratingPdf}
+                                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+                            >
+                                {isGeneratingPdf ? (
+                                    <LuLoader className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <LuDownload className="w-4 h-4" />
+                                )}
+                                <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handlePrintOrder}
+                                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs cursor-pointer"
+                            >
+                                <LuPrinter className="w-4 h-4" />
+                                <span>طباعة السند</span>
+                            </button>
                         </div>
                     </div>
 

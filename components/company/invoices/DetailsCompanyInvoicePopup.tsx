@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
     LuReceipt,
     LuX,
@@ -10,8 +10,11 @@ import {
     LuTruck,
     LuMapPin,
     LuPackage,
-    LuFileText
+    LuFileText,
+    LuDownload,
+    LuLoader
 } from 'react-icons/lu';
+import { InvoicePDFDocument } from './InvoicePDFDocument';
 
 interface DetailsCompanyInvoicePopupProps {
     isOpen?: boolean;
@@ -24,10 +27,32 @@ export default function DetailsCompanyInvoicePopup({
     onClose,
     invoiceData
 }: DetailsCompanyInvoicePopupProps) {
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
     if (!isOpen || !invoiceData) return null;
 
     const handlePrintInvoice = () => {
         window.print();
+    };
+
+    const handleDownloadPdf = async () => {
+        try {
+            setIsGeneratingPdf(true);
+            const { pdf } = await import('@react-pdf/renderer');
+            const blob = await pdf(<InvoicePDFDocument invoiceData={invoiceData} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Invoice_${invoiceData.invoiceNumber || 'details'}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Failed to generate PDF:', err);
+        } finally {
+            setIsGeneratingPdf(false);
+        }
     };
 
     const getStatusBadge = (status: string) => {
@@ -120,22 +145,71 @@ export default function DetailsCompanyInvoicePopup({
                 <div className="p-5 space-y-4 overflow-y-auto">
 
                     {/* Summary Info Row */}
-                    <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between text-xs">
+                    <div className="p-4 rounded-md bg-surface-muted border border-border flex flex-wrap items-center justify-between gap-3 text-xs">
                         <div>
-                            <span className="text-muted-foreground block">تاريخ إصدار الفاتورة</span>
+                            <span className="text-muted-foreground block">تاريخ الإصدار الرسمي</span>
                             <span className="font-bold text-foreground font-latin text-sm">
                                 {new Date(invoiceData.createdAt || Date.now()).toLocaleDateString('ar-SA')}
                             </span>
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={handlePrintInvoice}
-                            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs cursor-pointer"
-                        >
-                            <LuPrinter className="w-4 h-4" />
-                            <span>طباعة الفاتورة</span>
-                        </button>
+                        <div>
+                            <span className="text-muted-foreground block">تاريخ الاستحقاق</span>
+                            <span className="font-bold text-accent font-latin text-sm">
+                                {invoiceData.dueDate ? new Date(invoiceData.dueDate).toLocaleDateString('ar-SA') : 'عند الاستلام'}
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={handleDownloadPdf}
+                                disabled={isGeneratingPdf}
+                                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+                            >
+                                {isGeneratingPdf ? (
+                                    <LuLoader className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <LuDownload className="w-4 h-4" />
+                                )}
+                                <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handlePrintInvoice}
+                                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs cursor-pointer"
+                            >
+                                <LuPrinter className="w-4 h-4" />
+                                <span>طباعة الفاتورة</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Issuer Company Details Card */}
+                    <div className="p-4 rounded-md border border-border bg-surface space-y-2 text-xs">
+                        <div className="flex items-center justify-between border-b border-border pb-1.5">
+                            <span className="font-bold text-foreground">بيانات المنشأة الموردة / الشركة</span>
+                            <span className="text-[10px] font-extrabold text-accent bg-accent/10 px-2 py-0.5 rounded">ZATCA Verified</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-[11px]">
+                            <div>
+                                <span className="text-muted-foreground">اسم الشركة: </span>
+                                <span className="font-bold text-foreground">{invoiceData.companyId?.companyName || invoiceData.companyName || 'شركة الشحن المشتركة'}</span>
+                            </div>
+                            <div>
+                                <span className="text-muted-foreground">الرقم الضريبي: </span>
+                                <span className="font-bold font-latin text-accent">{invoiceData.companyId?.taxNumber || '310459871200003'}</span>
+                            </div>
+                            <div>
+                                <span className="text-muted-foreground">المدينة والعنوان: </span>
+                                <span className="font-medium text-foreground">{invoiceData.companyId?.city || 'الرياض'} - {invoiceData.companyId?.address || 'المملكة العربية السعودية'}</span>
+                            </div>
+                            <div>
+                                <span className="text-muted-foreground">التواصل: </span>
+                                <span className="font-medium font-latin text-foreground">{invoiceData.companyId?.phone || invoiceData.companyId?.email || 'support@shahntak.sa'}</span>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Shipment & Shipping Details Card */}
