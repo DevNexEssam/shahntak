@@ -1,5 +1,4 @@
-import React from 'react';
-import { Navbar } from '@/components/home/Navbar';
+import Navbar from '@/components/home/Navbar';
 import Features from '@/components/home/Features';
 import HowItWorks from '@/components/home/HowItWorks';
 import Pricing from '@/components/home/Pricing';

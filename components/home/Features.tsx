@@ -63,10 +63,9 @@ export default function Features() {
     <section id="features" className="section-padding relative">
       <div className="container-narrow">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="badge-accent mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-            وحدات المنصة
-          </div>
+          <span className="text-accent font-extrabold text-[13.5px] tracking-[0.5px] mb-3.5 block">
+             وحدات المنصة
+          </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-heading tracking-tight mb-4">
             كل ما تحتاجه شركة الشحن الخاصة بك
           </h2>
