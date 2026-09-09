@@ -9,6 +9,14 @@ export interface IPlan extends Document {
     maxShipmentsPerMonth: number;
     maxCompanyUsers: number;
     features: string[];
+    // Checkbox Feature Flags
+    hasWaybillPdfExport: boolean;
+    hasBulkExcelImport: boolean;
+    hasZatcaInvoicing: boolean;
+    hasExpensesTracking: boolean;
+    hasCustomRoutes: boolean;
+    hasAdvancedAnalytics: boolean;
+    hasAuditLogs: boolean;
     isActive: boolean;
     deletedAt?: Date | null;
     createdAt: Date;
@@ -29,6 +37,14 @@ const PlanSchema = new Schema<IPlan>(
         maxShipmentsPerMonth: { type: Number, required: true, default: 20 },
         maxCompanyUsers: { type: Number, required: true, default: 5 },
         features: { type: [String], default: [] },
+        // Checkbox Feature Flags (Boolean)
+        hasWaybillPdfExport: { type: Boolean, default: true },
+        hasBulkExcelImport: { type: Boolean, default: true },
+        hasZatcaInvoicing: { type: Boolean, default: true },
+        hasExpensesTracking: { type: Boolean, default: true },
+        hasCustomRoutes: { type: Boolean, default: true },
+        hasAdvancedAnalytics: { type: Boolean, default: true },
+        hasAuditLogs: { type: Boolean, default: true },
         isActive: { type: Boolean, default: true },
         deletedAt: { type: Date, default: null },
     },

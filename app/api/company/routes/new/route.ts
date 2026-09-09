@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import Route from "@/models/route";
 import Company from "@/models/companies";
+import { checkPlanFeature } from "@/lib/guards/checkPlanFeature";
 import { routeCreateValidationSchema } from "@/lib/validations/route.schema";
 
 // create route
@@ -31,6 +32,11 @@ export async function POST(req: NextRequest) {
         const company = await Company.findOne({ _id: activeCompanyId, status: "active", deletedAt: null });
         if (!company) {
             return NextResponse.json({ success: false, message: "حساب الشركة غير نشط أو تم تعطيله" }, { status: 403 });
+        }
+
+        const subCheck = await checkPlanFeature(activeCompanyId, "hasCustomRoutes");
+        if (!subCheck.isAllowed) {
+            return subCheck.response;
         }
 
         const body = await req.json();

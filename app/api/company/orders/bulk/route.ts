@@ -8,6 +8,7 @@ import Order from "@/models/order";
 import Company from "@/models/companies";
 import Subscription from "@/models/subscription";
 import "@/models/plan";
+import { checkPlanFeature } from "@/lib/guards/checkPlanFeature";
 import { orderCreateValidationSchema } from "@/lib/validations/order.schema";
 
 // bulk create orders
@@ -51,6 +52,11 @@ export async function POST(req: NextRequest) {
                 { success: false, message: "حساب الشركة غير نشط أو تم تعطيله" },
                 { status: 403 }
             );
+        }
+
+        const featureCheck = await checkPlanFeature(activeCompanyId, "hasBulkExcelImport");
+        if (!featureCheck.isAllowed) {
+            return featureCheck.response;
         }
 
         const body = await req.json();

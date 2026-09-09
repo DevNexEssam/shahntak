@@ -30,6 +30,13 @@ export default function EditPlans({ isOpen = true, plan, onClose }: EditPlansPro
         maxShipmentsPerMonth: 20,
         maxCompanyUsers: 5,
         features: [] as string[],
+        hasWaybillPdfExport: true,
+        hasBulkExcelImport: true,
+        hasZatcaInvoicing: true,
+        hasExpensesTracking: true,
+        hasCustomRoutes: true,
+        hasAdvancedAnalytics: true,
+        hasAuditLogs: true,
         isActive: true,
     });
 
@@ -49,6 +56,13 @@ export default function EditPlans({ isOpen = true, plan, onClose }: EditPlansPro
                 maxShipmentsPerMonth: plan.maxShipmentsPerMonth ?? 20,
                 maxCompanyUsers: plan.maxCompanyUsers ?? 5,
                 features: plan.features || [],
+                hasWaybillPdfExport: (plan as any).hasWaybillPdfExport !== false,
+                hasBulkExcelImport: (plan as any).hasBulkExcelImport !== false,
+                hasZatcaInvoicing: (plan as any).hasZatcaInvoicing !== false,
+                hasExpensesTracking: (plan as any).hasExpensesTracking !== false,
+                hasCustomRoutes: (plan as any).hasCustomRoutes !== false,
+                hasAdvancedAnalytics: (plan as any).hasAdvancedAnalytics !== false,
+                hasAuditLogs: (plan as any).hasAuditLogs !== false,
                 isActive: plan.isActive ?? true,
             });
             setFieldErrors({});
@@ -216,41 +230,81 @@ export default function EditPlans({ isOpen = true, plan, onClose }: EditPlansPro
                             </div>
                         </div>
 
-                        {/* Features Dynamic List */}
-                        <div className="space-y-2 pt-2 border-t border-border">
-                            <label className="text-xs font-bold text-heading block">ميزات الباقة</label>
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="text"
-                                    value={featureInput}
-                                    onChange={(e) => setFeatureInput(e.target.value)}
-                                    placeholder="أدخل ميزة جديدة..."
-                                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddFeature(); } }}
-                                    className="flex-1 px-3.5 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={handleAddFeature}
-                                    className="px-4 py-2 rounded-md bg-accent text-accent-foreground font-bold text-xs flex items-center gap-1 cursor-pointer hover:bg-accent/90"
-                                >
-                                    <LuPlus className="w-4 h-4" /> إضافة
-                                </button>
-                            </div>
+                        {/* Feature Flags Checkboxes Section */}
+                        <div className="space-y-3 pt-3 border-t border-border bg-surface-muted/60 p-4 rounded-2xl border border-border">
+                            <label className="text-xs font-extrabold text-heading block">
+                                تحديد مميزات وصلاحيات الباقة الذكية
+                            </label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                                <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
+                                    <input
+                                        type="checkbox"
+                                        checked={formValues.hasWaybillPdfExport}
+                                        onChange={(e) => setFormValues({ ...formValues, hasWaybillPdfExport: e.target.checked })}
+                                        className="w-4 h-4 accent-accent rounded cursor-pointer"
+                                    />
+                                    <span className="font-bold text-heading">تصدير وطباعة بوالص الـ PDF</span>
+                                </label>
 
-                            <div className="flex flex-wrap gap-2 pt-1">
-                                {formValues.features.map((feat, idx) => (
-                                    <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-soft text-accent font-medium text-xs border border-accent/20">
-                                        <LuCheck className="w-3.5 h-3.5" />
-                                        {feat}
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemoveFeature(idx)}
-                                            className="text-rose-500 hover:text-rose-700 ml-1 cursor-pointer"
-                                        >
-                                            <LuTrash2 className="w-3.5 h-3.5" />
-                                        </button>
-                                    </span>
-                                ))}
+                                <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
+                                    <input
+                                        type="checkbox"
+                                        checked={formValues.hasBulkExcelImport}
+                                        onChange={(e) => setFormValues({ ...formValues, hasBulkExcelImport: e.target.checked })}
+                                        className="w-4 h-4 accent-accent rounded cursor-pointer"
+                                    />
+                                    <span className="font-bold text-heading">الاستيراد الجماعي للطلبات عبر Excel</span>
+                                </label>
+
+                                <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
+                                    <input
+                                        type="checkbox"
+                                        checked={formValues.hasZatcaInvoicing}
+                                        onChange={(e) => setFormValues({ ...formValues, hasZatcaInvoicing: e.target.checked })}
+                                        className="w-4 h-4 accent-accent rounded cursor-pointer"
+                                    />
+                                    <span className="font-bold text-heading">الفوترة الضريبية وإصدار فواتير ZATCA</span>
+                                </label>
+
+                                <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
+                                    <input
+                                        type="checkbox"
+                                        checked={formValues.hasExpensesTracking}
+                                        onChange={(e) => setFormValues({ ...formValues, hasExpensesTracking: e.target.checked })}
+                                        className="w-4 h-4 accent-accent rounded cursor-pointer"
+                                    />
+                                    <span className="font-bold text-heading">إدارة المصروفات والنفقات التشغيلية</span>
+                                </label>
+
+                                <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
+                                    <input
+                                        type="checkbox"
+                                        checked={formValues.hasCustomRoutes}
+                                        onChange={(e) => setFormValues({ ...formValues, hasCustomRoutes: e.target.checked })}
+                                        className="w-4 h-4 accent-accent rounded cursor-pointer"
+                                    />
+                                    <span className="font-bold text-heading">إدارة المسارات والخطوط اللوجستية</span>
+                                </label>
+
+                                <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
+                                    <input
+                                        type="checkbox"
+                                        checked={formValues.hasAdvancedAnalytics}
+                                        onChange={(e) => setFormValues({ ...formValues, hasAdvancedAnalytics: e.target.checked })}
+                                        className="w-4 h-4 accent-accent rounded cursor-pointer"
+                                    />
+                                    <span className="font-bold text-heading">لوحة التحليلات والتقارير المتقدمة</span>
+                                </label>
+
+                                <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all sm:col-span-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={formValues.hasAuditLogs}
+                                        onChange={(e) => setFormValues({ ...formValues, hasAuditLogs: e.target.checked })}
+                                        className="w-4 h-4 accent-accent rounded cursor-pointer"
+                                    />
+                                    <span className="font-bold text-heading">سجل التدقيق والأنشطة التاريخي (Audit Logs)</span>
+                                </label>
                             </div>
                         </div>
 

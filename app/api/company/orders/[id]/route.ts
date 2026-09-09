@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/order";
 import Shipment from "@/models/shipment";
+import { checkCompanySubscription } from "@/lib/guards/checkCompanySubscription";
 import { orderUpdateValidationSchema } from "@/lib/validations/order.schema";
 
 // get order
@@ -84,6 +85,11 @@ export async function PUT(req: NextRequest) {
         }
 
         const activeCompanyId = companyId || userId;
+        const subCheck = await checkCompanySubscription(activeCompanyId);
+        if (!subCheck.isAllowed) {
+            return subCheck.response;
+        }
+
         const { pathname } = new URL(req.url);
         const id = pathname.split("/").pop();
 
@@ -210,6 +216,11 @@ export async function DELETE(req: NextRequest) {
         }
 
         const activeCompanyId = companyId || userId;
+        const subCheck = await checkCompanySubscription(activeCompanyId);
+        if (!subCheck.isAllowed) {
+            return subCheck.response;
+        }
+
         const { searchParams, pathname } = new URL(req.url);
         const id = pathname.split("/").pop();
         const isHardDelete = searchParams.get("hard") === "true";

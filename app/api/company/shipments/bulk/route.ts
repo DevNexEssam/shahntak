@@ -11,6 +11,7 @@ import Invoice from "@/models/invoice";
 import Route from "@/models/route";
 import Subscription from "@/models/subscription";
 import "@/models/plan";
+import { checkPlanFeature } from "@/lib/guards/checkPlanFeature";
 import { shipmentCreateValidationSchema } from "@/lib/validations/shipment.schema";
 import { orderCreateValidationSchema } from "@/lib/validations/order.schema";
 
@@ -55,6 +56,11 @@ export async function POST(req: NextRequest) {
                 { success: false, message: "حساب الشركة غير نشط أو تم تعطيله" },
                 { status: 403 }
             );
+        }
+
+        const featureCheck = await checkPlanFeature(activeCompanyId, "hasBulkExcelImport");
+        if (!featureCheck.isAllowed) {
+            return featureCheck.response;
         }
 
         const body = await req.json();

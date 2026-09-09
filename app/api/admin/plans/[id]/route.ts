@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { planUpdateValidationSchema } from "@/lib/validations/plan.schema";
 import Plan from "@/models/plan";
+import Subscription from "@/models/subscription";
 import { can } from "@/utils/permissions";
 import { ACTIVE } from "@/utils/constants";
 import mongoose from "mongoose";
@@ -113,6 +114,24 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
         const plan = await Plan.findOne({ _id: id, ...ACTIVE });
         if (!plan) {
             return NextResponse.json({ success: false, message: "الباقة غير موجودة بالنظام" }, { status: 404 });
+        }
+
+        // Guard Scenario 1: Block deletion if active company subscriptions exist for this plan
+        const activeSubscriptionsCount = await Subscription.countDocuments({
+            planId: new mongoose.Types.ObjectId(id),
+            status: "active",
+            deletedAt: null,
+        });
+
+        if (activeSubscriptionsCount > 0) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: `تعذر حذف الباقة: توجد (${activeSubscriptionsCount}) شركة تمتلك اشتراكاً نشطاً في هذه الباقة. يرجى نقل هذه الشركات إلى باقة أخرى أولاً أو تعطيل الباقة بدلاً من حذفها.`,
+                    activeSubscriptionsCount,
+                },
+                { status: 409 }
+            );
         }
 
         if (isHardDelete) {

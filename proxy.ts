@@ -6,15 +6,11 @@ export default withAuth(
         const token = req.nextauth.token;
         const path = req.nextUrl.pathname;
 
-        // Dynamic redirect for unauthenticated users based on requested portal
+        // 1. Dynamic login redirect for unauthenticated users
         if (!token) {
-            const loginPath = path.startsWith("/doctor")
-                ? "/doctor/login"
-                : path.startsWith("/admin")
+            const loginPath = path.startsWith("/admin")
                 ? "/admin/login"
-                : path.startsWith("/clinic")
-                ? "/clinic/login"
-                : "/login/patient";
+                : "/company/login";
             const redirectUrl = new URL(loginPath, req.url);
             redirectUrl.searchParams.set("callbackUrl", req.url);
             return NextResponse.redirect(redirectUrl);
@@ -22,52 +18,31 @@ export default withAuth(
 
         const role = token?.role as string | undefined;
 
-        // Ensure role is treated correctly
-        const isReception = role === "reception" || role === "استقبال";
-        const isDoctor = role === "doctor" || role === "طبيب";
+        // 2. Protect Admin Dashboard (/admin/dashboard/:path*)
+        // Only Super Admin ('super') and Platform Admin ('admin') are allowed
+        if (path.startsWith("/admin/dashboard")) {
+            if (role !== "super" && role !== "admin") {
+                return NextResponse.redirect(new URL("/company/dashboard", req.url));
+            }
+        }
 
-        // Protect clinic dashboard routes
-        if (path.startsWith("/clinic/dashboard")) {
-
-            if (isReception) {
-                if (path === "/clinic/dashboard") {
-                    return NextResponse.redirect(new URL("/clinic/dashboard/waitlist", req.url));
-                }
-                const restrictedForReception = [
-                    "/clinic/dashboard/financial-reports",
-                    "/clinic/dashboard/settings",
-                    "/clinic/dashboard/employees",
-                    "/clinic/dashboard/audit-logs",
-                    "/clinic/dashboard/medical-records",
-                    "/clinic/dashboard/specialties",
-                    "/clinic/dashboard/patient-reports",
-                    "/clinic/dashboard/clinical-reports",
-                    "/clinic/dashboard/appointment-reports",
-                    "/clinic/dashboard/daily-stats",
-                    "/clinic/dashboard/reports",
-                    "/clinic/dashboard/branches"
-                ];
-
-                if (restrictedForReception.some(r => path.startsWith(r))) {
-                    return NextResponse.redirect(new URL("/clinic/dashboard/patients", req.url));
-                }
+        // 3. Protect Company Portal & Sub-Role Permissions (/company/dashboard/:path*)
+        if (path.startsWith("/company/dashboard")) {
+            // Block Platform Admins ('super' or 'admin') from entering Company Portal
+            if (role === "super" || role === "admin") {
+                return NextResponse.redirect(new URL("/admin/dashboard", req.url));
             }
 
-            // Restrictions for Doctor
-            if (isDoctor) {
-                const restrictedForDoctor = [
-                    "/clinic/dashboard/financial-reports",
-                    "/clinic/dashboard/billing",
-                    "/clinic/dashboard/settings",
-                    "/clinic/dashboard/employees",
-                    "/clinic/dashboard/audit-logs",
-                    "/clinic/dashboard/specialties",
-                    "/clinic/dashboard/services",
-                    "/clinic/dashboard/branches"
+            // Staff employees have restricted access to sensitive areas (Invoices, Settings, Employees)
+            if (role === "staff") {
+                const restrictedForStaff = [
+                    "/company/dashboard/invoices",
+                    "/company/dashboard/settings",
+                    "/company/dashboard/employees"
                 ];
 
-                if (restrictedForDoctor.some(r => path.startsWith(r))) {
-                    return NextResponse.redirect(new URL("/clinic/dashboard/patients", req.url));
+                if (restrictedForStaff.some(r => path.startsWith(r))) {
+                    return NextResponse.redirect(new URL("/company/dashboard/orders", req.url));
                 }
             }
         }
@@ -82,5 +57,6 @@ export default withAuth(
 );
 
 export const config = {
-    matcher: ["/clinic/dashboard/:path*", "/doctor/dashboard/:path*", "/admin/dashboard/:path*", "/patient/dashboard/:path*"]
+    matcher: ["/admin/dashboard/:path*", "/company/dashboard/:path*"]
 };
+

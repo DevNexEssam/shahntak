@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/order";
 import Company from "@/models/companies";
+import { checkCompanySubscription } from "@/lib/guards/checkCompanySubscription";
 import { orderCreateValidationSchema } from "@/lib/validations/order.schema";
 
 // create order
@@ -49,6 +50,11 @@ export async function POST(req: NextRequest) {
                 { success: false, message: "حساب الشركة غير نشط أو تم تعطيله" },
                 { status: 403 }
             );
+        }
+
+        const subCheck = await checkCompanySubscription(activeCompanyId);
+        if (!subCheck.isAllowed) {
+            return subCheck.response;
         }
 
         const body = await req.json();

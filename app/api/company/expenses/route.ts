@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import Expense from "@/models/expense";
 import Company from "@/models/companies";
+import { checkPlanFeature } from "@/lib/guards/checkPlanFeature";
 import { createExpenseSchema } from "@/lib/validations/expense.schema";
 
 // GET
@@ -164,6 +165,11 @@ export async function POST(req: NextRequest) {
                 { success: false, message: "حساب الشركة غير نشط" },
                 { status: 403 }
             );
+        }
+
+        const subCheck = await checkPlanFeature(activeCompanyId, "hasExpensesTracking");
+        if (!subCheck.isAllowed) {
+            return subCheck.response;
         }
 
         const body = await req.json();

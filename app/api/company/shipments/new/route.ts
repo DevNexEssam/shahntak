@@ -9,6 +9,7 @@ import Order from "@/models/order";
 import Company from "@/models/companies";
 import Invoice from "@/models/invoice";
 import Route from "@/models/route";
+import { checkCompanySubscription } from "@/lib/guards/checkCompanySubscription";
 import { shipmentCreateValidationSchema } from "@/lib/validations/shipment.schema";
 
 // create shipment
@@ -52,6 +53,11 @@ export async function POST(req: NextRequest) {
                 { success: false, message: "حساب الشركة غير نشط أو تم تعطيله" },
                 { status: 403 }
             );
+        }
+
+        const subCheck = await checkCompanySubscription(activeCompanyId);
+        if (!subCheck.isAllowed) {
+            return subCheck.response;
         }
 
         const body = await req.json();
