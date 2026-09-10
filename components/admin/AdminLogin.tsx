@@ -89,9 +89,7 @@ const AdminLogin = () => {
                 <label htmlFor="password" className="text-sm font-semibold text-heading">
                   كلمة المرور
                 </label>
-                <Link href="/forgot-password" className="text-sm text-accent hover:underline">
-                  نسيت كلمة المرور؟
-                </Link>
+
               </div>
               <div className="relative">
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -137,14 +135,14 @@ const AdminLogin = () => {
             </button>
 
             {/* Divider */}
-            <div className="relative">
+            {/* <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="bg-card px-4 text-muted-foreground">أو</span>
               </div>
-            </div>
+            </div> */}
 
             {/* Demo Account */}
             {/* <div className="text-center">

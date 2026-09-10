@@ -1,6 +1,7 @@
 
 "use client";
 
+import Link from "next/link";
 import { FaArrowRight, FaMapMarkerAlt } from "react-icons/fa";
 
 export default function CTA() {
@@ -28,13 +29,13 @@ export default function CTA() {
               </p>
 
               <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">
-                <a
-                  href="#"
+                <Link
+                  href="/company/login"
                   className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-7 py-3.5 rounded-lg font-medium text-sm transition-all duration-200 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   ابدأ مجاناً
                   <FaArrowRight className="w-4 h-4" />
-                </a>
+                </Link>
 
                 <a
                   href="#"

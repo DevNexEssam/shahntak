@@ -113,7 +113,7 @@ export default function Pricing() {
               </p>
 
               <a
-                href="#cta"
+                href="/company/login"
                 className={`w-full mb-6 ${plan.ctaStyle === 'accent' ? 'btn-accent' : 'btn-outline'}`}
               >
                 {plan.cta}
