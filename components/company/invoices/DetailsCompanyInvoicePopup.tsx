@@ -6,7 +6,6 @@ import {
     LuReceipt,
     LuX,
     LuCoins,
-    LuPrinter,
     LuTruck,
     LuMapPin,
     LuPackage,
@@ -30,10 +29,6 @@ export default function DetailsCompanyInvoicePopup({
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     if (!isOpen || !invoiceData) return null;
-
-    const handlePrintInvoice = () => {
-        window.print();
-    };
 
     const handleDownloadPdf = async () => {
         try {
@@ -175,14 +170,7 @@ export default function DetailsCompanyInvoicePopup({
                                 <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
                             </button>
 
-                            <button
-                                type="button"
-                                onClick={handlePrintInvoice}
-                                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs cursor-pointer"
-                            >
-                                <LuPrinter className="w-4 h-4" />
-                                <span>طباعة الفاتورة</span>
-                            </button>
+
                         </div>
                     </div>
 

@@ -1,53 +1,112 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { LuSearch, LuBell, LuPlus, LuCrown } from 'react-icons/lu';
+import { useRouter } from 'next/navigation';
+import { LuSearch, LuPlus, LuCrown } from 'react-icons/lu';
+import { useCompanySubscriptionStatus } from '@/hooks/company/useCompanySubscriptionStatus';
 
 export const CompanyHeader: React.FC = () => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const router = useRouter();
+    const { planName, status, isLoading } = useCompanySubscriptionStatus();
+
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/company/dashboard/orders?search=${encodeURIComponent(searchQuery.trim())}`);
+        } else {
+            router.push('/company/dashboard/orders');
+        }
+    };
+
+    const getSubscriptionBadge = () => {
+        if (isLoading) {
+            return {
+                label: 'جاري التحميل...',
+                className: 'bg-surface-muted text-body border-border',
+            };
+        }
+
+        switch (status) {
+            case 'active':
+                return {
+                    label: `الباقة النشطة: ${planName} (نشط)`,
+                    className: 'bg-accent-soft text-accent border-accent/20',
+                };
+            case 'expired':
+                return {
+                    label: `الباقة: ${planName} (منتهي)`,
+                    className: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
+                };
+            case 'cancelled':
+                return {
+                    label: `الباقة: ${planName} (ملغى)`,
+                    className: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
+                };
+            case 'pending_payment':
+                return {
+                    label: `الباقة: ${planName} (في انتظار الدفع)`,
+                    className: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+                };
+            case 'no_subscription':
+            default:
+                return {
+                    label: 'لا يوجد اشتراك نشط',
+                    className: 'bg-surface-muted text-body border-border',
+                };
+        }
+    };
+
+    const badge = getSubscriptionBadge();
+
     return (
         <header className="h-[76px] bg-surface border-b border-border px-8 flex items-center justify-between sticky top-0 z-30 font-arabic">
 
-            {/* Search Input */}
-            <div className="relative w-80">
-                <LuSearch className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-body" />
+            {/* Search Input Form */}
+            <form onSubmit={handleSearchSubmit} className="relative w-80">
+                <button
+                    type="submit"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-body hover:text-accent transition-colors"
+                    title="بحث"
+                >
+                    <LuSearch className="w-4 h-4" />
+                </button>
                 <input
                     type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="ابحث عن طلب، شحنة، فاتورة، موظف..."
                     className="w-full pl-4 pr-10 py-2 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                 />
-            </div>
+            </form>
 
             {/* Quick Actions & Subscription Status */}
             <div className="flex items-center gap-4">
 
                 {/* Active Plan Indicator */}
-                <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md bg-accent-soft text-accent border border-accent/20 text-xs font-bold">
+                <Link
+                    href="/company/dashboard/settings"
+                    className={`hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md border text-xs font-bold transition-colors hover:opacity-80 ${badge.className}`}
+                    title="عرض تفاصيل الباقة والاشتراك"
+                >
                     <LuCrown className="w-3.5 h-3.5" />
-                    <span>الباقة النشطة: احترافية (نشط)</span>
-                </div>
+                    <span>{badge.label}</span>
+                </Link>
 
                 {/* Create Order Quick Button */}
                 <Link
-                    href="/company/dashboard/orders"
+                    href="/company/dashboard/orders?action=new"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all"
                 >
                     <LuPlus className="w-4 h-4" />
                     <span>إضافة طلب جديد</span>
                 </Link>
 
-                {/* Notifications */}
-                <button
-                    type="button"
-                    className="relative w-10 h-10 rounded-xl border border-border bg-surface flex items-center justify-center text-heading hover:bg-surface-muted transition-colors"
-                    title="التنبيهات والإشعارات"
-                >
-                    <LuBell className="w-5 h-5" />
-                    <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-warning rounded-full ring-2 ring-surface" />
-                </button>
-
             </div>
 
         </header>
     );
 };
+
+

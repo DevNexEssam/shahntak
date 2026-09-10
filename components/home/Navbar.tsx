@@ -13,6 +13,7 @@ import {
     FaTachometerAlt,
     FaSignOutAlt,
 } from 'react-icons/fa';
+import Image from 'next/image';
 
 const navLinks = [
     { label: 'الميزات', href: '#features' },
@@ -94,25 +95,25 @@ export default function Navbar() {
         >
             <nav className="container-narrow flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
                 {/* Logo */}
-                <a href="#" className="flex items-center gap-2.5 shrink-0">
+                <Link href="#" className="flex items-center gap-2.5 shrink-0">
                     <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
                         <FaTruck className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <span className="text-lg font-bold text-heading tracking-tight">
                         شحنَتك
                     </span>
-                </a>
+                </Link>
 
                 {/* Desktop Nav Links */}
                 <ul className="hidden md:flex items-center gap-8">
                     {navLinks.map((link) => (
                         <li key={link.href}>
-                            <a
+                            <Link
                                 href={link.href}
                                 className="text-sm font-medium text-body hover:text-heading transition-colors duration-200"
                             >
                                 {link.label}
-                            </a>
+                            </Link>
                         </li>
                     ))}
 
@@ -135,7 +136,7 @@ export default function Navbar() {
                                 {resourcesLinks.map((item) => {
                                     const Icon = item.icon;
                                     return (
-                                        <a
+                                        <Link
                                             key={item.label}
                                             href={item.href}
                                             target={item.href.startsWith('http') ? '_blank' : undefined}
@@ -150,7 +151,7 @@ export default function Navbar() {
                                                 <p className="text-sm font-medium text-heading">{item.label}</p>
                                                 <p className="text-xs text-body-muted">{item.description}</p>
                                             </div>
-                                        </a>
+                                        </Link>
                                     );
                                 })}
                             </div>
@@ -160,7 +161,7 @@ export default function Navbar() {
 
                 {/* Desktop Action Buttons */}
                 <div className="hidden md:flex items-center gap-3">
-                    <a
+                    <Link
                         href="https://github.com/DevNexEssam/shahntak"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -168,7 +169,7 @@ export default function Navbar() {
                         aria-label="GitHub"
                     >
                         <FaGithub className="w-5 h-5" />
-                    </a>
+                    </Link>
 
                     {status === 'authenticated' && session?.user ? (
                         <div className="relative" ref={userDropdownRef}>
@@ -248,9 +249,9 @@ export default function Navbar() {
                             >
                                 تسجيل الدخول
                             </Link>
-                            <a href="#pricing" className="btn-accent">
+                            <Link href="#pricing" className="btn-accent">
                                 ابدأ الآن
-                            </a>
+                            </Link>
                         </>
                     )}
                 </div>
@@ -270,14 +271,14 @@ export default function Navbar() {
                 <div className="md:hidden bg-surface border-b border-border shadow-lg">
                     <div className="px-4 py-4 space-y-1">
                         {navLinks.map((link) => (
-                            <a
+                            <Link
                                 key={link.href}
                                 href={link.href}
                                 onClick={() => setMobileOpen(false)}
                                 className="block px-4 py-2.5 text-sm font-medium text-body hover:text-heading hover:bg-surface-muted rounded-lg transition-colors"
                             >
                                 {link.label}
-                            </a>
+                            </Link>
                         ))}
 
                         <div className="pt-3 border-t border-border mt-3">
@@ -287,7 +288,7 @@ export default function Navbar() {
                             {resourcesLinks.map((item) => {
                                 const Icon = item.icon;
                                 return (
-                                    <a
+                                    <Link
                                         key={item.label}
                                         href={item.href}
                                         target={item.href.startsWith('http') ? '_blank' : undefined}
@@ -297,7 +298,7 @@ export default function Navbar() {
                                     >
                                         <Icon className="w-4 h-4 text-accent" />
                                         {item.label}
-                                    </a>
+                                    </Link>
                                 );
                             })}
                         </div>
@@ -308,7 +309,7 @@ export default function Navbar() {
                                     <div className="flex items-center gap-3 text-right">
                                         <div className="w-10 h-10 rounded-lg bg-primary text-primary-foreground font-bold flex items-center justify-center shrink-0 text-base">
                                             {session.user.image ? (
-                                                <img
+                                                <Image
                                                     src={session.user.image}
                                                     alt={userName}
                                                     className="w-10 h-10 rounded-lg object-cover"
@@ -357,13 +358,13 @@ export default function Navbar() {
                                     >
                                         تسجيل الدخول
                                     </Link>
-                                    <a
+                                    <Link
                                         href="#pricing"
                                         onClick={() => setMobileOpen(false)}
                                         className="btn-accent w-full text-center block"
                                     >
                                         ابدأ الآن
-                                    </a>
+                                    </Link>
                                 </>
                             )}
                         </div>

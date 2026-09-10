@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const subCheck = await checkCompanySubscription(activeCompanyId);
+        const subCheck = await checkCompanySubscription(activeCompanyId, { checkQuotaFor: "order", count: 1 });
         if (!subCheck.isAllowed) {
             return subCheck.response;
         }
@@ -119,6 +119,11 @@ export async function POST(req: NextRequest) {
             source: data.source || "manual",
             deletedAt: null,
         });
+
+        if (subCheck.subscription) {
+            subCheck.subscription.ordersUsedThisMonth = (subCheck.subscription.ordersUsedThisMonth || 0) + 1;
+            await subCheck.subscription.save();
+        }
 
         return NextResponse.json(
             { success: true, message: "تم إنشاء الطلب بنجاح", data: newOrder },

@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const subCheck = await checkCompanySubscription(activeCompanyId);
+        const subCheck = await checkCompanySubscription(activeCompanyId, { checkQuotaFor: "shipment", count: 1 });
         if (!subCheck.isAllowed) {
             return subCheck.response;
         }
@@ -208,6 +208,11 @@ export async function POST(req: NextRequest) {
                     },
                 }
             );
+        }
+
+        if (subCheck.subscription) {
+            subCheck.subscription.shipmentsUsedThisMonth = (subCheck.subscription.shipmentsUsedThisMonth || 0) + 1;
+            await subCheck.subscription.save();
         }
 
         return NextResponse.json(

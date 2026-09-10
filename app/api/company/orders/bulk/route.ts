@@ -9,6 +9,7 @@ import Company from "@/models/companies";
 import Subscription from "@/models/subscription";
 import "@/models/plan";
 import { checkPlanFeature } from "@/lib/guards/checkPlanFeature";
+import { checkCompanySubscription } from "@/lib/guards/checkCompanySubscription";
 import { orderCreateValidationSchema } from "@/lib/validations/order.schema";
 
 // bulk create orders
@@ -76,27 +77,13 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Quota check
-        const subscription = await Subscription.findOne({
-            companyId: new mongoose.Types.ObjectId(activeCompanyId),
-            status: "active",
-            deletedAt: null,
-        }).populate("planId");
-
-        if (subscription && (subscription.planId as any)?.maxOrders) {
-            const maxOrders = (subscription.planId as any).maxOrders;
-            const currentOrdersCount = subscription.usedOrdersCount || 0;
-            const remainingQuota = maxOrders - currentOrdersCount;
-
-            if (remainingQuota < ordersInput.length) {
-                return NextResponse.json(
-                    {
-                        success: false,
-                        message: `تجاوز حصة الباقة: المتبقي من حصة طلبات باقتك الشهرية هو ${Math.max(0, remainingQuota)} طلب فقط، والملف يحتوي على ${ordersInput.length} طلب.`,
-                    },
-                    { status: 403 }
-                );
-            }
+        // Quota check using centralized subscription guard
+        const subCheck = await checkCompanySubscription(activeCompanyId, {
+            checkQuotaFor: "order",
+            count: ordersInput.length,
+        });
+        if (!subCheck.isAllowed) {
+            return subCheck.response;
         }
 
         // Collect explicit order numbers to check DB duplicates
@@ -210,9 +197,9 @@ export async function POST(req: NextRequest) {
         const createdOrders = await Order.insertMany(validOrdersToInsert);
 
         // Increment subscription used count if subscription exists
-        if (subscription) {
-            subscription.usedOrdersCount = (subscription.usedOrdersCount || 0) + createdOrders.length;
-            await subscription.save();
+        if (subCheck.subscription) {
+            subCheck.subscription.ordersUsedThisMonth = (subCheck.subscription.ordersUsedThisMonth || 0) + createdOrders.length;
+            await subCheck.subscription.save();
         }
 
         return NextResponse.json(

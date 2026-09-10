@@ -24,7 +24,6 @@ import {
     LuCheck,
     LuClock,
     LuCoins,
-    LuPrinter,
     LuFileText,
     LuPencil,
     LuPlus,
@@ -176,11 +175,6 @@ export default function CompanyInvoices() {
                     </span>
                 );
         }
-    };
-
-    const handlePrintInvoice = (inv: any) => {
-        toast.success(`جاري طباعة الفاتورة (${inv.invoiceNumber})...`);
-        window.print();
     };
 
     const handleDownloadPdf = async (inv: any) => {
@@ -522,14 +516,6 @@ export default function CompanyInvoices() {
                                                                 ) : (
                                                                     <LuDownload className="w-4 h-4" />
                                                                 )}
-                                                            </button>
-
-                                                            <button
-                                                                onClick={() => handlePrintInvoice(inv)}
-                                                                title="طباعة الفاتورة"
-                                                                className="p-2 rounded-md bg-accent-soft hover:bg-accent hover:text-white text-accent border border-accent/20 transition-all cursor-pointer"
-                                                            >
-                                                                <LuPrinter className="w-4 h-4" />
                                                             </button>
 
                                                             <button

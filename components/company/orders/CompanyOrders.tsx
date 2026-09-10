@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useCompanyOrders, useDeleteCompanyOrder } from '@/hooks/company/useCompanyOrder';
 import AddCompanyOrderPopup from './AddCompanyOrderPopup';
@@ -32,16 +33,19 @@ import {
     LuX,
     LuFileSpreadsheet,
     LuDownload,
-    LuPrinter,
     LuLoader
 } from 'react-icons/lu';
 import { OrderPDFDocument } from './OrderPDFDocument';
 
 export default function CompanyOrders() {
+    const searchParams = useSearchParams();
+    const urlSearch = searchParams.get('search');
+    const urlAction = searchParams.get('action') || searchParams.get('new');
+
     // 1. Pagination & Search States
     const [page, setPage] = useState(1);
     const limit = 10;
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(urlSearch || '');
 
     // 2. Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
@@ -51,6 +55,15 @@ export default function CompanyOrders() {
 
     // 3. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
+
+    useEffect(() => {
+        if (urlSearch !== null && urlSearch !== undefined) {
+            setSearchQuery(urlSearch);
+        }
+        if (urlAction === 'new' || urlAction === 'true') {
+            setIsAddOpen(true);
+        }
+    }, [urlSearch, urlAction]);
     const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
     const [isGroupShipmentOpen, setIsGroupShipmentOpen] = useState(false);
     const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
@@ -116,13 +129,6 @@ export default function CompanyOrders() {
                 },
             }
         );
-    };
-
-    const handlePrintOrder = (order: any) => {
-        setSelectedOrderForDetails(order);
-        setTimeout(() => {
-            window.print();
-        }, 300);
     };
 
     const handleDownloadOrderPdf = async (order: any) => {
@@ -532,13 +538,6 @@ export default function CompanyOrders() {
                                                         )}
                                                     </button>
 
-                                                    <button
-                                                        onClick={() => handlePrintOrder(ord)}
-                                                        title="طباعة سند الطلب"
-                                                        className="p-2 rounded-md bg-accent-soft hover:bg-accent hover:text-white text-accent border border-accent/20 transition-all cursor-pointer"
-                                                    >
-                                                        <LuPrinter className="w-4 h-4" />
-                                                    </button>
                                                     <button
                                                         onClick={() => setSelectedOrderForDetails(ord)}
                                                         title="عرض التفاصيل"

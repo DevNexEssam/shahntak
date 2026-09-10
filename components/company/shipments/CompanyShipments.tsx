@@ -25,7 +25,6 @@ import {
     LuClock,
     LuCheck,
     LuMapPin,
-    LuPrinter,
     LuReceipt,
     LuBox,
     LuCalendar,
@@ -114,17 +113,6 @@ export default function CompanyShipments() {
                 },
             }
         );
-    };
-
-    const handlePrintWaybill = (shipment: any) => {
-        if (shipment?.status === 'cancelled') {
-            toast.error('حماية نزاهة البوالص: لا يمكن طباعة بوليصة شحن لشحنة ملغية');
-            return;
-        }
-        setSelectedShipmentForDetails(shipment);
-        setTimeout(() => {
-            window.print();
-        }, 300);
     };
 
     const handleDownloadWaybillPdf = async (shipment: any) => {
@@ -518,14 +506,6 @@ export default function CompanyShipments() {
                                                     </button>
 
                                                     <button
-                                                        onClick={() => handlePrintWaybill(shp)}
-                                                        title="طباعة البوليصة"
-                                                        className="p-2 rounded-md bg-accent-soft hover:bg-accent hover:text-white text-accent border border-accent/20 transition-all cursor-pointer"
-                                                    >
-                                                        <LuPrinter className="w-4 h-4" />
-                                                    </button>
-
-                                                    <button
                                                         onClick={() => setSelectedShipmentForDetails(shp)}
                                                         title="عرض التفاصيل"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
@@ -608,7 +588,6 @@ export default function CompanyShipments() {
             <DetailsCompanyShipmentPopup
                 isOpen={!!selectedShipmentForDetails}
                 shipmentData={selectedShipmentForDetails}
-                onPrintWaybill={handlePrintWaybill}
                 onClose={() => setSelectedShipmentForDetails(null)}
             />
 

@@ -2,57 +2,53 @@ import { FaCheck, FaArrowRight, FaStar } from 'react-icons/fa';
 
 const plans = [
   {
-    name: 'المبتدئ',
-    description: 'لشركات الشحن الصغيرة التي تبدأ عملياتها الرقمية.',
-    price: '٤٩٩',
+    name: 'الباقة الأولى',
+    description: 'مناسبة للشركات الصغيرة التي تبدأ عملياتها الرقمية.',
+    price: '1',
     period: '/شهر',
     badge: null,
     features: [
-      'حتى ٥٠٠ شحنة / شهر',
-      'إدارة الأسطول والمسارات',
-      'لوحة تحليلات أساسية',
-      '٥ أعضاء فريق',
-      'دعم عبر البريد الإلكتروني',
+      'ميزة واحد',
+      'ميزة اتنين',
+      'ميزة تلاتة',
+      'ميزة أربعة',
+      'ميزة خمسة',
     ],
     cta: 'ابدأ الآن',
     ctaStyle: 'outline',
     highlighted: false,
   },
   {
-    name: 'المحترف',
-    description: 'للشركات المتنامية التي تحتاج إلى أتمتة لوجستية وفوترة كاملة.',
-    price: '١٬٢٩٩',
+    name: 'الباقة الثانية',
+    description: 'مناسبة للشركات المتنامية التي تحتاج إلى مزايا أكثر.',
+    price: '1',
     period: '/شهر',
     badge: 'الأكثر شيوعاً',
     features: [
-      'حتى ٥٬٠٠٠ شحنة / شهر',
-      'جميع ميزات المبتدئ مشمولة',
-      'فوترة متوافقة مع هيئة الزكاة (١٥٪ / ٠٪)',
-      'استيراد وتصدير مجمّع عبر Excel',
-      'تحليلات وتقارير متقدمة',
-      '٢٠ عضو فريق',
-      'دعم أولوي',
+      'ميزة واحد',
+      'ميزة اتنين',
+      'ميزة تلاتة',
+      'ميزة أربعة',
+      'ميزة خمسة',
     ],
-    cta: 'اطلب عرضاً توضيحياً',
+    cta: 'ابدأ الآن',
     ctaStyle: 'accent',
     highlighted: true,
   },
   {
-    name: 'الشركات',
-    description: 'للأسطول الكبير والعمليات متعددة الفروع ذات الاحتياجات المخصصة.',
-    price: 'مخصص',
-    period: '',
+    name: 'الباقة الثالثة',
+    description: 'مناسبة للشركات الكبيرة والعمليات المتقدمة.',
+    price: '1',
+    period: '/شهر',
     badge: null,
     features: [
-      'شحنات غير محدودة',
-      'جميع ميزات المحترف مشمولة',
-      'إدارة متعددة الفروع',
-      'تكاملات مخصصة ووصول API',
-      'مدير حساب مخصص',
-      'أعضاء فريق غير محدودين',
-      'دعم على مدار الساعة عبر الهاتف والبريد الإلكتروني',
+      'ميزة واحد',
+      'ميزة اتنين',
+      'ميزة تلاتة',
+      'ميزة أربعة',
+      'ميزة خمسة',
     ],
-    cta: 'تواصل مع المبيعات',
+    cta: 'تواصل معنا',
     ctaStyle: 'outline',
     highlighted: false,
   },
@@ -66,7 +62,7 @@ export default function Pricing() {
       <div className="container-narrow relative">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="text-sm font-semibold uppercase tracking-widest text-accent">
-             خطط الأسعار
+            خطط الأسعار
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-heading tracking-tight mb-4">
             أسعار بسيطة وشفافة

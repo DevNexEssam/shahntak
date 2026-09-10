@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import CompanyOrders from '@/components/company/orders/CompanyOrders';
+import Loading from '@/components/ui/loading';
 
 export const metadata: Metadata = {
     title: 'إدارة طلبات الشركة | شحنتك',
@@ -9,7 +11,10 @@ export const metadata: Metadata = {
 export default function CompanyOrdersPage() {
     return (
         <main className="bg-surface-muted">
-            <CompanyOrders />
+            <Suspense fallback={<Loading />}>
+                <CompanyOrders />
+            </Suspense>
         </main>
     );
 }
+

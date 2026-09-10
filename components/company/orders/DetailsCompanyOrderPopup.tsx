@@ -7,7 +7,6 @@ import {
     LuUser,
     LuCoins,
     LuMapPin,
-    LuPrinter,
     LuDownload,
     LuLoader
 } from 'react-icons/lu';
@@ -23,10 +22,6 @@ export default function DetailsCompanyOrderPopup({ isOpen = true, onClose, order
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     if (!isOpen || !orderData) return null;
-
-    const handlePrintOrder = () => {
-        window.print();
-    };
 
     const handleDownloadPdf = async () => {
         try {
@@ -164,15 +159,6 @@ export default function DetailsCompanyOrderPopup({ isOpen = true, onClose, order
                                     <LuDownload className="w-4 h-4" />
                                 )}
                                 <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={handlePrintOrder}
-                                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs cursor-pointer"
-                            >
-                                <LuPrinter className="w-4 h-4" />
-                                <span>طباعة السند</span>
                             </button>
                         </div>
                     </div>

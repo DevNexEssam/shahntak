@@ -18,6 +18,11 @@ import {
     LuPercent,
     LuShieldAlert,
     LuHistory,
+    LuCrown,
+    LuCalendar,
+    LuBoxes,
+    LuTruck,
+    LuUsers,
 } from "react-icons/lu";
 import { useCompanySettings, useUpdateCompanySettings } from "@/hooks/company/useCompanySettings";
 
@@ -46,6 +51,8 @@ export const CompanySettings: React.FC = () => {
     const [selectedVatRate, setSelectedVatRate] = useState<number>(15);
 
     const profile = responseData?.data?.profile;
+    const subscription = responseData?.data?.subscription;
+    const plan = subscription?.planId;
     const auditLogs = profile?.taxRateAuditLog || [];
 
     const {
@@ -164,12 +171,120 @@ export const CompanySettings: React.FC = () => {
                 </p>
             </div>
 
-            {/* Notice Banner */}
-            <div className="w-full p-4 bg-accent-soft/40 border border-accent/20 rounded-md flex items-center gap-3 text-xs text-foreground">
-                <LuInfo className="w-5 h-5 text-accent flex-shrink-0" />
-                <span>
-                    <strong>تنبيه قانوني:</strong> البيانات الرسمية والتجارية (اسم الشركة، البريد الإلكتروني، والرقم الضريبي) محمية وللقراءة فقط لحفظ حقوق الفواتير والتعاقدات. لتحديثها يرجى التواصل مع إدارة المنصة.
-                </span>
+            {/* Subscription & Active Plan Section */}
+            <div id="subscription" className="p-6 bg-surface border border-border rounded-md space-y-6">
+                <div className="flex items-center justify-between border-b border-border pb-4">
+                    <div className="flex items-center gap-2 text-foreground font-semibold">
+                        <LuCrown className="w-5 h-5 text-accent" />
+                        <span>تفاصيل الباقة والاشتراك الحالي</span>
+                    </div>
+                    {subscription && (
+                        <span className={`px-2.5 py-1 text-xs font-bold rounded-md border ${
+                            subscription.status === 'active' 
+                                ? 'bg-accent-soft text-accent border-accent/20' 
+                                : subscription.status === 'expired' 
+                                ? 'bg-rose-500/10 text-rose-600 border-rose-500/20' 
+                                : 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                        }`}>
+                            {subscription.status === 'active' ? 'اشتراك نشط' : subscription.status === 'expired' ? 'اشتراك منتهي' : 'في انتظار الدفع'}
+                        </span>
+                    )}
+                </div>
+
+                {subscription && plan ? (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="p-4 rounded-md bg-surface-muted/50 border border-border">
+                                <span className="text-xs text-muted-foreground block mb-1">اسم الباقة المعتمدة</span>
+                                <span className="text-base font-bold text-foreground flex items-center gap-1.5">
+                                    <LuCrown className="w-4 h-4 text-accent" />
+                                    {plan.name}
+                                </span>
+                            </div>
+                            <div className="p-4 rounded-md bg-surface-muted/50 border border-border">
+                                <span className="text-xs text-muted-foreground block mb-1">رسوم الاشتراك</span>
+                                <span className="text-base font-bold text-foreground font-latin">
+                                    {plan.price ? `${plan.price} ر.س / ${plan.billingCycle === 'yearly' ? 'سنوياً' : 'شهرياً'}` : 'مجاني / مخصص'}
+                                </span>
+                            </div>
+                            <div className="p-4 rounded-md bg-surface-muted/50 border border-border">
+                                <span className="text-xs text-muted-foreground block mb-1">تاريخ نهاية الاشتراك</span>
+                                <span className="text-sm font-bold text-foreground font-latin flex items-center gap-1">
+                                    <LuCalendar className="w-4 h-4 text-accent" />
+                                    {new Date(subscription.endDate).toLocaleDateString('ar-SA')}
+                                </span>
+                            </div>
+                            <div className="p-4 rounded-md bg-surface-muted/50 border border-border">
+                                <span className="text-xs text-muted-foreground block mb-1">التجديد التلقائي</span>
+                                <span className="text-sm font-bold text-foreground">
+                                    {subscription.autoRenew ? 'مفعل تلقائياً' : 'غير مفعل'}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Quota Usage Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                            {/* Orders Usage */}
+                            <div className="p-4 rounded-md border border-border bg-surface space-y-2">
+                                <div className="flex items-center justify-between text-xs font-semibold">
+                                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                                        <LuBoxes className="w-4 h-4 text-accent" /> حد الطلبات الشهرية
+                                    </span>
+                                    <span className="font-latin text-foreground font-bold">
+                                        {subscription.ordersUsedThisMonth || 0} / {plan.maxOrdersPerMonth === -1 ? 'غير محدود' : plan.maxOrdersPerMonth}
+                                    </span>
+                                </div>
+                                {plan.maxOrdersPerMonth > 0 && (
+                                    <div className="w-full bg-border/40 rounded-full h-2 overflow-hidden">
+                                        <div 
+                                            className="bg-accent h-2 rounded-full transition-all duration-300" 
+                                            style={{ width: `${Math.min(100, Math.round(((subscription.ordersUsedThisMonth || 0) / plan.maxOrdersPerMonth) * 100))}%` }} 
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Shipments Usage */}
+                            <div className="p-4 rounded-md border border-border bg-surface space-y-2">
+                                <div className="flex items-center justify-between text-xs font-semibold">
+                                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                                        <LuTruck className="w-4 h-4 text-accent" /> حد الشحنات الشهرية
+                                    </span>
+                                    <span className="font-latin text-foreground font-bold">
+                                        {subscription.shipmentsUsedThisMonth || 0} / {plan.maxShipmentsPerMonth === -1 ? 'غير محدود' : plan.maxShipmentsPerMonth}
+                                    </span>
+                                </div>
+                                {plan.maxShipmentsPerMonth > 0 && (
+                                    <div className="w-full bg-border/40 rounded-full h-2 overflow-hidden">
+                                        <div 
+                                            className="bg-accent h-2 rounded-full transition-all duration-300" 
+                                            style={{ width: `${Math.min(100, Math.round(((subscription.shipmentsUsedThisMonth || 0) / plan.maxShipmentsPerMonth) * 100))}%` }} 
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Users Limit */}
+                            <div className="p-4 rounded-md border border-border bg-surface space-y-2">
+                                <div className="flex items-center justify-between text-xs font-semibold">
+                                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                                        <LuUsers className="w-4 h-4 text-accent" /> حد فريق العمل والموظفين
+                                    </span>
+                                    <span className="font-latin text-foreground font-bold">
+                                        مسموح بـ {plan.maxCompanyUsers} موظف
+                                    </span>
+                                </div>
+                                <div className="text-[11px] text-muted-foreground">
+                                    يمكن للموظفين الوصول حسب الصلاحيات الممنوحة
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="p-4 rounded-md bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 flex items-center justify-between">
+                        <span>لا يوجد اشتراك نشط مسجل حالياً لحساب الشركة. يرجى التواصل مع الدعم أو الإدارة لتحديد الباقة.</span>
+                    </div>
+                )}
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">

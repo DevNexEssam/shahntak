@@ -12,6 +12,7 @@ import Route from "@/models/route";
 import Subscription from "@/models/subscription";
 import "@/models/plan";
 import { checkPlanFeature } from "@/lib/guards/checkPlanFeature";
+import { checkCompanySubscription } from "@/lib/guards/checkCompanySubscription";
 import { shipmentCreateValidationSchema } from "@/lib/validations/shipment.schema";
 import { orderCreateValidationSchema } from "@/lib/validations/order.schema";
 
@@ -81,26 +82,12 @@ export async function POST(req: NextRequest) {
         }
 
         // Subscription Quota Check for Shipments
-        const subscription = await Subscription.findOne({
-            companyId: new mongoose.Types.ObjectId(activeCompanyId),
-            status: "active",
-            deletedAt: null,
-        }).populate("planId");
-
-        if (subscription && (subscription.planId as any)?.maxShipments) {
-            const maxShipments = (subscription.planId as any).maxShipments;
-            const currentShipmentsCount = subscription.usedShipmentsCount || 0;
-            const remainingQuota = maxShipments - currentShipmentsCount;
-
-            if (remainingQuota < shipmentsInput.length) {
-                return NextResponse.json(
-                    {
-                        success: false,
-                        message: `تجاوز حصة الباقة: المتبقي من حصة الشحنات باقتك الشهرية هو ${Math.max(0, remainingQuota)} شحنة فقط، والملف يحتوي على ${shipmentsInput.length} شحنة.`,
-                    },
-                    { status: 403 }
-                );
-            }
+        const subCheck = await checkCompanySubscription(activeCompanyId, {
+            checkQuotaFor: "shipment",
+            count: shipmentsInput.length,
+        });
+        if (!subCheck.isAllowed) {
+            return subCheck.response;
         }
 
         const createdShipments: any[] = [];
@@ -316,9 +303,9 @@ export async function POST(req: NextRequest) {
         }
 
         // Increment subscription shipment count if active
-        if (subscription && createdShipments.length > 0) {
-            subscription.usedShipmentsCount = (subscription.usedShipmentsCount || 0) + createdShipments.length;
-            await subscription.save();
+        if (subCheck.subscription && createdShipments.length > 0) {
+            subCheck.subscription.shipmentsUsedThisMonth = (subCheck.subscription.shipmentsUsedThisMonth || 0) + createdShipments.length;
+            await subCheck.subscription.save();
         }
 
         return NextResponse.json(

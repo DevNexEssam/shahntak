@@ -7,7 +7,6 @@ import {
     LuX,
     LuMapPin,
     LuCoins,
-    LuPrinter,
     LuDownload,
     LuLoader
 } from 'react-icons/lu';
@@ -17,14 +16,12 @@ interface DetailsCompanyShipmentPopupProps {
     isOpen?: boolean;
     onClose: () => void;
     shipmentData: any;
-    onPrintWaybill?: (shipment: any) => void;
 }
 
 export default function DetailsCompanyShipmentPopup({
     isOpen = true,
     onClose,
-    shipmentData,
-    onPrintWaybill
+    shipmentData
 }: DetailsCompanyShipmentPopupProps) {
     const { data: detailResponse } = useCompanyShipmentById(shipmentData?._id || '');
     const activeShipment = detailResponse?.data || shipmentData;
@@ -32,14 +29,6 @@ export default function DetailsCompanyShipmentPopup({
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     if (!isOpen || !activeShipment) return null;
-
-    const handlePrintInvoice = () => {
-        if (onPrintWaybill) {
-            onPrintWaybill(activeShipment);
-        } else {
-            window.print();
-        }
-    };
 
     const handleDownloadPdf = async () => {
         try {
@@ -225,17 +214,6 @@ export default function DetailsCompanyShipmentPopup({
                                     <LuDownload className="w-4 h-4" />
                                 )}
                                 <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={handlePrintInvoice}
-                                disabled={activeShipment.status === 'cancelled'}
-                                title={activeShipment.status === 'cancelled' ? 'لا يمكن طباعة بوليصة لشحنة ملغية' : 'طباعة بوليصة الشحن'}
-                                className="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
-                            >
-                                <LuPrinter className="w-4 h-4" />
-                                <span>{activeShipment.status === 'cancelled' ? 'بوليصة ملغية' : 'طباعة البوليصة'}</span>
                             </button>
                         </div>
                     </div>
