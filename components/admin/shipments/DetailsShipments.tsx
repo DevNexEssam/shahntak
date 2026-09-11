@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Shipment, Company, Route as RouteType, Carrier, Vehicle } from '@/types/data';
 import {
     LuPackage,
@@ -11,7 +11,9 @@ import {
     LuTruck,
     LuBox,
     LuCoins,
-    LuCalendar
+    LuCalendar,
+    LuDownload,
+    LuLoader
 } from 'react-icons/lu';
 
 interface DetailsShipmentsProps {
@@ -21,7 +23,31 @@ interface DetailsShipmentsProps {
 }
 
 export default function DetailsShipments({ isOpen = true, shipment, onClose }: DetailsShipmentsProps) {
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
     if (!isOpen || !shipment) return null;
+
+    const handleDownloadWaybillPdf = async () => {
+        try {
+            setIsGeneratingPdf(true);
+            const { pdf } = await import('@react-pdf/renderer');
+            const { WaybillPDFDocument } = await import('@/components/company/shipments/WaybillPDFDocument');
+
+            const blob = await pdf(<WaybillPDFDocument shipmentData={shipment} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Waybill_${shipment.waybillNumber || shipment.shipmentNumber}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error generating Waybill PDF:", error);
+        } finally {
+            setIsGeneratingPdf(false);
+        }
+    };
 
     const companyName = typeof shipment.companyId === 'object' && shipment.companyId !== null
         ? (shipment.companyId as Company).companyName
@@ -172,7 +198,26 @@ export default function DetailsShipments({ isOpen = true, shipment, onClose }: D
                 </div>
 
                 {/* Modal Footer */}
-                <div className="p-4 border-t border-border bg-surface-muted/40 flex justify-end shrink-0">
+                <div className="p-4 border-t border-border bg-surface-muted/40 flex items-center justify-between gap-3 shrink-0">
+                    <button
+                        type="button"
+                        onClick={handleDownloadWaybillPdf}
+                        disabled={isGeneratingPdf}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 font-bold text-xs shadow-xs transition-all cursor-pointer disabled:opacity-50"
+                    >
+                        {isGeneratingPdf ? (
+                            <>
+                                <LuLoader className="w-4 h-4 animate-spin" />
+                                <span>جاري إنشاء بوليصة الشحن...</span>
+                            </>
+                        ) : (
+                            <>
+                                <LuDownload className="w-4 h-4" />
+                                <span>تحميل بوليصة الشحن PDF</span>
+                            </>
+                        )}
+                    </button>
+
                     <button
                         type="button"
                         onClick={onClose}

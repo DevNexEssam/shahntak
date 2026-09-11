@@ -1,4 +1,4 @@
-import { Subscription, SubscriptionResponse, SubscriptionSingleResponse, SubscriptionDeleteResponse } from "@/types/data";
+import { Subscription, SubscriptionResponse, SubscriptionSingleResponse, SubscriptionDeleteResponse, CompanySubscriptionQuotaResponse } from "@/types/data";
 import axios from "axios";
 
 export const subscriptionServices = {
@@ -29,10 +29,11 @@ export const subscriptionServices = {
     },
 
     // Get active subscription by company ID
-    getCompanySubscription: async (companyId: string): Promise<SubscriptionSingleResponse> => {
+    getCompanySubscription: async (companyId: string): Promise<CompanySubscriptionQuotaResponse> => {
         const { data } = await axios.get(`/api/admin/subscriptions/company/${companyId}`);
         return data;
     },
+
 
     // Create a new subscription for a company
     createSubscription: async (payload: { data: Partial<Subscription> }): Promise<SubscriptionSingleResponse> => {

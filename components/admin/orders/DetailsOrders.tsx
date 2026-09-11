@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Order, Company } from '@/types/data';
 import {
     LuPackage,
@@ -13,7 +13,9 @@ import {
     LuCoins,
     LuWeight,
     LuHash,
-    LuFileText
+    LuFileText,
+    LuDownload,
+    LuLoader
 } from 'react-icons/lu';
 
 interface DetailsOrdersProps {
@@ -23,11 +25,34 @@ interface DetailsOrdersProps {
 }
 
 export default function DetailsOrders({ isOpen = true, order, onClose }: DetailsOrdersProps) {
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
     if (!isOpen || !order) return null;
 
     const companyName = typeof order.companyId === 'object' && order.companyId !== null
         ? (order.companyId as Company).companyName
         : 'شركة غير محددة';
+
+    const handleDownloadPdf = async () => {
+        try {
+            setIsGeneratingPdf(true);
+            const { pdf } = await import('@react-pdf/renderer');
+            const { OrderPDFDocument } = await import('@/components/company/orders/OrderPDFDocument');
+            const blob = await pdf(<OrderPDFDocument orderData={order} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Order_${order.orderNumber || 'details'}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Failed to generate Order PDF:', err);
+        } finally {
+            setIsGeneratingPdf(false);
+        }
+    };
 
     const statusMap = {
         pending: { label: 'معلق (Pending)', bg: 'bg-amber-500/10 text-amber-600 border-amber-200' },
@@ -82,11 +107,22 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
                         </div>
 
                         <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={handleDownloadPdf}
+                                disabled={isGeneratingPdf}
+                                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+                            >
+                                {isGeneratingPdf ? (
+                                    <LuLoader className="w-4 h-4 animate-spin" />
+                                ) : (
+                                    <LuDownload className="w-4 h-4" />
+                                )}
+                                <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
+                            </button>
+
                             <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold border ${statusMap.bg}`}>
                                 {statusMap.label}
-                            </span>
-                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-surface border border-border text-body">
-                                {order.source === 'bulk_upload' ? 'رفع جماعي' : 'إدخال يدوي'}
                             </span>
                         </div>
                     </div>

@@ -11,6 +11,8 @@ import Carrier from "@/models/carrier";
 import Vehicle from "@/models/vehicle";
 import Order from "@/models/order";
 import Waybill from "@/models/waybill";
+import Invoice from "@/models/invoice";
+import { checkCompanySubscription } from "@/lib/guards/checkCompanySubscription";
 import { can } from "@/utils/permissions";
 import { ACTIVE } from "@/utils/constants";
 import mongoose from "mongoose";
@@ -62,16 +64,22 @@ export async function POST(req: Request) {
 
         await connectDB();
 
-        const targetCompany = await Company.findOne({ _id: data.companyId, ...ACTIVE }).lean();
+        const targetCompany = await Company.findOne({ _id: data.companyId, status: "active", deletedAt: null }).lean();
         if (!targetCompany) {
-            return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام أو غير نشطة" }, { status: 400 });
+        }
+
+        // 1. Quota Check for Company
+        const subCheck = await checkCompanySubscription(data.companyId, { checkQuotaFor: "shipment", count: 1 });
+        if (!subCheck.isAllowed) {
+            return subCheck.response;
         }
 
         if (data.routeId && data.routeId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(data.routeId)) {
                 return NextResponse.json({ success: false, message: "معرف المسار (routeId) غير صالح" }, { status: 400 });
             }
-            const targetRoute = await Route.findOne({ _id: data.routeId, ...ACTIVE }).lean();
+            const targetRoute = await Route.findOne({ _id: data.routeId, deletedAt: null }).lean();
             if (!targetRoute) {
                 return NextResponse.json({ success: false, message: "المسار المرتبط (Route) غير موجود بالنظام" }, { status: 400 });
             }
@@ -81,7 +89,7 @@ export async function POST(req: Request) {
             if (!mongoose.Types.ObjectId.isValid(data.carrierId)) {
                 return NextResponse.json({ success: false, message: "معرف الناقل (carrierId) غير صالح" }, { status: 400 });
             }
-            const targetCarrier = await Carrier.findOne({ _id: data.carrierId, ...ACTIVE }).lean();
+            const targetCarrier = await Carrier.findOne({ _id: data.carrierId, deletedAt: null }).lean();
             if (!targetCarrier) {
                 return NextResponse.json({ success: false, message: "الناقل المرتبط (Carrier) غير موجود بالنظام" }, { status: 400 });
             }
@@ -91,7 +99,7 @@ export async function POST(req: Request) {
             if (!mongoose.Types.ObjectId.isValid(data.vehicleId)) {
                 return NextResponse.json({ success: false, message: "معرف المركبة (vehicleId) غير صالح" }, { status: 400 });
             }
-            const targetVehicle = await Vehicle.findOne({ _id: data.vehicleId, ...ACTIVE }).lean();
+            const targetVehicle = await Vehicle.findOne({ _id: data.vehicleId, deletedAt: null }).lean();
             if (!targetVehicle) {
                 return NextResponse.json({ success: false, message: "المركبة المرتبطة (Vehicle) غير موجودة بالنظام" }, { status: 400 });
             }
@@ -113,6 +121,36 @@ export async function POST(req: Request) {
         const orderIds = data.orderIds || [];
         const calculatedOrdersCount = orderIds.length > 0 ? orderIds.length : (data.ordersCount || 0);
 
+        // 2. Auto-Invoice Generation if not assigned
+        let assignedInvoiceId = data.invoiceId && mongoose.Types.ObjectId.isValid(data.invoiceId)
+            ? new mongoose.Types.ObjectId(data.invoiceId)
+            : undefined;
+
+        if (!assignedInvoiceId) {
+            try {
+                const invoiceNumber = `INV-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+                const subtotal = Number(data.customerPrice || 0);
+                const vatRate = (targetCompany as any).vatRate !== undefined ? Number((targetCompany as any).vatRate) : 15;
+                const vatAmount = Math.round(subtotal * (vatRate / 100) * 100) / 100;
+                const total = Math.round((subtotal + vatAmount) * 100) / 100;
+
+                const newInvoice = await Invoice.create({
+                    invoiceNumber,
+                    companyId: new mongoose.Types.ObjectId(data.companyId),
+                    subtotal,
+                    vatAmount,
+                    taxRateSnapshot: vatRate,
+                    total,
+                    status: data.status === "delivered" ? "paid" : "issued",
+                    dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+                    deletedAt: null,
+                });
+                assignedInvoiceId = newInvoice._id;
+            } catch {
+                // If invoice creation fails, proceed without blocking
+            }
+        }
+
         const newShipment = await Shipment.create({
             shipmentNumber: data.shipmentNumber,
             companyId: data.companyId,
@@ -122,16 +160,16 @@ export async function POST(req: Request) {
             routeId: data.routeId || null,
             carrierId: data.carrierId || null,
             vehicleId: data.vehicleId || null,
-            invoiceId: data.invoiceId || null,
+            invoiceId: assignedInvoiceId || null,
             ordersCount: calculatedOrdersCount,
             shippingCost: data.shippingCost,
             customerPrice: data.customerPrice,
             waybillNumber: finalWaybillNumber,
-            trackingNumber: data.trackingNumber || "",
+            trackingNumber: data.trackingNumber || `TRK-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`,
             status: data.status || "created",
         });
 
-        // 1. Cascade update grouped orders in database
+        // 3. Cascade update grouped orders in database
         if (orderIds.length > 0) {
             const validObjectIds = orderIds.filter((id) => mongoose.Types.ObjectId.isValid(id));
             if (validObjectIds.length > 0) {
@@ -142,7 +180,7 @@ export async function POST(req: Request) {
             }
         }
 
-        // 2. Auto-create Waybill record for tracking & print
+        // 4. Auto-create Waybill record for tracking & print
         try {
             await Waybill.create({
                 shipmentId: newShipment._id,
@@ -154,8 +192,14 @@ export async function POST(req: Request) {
             // Silence if waybill exists
         }
 
+        // 5. Increment company subscription shipmentsUsedThisMonth
+        if (subCheck.subscription) {
+            subCheck.subscription.shipmentsUsedThisMonth = (subCheck.subscription.shipmentsUsedThisMonth || 0) + 1;
+            await subCheck.subscription.save();
+        }
+
         return NextResponse.json(
-            { success: true, message: "تم إنشاء وتجميع الشحنة بنجاح وتوليد بوليصة الشحن", data: newShipment },
+            { success: true, message: "تم إنشاء وتجميع الشحنة بنجاح وتوليد بوليصة الشحن والفاتورة الآلية", data: newShipment },
             { status: 201 }
         );
     } catch (error: any) {

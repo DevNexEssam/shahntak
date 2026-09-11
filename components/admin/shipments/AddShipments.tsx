@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
+import AdminCompanySelect from '@/components/admin/common/AdminCompanySelect';
+import AdminCompanySubscriptionWidget from '@/components/admin/common/AdminCompanySubscriptionWidget';
 import { useCreateShipment } from '@/hooks/shipments/useShipments';
 import { useAllCompanies } from '@/hooks/companies/useCompanies';
 import { useAllRoutes } from '@/hooks/routes/useRoutes';
@@ -190,29 +192,25 @@ export default function AddShipments({
                             </div>
                         </div>
 
-                        {/* Company Selection */}
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                الشركة المشتركة المالكة للشحنة <span className="text-red-500">*</span>
-                            </label>
-                            <select
-                                disabled={isSubmitting || isLoadingCompanies}
+                        {/* Company Selection with Live Subscription Quota */}
+                        <div className="space-y-2">
+                            <AdminCompanySelect
                                 value={formValues.companyId}
-                                onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
-                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
-                                    fieldErrors.companyId ? 'border-rose-500' : 'border-border'
-                                }`}
-                            >
-                                <option value="">اختر الشركة...</option>
-                                {companies.map((comp) => (
-                                    <option key={comp._id} value={comp._id}>
-                                        {comp.companyName} ({comp.city})
-                                    </option>
-                                ))}
-                            </select>
-                            {fieldErrors.companyId && (
-                                <span className="text-xs text-rose-500 font-medium block">{fieldErrors.companyId}</span>
+                                onChange={(companyId: string) => {
+                                    setFormValues((prev) => ({ ...prev, companyId }));
+                                    if (fieldErrors.companyId) {
+                                        setFieldErrors((prev) => ({ ...prev, companyId: '' }));
+                                    }
+                                }}
+                                disabled={isSubmitting}
+                                error={fieldErrors.companyId}
+                            />
+
+                            {/* Live Subscription Quota Widget */}
+                            {formValues.companyId && (
+                                <AdminCompanySubscriptionWidget
+                                    companyId={formValues.companyId}
+                                />
                             )}
                         </div>
 

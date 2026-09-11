@@ -639,10 +639,48 @@ export interface SubscriptionResponse {
 export interface SubscriptionSingleResponse {
     success: boolean;
     message?: string;
-    data: Subscription;
+    data: any;
     remainingOrders?: number;
     remainingShipments?: number;
 }
+
+export interface CompanySubscriptionQuotaData {
+    company: Company;
+    subscriptionId?: string;
+    hasActiveSubscription: boolean;
+    planName: string;
+    billingCycle?: string;
+    statusStr: string;
+    startDate?: string;
+    endDate?: string;
+    ordersCount: {
+        used: number;
+        max: number;
+        remaining: number;
+        pct: number;
+    };
+    shipmentsCount: {
+        used: number;
+        max: number;
+        remaining: number;
+        pct: number;
+    };
+    features: {
+        hasWaybillPdfExport?: boolean;
+        hasBulkExcelImport?: boolean;
+        hasZatcaInvoicing?: boolean;
+        hasExpensesTracking?: boolean;
+        hasCustomRoutes?: boolean;
+        hasAdvancedAnalytics?: boolean;
+    };
+}
+
+export interface CompanySubscriptionQuotaResponse {
+    success: boolean;
+    message?: string;
+    data: CompanySubscriptionQuotaData;
+}
+
 
 export interface SubscriptionDeleteResponse {
     success: boolean;
@@ -661,3 +699,47 @@ export type UserRole =
     | "super";
 
 export type PermissionAction = "read" | "create" | "update" | "softDelete" | "delete";
+
+// 16. Admin Dashboard Types (Progressive Loading Sections)
+export interface AdminKPIsData {
+    totalCompanies: number;
+    companiesGrowthPct: number;
+    todayShipments: number;
+    shipmentsGrowthPct: number;
+    monthlyRevenue: number;
+    revenueGrowthPct: number;
+    activeDrivers: number;
+}
+
+export interface AdminKPIsResponse {
+    success: boolean;
+    data: AdminKPIsData;
+}
+
+export interface AdminTopCompanyItem {
+    _id: string;
+    companyName: string;
+    planName: string;
+    todayShipments: number;
+    usagePct: number;
+    status: string;
+}
+
+export interface AdminTopCompaniesResponse {
+    success: boolean;
+    data: AdminTopCompanyItem[];
+}
+
+export interface AdminAlertItem {
+    id: string;
+    title: string;
+    description: string;
+    type: "warning" | "error" | "info";
+    createdAt?: string;
+}
+
+export interface AdminAlertsResponse {
+    success: boolean;
+    data: AdminAlertItem[];
+}
+

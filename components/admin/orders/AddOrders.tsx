@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useCreateOrder } from '@/hooks/orders/useOrders';
-import { useAllCompanies } from '@/hooks/companies/useCompanies';
+import AdminCompanySelect from '@/components/admin/common/AdminCompanySelect';
+import AdminCompanySubscriptionWidget from '@/components/admin/common/AdminCompanySubscriptionWidget';
 import { orderCreateValidationSchema } from '@/lib/validations/order.schema';
 import toast from 'react-hot-toast';
 import {
@@ -11,7 +12,6 @@ import {
     LuUser,
     LuPhone,
     LuMapPin,
-    LuBuilding2,
     LuCoins,
     LuWeight,
     LuHash
@@ -43,11 +43,8 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     const { mutate: createOrder, isPending: isSubmitting } = useCreateOrder();
-    const { data: companiesRes, isLoading: isLoadingCompanies } = useAllCompanies();
 
     if (!isOpen) return null;
-
-    const companies = companiesRes?.data || [];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -58,7 +55,6 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
             createdByUserId: formValues.createdByUserId || undefined,
         };
 
-        // 1. Zod Validation Check
         const validation = orderCreateValidationSchema.safeParse(payload);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -72,7 +68,6 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
             return;
         }
 
-        // 2. Trigger Mutation
         createOrder(payload, {
             onSuccess: () => {
                 onClose();
@@ -82,7 +77,6 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
-            {/* Modal Container */}
             <div className="relative w-full max-w-3xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Modal Header */}
@@ -93,7 +87,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                         </div>
                         <div>
                             <h2 className="text-xl font-extrabold text-heading">إضافة طلب شحنة جديد</h2>
-                            <p className="text-xs text-body mt-0.5">إنشاء طلب جديد وتحديد بيانات المستلم والمدينة والقيم اللوجستية</p>
+                            <p className="text-xs text-body mt-0.5">إنشاء طلب جديد نيابة عن الشركة المحددة وتأكيد رصيد الباقة الحية</p>
                         </div>
                     </div>
 
@@ -112,11 +106,11 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
                     <div className="p-6 overflow-y-auto space-y-6 flex-1">
 
-                        {/* Order & Company Info */}
+                        {/* Order & Company Selection with Live Subscription Widget */}
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                بيانات الطلب والشركة المنشئة
+                                بيانات الشركة المستهدفة والرصيد
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -129,33 +123,21 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                         <span>توليد تلقائي فريد (ORD-0001)</span>
                                         <span className="text-[10px] px-2 py-0.5 rounded-md bg-accent-soft text-accent font-bold">توليد تلقائي إجباري</span>
                                     </div>
-                                    <span className="text-[11px] text-body/70 block">يُنشأ كود الطلب تلقائياً من الخادم بالنمط التسلسلي <b>ORD-0001</b> بناءً على الطلبات المنشأة</span>
+                                    <span className="text-[11px] text-body/70 block">يُنشأ كود الطلب تلقائياً من الخادم بالنمط التسلسلي <b>ORD-0001</b></span>
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                        الشركة المنشئة للطلب <span className="text-red-500">*</span>
-                                    </label>
-                                    <select
-                                        disabled={isSubmitting || isLoadingCompanies}
-                                        value={formValues.companyId}
-                                        onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.companyId ? 'border-rose-500' : 'border-border'
-                                            }`}
-                                    >
-                                        <option value="">اختر الشركة...</option>
-                                        {companies.map((comp) => (
-                                            <option key={comp._id} value={comp._id}>
-                                                {comp.companyName} ({comp.city})
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {fieldErrors.companyId && (
-                                        <span className="text-xs text-rose-500 font-medium block">{fieldErrors.companyId}</span>
-                                    )}
-                                </div>
+                                <AdminCompanySelect
+                                    value={formValues.companyId}
+                                    onChange={(companyId) => setFormValues({ ...formValues, companyId })}
+                                    disabled={isSubmitting}
+                                    error={fieldErrors.companyId}
+                                />
                             </div>
+
+                            {/* Live Subscription Details Widget */}
+                            {formValues.companyId && (
+                                <AdminCompanySubscriptionWidget companyId={formValues.companyId} compact />
+                            )}
                         </div>
 
                         {/* Recipient Details */}

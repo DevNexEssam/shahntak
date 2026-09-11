@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Invoice, Company } from '@/types/data';
 import {
     LuReceipt,
@@ -8,7 +8,9 @@ import {
     LuBuilding2,
     LuCoins,
     LuCalendar,
-    LuHash
+    LuHash,
+    LuDownload,
+    LuLoader
 } from 'react-icons/lu';
 
 interface DetailsInvoicesProps {
@@ -18,7 +20,31 @@ interface DetailsInvoicesProps {
 }
 
 export default function DetailsInvoices({ isOpen = true, invoice, onClose }: DetailsInvoicesProps) {
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
     if (!isOpen || !invoice) return null;
+
+    const handleDownloadZatcaPdf = async () => {
+        try {
+            setIsGeneratingPdf(true);
+            const { pdf } = await import('@react-pdf/renderer');
+            const { InvoicePDFDocument } = await import('@/components/company/invoices/InvoicePDFDocument');
+
+            const blob = await pdf(<InvoicePDFDocument invoiceData={invoice} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ZATCA_Invoice_${invoice.invoiceNumber}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error generating ZATCA Invoice PDF:", error);
+        } finally {
+            setIsGeneratingPdf(false);
+        }
+    };
 
     const companyName = typeof invoice.companyId === 'object' && invoice.companyId !== null
         ? (invoice.companyId as Company).companyName
@@ -116,7 +142,26 @@ export default function DetailsInvoices({ isOpen = true, invoice, onClose }: Det
                 </div>
 
                 {/* Modal Footer */}
-                <div className="p-4 border-t border-border bg-surface-muted/40 flex justify-end shrink-0">
+                <div className="p-4 border-t border-border bg-surface-muted/40 flex items-center justify-between gap-3 shrink-0">
+                    <button
+                        type="button"
+                        onClick={handleDownloadZatcaPdf}
+                        disabled={isGeneratingPdf}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-blue-500/30 bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 font-bold text-xs shadow-xs transition-all cursor-pointer disabled:opacity-50"
+                    >
+                        {isGeneratingPdf ? (
+                            <>
+                                <LuLoader className="w-4 h-4 animate-spin" />
+                                <span>جاري إصدار فاتورة ZATCA...</span>
+                            </>
+                        ) : (
+                            <>
+                                <LuDownload className="w-4 h-4" />
+                                <span>تحميل فاتورة ZATCA الضريبية PDF</span>
+                            </>
+                        )}
+                    </button>
+
                     <button
                         type="button"
                         onClick={onClose}

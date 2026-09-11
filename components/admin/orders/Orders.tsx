@@ -10,6 +10,7 @@ import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
 import ErrorMessege from '@/components/ui/ErrorMessege';
 import EmptyData from '@/components/ui/EmptyData';
 import Loading from '@/components/ui/loading';
+import BulkImportAdminOrdersPopup from './BulkImportAdminOrdersPopup';
 import {
     LuPackage,
     LuPlus,
@@ -26,7 +27,8 @@ import {
     LuCheck,
     LuTruck,
     LuMapPin,
-    LuLayers
+    LuLayers,
+    LuFileSpreadsheet
 } from 'react-icons/lu';
 import AddShipments from '../shipments/AddShipments';
 
@@ -39,7 +41,9 @@ export default function Orders() {
 
     // 2. Modals Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
+    const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
     const [isGroupShipmentOpen, setIsGroupShipmentOpen] = useState(false);
+
     const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
     const [selectedOrderForEdit, setSelectedOrderForEdit] = useState<Order | null>(null);
     const [selectedOrderForDetails, setSelectedOrderForDetails] = useState<Order | null>(null);
@@ -132,6 +136,14 @@ export default function Orders() {
                     </button>
 
                     <button
+                        onClick={() => setIsBulkImportOpen(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-surface hover:bg-accent-soft text-accent font-bold text-xs shadow-xs transition-all cursor-pointer"
+                    >
+                        <LuFileSpreadsheet className="w-4 h-4" />
+                        <span>استيراد Excel جماعي</span>
+                    </button>
+
+                    <button
                         onClick={() => setIsAddOpen(true)}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
                     >
@@ -140,6 +152,7 @@ export default function Orders() {
                     </button>
                 </div>
             </div>
+
 
             {/* Error Notification Banner */}
             {isError && (
@@ -448,6 +461,14 @@ export default function Orders() {
             <AddOrders
                 isOpen={isAddOpen}
                 onClose={() => setIsAddOpen(false)}
+            />
+
+            <BulkImportAdminOrdersPopup
+                isOpen={isBulkImportOpen}
+                onClose={() => {
+                    setIsBulkImportOpen(false);
+                    refetch();
+                }}
             />
 
             {/* Calculate common company and destination for selected orders */}

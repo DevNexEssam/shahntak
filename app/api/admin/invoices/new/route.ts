@@ -42,25 +42,71 @@ export async function POST(req: Request) {
 
         await connectDB();
 
-        const targetCompany = await Company.findOne({ _id: data.companyId, ...ACTIVE }).lean();
+        const targetCompany = await Company.findOne({ _id: data.companyId, status: "active", deletedAt: null }).lean();
         if (!targetCompany) {
-            return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام أو غير نشطة" }, { status: 400 });
+        }
+
+        const effectiveTaxRate = (targetCompany as any).vatRate !== undefined ? Number((targetCompany as any).vatRate) : 15;
+
+        // Anti-duplication check for shipment if provided
+        const rawBody = body as any;
+        let targetShipment: any = null;
+        if (rawBody.shipmentId && mongoose.Types.ObjectId.isValid(rawBody.shipmentId)) {
+            const Shipment = (await import("@/models/shipment")).default;
+            targetShipment = await Shipment.findOne({ _id: rawBody.shipmentId, companyId: data.companyId, deletedAt: null });
+
+            if (targetShipment) {
+                const existingInvoice = await Invoice.findOne({
+                    companyId: data.companyId,
+                    $or: [{ _id: targetShipment.invoiceId }, { shipmentId: targetShipment._id }],
+                    status: { $ne: "cancelled" },
+                    deletedAt: null,
+                });
+
+                if (existingInvoice || targetShipment.invoiceId) {
+                    return NextResponse.json(
+                        { success: false, message: `حماية النزاهة المالية: هذه الشحنة تملك فاتورة صادرة مسبقاً برقم (${existingInvoice?.invoiceNumber || "مسبقاً"})` },
+                        { status: 409 }
+                    );
+                }
+            }
         }
 
         const finalInvoiceNumber = data.invoiceNumber && data.invoiceNumber.trim() !== ""
             ? data.invoiceNumber
-            : `INV-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
+            : `INV-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
 
-        const exists = await Invoice.findOne({ invoiceNumber: finalInvoiceNumber }).lean();
+        const exists = await Invoice.findOne({ invoiceNumber: finalInvoiceNumber, deletedAt: null }).lean();
         if (exists) {
-            return NextResponse.json({ success: false, message: "رقم الفاتورة مستخدم بالفعل" }, { status: 409 });
+            return NextResponse.json({ success: false, message: "رقم الفاتورة مستخدم بالفعل في النظام" }, { status: 409 });
         }
+
+        // Calculate breakdown
+        const baseSubtotal = Number(data.subtotal || data.total || 0);
+        const discount = Number(data.discount || 0);
+        const discountedSubtotal = Math.max(0, baseSubtotal - discount);
+        const vatAmount = Number(data.vatAmount || Math.round(discountedSubtotal * (effectiveTaxRate / 100) * 100) / 100);
+        const finalTotal = Number(data.total || Math.round((discountedSubtotal + vatAmount) * 100) / 100);
 
         const newInvoice = await Invoice.create({
             ...data,
             invoiceNumber: finalInvoiceNumber,
+            companyId: new mongoose.Types.ObjectId(data.companyId),
+            subtotal: baseSubtotal,
+            discount,
+            vatAmount,
+            taxRateSnapshot: effectiveTaxRate,
+            total: finalTotal,
+            shipmentId: targetShipment ? targetShipment._id : undefined,
         });
-        return NextResponse.json({ success: true, message: `تم إصدار الفاتورة رقم (${finalInvoiceNumber}) بنجاح`, data: newInvoice }, { status: 201 });
+
+        if (targetShipment) {
+            targetShipment.invoiceId = newInvoice._id;
+            await targetShipment.save();
+        }
+
+        return NextResponse.json({ success: true, message: `تم إصدار الفاتورة الضريبية رقم (${finalInvoiceNumber}) بنجاح`, data: newInvoice }, { status: 201 });
     } catch (error: any) {
         return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
     }
