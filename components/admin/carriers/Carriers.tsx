@@ -29,24 +29,24 @@ import {
 } from 'react-icons/lu';
 
 export default function Carriers() {
-    // 1. Pagination & Search/Filtering States
+    // Pagination & Search/Filtering States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [filterType, setFilterType] = useState<string>('all');
 
-    // 2. Modals Control States
+    // Modals Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedCarrierForEdit, setSelectedCarrierForEdit] = useState<Carrier | null>(null);
     const [selectedCarrierForDetails, setSelectedCarrierForDetails] = useState<Carrier | null>(null);
     const [selectedCarrierForDelete, setSelectedCarrierForDelete] = useState<Carrier | null>(null);
 
-    // 3. React Query Hooks with server-side search & filtering
+    // React Query Hooks with server-side search & filtering
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCarriers(page, limit, searchQuery, filterStatus, filterType);
     const { mutate: deleteCarrier, isPending: isDeleting } = useDeleteCarrier();
 
-    // 4. Initial Loading Check (Standard Rule)
+    // Initial Loading Check (Standard Rule)
     if (isLoading) return <Loading />;
 
     const carriersList = responseData?.data || [];
