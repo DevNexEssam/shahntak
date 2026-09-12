@@ -17,7 +17,6 @@ It provides a complete workflow for managing logistics operations — from creat
 * 📊 **Reports & Analytics** — Monitor operations, financial performance, and logistics statistics.
 * 📥 **Bulk Import** — Import orders and shipments using `.xlsx` and `.csv` files.
 * 🔐 **Role-Based Access Control** — Separate permissions for platform administrators and company users.
-* 🔔 **Notifications** — Centralized system notifications for important operational events.
 * 🌐 **Arabic RTL Interface** — Built primarily for Arabic-speaking logistics teams.
 
 ---
