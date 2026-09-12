@@ -29,24 +29,24 @@ import {
 } from 'react-icons/lu';
 
 export default function CompanyUsers() {
-    // 1. Pagination & Filtering States
+    // Pagination & Filtering States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
     const [filterRole, setFilterRole] = useState<'all' | 'owner' | 'manager' | 'staff'>('all');
     const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
 
-    // 2. Modals Control States
+    // Modals Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedUserForEdit, setSelectedUserForEdit] = useState<CompanyUser | null>(null);
     const [selectedUserForDetails, setSelectedUserForDetails] = useState<CompanyUser | null>(null);
     const [selectedUserForDelete, setSelectedUserForDelete] = useState<CompanyUser | null>(null);
 
-    // 3. React Query Hooks
+    // React Query Hooks
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyUsers(page, limit);
     const { mutate: deleteCompanyUser, isPending: isDeleting } = useDeleteCompanyUser();
 
-    // 4. Initial Loading Check (Standardized Rule)
+    // Initial Loading Check (Standardized Rule)
     if (isLoading) return <Loading />;
 
     const companyUsersList = responseData?.data || [];
