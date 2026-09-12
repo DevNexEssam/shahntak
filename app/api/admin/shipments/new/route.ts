@@ -69,7 +69,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام أو غير نشطة" }, { status: 400 });
         }
 
-        // 1. Quota Check for Company
+        // Quota Check for Company
         const subCheck = await checkCompanySubscription(data.companyId, { checkQuotaFor: "shipment", count: 1 });
         if (!subCheck.isAllowed) {
             return subCheck.response;
@@ -121,7 +121,7 @@ export async function POST(req: Request) {
         const orderIds = data.orderIds || [];
         const calculatedOrdersCount = orderIds.length > 0 ? orderIds.length : (data.ordersCount || 0);
 
-        // 2. Auto-Invoice Generation if not assigned
+        // Auto-Invoice Generation if not assigned
         let assignedInvoiceId = data.invoiceId && mongoose.Types.ObjectId.isValid(data.invoiceId)
             ? new mongoose.Types.ObjectId(data.invoiceId)
             : undefined;
@@ -169,7 +169,7 @@ export async function POST(req: Request) {
             status: data.status || "created",
         });
 
-        // 3. Cascade update grouped orders in database
+        // Cascade update grouped orders in database
         if (orderIds.length > 0) {
             const validObjectIds = orderIds.filter((id) => mongoose.Types.ObjectId.isValid(id));
             if (validObjectIds.length > 0) {
@@ -180,7 +180,7 @@ export async function POST(req: Request) {
             }
         }
 
-        // 4. Auto-create Waybill record for tracking & print
+        // Auto-create Waybill record for tracking & print
         try {
             await Waybill.create({
                 shipmentId: newShipment._id,
@@ -192,7 +192,7 @@ export async function POST(req: Request) {
             // Silence if waybill exists
         }
 
-        // 5. Increment company subscription shipmentsUsedThisMonth
+        // Increment company subscription shipmentsUsedThisMonth
         if (subCheck.subscription) {
             subCheck.subscription.shipmentsUsedThisMonth = (subCheck.subscription.shipmentsUsedThisMonth || 0) + 1;
             await subCheck.subscription.save();
