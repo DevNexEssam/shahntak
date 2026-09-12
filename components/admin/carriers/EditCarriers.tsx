@@ -52,7 +52,7 @@ export default function EditCarriers({ isOpen = true, carrier, onClose }: EditCa
         e.preventDefault();
         setFieldErrors({});
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = carrierUpdateValidationSchema.safeParse(formValues);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -66,7 +66,7 @@ export default function EditCarriers({ isOpen = true, carrier, onClose }: EditCa
             return;
         }
 
-        // 2. Trigger Update Mutation
+        // Trigger Update Mutation
         updateCarrier(
             { id: carrier._id, updates: formValues },
             {
