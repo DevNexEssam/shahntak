@@ -36,20 +36,20 @@ import {
 import { WaybillPDFDocument } from '@/components/company/shipments/WaybillPDFDocument';
 
 export default function Shipments() {
-    // 1. Pagination & Search/Filtering States
+    // Pagination & Search/Filtering States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [filterType, setFilterType] = useState<string>('all');
 
-    // 2. Date Range Filter States (Default to TODAY's date)
+    // Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
     const [startDate, setStartDate] = useState<string>(todayStr);
     const [endDate, setEndDate] = useState<string>(todayStr);
     const [datePreset, setDatePreset] = useState<'today' | 'month' | 'all'>('today');
 
-    // 3. Control States
+    // Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
     const [selectedShipmentForEdit, setSelectedShipmentForEdit] = useState<Shipment | null>(null);
@@ -57,7 +57,7 @@ export default function Shipments() {
     const [selectedShipmentForDelete, setSelectedShipmentForDelete] = useState<Shipment | null>(null);
     const [downloadingShipmentId, setDownloadingShipmentId] = useState<string | null>(null);
 
-    // 4. React Query Hooks with server-side search, filtering & dates
+    // React Query Hooks with server-side search, filtering & dates
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useShipments(page, limit, searchQuery, filterStatus, filterType, startDate, endDate);
     const { mutate: deleteShipment, isPending: isDeleting } = useDeleteShipment();
 

@@ -273,7 +273,6 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
         <Document title={`Waybill_${shipmentData.waybillNumber || shipmentData.shipmentNumber}`}>
             <Page size="A4" style={styles.page}>
 
-                {/* 1. Header Banner */}
                 <View style={styles.brandHeader}>
                     <View>
                         <Text style={styles.brandTitle}>{fixArabicText('بوليصة شحن برية رسمية')}</Text>
@@ -285,7 +284,6 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
                     </View>
                 </View>
 
-                {/* 2. Route Direction Banner */}
                 <View style={styles.routeBanner}>
                     <View style={styles.routeTitleGroup}>
                         <Text style={styles.routeLabel}>{fixArabicText('خط مسار الشحنة الاتجاه المعتمد:')}</Text>
@@ -299,7 +297,6 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
                     </View>
                 </View>
 
-                {/* 3. Grid for Company & Route Meta */}
                 <View style={styles.gridTwo}>
 
                     {/* Company Supplier Card */}
@@ -348,7 +345,6 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
 
                 </View>
 
-                {/* 4. Carrier & Driver Information */}
                 <View style={styles.gridTwo}>
 
                     {/* Transport & Carrier Info */}
@@ -389,7 +385,6 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
 
                 </View>
 
-                {/* 5. Cargo & Items Breakdown Table */}
                 <View style={styles.table}>
                     <View style={styles.tableHeader}>
                         <Text style={[styles.tableHeaderCell, styles.colW1]}>{fixArabicText('بيان البضاعة والطرود الشحن')}</Text>
@@ -406,7 +401,6 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
                     </View>
                 </View>
 
-                {/* 6. Official Receipt Signatures */}
                 <View style={styles.signatureSection}>
                     <View style={styles.sigBox}>
                         <Text style={styles.sigTitle}>{fixArabicText('توقيع وختم المنشأة المرسلة:')}</Text>
@@ -424,7 +418,6 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
                     </View>
                 </View>
 
-                {/* 7. Footer */}
                 <View style={styles.footer}>
                     <Text style={styles.footerNotice}>
                         {fixArabicText('بوليصة شحن برية رسمية صادرة آلياً من منصة "شحنتك" اللوجستية © 2026 - جميع الحقوق محفوظة')}

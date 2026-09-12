@@ -302,7 +302,6 @@ export default function CompanyAnalyticsDashboard() {
 
             </div>
 
-            {/* 4 Tabs Navigation Bar */}
             <div className="border-b border-border flex items-center gap-2">
                 <button
                     onClick={() => setActiveTab('financial')}

@@ -52,7 +52,6 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
             companyId: 'company_session_id',
         };
 
-        // 1. Zod Validation Check
         const validation = orderCreateValidationSchema.safeParse(payload);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -66,7 +65,6 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
             return;
         }
 
-        // 2. Trigger Mutation
         createCompanyOrder({ data: formValues }, {
             onSuccess: () => {
                 setFormValues({

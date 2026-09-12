@@ -27,27 +27,27 @@ import {
 } from "react-icons/lu";
 
 export default function Users() {
-    // 1. Pagination & Search/Filter states
+    // Pagination & Search/Filter states
     const [page, setPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
     const limit = 10;
 
-    // 2. Modal Control States
+    // Modal Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [userToDeleteId, setUserToDeleteId] = useState<string | null>(null);
 
-    // 3. React Query Hooks
+    // React Query Hooks
     const { data: res, isLoading, isError, error, refetch, isFetching } = useUsers(page, limit, searchQuery, filterStatus);
     const { mutate: deleteUser, isPending: isDeleting } = useDeleteUser();
 
     // Initial Loading Check (Standard Rule)
     if (isLoading) return <Loading />;
 
-    // 4. Handlers for search/filter resetting page to 1
+    // Handlers for search/filter resetting page to 1
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         setPage(1);
@@ -58,7 +58,7 @@ export default function Users() {
         setPage(1);
     };
 
-    // 5. Calculated Stats
+    // Calculated Stats
     const stats = {
         total: res?.total ?? (res?.data || []).length,
         active: res?.stats?.active ?? (res?.data || []).filter((u) => u.status === "active").length,
@@ -68,7 +68,7 @@ export default function Users() {
     const usersList: User[] = res?.data || [];
     const totalPages = Math.ceil((res?.total || usersList.length || 1) / limit);
 
-    // 6. Delete Action Handler
+    // Delete Action Handler
     const handleDeleteConfirm = () => {
         if (!userToDeleteId) return;
         deleteUser(userToDeleteId, {

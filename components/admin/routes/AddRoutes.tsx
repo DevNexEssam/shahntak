@@ -43,7 +43,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
         e.preventDefault();
         setFieldErrors({});
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = routeCreateValidationSchema.safeParse(formValues);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -57,7 +57,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
             return;
         }
 
-        // 2. Trigger Mutation
+        // Trigger Mutation
         createRoute(formValues, {
             onSuccess: () => {
                 onClose();

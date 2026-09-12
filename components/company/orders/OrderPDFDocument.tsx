@@ -255,7 +255,6 @@ export const OrderPDFDocument: React.FC<OrderPDFDocumentProps> = ({ orderData })
         <Document title={`Order_${orderData.orderNumber}`}>
             <Page size="A4" style={styles.page}>
 
-                {/* 1. Header Banner */}
                 <View style={styles.brandHeader}>
                     <View>
                         <Text style={styles.brandTitle}>{fixArabicText('سند وتسليم طلب شحن فردي')}</Text>
@@ -269,7 +268,6 @@ export const OrderPDFDocument: React.FC<OrderPDFDocumentProps> = ({ orderData })
                     </View>
                 </View>
 
-                {/* 2. Grid for Sender Company & Recipient Info */}
                 <View style={styles.gridTwo}>
 
                     {/* Sender Company Info */}
@@ -318,7 +316,6 @@ export const OrderPDFDocument: React.FC<OrderPDFDocumentProps> = ({ orderData })
 
                 </View>
 
-                {/* 3. Specs & Financial Table */}
                 <View style={styles.table}>
                     <View style={styles.tableHeader}>
                         <Text style={[styles.tableHeaderCell, styles.colW1]}>{fixArabicText('بيان الطرد / الطلب')}</Text>
@@ -335,13 +332,11 @@ export const OrderPDFDocument: React.FC<OrderPDFDocumentProps> = ({ orderData })
                     </View>
                 </View>
 
-                {/* 4. COD Highlight Banner */}
                 <View style={styles.codBanner}>
                     <Text style={styles.codTitle}>{fixArabicText('مبلغ التحصيل عند الاستلام المطلوب من العملاء (COD):')}</Text>
                     <Text style={styles.codAmountText}>{fixArabicText(`${codAmount.toFixed(2)} ر.س`)}</Text>
                 </View>
 
-                {/* 5. Official Signatures */}
                 <View style={styles.signatureSection}>
                     <View style={styles.sigBox}>
                         <Text style={styles.sigTitle}>{fixArabicText('توقيع وختم تسليم المنشأة المرسلة:')}</Text>
@@ -354,7 +349,6 @@ export const OrderPDFDocument: React.FC<OrderPDFDocumentProps> = ({ orderData })
                     </View>
                 </View>
 
-                {/* 6. Footer Notice */}
                 <View style={styles.footer}>
                     <Text style={styles.footerNotice}>
                         {fixArabicText('سند وتسليم طلب صادرة آلياً من منصة "شحنتك" اللوجستية © 2026 - جميع الحقوق محفوظة')}

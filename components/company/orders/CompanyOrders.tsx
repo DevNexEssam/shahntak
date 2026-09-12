@@ -42,18 +42,15 @@ export default function CompanyOrders() {
     const urlSearch = searchParams.get('search');
     const urlAction = searchParams.get('action') || searchParams.get('new');
 
-    // 1. Pagination & Search States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState(urlSearch || '');
 
-    // 2. Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
     const [startDate, setStartDate] = useState<string>(todayStr);
     const [endDate, setEndDate] = useState<string>(todayStr);
     const [datePreset, setDatePreset] = useState<'today' | 'month' | 'all'>('today');
 
-    // 3. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
 
     useEffect(() => {
@@ -72,7 +69,6 @@ export default function CompanyOrders() {
     const [selectedOrderForDelete, setSelectedOrderForDelete] = useState<any | null>(null);
     const [downloadingOrderId, setDownloadingOrderId] = useState<string | null>(null);
 
-    // 4. Custom React Query Hook for Company Orders
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyOrders(page, limit, searchQuery, startDate, endDate);
     const { mutate: deleteOrder, isPending: isDeleting } = useDeleteCompanyOrder();
 

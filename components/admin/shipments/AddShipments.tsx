@@ -99,7 +99,7 @@ export default function AddShipments({
             vehicleId: formValues.vehicleId || undefined,
         };
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = shipmentCreateValidationSchema.safeParse(payload);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -113,7 +113,7 @@ export default function AddShipments({
             return;
         }
 
-        // 2. Trigger Mutation
+        // Trigger Mutation
         createShipment(payload, {
             onSuccess: () => {
                 onClose();

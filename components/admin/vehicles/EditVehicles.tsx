@@ -49,7 +49,7 @@ export default function EditVehicles({ isOpen = true, vehicle, onClose }: EditVe
         e.preventDefault();
         setFieldErrors({});
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = vehicleUpdateValidationSchema.safeParse(formValues);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -63,7 +63,7 @@ export default function EditVehicles({ isOpen = true, vehicle, onClose }: EditVe
             return;
         }
 
-        // 2. Trigger Update Mutation
+        // Trigger Update Mutation
         updateVehicle(
             { id: vehicle._id, updates: formValues },
             {

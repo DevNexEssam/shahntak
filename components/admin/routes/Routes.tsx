@@ -30,23 +30,23 @@ import {
 } from 'react-icons/lu';
 
 export default function Routes() {
-    // 1. Pagination & Search/Filtering States
+    // Pagination & Search/Filtering States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
 
-    // 2. Modals Control States
+    // Modals Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedRouteForEdit, setSelectedRouteForEdit] = useState<Route | null>(null);
     const [selectedRouteForDetails, setSelectedRouteForDetails] = useState<Route | null>(null);
     const [selectedRouteForDelete, setSelectedRouteForDelete] = useState<Route | null>(null);
 
-    // 3. React Query Hooks with server-side search & filtering
+    // React Query Hooks with server-side search & filtering
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useRoutes(page, limit, searchQuery, filterStatus);
     const { mutate: deleteRoute, isPending: isDeleting } = useDeleteRoute();
 
-    // 4. Initial Loading Check (Standard Rule)
+    // Initial Loading Check (Standard Rule)
     if (isLoading) return <Loading />;
 
     const routesList = responseData?.data || [];

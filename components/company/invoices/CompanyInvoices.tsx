@@ -39,16 +39,13 @@ import {
 import { InvoicePDFDocument } from './InvoicePDFDocument';
 
 export default function CompanyInvoices() {
-    // 0. Active Tab State ('invoices' | 'expenses')
     const [activeTab, setActiveTab] = useState<'invoices' | 'expenses'>('invoices');
 
-    // 1. Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
     const [startDate, setStartDate] = useState<string>(todayStr);
     const [endDate, setEndDate] = useState<string>(todayStr);
     const [datePreset, setDatePreset] = useState<'today' | 'month' | 'all'>('today');
 
-    // 2. Invoices States
     const [invoicePage, setInvoicePage] = useState(1);
     const limit = 10;
     const [invoiceSearch, setInvoiceSearch] = useState('');
@@ -56,7 +53,6 @@ export default function CompanyInvoices() {
     const [selectedInvoiceForEdit, setSelectedInvoiceForEdit] = useState<any | null>(null);
     const [isAddInvoiceOpen, setIsAddInvoiceOpen] = useState(false);
 
-    // 3. Expenses States
     const [expensePage, setExpensePage] = useState(1);
     const [expenseSearch, setExpenseSearch] = useState('');
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
@@ -64,7 +60,6 @@ export default function CompanyInvoices() {
     const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
     const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(null);
 
-    // 4. React Query Hooks with Date Range Filtering
     const {
         data: invoicesResponse,
         isLoading: isLoadingInvoices,

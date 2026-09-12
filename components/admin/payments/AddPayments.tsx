@@ -47,7 +47,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
             paidAt: formValues.paidAt ? new Date(formValues.paidAt) : new Date(),
         };
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = paymentCreateValidationSchema.safeParse(payload);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -61,7 +61,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
             return;
         }
 
-        // 2. Trigger Mutation
+        // Trigger Mutation
         createPayment(payload as any, {
             onSuccess: () => {
                 onClose();

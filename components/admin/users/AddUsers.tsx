@@ -38,7 +38,7 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
         e.preventDefault();
         setFieldErrors({});
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = userCreateValidationSchema.safeParse(formData);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -52,7 +52,7 @@ export default function AddUsers({ isOpen = true, onClose }: AddUsersProps) {
             return;
         }
 
-        // 2. Trigger Mutation
+        // Trigger Mutation
         createUser(formData, {
             onSuccess: () => {
                 onClose();

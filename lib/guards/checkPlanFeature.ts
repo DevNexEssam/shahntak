@@ -15,13 +15,13 @@ export async function checkPlanFeature(
     companyId: string | mongoose.Types.ObjectId,
     featureKey: keyof IPlan
 ): Promise<FeatureCheckResult> {
-    // 1. Check time-based subscription validity first
+    // Check time-based subscription validity first
     const subCheck = await checkCompanySubscription(companyId);
     if (!subCheck.isAllowed) {
         return subCheck;
     }
 
-    // 2. Check feature flag checkbox in company plan
+    // Check feature flag checkbox in company plan
     const plan = subCheck.subscription?.planId as any;
     if (plan && plan[featureKey] === false) {
         return {

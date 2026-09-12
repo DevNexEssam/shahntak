@@ -36,19 +36,16 @@ import {
 import { WaybillPDFDocument } from './WaybillPDFDocument';
 
 export default function CompanyShipments() {
-    // 1. Pagination & Search States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState<string>('all');
 
-    // 2. Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
     const [startDate, setStartDate] = useState<string>(todayStr);
     const [endDate, setEndDate] = useState<string>(todayStr);
     const [datePreset, setDatePreset] = useState<'today' | 'month' | 'all'>('today');
 
-    // 3. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
     const [selectedShipmentForEdit, setSelectedShipmentForEdit] = useState<any | null>(null);
@@ -56,7 +53,6 @@ export default function CompanyShipments() {
     const [selectedShipmentForDelete, setSelectedShipmentForDelete] = useState<any | null>(null);
     const [downloadingShipmentId, setDownloadingShipmentId] = useState<string | null>(null);
 
-    // 4. Custom React Query Hook for Company Shipments
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyShipments(page, limit, searchQuery, startDate, endDate);
     const { mutate: deleteShipment, isPending: isDeleting } = useDeleteCompanyShipment();
 

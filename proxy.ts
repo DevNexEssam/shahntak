@@ -6,7 +6,7 @@ export default withAuth(
         const token = req.nextauth.token;
         const path = req.nextUrl.pathname;
 
-        // 1. Dynamic login redirect for unauthenticated users
+        // Dynamic login redirect for unauthenticated users
         if (!token) {
             const loginPath = path.startsWith("/admin")
                 ? "/admin/login"
@@ -18,7 +18,7 @@ export default withAuth(
 
         const role = token?.role as string | undefined;
 
-        // 2. Protect Admin Dashboard (/admin/dashboard/:path*)
+        // Protect Admin Dashboard (/admin/dashboard/:path*)
         // Only Super Admin ('super') and Platform Admin ('admin') are allowed
         if (path.startsWith("/admin/dashboard")) {
             if (role !== "super" && role !== "admin") {
@@ -26,7 +26,7 @@ export default withAuth(
             }
         }
 
-        // 3. Protect Company Portal & Sub-Role Permissions (/company/dashboard/:path*)
+        // Protect Company Portal & Sub-Role Permissions (/company/dashboard/:path*)
         if (path.startsWith("/company/dashboard")) {
             // Block Platform Admins ('super' or 'admin') from entering Company Portal
             if (role === "super" || role === "admin") {

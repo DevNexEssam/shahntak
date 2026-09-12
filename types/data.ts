@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// 1. User Types
+// User Types
 export interface User {
     _id: string;
     name: string;
@@ -36,7 +36,7 @@ export interface UserDeleteResponse {
 }
 
 
-// 2. Carrier Types
+// Carrier Types
 export interface Carrier {
     _id: string;
     name: string;
@@ -76,7 +76,7 @@ export interface CarrierDeleteResponse {
 }
 
 
-// 3. Company Types
+// Company Types
 export interface Company {
     _id: string;
     companyName: string;
@@ -141,7 +141,7 @@ export interface CompanyFullDetailsResponse {
     message?: string;
 }
 
-// 4. CompanyUser Types
+// CompanyUser Types
 export interface CompanyUser {
     _id: string;
     companyId: string | Company;
@@ -205,7 +205,7 @@ export interface CompanyUserDeleteResponse {
     data?: any;
 }
 
-// 5. Order Types
+// Order Types
 export interface Order {
     _id: string;
     orderNumber: string;
@@ -258,7 +258,7 @@ export interface OrderDeleteResponse {
     data?: any;
 }
 
-// 6. Shipment Types
+// Shipment Types
 export type ShipmentStatus =
     | "created" | "confirmed" | "assigned" | "ready_for_pickup" | "picked_up"
     | "in_transit" | "arrived" | "out_for_delivery" | "delivered"
@@ -312,7 +312,7 @@ export interface ShipmentDeleteResponse {
     data?: any;
 }
 
-// 7. Vehicle Types
+// Vehicle Types
 export interface Vehicle {
     _id: string;
     type: string;
@@ -348,7 +348,7 @@ export interface VehicleDeleteResponse {
     data?: any;
 }
 
-// 8. Route Types
+// Route Types
 export interface Route {
     _id: string;
     origin: string;
@@ -387,7 +387,7 @@ export interface RouteDeleteResponse {
     data?: any;
 }
 
-// 9. Waybill Types
+// Waybill Types
 export interface Waybill {
     _id: string;
     shipmentId: string | Shipment;
@@ -417,7 +417,7 @@ export interface WaybillDeleteResponse {
     data?: any;
 }
 
-// 10. Invoice Types
+// Invoice Types
 export interface Invoice {
     _id: string;
     invoiceNumber: string;
@@ -459,7 +459,7 @@ export interface InvoiceDeleteResponse {
     data?: any;
 }
 
-// 11. Payment Types
+// Payment Types
 export interface Payment {
     _id: string;
     invoiceId: string | Invoice;
@@ -496,7 +496,7 @@ export interface PaymentDeleteResponse {
     data?: any;
 }
 
-// 12. TrackingEvent Types
+// TrackingEvent Types
 export interface TrackingEvent {
     _id: string;
     shipmentId: string | Shipment;
@@ -526,7 +526,7 @@ export interface TrackingEventDeleteResponse {
     data?: any;
 }
 
-// 13. Notification Types
+// Notification Types
 export interface Notification {
     _id: string;
     recipientType: "company_user" | "user";
@@ -565,7 +565,7 @@ export interface NotificationDeleteResponse {
     data?: any;
 }
 
-// 14. Plan Types
+// Plan Types
 export interface Plan {
     _id: string;
     name: string;
@@ -606,7 +606,7 @@ export interface PlanDeleteResponse {
     data?: any;
 }
 
-// 15. Subscription Types
+// Subscription Types
 export interface Subscription {
     _id: string;
     companyId: string | Company;
@@ -700,7 +700,7 @@ export type UserRole =
 
 export type PermissionAction = "read" | "create" | "update" | "softDelete" | "delete";
 
-// 16. Admin Dashboard Types (Progressive Loading Sections)
+// Admin Dashboard Types (Progressive Loading Sections)
 export interface AdminKPIsData {
     totalCompanies: number;
     companiesGrowthPct: number;

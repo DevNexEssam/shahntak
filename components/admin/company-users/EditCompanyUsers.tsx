@@ -79,7 +79,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
             payload.password = formValues.password;
         }
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = companyUserUpdateValidationSchema.safeParse(payload);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -93,7 +93,7 @@ export default function EditCompanyUsers({ isOpen = true, user, onClose }: EditC
             return;
         }
 
-        // 2. Trigger Update Mutations
+        // Trigger Update Mutations
         updateCompanyUser(
             { id: user._id, updates: payload },
             {

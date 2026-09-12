@@ -72,7 +72,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
         e.preventDefault();
         setFieldErrors({});
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = orderUpdateValidationSchema.safeParse(formValues);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -86,7 +86,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
             return;
         }
 
-        // 2. Trigger Update Mutation
+        // Trigger Update Mutation
         updateOrder(
             { id: order._id, updates: formValues },
             {

@@ -28,24 +28,20 @@ import {
 } from 'react-icons/lu';
 
 export default function CompanyRoutes() {
-    // 1. Pagination & Search States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
 
-    // 2. Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
     const [startDate, setStartDate] = useState<string>(todayStr);
     const [endDate, setEndDate] = useState<string>(todayStr);
     const [datePreset, setDatePreset] = useState<'today' | 'month' | 'all'>('today');
 
-    // 3. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedRouteForEdit, setSelectedRouteForEdit] = useState<any | null>(null);
     const [selectedRouteForDetails, setSelectedRouteForDetails] = useState<any | null>(null);
     const [selectedRouteForDelete, setSelectedRouteForDelete] = useState<any | null>(null);
 
-    // 4. Custom React Query Hook for Company Routes
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyRoutes(page, limit, searchQuery, startDate, endDate);
     const { mutate: deleteRoute, isPending: isDeleting } = useDeleteCompanyRoute();
 

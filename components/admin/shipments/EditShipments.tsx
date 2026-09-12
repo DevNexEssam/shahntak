@@ -112,7 +112,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
             trackingNumber: formValues.trackingNumber || undefined,
         };
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = shipmentUpdateValidationSchema.safeParse(payload);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -126,7 +126,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
             return;
         }
 
-        // 2. Trigger Update Mutation
+        // Trigger Update Mutation
         updateShipment(
             { id: shipment._id, updates: payload },
             {

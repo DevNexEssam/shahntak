@@ -34,26 +34,26 @@ import {
 import { InvoicePDFDocument } from '@/components/company/invoices/InvoicePDFDocument';
 
 export default function Invoices() {
-    // 1. Date Range Filter States (Default to TODAY's date)
+    // Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
     const [startDate, setStartDate] = useState<string>(todayStr);
     const [endDate, setEndDate] = useState<string>(todayStr);
     const [datePreset, setDatePreset] = useState<'today' | 'month' | 'all'>('today');
 
-    // 2. Pagination & Search/Filtering States
+    // Pagination & Search/Filtering States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState<string>('all');
 
-    // 3. Modals & PDF Download Control States
+    // Modals & PDF Download Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedInvoiceForEdit, setSelectedInvoiceForEdit] = useState<Invoice | null>(null);
     const [selectedInvoiceForDetails, setSelectedInvoiceForDetails] = useState<Invoice | null>(null);
     const [selectedInvoiceForDelete, setSelectedInvoiceForDelete] = useState<Invoice | null>(null);
     const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(null);
 
-    // 4. React Query Hooks with server-side search & date range filtering
+    // React Query Hooks with server-side search & date range filtering
     const {
         data: responseData,
         isLoading,

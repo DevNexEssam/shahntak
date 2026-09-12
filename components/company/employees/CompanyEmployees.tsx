@@ -28,18 +28,15 @@ import {
 } from 'react-icons/lu';
 
 export default function CompanyEmployees() {
-    // 1. Pagination & Search States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
 
-    // 2. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedEmployeeForEdit, setSelectedEmployeeForEdit] = useState<any | null>(null);
     const [selectedEmployeeForDetails, setSelectedEmployeeForDetails] = useState<any | null>(null);
     const [selectedEmployeeForDelete, setSelectedEmployeeForDelete] = useState<any | null>(null);
 
-    // 3. Custom React Query Hook for Company Employees
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyEmployees(page, limit, searchQuery);
     const { mutate: deleteEmployee, isPending: isDeleting } = useDeleteCompanyEmployee();
 

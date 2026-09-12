@@ -27,18 +27,15 @@ import {
 } from 'react-icons/lu';
 
 export default function CompanyVehicles() {
-    // 1. Pagination & Search States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
 
-    // 2. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedVehicleForEdit, setSelectedVehicleForEdit] = useState<any | null>(null);
     const [selectedVehicleForDetails, setSelectedVehicleForDetails] = useState<any | null>(null);
     const [selectedVehicleForDelete, setSelectedVehicleForDelete] = useState<any | null>(null);
 
-    // 3. Custom React Query Hook for Company Vehicles
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useCompanyVehicles(page, limit, searchQuery);
     const { mutate: deleteVehicle, isPending: isDeleting } = useDeleteCompanyVehicle();
 

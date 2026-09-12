@@ -47,7 +47,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
             dueDate: formValues.dueDate || undefined,
         };
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = invoiceCreateValidationSchema.safeParse(payload);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -61,7 +61,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
             return;
         }
 
-        // 2. Trigger Mutation
+        // Trigger Mutation
         createInvoice(payload, {
             onSuccess: () => {
                 onClose();

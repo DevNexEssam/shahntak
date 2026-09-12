@@ -28,23 +28,23 @@ import {
 } from 'react-icons/lu';
 
 export default function Vehicles() {
-    // 1. Pagination & Search/Filtering States
+    // Pagination & Search/Filtering States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
 
-    // 2. Modals Control States
+    // Modals Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedVehicleForEdit, setSelectedVehicleForEdit] = useState<Vehicle | null>(null);
     const [selectedVehicleForDetails, setSelectedVehicleForDetails] = useState<Vehicle | null>(null);
     const [selectedVehicleForDelete, setSelectedVehicleForDelete] = useState<Vehicle | null>(null);
 
-    // 3. React Query Hooks with server-side search & filtering
+    // React Query Hooks with server-side search & filtering
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useVehicles(page, limit, searchQuery, filterStatus);
     const { mutate: deleteVehicle, isPending: isDeleting } = useDeleteVehicle();
 
-    // 4. Initial Loading Check (Standard Rule)
+    // Initial Loading Check (Standard Rule)
     if (isLoading) return <Loading />;
 
     const vehiclesList = responseData?.data || [];

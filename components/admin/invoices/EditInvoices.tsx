@@ -58,7 +58,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
             dueDate: formValues.dueDate || undefined,
         };
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = invoiceUpdateValidationSchema.safeParse(payload);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -72,7 +72,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
             return;
         }
 
-        // 2. Trigger Update Mutation
+        // Trigger Update Mutation
         updateInvoice(
             { id: invoice._id, updates: payload },
             {

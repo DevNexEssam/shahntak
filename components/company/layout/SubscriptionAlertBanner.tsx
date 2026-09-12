@@ -9,7 +9,6 @@ export function SubscriptionAlertBanner() {
 
     if (isLoading) return null;
 
-    // 1. Expired Subscription Banner (Red Alert)
     if (isExpired || status === 'expired' || status === 'cancelled') {
         return (
             <div className="bg-rose-500/10 border-b border-rose-500/20 text-rose-700 px-4 py-3 text-sm font-medium flex items-center justify-between gap-3 shadow-sm animate-pulse">
@@ -26,7 +25,6 @@ export function SubscriptionAlertBanner() {
         );
     }
 
-    // 2. Warning Subscription Banner (Yellow Alert - 5 days or less)
     if (isWarning) {
         return (
             <div className="bg-amber-500/10 border-b border-amber-500/20 text-amber-800 px-4 py-2.5 text-sm font-medium flex items-center justify-between gap-3 shadow-sm">
@@ -43,7 +41,6 @@ export function SubscriptionAlertBanner() {
         );
     }
 
-    // 3. No Subscription Banner
     if (status === 'no_subscription') {
         return (
             <div className="bg-sky-500/10 border-b border-sky-500/20 text-sky-800 px-4 py-2.5 text-sm font-medium flex items-center justify-between gap-3 shadow-sm">

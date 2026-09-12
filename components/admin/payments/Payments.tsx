@@ -28,23 +28,23 @@ import {
 } from 'react-icons/lu';
 
 export default function Payments() {
-    // 1. Pagination & Search/Filtering States
+    // Pagination & Search/Filtering States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
     const [filterMethod, setFilterMethod] = useState<string>('all');
 
-    // 2. Modals Control States
+    // Modals Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedPaymentForEdit, setSelectedPaymentForEdit] = useState<Payment | null>(null);
     const [selectedPaymentForDetails, setSelectedPaymentForDetails] = useState<Payment | null>(null);
     const [selectedPaymentForDelete, setSelectedPaymentForDelete] = useState<Payment | null>(null);
 
-    // 3. React Query Hooks with server-side search & filtering
+    // React Query Hooks with server-side search & filtering
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = usePayments(page, limit, searchQuery, filterMethod);
     const { mutate: deletePayment, isPending: isDeleting } = useDeletePayment();
 
-    // 4. Initial Loading Check (Standard Rule)
+    // Initial Loading Check (Standard Rule)
     if (isLoading) return <Loading />;
 
     const paymentsList = responseData?.data || [];

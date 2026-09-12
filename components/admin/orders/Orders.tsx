@@ -39,19 +39,19 @@ import AddShipments from '../shipments/AddShipments';
 import { OrderPDFDocument } from '@/components/company/orders/OrderPDFDocument';
 
 export default function Orders() {
-    // 1. Pagination & Search/Filtering States
+    // Pagination & Search/Filtering States
     const [page, setPage] = useState(1);
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
     const [filterStatus, setFilterStatus] = useState<string>('all');
 
-    // 2. Date Range Filter States (Default to TODAY's date)
+    // Date Range Filter States (Default to TODAY's date)
     const todayStr = new Date().toISOString().split('T')[0];
     const [startDate, setStartDate] = useState<string>(todayStr);
     const [endDate, setEndDate] = useState<string>(todayStr);
     const [datePreset, setDatePreset] = useState<'today' | 'month' | 'all'>('today');
 
-    // 3. Control States
+    // Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
     const [isGroupShipmentOpen, setIsGroupShipmentOpen] = useState(false);
@@ -62,7 +62,7 @@ export default function Orders() {
     const [selectedOrderForDelete, setSelectedOrderForDelete] = useState<Order | null>(null);
     const [downloadingOrderId, setDownloadingOrderId] = useState<string | null>(null);
 
-    // 4. React Query Hooks with server-side search, filtering & dates
+    // React Query Hooks with server-side search, filtering & dates
     const { data: responseData, isLoading, isError, error, isFetching, refetch } = useOrders(page, limit, searchQuery, filterStatus, startDate, endDate);
     const { mutate: deleteOrder, isPending: isDeleting } = useDeleteOrder();
 

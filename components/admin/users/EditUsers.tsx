@@ -63,7 +63,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
             delete payloadToValidate.password;
         }
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = userUpdateValidationSchema.safeParse(payloadToValidate);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -77,7 +77,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
             return;
         }
 
-        // 2. Trigger Mutation
+        // Trigger Mutation
         updateUser(
             {
                 id: userData._id,

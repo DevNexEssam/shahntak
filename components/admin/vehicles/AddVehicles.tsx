@@ -34,7 +34,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
         e.preventDefault();
         setFieldErrors({});
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = vehicleCreateValidationSchema.safeParse(formValues);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -48,7 +48,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
             return;
         }
 
-        // 2. Trigger Mutation
+        // Trigger Mutation
         createVehicle(formValues, {
             onSuccess: () => {
                 onClose();

@@ -332,7 +332,6 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
         <Document title={`Invoice_${invoiceData.invoiceNumber || 'ZATCA'}`}>
             <Page size="A4" style={styles.page}>
 
-                {/* 1. Header Banner */}
                 <View style={styles.brandHeader}>
                     <View>
                         <Text style={styles.brandTitle}>{fixArabicText('منصة شحنتك اللوجستية')}</Text>
@@ -346,7 +345,6 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
                     </View>
                 </View>
 
-                {/* 2. Parties Info Grid (Issuer Company & Dates) */}
                 <View style={styles.partiesContainer}>
 
                     {/* Company Supplier Info */}
@@ -401,7 +399,6 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
 
                 </View>
 
-                {/* 3. Detailed Logistics & Shipment Card */}
                 <View style={styles.logisticsCard}>
                     <Text style={styles.logisticsTitle}>{fixArabicText('تفاصيل الخدمة اللوجستية والنقل المربوط بالفاتورة')}</Text>
 
@@ -455,7 +452,6 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
                     )}
                 </View>
 
-                {/* 4. Detailed Financial & ZATCA Items Table */}
                 <View style={styles.table}>
                     <View style={styles.tableHeader}>
                         <Text style={[styles.tableHeaderCell, styles.col1]}>{fixArabicText('بيان الخدمة / التكلفة اللوجستية')}</Text>
@@ -483,7 +479,6 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
                     )}
                 </View>
 
-                {/* 5. Exemption & Financial Summary Grid */}
                 <View style={styles.financialSummaryRow}>
 
                     {/* Exemption Notice or Notes */}
@@ -537,7 +532,6 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
 
                 </View>
 
-                {/* 6. Footer Notice */}
                 <View style={styles.footer}>
                     <Text style={styles.footerNotice}>
                         {fixArabicText('وثيقة رسمية معتمدة صادرة من منصة "شحنتك" اللوجستية © 2026 - جميع الحقوق محفوظة')}

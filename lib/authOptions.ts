@@ -9,7 +9,7 @@ import Company from "@/models/companies";
 
 export const authOptions: NextAuthOptions = {
     providers: [
-        // 1. ADMIN / SUPER ADMIN (صحاب المنصة)
+        // ADMIN / SUPER ADMIN (صحاب المنصة)
         CredentialsProvider({
             id: "admin-credentials",
             name: "Admin Credentials",
@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
             },
         }),
 
-        // 2. COMPANY MASTER ACCOUNT (حساب الشركة الرئيسي)
+        // COMPANY MASTER ACCOUNT (حساب الشركة الرئيسي)
         CredentialsProvider({
             id: "company-credentials",
             name: "Company Master Credentials",
@@ -101,7 +101,7 @@ export const authOptions: NextAuthOptions = {
             },
         }),
 
-        // 3. COMPANY EMPLOYEES
+        // COMPANY EMPLOYEES
         CredentialsProvider({
             id: "employee-credentials",
             name: "Company Employee Credentials",
