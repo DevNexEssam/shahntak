@@ -353,8 +353,4 @@ The platform is designed to scale from individual logistics operations to multi-
 
 ---
 
-## 👨‍💻 Development
-
-Built with ❤️ using **Next.js, TypeScript, MongoDB, and modern web technologies**.
-
 **Shahntak — Simplifying Logistics Operations.**
