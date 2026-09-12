@@ -40,21 +40,21 @@ import {
 } from "react-icons/lu";
 
 export default function Companies() {
-    // 1. Pagination & Search/Filter states
+    // Pagination & Search/Filter states
     const [page, setPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterStatus, setFilterStatus] = useState<string>("all");
     const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
     const limit = 9;
 
-    // 2. Modals & Selection states
+    // Modals & Selection states
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
     const [companyToDeleteId, setCompanyToDeleteId] = useState<string | null>(null);
 
-    // 3. Custom Hooks
+    // Custom Hooks
     const { data: companiesRes, isLoading, isError, error, refetch, isFetching } = useCompanies(page, limit);
     const { mutate: deleteCompany, isPending: isDeleting } = useDeleteCompany();
     const { mutate: approveCompany, isPending: isApproving } = useApproveCompany();
@@ -65,7 +65,7 @@ export default function Companies() {
     const companiesList = companiesRes?.data || [];
     const totalRecords = companiesRes?.total || 0;
 
-    // 4. Handlers for search/filter resetting page to 1
+    // Handlers for search/filter resetting page to 1
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         setPage(1);
@@ -76,7 +76,7 @@ export default function Companies() {
         setPage(1);
     };
 
-    // 5. Client-side filtered list
+    // Client-side filtered list
     const filteredCompanies = companiesList.filter((comp) => {
         const matchesSearch =
             comp.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
