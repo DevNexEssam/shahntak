@@ -47,7 +47,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
         e.preventDefault();
         setFieldErrors({});
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = companyUserCreateValidationSchema.safeParse(formValues);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -61,7 +61,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
             return;
         }
 
-        // 2. Trigger Mutation
+        // Trigger Mutation
         createCompanyUser(formValues, {
             onSuccess: () => {
                 onClose();
