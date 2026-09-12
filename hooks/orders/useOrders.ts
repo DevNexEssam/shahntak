@@ -8,18 +8,18 @@ import { AxiosError } from "axios";
 export const orderKeys = {
     all: ["orders"] as const,
     lists: () => [...orderKeys.all, "list"] as const,
-    list: (page: number, limit: number, search: string = "", status: string = "all") =>
-        [...orderKeys.lists(), { page, limit, search, status }] as const,
+    list: (page: number, limit: number, search: string = "", status: string = "all", startDate: string = "", endDate: string = "") =>
+        [...orderKeys.lists(), { page, limit, search, status, startDate, endDate }] as const,
     allList: () => [...orderKeys.all, "all-list"] as const,
     details: () => [...orderKeys.all, "detail"] as const,
     detail: (id: string) => [...orderKeys.details(), id] as const,
 };
 
 // Queries
-export const useOrders = (page: number = 1, limit: number = 10, search: string = "", status: string = "all") => {
+export const useOrders = (page: number = 1, limit: number = 10, search: string = "", status: string = "all", startDate: string = "", endDate: string = "") => {
     return useQuery({
-        queryKey: orderKeys.list(page, limit, search, status),
-        queryFn: () => orderServices.getOrders(page, limit, search, status),
+        queryKey: orderKeys.list(page, limit, search, status, startDate, endDate),
+        queryFn: () => orderServices.getOrders(page, limit, search, status, startDate, endDate),
         placeholderData: keepPreviousData,
         refetchInterval: 3000, // Live background auto-refetch every 3s
         refetchOnWindowFocus: true,

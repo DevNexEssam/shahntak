@@ -85,7 +85,7 @@ export default function Plans() {
                                 <span>الباقات المتاحة في المنصة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
                             <LuZap className="w-5 h-5" />
                         </div>
                     </div>

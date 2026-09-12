@@ -8,18 +8,25 @@ import { AxiosError } from "axios";
 export const invoiceKeys = {
     all: ["invoices"] as const,
     lists: () => [...invoiceKeys.all, "list"] as const,
-    list: (page: number, limit: number, search: string = "", status: string = "all") =>
-        [...invoiceKeys.lists(), { page, limit, search, status }] as const,
+    list: (page: number, limit: number, search: string = "", status: string = "all", startDate?: string, endDate?: string) =>
+        [...invoiceKeys.lists(), { page, limit, search, status, startDate, endDate }] as const,
     allList: () => [...invoiceKeys.all, "all-list"] as const,
     details: () => [...invoiceKeys.all, "detail"] as const,
     detail: (id: string) => [...invoiceKeys.details(), id] as const,
 };
 
 // Queries
-export const useInvoices = (page: number = 1, limit: number = 10, search: string = "", status: string = "all") => {
+export const useInvoices = (
+    page: number = 1,
+    limit: number = 10,
+    search: string = "",
+    status: string = "all",
+    startDate?: string,
+    endDate?: string
+) => {
     return useQuery({
-        queryKey: invoiceKeys.list(page, limit, search, status),
-        queryFn: () => invoiceServices.getInvoices(page, limit, search, status),
+        queryKey: invoiceKeys.list(page, limit, search, status, startDate, endDate),
+        queryFn: () => invoiceServices.getInvoices(page, limit, search, status, startDate, endDate),
         placeholderData: keepPreviousData,
     });
 };

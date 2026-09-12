@@ -69,7 +69,7 @@ export default function DetailsCompanyUsers({
                 {/* Modal Header */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center font-extrabold text-xl shadow-xs shrink-0">
                             <LuUser className="w-6 h-6" />
                         </div>
                         <div>
@@ -107,7 +107,7 @@ export default function DetailsCompanyUsers({
                             {/* Top Identity & Action Card */}
                             <div className="p-4 rounded-2xl bg-surface-muted border border-border flex items-center justify-between flex-wrap gap-4">
                                 <div className="flex items-center gap-3.5">
-                                    <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent font-extrabold text-lg flex items-center justify-center border border-accent/20 shrink-0">
+                                    <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent font-extrabold text-lg flex items-center justify-center border border-accent/20 shrink-0">
                                         {user.userName?.charAt(0) || 'U'}
                                     </div>
                                     <div>
@@ -146,7 +146,7 @@ export default function DetailsCompanyUsers({
                                         <span className="text-xs font-semibold text-body block mb-1">الطلبات المرفوعة بواسطة الموظف</span>
                                         <h4 className="text-2xl font-bold text-heading font-latin">{ordersCount} <span className="text-xs font-normal text-body">طلب</span></h4>
                                     </div>
-                                    <div className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shrink-0">
+                                    <div className="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
                                         <LuPackage className="w-5 h-5" />
                                     </div>
                                 </div>
@@ -157,7 +157,7 @@ export default function DetailsCompanyUsers({
                                         <span className="text-xs font-semibold text-body block mb-1">رقم الهاتف التواصل</span>
                                         <h4 className="text-sm font-bold text-heading font-latin dir-ltr text-right">{user.phone || 'غير مسجل'}</h4>
                                     </div>
-                                    <div className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shrink-0">
+                                    <div className="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
                                         <LuPhone className="w-5 h-5" />
                                     </div>
                                 </div>

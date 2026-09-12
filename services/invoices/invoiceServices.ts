@@ -3,13 +3,22 @@ import axios from "axios";
 
 export const invoiceServices = {
     // Get paginated invoices list with server-side search & filtering
-    getInvoices: async (page: number = 1, limit: number = 10, search: string = "", status: string = "all"): Promise<InvoiceResponse> => {
+    getInvoices: async (
+        page: number = 1,
+        limit: number = 10,
+        search: string = "",
+        status: string = "all",
+        startDate?: string,
+        endDate?: string
+    ): Promise<InvoiceResponse> => {
         const params = new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
         });
         if (search && search.trim() !== "") params.append("search", search.trim());
         if (status && status !== "all") params.append("status", status);
+        if (startDate) params.append("startDate", startDate);
+        if (endDate) params.append("endDate", endDate);
 
         const { data } = await axios.get(`/api/admin/invoices?${params.toString()}`);
         return data;

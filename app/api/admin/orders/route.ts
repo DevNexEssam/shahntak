@@ -29,11 +29,27 @@ export async function GET(req: NextRequest) {
         const city = searchParams.get("city");
         const search = searchParams.get("search");
         const noPagination = searchParams.get("nopagination") === "true";
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
 
         const filter: Record<string, any> = { ...ACTIVE };
         if (companyId) filter.companyId = companyId;
         if (status && status !== "all") filter.status = status;
         if (city) filter.recipientCity = { $regex: city, $options: "i" };
+
+        if (startDate || endDate) {
+            filter.createdAt = {};
+            if (startDate) {
+                filter.createdAt.$gte = new Date(startDate);
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                if (endDate.length === 10) {
+                    end.setHours(23, 59, 59, 999);
+                }
+                filter.createdAt.$lte = end;
+            }
+        }
 
         if (search && search.trim() !== "") {
             const searchRegex = { $regex: search.trim(), $options: "i" };

@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
         const role = session?.user?.role;
 
         if (!role || !can(role, "shipment", "read")) {
-            return NextResponse.json(   
+            return NextResponse.json(
                 { success: false, message: "غير مصرح لك بهذا الإجراء" },
                 { status: 403 }
             );
@@ -33,11 +33,27 @@ export async function GET(req: NextRequest) {
         const status = searchParams.get("status");
         const search = searchParams.get("search");
         const noPagination = searchParams.get("nopagination") === "true";
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
 
         const filter: Record<string, any> = { ...ACTIVE };
         if (companyId && companyId.trim() !== "") filter.companyId = companyId;
         if (type && type !== "all") filter.type = type;
         if (status && status !== "all") filter.status = status;
+
+        if (startDate || endDate) {
+            filter.createdAt = {};
+            if (startDate) {
+                filter.createdAt.$gte = new Date(startDate);
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                if (endDate.length === 10) {
+                    end.setHours(23, 59, 59, 999);
+                }
+                filter.createdAt.$lte = end;
+            }
+        }
 
         if (search && search.trim() !== "") {
             const regex = new RegExp(search.trim(), "i");

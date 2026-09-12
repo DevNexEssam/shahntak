@@ -97,7 +97,7 @@ export default function Carriers() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-extrabold text-heading flex items-center gap-3">
-                        <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
+                        <span className="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shadow-xs">
                             <LuTruck className="w-5 h-5" />
                         </span>
                         إدارة الناقلين والشركاء اللوجستيين
@@ -144,7 +144,7 @@ export default function Carriers() {
                                 <span>المسجلين بالمنصة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuTruck className="w-5 h-5" />
                         </div>
                     </div>
@@ -160,7 +160,7 @@ export default function Carriers() {
                                 <span>تشغيل محلي مباشر</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuLayers className="w-5 h-5" />
                         </div>
                     </div>
@@ -176,7 +176,7 @@ export default function Carriers() {
                                 <span>متصل عبر البرمجيات</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuGlobe className="w-5 h-5" />
                         </div>
                     </div>
@@ -192,7 +192,7 @@ export default function Carriers() {
                                 <span>جاهزون للاستخدام</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuCheck className="w-5 h-5" />
                         </div>
                     </div>
@@ -265,7 +265,7 @@ export default function Carriers() {
                                     <tr key={car._id} className="hover:bg-surface-muted/40 transition-colors">
                                         <td className="py-3.5 px-4 font-bold text-heading">
                                             <div className="flex items-center gap-2.5">
-                                                <div className="w-9 h-9 rounded-md bg-accent-soft text-accent flex items-center justify-center font-bold">
+                                                <div className="w-9 h-9 rounded-md bg-accent/10 text-accent flex items-center justify-center font-bold">
                                                     <LuTruck className="w-4 h-4" />
                                                 </div>
                                                 <span>{car.name}</span>

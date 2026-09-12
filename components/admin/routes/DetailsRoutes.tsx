@@ -34,8 +34,8 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                 {/* Modal Header */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
-                            <LuMapPin className="w-6 h-6" />
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0 font-extrabold text-xl">
+                            <LuMapPin className="w-5 h-5" />
                         </div>
                         <div>
                             <h2 className="text-xl font-extrabold text-heading">تفاصيل المسار اللوجستي</h2>
@@ -63,7 +63,7 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                             <span className="text-lg font-extrabold text-heading">{route.origin}</span>
                         </div>
 
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
                             <LuArrowLeft className="w-5 h-5" />
                         </div>
 

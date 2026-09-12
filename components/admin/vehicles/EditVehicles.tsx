@@ -82,7 +82,7 @@ export default function EditVehicles({ isOpen = true, vehicle, onClose }: EditVe
                 {/* Modal Header - Identical to Add Modal Theme */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
+                        <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>

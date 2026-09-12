@@ -8,18 +8,18 @@ import { AxiosError } from "axios";
 export const shipmentKeys = {
     all: ["shipments"] as const,
     lists: () => [...shipmentKeys.all, "list"] as const,
-    list: (page: number, limit: number, search: string = "", status: string = "all", type: string = "all") =>
-        [...shipmentKeys.lists(), { page, limit, search, status, type }] as const,
+    list: (page: number, limit: number, search: string = "", status: string = "all", type: string = "all", startDate: string = "", endDate: string = "") =>
+        [...shipmentKeys.lists(), { page, limit, search, status, type, startDate, endDate }] as const,
     allList: () => [...shipmentKeys.all, "all-list"] as const,
     details: () => [...shipmentKeys.all, "detail"] as const,
     detail: (id: string) => [...shipmentKeys.details(), id] as const,
 };
 
 // Queries
-export const useShipments = (page: number = 1, limit: number = 10, search: string = "", status: string = "all", type: string = "all") => {
+export const useShipments = (page: number = 1, limit: number = 10, search: string = "", status: string = "all", type: string = "all", startDate: string = "", endDate: string = "") => {
     return useQuery({
-        queryKey: shipmentKeys.list(page, limit, search, status, type),
-        queryFn: () => shipmentServices.getShipments(page, limit, search, status, type),
+        queryKey: shipmentKeys.list(page, limit, search, status, type, startDate, endDate),
+        queryFn: () => shipmentServices.getShipments(page, limit, search, status, type, startDate, endDate),
         placeholderData: keepPreviousData,
         refetchInterval: 3000, // Live background auto-refetch every 3s
         refetchOnWindowFocus: true,

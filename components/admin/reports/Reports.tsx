@@ -76,7 +76,7 @@ export default function Reports() {
                             <LuTrendingUp className="w-5 h-5 text-accent" />
                             <h2 className="text-base font-extrabold text-heading">نمو الاشتراكات الشهرية (MRR)</h2>
                         </div>
-                        <span className="text-accent font-bold text-xs bg-accent-soft px-2.5 py-1 rounded-full">+١٨.٤٪ هذا الربع</span>
+                        <span className="text-accent font-bold text-xs bg-accent/10 px-2.5 py-1 rounded-full">+١٨.٤٪ هذا الربع</span>
                     </div>
                     <div className="h-44 bg-surface-muted/50 rounded-2xl border border-border/50 flex flex-col items-center justify-center p-6 text-center">
                         <LuTrendingUp className="w-8 h-8 text-accent mb-2" />
@@ -98,7 +98,7 @@ export default function Reports() {
                     {savedReports.map((report) => (
                         <div key={report.id} className="p-4 flex items-center justify-between hover:bg-surface-muted/30 transition-colors">
                             <div className="flex items-center gap-3.5">
-                                <div className="w-10 h-10 rounded-xl bg-accent-soft text-accent flex items-center justify-center font-bold">
+                                <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center font-bold">
                                     <LuFileSpreadsheet className="w-5 h-5" />
                                 </div>
                                 <div>

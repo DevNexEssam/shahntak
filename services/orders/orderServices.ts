@@ -3,13 +3,15 @@ import axios from "axios";
 
 export const orderServices = {
     // Get paginated orders list with server-side search & filtering
-    getOrders: async (page: number = 1, limit: number = 10, search: string = "", status: string = "all"): Promise<OrderResponse> => {
+    getOrders: async (page: number = 1, limit: number = 10, search: string = "", status: string = "all", startDate: string = "", endDate: string = ""): Promise<OrderResponse> => {
         const params = new URLSearchParams({
             page: page.toString(),
             limit: limit.toString(),
         });
         if (search && search.trim() !== "") params.append("search", search.trim());
         if (status && status !== "all") params.append("status", status);
+        if (startDate) params.append("startDate", startDate);
+        if (endDate) params.append("endDate", endDate);
 
         const { data } = await axios.get(`/api/admin/orders?${params.toString()}`);
         return data;

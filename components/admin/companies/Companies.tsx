@@ -136,7 +136,7 @@ export default function Companies() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-extrabold text-heading flex items-center gap-3">
-                        <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
+                        <span className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuBuilding2 className="w-5 h-5" />
                         </span>
                         إدارة الشركات المسجلة
@@ -178,7 +178,7 @@ export default function Companies() {
 
                     <button
                         onClick={() => setIsAddModalOpen(true)}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-all font-bold text-xs shadow-xs cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
                         <span>تسجيل شركة شحن</span>
@@ -208,7 +208,7 @@ export default function Companies() {
                                 <span>المسجلة في المنصة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuBuilding2 className="w-5 h-5" />
                         </div>
                     </div>
@@ -224,7 +224,7 @@ export default function Companies() {
                                 <span>تعمل حالياً</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuCheck className="w-5 h-5" />
                         </div>
                     </div>
@@ -240,7 +240,7 @@ export default function Companies() {
                                 <span>بحاجة للتفعيل</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuClock className="w-5 h-5" />
                         </div>
                     </div>
@@ -256,7 +256,7 @@ export default function Companies() {
                                 <span>موقوفة مؤقتاً</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuX className="w-5 h-5" />
                         </div>
                     </div>
@@ -330,7 +330,7 @@ export default function Companies() {
                                         {/* Logo & Basic Header */}
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent font-extrabold text-lg flex items-center justify-center shrink-0 border border-accent/20">
+                                                <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent font-extrabold text-lg flex items-center justify-center shrink-0 border border-accent/20">
                                                     {comp.companyName ? comp.companyName.charAt(0) : "C"}
                                                 </div>
                                                 <div>
@@ -461,7 +461,7 @@ export default function Companies() {
                                             <tr key={comp._id} className="hover:bg-surface-muted/40 transition-colors">
                                                 <td className="py-4 px-6">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-9 h-9 rounded-xl bg-accent-soft text-accent font-extrabold flex items-center justify-center shrink-0 border border-accent/20">
+                                                        <div className="w-9 h-9 rounded-xl bg-accent/10 text-accent font-extrabold flex items-center justify-center shrink-0 border border-accent/20">
                                                             {comp.companyName ? comp.companyName.charAt(0) : "C"}
                                                         </div>
                                                         <div>

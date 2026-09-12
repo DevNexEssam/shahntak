@@ -1,17 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Shipment, Company } from '@/types/data';
 import { useShipments, useDeleteShipment } from '@/hooks/shipments/useShipments';
 import AddShipments from './AddShipments';
 import EditShipments from './EditShipments';
 import DetailsShipments from './DetailsShipments';
+import BulkImportAdminShipmentsPopup from './BulkImportAdminShipmentsPopup';
 import ConfirmDeletePopup from '@/components/ui/ConfirmDeletePopup';
 import EmptyData from '@/components/ui/EmptyData';
 import Loading from '@/components/ui/loading';
 import ErrorMessege from '@/components/ui/ErrorMessege';
 import {
-    LuPackage,
+    LuTruck,
     LuPlus,
     LuSearch,
     LuRefreshCw,
@@ -24,10 +27,13 @@ import {
     LuFilter,
     LuCheck,
     LuClock,
-    LuTruck,
     LuMapPin,
-    LuPrinter
+    LuCalendar,
+    LuFileSpreadsheet,
+    LuDownload,
+    LuLoader
 } from 'react-icons/lu';
+import { WaybillPDFDocument } from '@/components/company/shipments/WaybillPDFDocument';
 
 export default function Shipments() {
     // 1. Pagination & Search/Filtering States
@@ -37,24 +43,53 @@ export default function Shipments() {
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [filterType, setFilterType] = useState<string>('all');
 
-    // 2. Modals Control States
+    // 2. Date Range Filter States (Default to TODAY's date)
+    const todayStr = new Date().toISOString().split('T')[0];
+    const [startDate, setStartDate] = useState<string>(todayStr);
+    const [endDate, setEndDate] = useState<string>(todayStr);
+    const [datePreset, setDatePreset] = useState<'today' | 'month' | 'all'>('today');
+
+    // 3. Control States
     const [isAddOpen, setIsAddOpen] = useState(false);
+    const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
     const [selectedShipmentForEdit, setSelectedShipmentForEdit] = useState<Shipment | null>(null);
     const [selectedShipmentForDetails, setSelectedShipmentForDetails] = useState<Shipment | null>(null);
     const [selectedShipmentForDelete, setSelectedShipmentForDelete] = useState<Shipment | null>(null);
+    const [downloadingShipmentId, setDownloadingShipmentId] = useState<string | null>(null);
 
-    // 3. React Query Hooks with server-side search & filtering
-    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useShipments(page, limit, searchQuery, filterStatus, filterType);
+    // 4. React Query Hooks with server-side search, filtering & dates
+    const { data: responseData, isLoading, isError, error, isFetching, refetch } = useShipments(page, limit, searchQuery, filterStatus, filterType, startDate, endDate);
     const { mutate: deleteShipment, isPending: isDeleting } = useDeleteShipment();
 
-    // 4. Initial Loading Check (Standard Rule)
+    const handlePresetToday = () => {
+        setStartDate(todayStr);
+        setEndDate(todayStr);
+        setDatePreset('today');
+        setPage(1);
+    };
+
+    const handlePresetMonth = () => {
+        const now = new Date();
+        const firstDay = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+        setStartDate(firstDay);
+        setEndDate(todayStr);
+        setDatePreset('month');
+        setPage(1);
+    };
+
+    const handlePresetAll = () => {
+        setStartDate('');
+        setEndDate('');
+        setDatePreset('all');
+        setPage(1);
+    };
+
     if (isLoading) return <Loading />;
 
     const shipmentsList = responseData?.data || [];
     const totalRecords = responseData?.total || 0;
     const totalPages = Math.ceil(totalRecords / limit) || 1;
 
-    // Rule 1: Always setPage(1) on search/filter changes
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         setPage(1);
@@ -91,23 +126,128 @@ export default function Shipments() {
         );
     };
 
-    const statusBadge = (status?: string) => {
-        const map: Record<string, { label: string; bg: string }> = {
-            created: { label: 'تمت الإنشائية', bg: 'bg-slate-500/10 text-slate-600 border-slate-200' },
-            confirmed: { label: 'مؤكدة', bg: 'bg-amber-500/10 text-amber-600 border-amber-200' },
-            assigned: { label: 'تم التخصيص', bg: 'bg-blue-500/10 text-blue-600 border-blue-200' },
-            ready_for_pickup: { label: 'جاهزة للتحميل', bg: 'bg-indigo-500/10 text-indigo-600 border-indigo-200' },
-            in_transit: { label: 'في الطريق', bg: 'bg-purple-500/10 text-purple-600 border-purple-200' },
-            delivered: { label: 'تم التسليم', bg: 'bg-emerald-500/10 text-emerald-600 border-emerald-200' },
-            cancelled: { label: 'ملغاة', bg: 'bg-rose-500/10 text-rose-600 border-rose-200' },
-        };
-        const st = map[status || 'created'] || { label: status || '', bg: 'bg-surface-muted text-body border-border' };
+    const handleDownloadWaybillPdf = async (shipment: any) => {
+        if (shipment?.status === 'cancelled') {
+            toast.error('حماية نزاهة البوالص: لا يمكن تنزيل بوليصة شحن لشحنة ملغية');
+            return;
+        }
+        try {
+            setDownloadingShipmentId(shipment._id);
+            toast.loading(`جاري تجهيز وتنزيل بوليصة الشحن PDF (${shipment.waybillNumber || shipment.shipmentNumber})...`, { id: 'waybill-pdf' });
+            const { pdf } = await import('@react-pdf/renderer');
+            const blob = await pdf(<WaybillPDFDocument shipmentData={shipment} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Waybill_${shipment.waybillNumber || shipment.shipmentNumber || 'download'}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            toast.success(`تم تحميل بوليصة الشحن (${shipment.waybillNumber || shipment.shipmentNumber}) بنجاح!`, { id: 'waybill-pdf' });
+        } catch (err) {
+            console.error('Failed to generate Waybill PDF:', err);
+            toast.error('حدث خطأ أثناء إنشاء بوليصة الشحن PDF', { id: 'waybill-pdf' });
+        } finally {
+            setDownloadingShipmentId(null);
+        }
+    };
 
-        return (
-            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${st.bg}`}>
-                {st.label}
-            </span>
-        );
+    const statusBadge = (status?: string) => {
+        switch (status) {
+            case 'created':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                        حديثة
+                    </span>
+                );
+            case 'confirmed':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">
+                        مؤكدة
+                    </span>
+                );
+            case 'assigned':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20">
+                        معينة لناقل
+                    </span>
+                );
+            case 'ready_for_pickup':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 border border-purple-500/20">
+                        جاهزة للاستلام
+                    </span>
+                );
+            case 'picked_up':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-600 border border-teal-500/20">
+                        تم الاستلام
+                    </span>
+                );
+            case 'in_transit':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20">
+                        في الطريق
+                    </span>
+                );
+            case 'arrived':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-600 border border-cyan-500/20">
+                        وصلت للمركز
+                    </span>
+                );
+            case 'out_for_delivery':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-500/10 text-orange-600 border border-orange-500/20">
+                        خرجت للتوصيل
+                    </span>
+                );
+            case 'delivered':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                        تم التوصيل
+                    </span>
+                );
+            case 'delivery_failed':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
+                        فشل التوصيل
+                    </span>
+                );
+            case 'cancelled':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
+                        ملغية
+                    </span>
+                );
+            case 'returned':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-500/10 text-gray-600 border border-gray-500/20">
+                        مرتجعة
+                    </span>
+                );
+            case 'exception':
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-600 border border-red-500/20">
+                        حالة استثنائية
+                    </span>
+                );
+            default:
+                return (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">
+                        {status || 'جديد'}
+                    </span>
+                );
+        }
+    };
+
+    const getTypeBadge = (type?: string) => {
+        switch (type) {
+            case 'ftl': return 'شحن كامل ';
+            case 'ltl': return 'شحن جزئي ';
+            default: return 'توصيل محلي';
+        }
     };
 
     return (
@@ -117,12 +257,12 @@ export default function Shipments() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-extrabold text-heading flex items-center gap-3">
-                        <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
-                            <LuPackage className="w-5 h-5" />
+                        <span className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
+                            <LuTruck className="w-5 h-5" />
                         </span>
-                        إدارة الشحنات وتعيين الموارد
+                        إدارة الشحنات وتعيين الموارد (الأدمن)
                     </h1>
-                    <p className="text-xs text-body mt-1">متابعة الشحنات وتعيين المسارات اللوجستية والناقلين وتكاليف السداد</p>
+                    <p className="text-xs text-body mt-1">متابعة الشحنات وتعيين المسارات اللوجستية والناقلين وطباعة البوالص</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -136,8 +276,16 @@ export default function Shipments() {
                     </button>
 
                     <button
+                        onClick={() => setIsBulkImportOpen(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent-soft text-accent text-xs font-bold hover:bg-accent hover:text-white transition-all cursor-pointer border border-accent/20"
+                    >
+                        <LuFileSpreadsheet className="w-4 h-4" />
+                        <span>استيراد من Excel</span>
+                    </button>
+
+                    <button
                         onClick={() => setIsAddOpen(true)}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
                         <span>إصدار شحنة جديدة</span>
@@ -152,67 +300,132 @@ export default function Shipments() {
                 </div>
             )}
 
-            {/* KPI Stats Grid - Matching Standard Design */}
+            {/* Date Range Selector Header Bar - Matching Company Shipments */}
+            <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-heading">
+                    <LuCalendar className="w-4 h-4 text-accent shrink-0" />
+                    <span>تصفية الفترات الزمنية للشحنات:</span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+
+                    {/* Preset Buttons */}
+                    <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-md border border-border">
+                        <button
+                            onClick={handlePresetToday}
+                            className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'today'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
+                                }`}
+                        >
+                            اليوم (تلقائي)
+                        </button>
+                        <button
+                            onClick={handlePresetMonth}
+                            className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'month'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
+                                }`}
+                        >
+                            هذا الشهر
+                        </button>
+                        <button
+                            onClick={handlePresetAll}
+                            className={`px-3 py-1.5 rounded text-xs font-extrabold transition-all cursor-pointer ${datePreset === 'all'
+                                ? 'bg-accent text-accent-foreground shadow-xs'
+                                : 'text-body hover:text-heading'
+                                }`}
+                        >
+                            جميع الفترات
+                        </button>
+                    </div>
+
+                    {/* Date Inputs */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-body">من:</span>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => {
+                                setStartDate(e.target.value);
+                                setDatePreset('all');
+                                setPage(1);
+                            }}
+                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-heading focus:outline-none focus:border-accent"
+                        />
+                        <span className="text-xs text-body">إلى:</span>
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => {
+                                setEndDate(e.target.value);
+                                setDatePreset('all');
+                                setPage(1);
+                            }}
+                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-heading focus:outline-none focus:border-accent"
+                        />
+                    </div>
+
+                </div>
+            </div>
+
+            {/* KPI Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Total Shipments */}
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
                             <span className="text-xs font-semibold text-body block mb-1">إجمالي الشحنات</span>
-                            <h3 className="text-2xl font-bold text-heading my-1">{stats.total}</h3>
+                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.total}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
                                 <span>المسجلة بالمنصة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
-                            <LuPackage className="w-5 h-5" />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Created & Confirmed */}
-                <div className="border border-border rounded-sm p-5 bg-surface">
-                    <div className="flex items-center justify-between gap-4">
-                        <div>
-                            <span className="text-xs font-semibold text-body block mb-1">شحنات جديدة ومؤكدة</span>
-                            <h3 className="text-2xl font-bold text-heading my-1">{stats.created}</h3>
-                            <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>بانتظار التخصيص</span>
-                            </p>
-                        </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
-                            <LuClock className="w-5 h-5" />
-                        </div>
-                    </div>
-                </div>
-
-                {/* In Transit */}
-                <div className="border border-border rounded-sm p-5 bg-surface">
-                    <div className="flex items-center justify-between gap-4">
-                        <div>
-                            <span className="text-xs font-semibold text-body block mb-1">شحنات في الطريق</span>
-                            <h3 className="text-2xl font-bold text-heading my-1">{stats.inTransit}</h3>
-                            <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>جاري النقل اللوجستي</span>
-                            </p>
-                        </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuTruck className="w-5 h-5" />
                         </div>
                     </div>
                 </div>
 
-                {/* Delivered */}
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">شحنات جديدة ومؤكدة</span>
+                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.created}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>بانتظار التخصيص</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
+                            <LuClock className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="border border-border rounded-sm p-5 bg-surface">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <span className="text-xs font-semibold text-body block mb-1">شحنات في الطريق</span>
+                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.inTransit}</h3>
+                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                                <span>جاري النقل اللوجستي</span>
+                            </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
+                            <LuTruck className="w-5 h-5" />
+                        </div>
+                    </div>
+                </div>
+
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
                             <span className="text-xs font-semibold text-body block mb-1">شحنات مسلمة</span>
-                            <h3 className="text-2xl font-bold text-heading my-1">{stats.delivered}</h3>
+                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.delivered}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
                                 <span>تم التسليم بنجاح</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuCheck className="w-5 h-5" />
                         </div>
                     </div>
@@ -255,11 +468,19 @@ export default function Shipments() {
                             className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer w-full"
                         >
                             <option value="all">جميع الحالات</option>
-                            <option value="created">أنشئت حديثاً</option>
-                            <option value="assigned">تم تعيين الموارد</option>
-                            <option value="in_transit">في الطريق</option>
-                            <option value="delivered">تم التسليم</option>
-                            <option value="cancelled">ملغاة</option>
+                            <option value="created">حديثة</option>
+                            <option value="confirmed">مؤكدة </option>
+                            <option value="assigned">معينة لناقل </option>
+                            <option value="ready_for_pickup">جاهزة للاستلام </option>
+                            <option value="picked_up">تم الاستلام </option>
+                            <option value="in_transit">في الطريق </option>
+                            <option value="arrived">وصلت للمركز </option>
+                            <option value="out_for_delivery">خرجت للتوصيل </option>
+                            <option value="delivered">تم التوصيل </option>
+                            <option value="delivery_failed">فشل التوصيل </option>
+                            <option value="cancelled">ملغية </option>
+                            <option value="returned">مرتجعة </option>
+                            <option value="exception">حالة استثنائية </option>
                         </select>
                     </div>
                 </div>
@@ -269,7 +490,7 @@ export default function Shipments() {
             <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {shipmentsList.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا توجد شحنات تطابق خيارات البحث أو التصفية الحالية" icon={LuPackage} />
+                        <EmptyData message="لا توجد شحنات تطابق خيارات البحث أو التصفية الحالية" icon={LuTruck} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
@@ -278,7 +499,7 @@ export default function Shipments() {
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
                                     <th className="py-3.5 px-4">رقم الشحنة / البوليصة</th>
                                     <th className="py-3.5 px-4">الشركة المالكة</th>
-                                    <th className="py-3.5 px-4">المسار (الانطلاق ➔ الوجهة)</th>
+                                    <th className="py-3.5 px-4">نوع الخدمة والمسار</th>
                                     <th className="py-3.5 px-4">عدد الطلبات</th>
                                     <th className="py-3.5 px-4">تكلفة وسعر السداد</th>
                                     <th className="py-3.5 px-4">الحالة</th>
@@ -309,13 +530,13 @@ export default function Shipments() {
                                                 </div>
                                             </td>
 
-                                            <td className="py-3.5 px-4 text-xs font-bold text-heading">
-                                                <div className="flex items-center gap-1.5">
-                                                    <LuMapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                                                    <span>{shp.origin}</span>
-                                                    <span className="text-accent">➔</span>
-                                                    <LuMapPin className="w-3.5 h-3.5 text-rose-600 shrink-0" />
-                                                    <span>{shp.destination}</span>
+                                            <td className="py-3.5 px-4">
+                                                <div>
+                                                    <span className="font-bold text-heading flex items-center gap-1 text-xs">
+                                                        <LuMapPin className="w-3.5 h-3.5 text-accent shrink-0" />
+                                                        {shp.origin} ⬅️ {shp.destination}
+                                                    </span>
+                                                    <span className="text-[11px] text-body block mt-0.5">{getTypeBadge(shp.type)}</span>
                                                 </div>
                                             </td>
 
@@ -337,11 +558,16 @@ export default function Shipments() {
                                             <td className="py-3.5 px-4 text-center">
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <button
-                                                        onClick={() => window.print()}
-                                                        title="طباعة بوليصة الشحن"
-                                                        className="p-2 rounded-md bg-surface-muted hover:bg-purple-500/10 text-body hover:text-purple-600 border border-border transition-all cursor-pointer"
+                                                        onClick={() => handleDownloadWaybillPdf(shp)}
+                                                        disabled={downloadingShipmentId === shp._id || shp.status === 'cancelled'}
+                                                        title={shp.status === 'cancelled' ? 'بوليصة شحن ملغية' : 'تنزيل البوليصة بصيغة PDF'}
+                                                        className="p-2 rounded-md bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-600 border border-emerald-500/20 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                                                     >
-                                                        <LuPrinter className="w-4 h-4" />
+                                                        {downloadingShipmentId === shp._id ? (
+                                                            <LuLoader className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <LuDownload className="w-4 h-4" />
+                                                        )}
                                                     </button>
 
                                                     <button
@@ -413,6 +639,14 @@ export default function Shipments() {
                 onClose={() => setIsAddOpen(false)}
             />
 
+            <BulkImportAdminShipmentsPopup
+                isOpen={isBulkImportOpen}
+                onClose={() => {
+                    setIsBulkImportOpen(false);
+                    refetch();
+                }}
+            />
+
             <EditShipments
                 isOpen={!!selectedShipmentForEdit}
                 shipment={selectedShipmentForEdit}
@@ -437,3 +671,4 @@ export default function Shipments() {
         </div>
     );
 }
+

@@ -85,7 +85,7 @@ export default function Users() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-extrabold text-heading flex items-center gap-3">
-                        <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
+                        <span className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuUser className="w-5 h-5" />
                         </span>
                         إدارة المستخدمين والمدراء
@@ -95,20 +95,20 @@ export default function Users() {
 
                 <div className="flex items-center gap-3">
                     <button
+                        onClick={() => setIsAddOpen(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-all font-bold text-xs shadow-xs cursor-pointer"
+                    >
+                        <LuPlus className="w-4 h-4" />
+                        <span>إضافة مستخدم جديد</span>
+                    </button>
+
+                    <button
                         onClick={() => refetch()}
                         disabled={isFetching}
                         title="تحديث البيانات"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin text-accent" : ""}`} />
-                    </button>
-
-                    <button
-                        onClick={() => setIsAddOpen(true)}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
-                    >
-                        <LuPlus className="w-4 h-4" />
-                        <span>إضافة مستخدم جديد</span>
                     </button>
                 </div>
             </div>
@@ -126,12 +126,12 @@ export default function Users() {
                     <div className="flex items-center justify-between gap-4">
                         <div>
                             <span className="text-xs font-semibold text-body block mb-1">إجمالي المستخدمين</span>
-                            <h3 className="text-2xl font-bold text-heading my-1">{stats.total}</h3>
+                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.total}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
                                 <span>المسجلين بالنظام</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuUser className="w-5 h-5" />
                         </div>
                     </div>
@@ -141,12 +141,12 @@ export default function Users() {
                     <div className="flex items-center justify-between gap-4">
                         <div>
                             <span className="text-xs font-semibold text-body block mb-1">المستخدمون النشطون</span>
-                            <h3 className="text-2xl font-bold text-heading my-1">{stats.active}</h3>
-                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                            <h3 className="text-2xl font-bold text-emerald-600 my-1 font-latin">{stats.active}</h3>
+                            <p className="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-2">
                                 <span>حسابات مفعلة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
                             <LuUserCheck className="w-5 h-5" />
                         </div>
                     </div>
@@ -156,43 +156,56 @@ export default function Users() {
                     <div className="flex items-center justify-between gap-4">
                         <div>
                             <span className="text-xs font-semibold text-body block mb-1">غير النشطين</span>
-                            <h3 className="text-2xl font-bold text-heading my-1">{stats.inactive}</h3>
-                            <p className="text-xs text-body flex items-center gap-1 mt-2">
+                            <h3 className="text-2xl font-bold text-rose-600 my-1 font-latin">{stats.inactive}</h3>
+                            <p className="text-xs text-rose-600 font-bold flex items-center gap-1 mt-2">
                                 <span>حسابات موقوفة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-rose-500/10 text-rose-600 flex items-center justify-center">
                             <LuUserX className="w-5 h-5" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Filter and Search Controller Header */}
-            <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div className="relative w-full md:w-96">
-                    <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        placeholder="بحث بالاسم، البريد، أو رقم الجوال..."
-                        className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
-                    />
+            {/* Quick Status Filter Tabs & Search Controller Header */}
+            <div className="space-y-4">
+                <div className="border-b border-border flex items-center gap-2 overflow-x-auto">
+                    {[
+                        { key: 'all', label: 'جميع المستخدمين', count: stats.total },
+                        { key: 'active', label: 'حسابات مفعلة', count: stats.active },
+                        { key: 'inactive', label: 'حسابات موقوفة', count: stats.inactive },
+                    ].map((tab) => (
+                        <button
+                            key={tab.key}
+                            onClick={() => {
+                                setFilterStatus(tab.key);
+                                setPage(1);
+                            }}
+                            className={`flex items-center gap-2 px-4 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer whitespace-nowrap ${filterStatus === tab.key
+                                ? 'border-accent text-accent bg-accent/5'
+                                : 'border-transparent text-body hover:text-heading hover:bg-surface-muted/50'
+                                }`}
+                        >
+                            <span>{tab.label}</span>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-latin font-bold ${filterStatus === tab.key ? 'bg-accent/10 text-accent' : 'bg-surface-muted text-body'
+                                }`}>
+                                {tab.count}
+                            </span>
+                        </button>
+                    ))}
                 </div>
 
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <div className="flex items-center gap-2 bg-surface-muted px-3 py-1.5 rounded-md border border-border w-full md:w-auto">
-                        <LuFilter className="w-4 h-4 text-body shrink-0" />
-                        <select
-                            value={filterStatus}
-                            onChange={handleFilterStatusChange}
-                            className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer w-full"
-                        >
-                            <option value="all">جميع الحالات</option>
-                            <option value="active">نشط فقط</option>
-                            <option value="inactive">غير نشط</option>
-                        </select>
+                <div className="bg-surface p-4 rounded-md border border-border flex items-center justify-between">
+                    <div className="relative w-full md:w-96">
+                        <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="بحث بالاسم، البريد، أو رقم الجوال..."
+                            className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                        />
                     </div>
                 </div>
             </div>
@@ -221,7 +234,7 @@ export default function Users() {
                                     <tr key={user._id} className="hover:bg-surface-muted/40 transition-colors">
                                         <td className="py-3.5 px-4">
                                             <div className="flex items-center gap-2.5">
-                                                <div className="w-9 h-9 rounded-md bg-accent-soft text-accent font-extrabold flex items-center justify-center shrink-0 border border-accent/20">
+                                                <div className="w-9 h-9 rounded-md bg-accent/10 text-accent font-extrabold flex items-center justify-center shrink-0 border border-accent/20">
                                                     {user.name ? user.name.charAt(0) : "U"}
                                                 </div>
                                                 <div>

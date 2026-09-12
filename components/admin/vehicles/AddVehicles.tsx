@@ -64,7 +64,7 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                 {/* Modal Header */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
+                        <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
                             <LuTruck className="w-6 h-6" />
                         </div>
                         <div>
@@ -99,9 +99,8 @@ export default function AddVehicles({ isOpen = true, onClose }: AddVehiclesProps
                                 value={formValues.type}
                                 onChange={(e) => setFormValues({ ...formValues, type: e.target.value })}
                                 placeholder="مثال: دينا جامبو 5 طن، تريلا مبردة، وانيت..."
-                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                    fieldErrors.type ? 'border-rose-500' : 'border-border'
-                                }`}
+                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.type ? 'border-rose-500' : 'border-border'
+                                    }`}
                             />
                             {fieldErrors.type && (
                                 <span className="text-xs text-rose-500 font-medium block">{fieldErrors.type}</span>

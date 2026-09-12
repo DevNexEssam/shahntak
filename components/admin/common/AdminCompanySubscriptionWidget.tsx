@@ -93,7 +93,7 @@ export default function AdminCompanySubscriptionWidget({
         <div className="p-4 rounded-2xl bg-surface border border-border shadow-xs space-y-3.5 dir-rtl">
             <div className="flex items-center justify-between border-b border-border pb-3">
                 <div className="flex items-center gap-2">
-                    <span className="w-9 h-9 rounded-lg bg-accent-soft text-accent flex items-center justify-center font-bold">
+                    <span className="w-9 h-9 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold">
                         <LuCreditCard className="w-5 h-5" />
                     </span>
                     <div>

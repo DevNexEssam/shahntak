@@ -28,7 +28,7 @@ export default function DetailsVehicles({ isOpen = true, vehicle, onClose }: Det
                 {/* Modal Header */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
+                        <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
                             <LuTruck className="w-6 h-6" />
                         </div>
                         <div>
@@ -53,7 +53,7 @@ export default function DetailsVehicles({ isOpen = true, vehicle, onClose }: Det
                     {/* Vehicle Type Card */}
                     <div className="p-5 rounded-2xl bg-surface-muted border border-border flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-md bg-accent-soft text-accent flex items-center justify-center font-extrabold">
+                            <div className="w-10 h-10 rounded-md bg-accent/10 text-accent flex items-center justify-center font-extrabold">
                                 <LuTruck className="w-5 h-5" />
                             </div>
                             <div>

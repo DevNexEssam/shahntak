@@ -113,7 +113,7 @@ export default function CompanyUsers() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-extrabold text-heading flex items-center gap-3">
-                        <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
+                        <span className="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shadow-xs">
                             <LuUsers className="w-5 h-5" />
                         </span>
                         إدارة موظفي الشركات
@@ -163,7 +163,7 @@ export default function CompanyUsers() {
                                 <span>المسجلين بالمنصة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuUsers className="w-5 h-5" />
                         </div>
                     </div>
@@ -179,7 +179,7 @@ export default function CompanyUsers() {
                                 <span>حسابات مفعلة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuUserCheck className="w-5 h-5" />
                         </div>
                     </div>
@@ -195,7 +195,7 @@ export default function CompanyUsers() {
                                 <span>صلاحيات المالك</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuShieldCheck className="w-5 h-5" />
                         </div>
                     </div>
@@ -211,7 +211,7 @@ export default function CompanyUsers() {
                                 <span>إدارة العمليات</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuUserPlus className="w-5 h-5" />
                         </div>
                     </div>
@@ -306,7 +306,7 @@ export default function CompanyUsers() {
                                             {/* User Info */}
                                             <td className="py-3.5 px-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-md bg-accent-soft text-accent font-extrabold flex items-center justify-center shrink-0 border border-accent/20">
+                                                    <div className="w-10 h-10 rounded-md bg-accent/10 text-accent font-extrabold flex items-center justify-center shrink-0 border border-accent/20">
                                                         {user.userName?.charAt(0) || 'U'}
                                                     </div>
                                                     <div>

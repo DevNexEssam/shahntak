@@ -101,7 +101,7 @@ export default function Subscriptions() {
                                 <span>الاشتراكات الموثقة بالمنصة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
                             <LuCrown className="w-5 h-5" />
                         </div>
                     </div>
@@ -237,7 +237,7 @@ export default function Subscriptions() {
                                         <tr key={sub._id} className="hover:bg-surface-muted/50 transition-colors">
                                             <td className="py-3.5 px-4 font-bold text-heading">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-9 h-9 rounded-md bg-accent-soft text-accent flex items-center justify-center font-bold">
+                                                    <div className="w-9 h-9 rounded-md bg-accent/10 text-accent flex items-center justify-center font-bold">
                                                         <LuBuilding2 className="w-4 h-4" />
                                                     </div>
                                                     <div>
@@ -248,7 +248,7 @@ export default function Subscriptions() {
                                             </td>
 
                                             <td className="py-3.5 px-4">
-                                                <span className="font-extrabold text-accent bg-accent-soft/40 px-2.5 py-1 rounded-md text-xs border border-accent/20">
+                                                <span className="font-extrabold text-accent bg-accent/10 px-2.5 py-1 rounded-md text-xs border border-accent/20">
                                                     {plan?.name || 'غير محددة'}
                                                 </span>
                                             </td>

@@ -1,42 +1,85 @@
 'use client';
 
-import React from 'react';
-import { LuSearch, LuBell, LuPlus, LuServer } from 'react-icons/lu';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { LuSearch, LuPlus, LuShieldCheck, LuPanelLeft } from 'react-icons/lu';
 
-export const AdminHeader: React.FC = () => {
+interface AdminHeaderProps {
+    isSidebarCollapsed?: boolean;
+    onToggleSidebar?: () => void;
+}
+
+export const AdminHeader: React.FC<AdminHeaderProps> = ({
+    isSidebarCollapsed = false,
+    onToggleSidebar,
+}) => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const router = useRouter();
+
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/admin/dashboard/orders?search=${encodeURIComponent(searchQuery.trim())}`);
+        } else {
+            router.push('/admin/dashboard/orders');
+        }
+    };
+
     return (
-        <header className="h-[76px] bg-surface border-b border-border px-8 flex items-center justify-between sticky top-0 z-30 font-arabic">
+        <header className="h-[76px] bg-surface border-b border-border px-6 flex items-center justify-between sticky top-0 z-30 font-arabic">
 
-            {/* Search Input */}
-            <div className="relative w-80">
-                <LuSearch className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 text-body" />
-                <input
-                    type="text"
-                    placeholder="ابحث عن شركة، بوليصة، شحنة، مستخدم..."
-                    className="w-full pl-4 pr-10 py-2 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
-                />
+            {/* Sidebar Toggle & Search Form */}
+            <div className="flex items-center gap-3">
+                {onToggleSidebar && (
+                    <button
+                        type="button"
+                        onClick={onToggleSidebar}
+                        className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer"
+                        title={isSidebarCollapsed ? "فتح وتكبير القائمة الجانبية" : "طي القائمة الجانبية"}
+                    >
+                        <LuPanelLeft className="w-5 h-5" />
+                    </button>
+                )}
+
+                <form onSubmit={handleSearchSubmit} className="relative w-72 sm:w-80">
+                    <button
+                        type="submit"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-body hover:text-accent transition-colors"
+                        title="بحث"
+                    >
+                        <LuSearch className="w-4 h-4" />
+                    </button>
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="ابحث عن شركة، بوليصة، شحنة، مستخدم..."
+                        className="w-full pl-4 pr-10 py-2 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                    />
+                </form>
             </div>
 
-            {/* Quick Actions & System Status */}
+            {/* Quick Actions & System Status Indicator */}
             <div className="flex items-center gap-4">
 
-                {/* System Health Indicator */}
-                {/* <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md bg-success/80 border text-white text-xs font-bold">
-                    <LuServer className="w-3.5 h-3.5" />
-                    <span>الخوادم تعمل بكفاءة ٩٩.٩٪</span>
-                </div> */}
+                {/* Platform System Health Indicator */}
+                <div
+                    className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md border text-xs font-bold bg-accent/10 text-accent border-accent/20"
+                    title="حالة الخوادم والأنظمة المركزية"
+                >
+                    <LuShieldCheck className="w-3.5 h-3.5 text-accent" />
+                    <span>حالة النظام: خوادم نشطة (99.9%)</span>
+                </div>
 
-                {/* Create Company Quick Button */}
-                <button className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all">
+                {/* Add New Company Quick Button */}
+                <Link
+                    href="/admin/dashboard/companies?action=new"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all cursor-pointer"
+                >
                     <LuPlus className="w-4 h-4" />
                     <span>إضافة شركة جديدة</span>
-                </button>
-
-                {/* Notifications */}
-                <button className="relative w-10 h-10 rounded-xl border border-border bg-surface flex items-center justify-center text-heading hover:bg-surface-muted transition-colors">
-                    <LuBell className="w-5 h-5" />
-                    <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-warning rounded-full ring-2 ring-surface" />
-                </button>
+                </Link>
 
             </div>
 

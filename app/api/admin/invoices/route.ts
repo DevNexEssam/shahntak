@@ -21,6 +21,8 @@ export async function GET(req: NextRequest) {
         const companyId = searchParams.get("companyId");
         const status = searchParams.get("status");
         const search = searchParams.get("search");
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
         const noPagination = searchParams.get("nopagination") === "true";
 
         const filter: Record<string, any> = { ...ACTIVE };
@@ -29,6 +31,20 @@ export async function GET(req: NextRequest) {
 
         if (search && search.trim() !== "") {
             filter.invoiceNumber = { $regex: search.trim(), $options: "i" };
+        }
+
+        if (startDate || endDate) {
+            filter.createdAt = {};
+            if (startDate) {
+                const start = new Date(startDate);
+                start.setHours(0, 0, 0, 0);
+                filter.createdAt.$gte = start;
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                end.setHours(23, 59, 59, 999);
+                filter.createdAt.$lte = end;
+            }
         }
 
         if (noPagination) {

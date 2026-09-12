@@ -82,7 +82,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                 {/* Modal Header */}
                 <div className="p-6 border-b border-border flex items-center justify-between bg-surface-muted/50">
                     <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 rounded-2xl bg-accent-soft text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
+                        <div className="w-12 h-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center font-extrabold text-xl shadow-xs">
                             <LuPackage className="w-6 h-6" />
                         </div>
                         <div>
@@ -121,7 +121,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                     </label>
                                     <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent font-latin flex items-center justify-between">
                                         <span>توليد تلقائي فريد (ORD-0001)</span>
-                                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-accent-soft text-accent font-bold">توليد تلقائي إجباري</span>
+                                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-accent/10 text-accent font-bold">توليد تلقائي إجباري</span>
                                     </div>
                                     <span className="text-[11px] text-body/70 block">يُنشأ كود الطلب تلقائياً من الخادم بالنمط التسلسلي <b>ORD-0001</b></span>
                                 </div>

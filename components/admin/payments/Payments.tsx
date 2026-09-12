@@ -103,7 +103,7 @@ export default function Payments() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-extrabold text-heading flex items-center gap-3">
-                        <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
+                        <span className="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shadow-xs">
                             <LuCreditCard className="w-5 h-5" />
                         </span>
                         سداد المدفوعات والمعاملات المالية
@@ -150,7 +150,7 @@ export default function Payments() {
                                 <span>عمليات سداد مؤكدة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuReceipt className="w-5 h-5" />
                         </div>
                     </div>
@@ -166,7 +166,7 @@ export default function Payments() {
                                 <span>إجمالي السيولة المسددة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuCoins className="w-5 h-5" />
                         </div>
                     </div>
@@ -182,7 +182,7 @@ export default function Payments() {
                                 <span>حوالة بنكية مؤكدة</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuWallet className="w-5 h-5" />
                         </div>
                     </div>
@@ -198,7 +198,7 @@ export default function Payments() {
                                 <span>عمليات سداد إلكتروني</span>
                             </p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-accent-soft text-accent flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuCreditCard className="w-5 h-5" />
                         </div>
                     </div>
