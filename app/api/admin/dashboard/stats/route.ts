@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
             const startOfToday = new Date();
             startOfToday.setHours(0, 0, 0, 0);
 
-            // 1. Fetch top 5 active companies from DB
+            // Fetch top 5 active companies from DB
             const activeCompanies = await Company.find({ ...ACTIVE, status: "active" })
                 .sort({ createdAt: -1 })
                 .limit(10)
@@ -95,7 +95,7 @@ export async function GET(req: NextRequest) {
 
             const companyIds = activeCompanies.map((c) => c._id);
 
-            // 2. Query today's shipments count for each company
+            // Query today's shipments count for each company
             // and active subscriptions mapped with real Plan limits
             const [todayShipmentsAgg, activeSubscriptions] = await Promise.all([
                 Shipment.aggregate([
@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
             const shipmentsMap = new Map(todayShipmentsAgg.map((item) => [item._id.toString(), item.count]));
             const subMap = new Map(activeSubscriptions.map((s: any) => [s.companyId.toString(), s]));
 
-            // 3. Build real response for each company without any fake fallbacks
+            // Build real response for each company without any fake fallbacks
             const topCompaniesData = activeCompanies.map((comp: any) => {
                 const compIdStr = comp._id.toString();
                 const todayCount = shipmentsMap.get(compIdStr) || 0;
@@ -143,7 +143,7 @@ export async function GET(req: NextRequest) {
         if (section === "alerts") {
             const realAlerts: any[] = [];
 
-            // 1. Query pending company registrations (awaiting approval)
+            // Query pending company registrations (awaiting approval)
             const pendingCompanies = await Company.find({ status: "inactive", deletedAt: null })
                 .limit(3)
                 .select("companyName createdAt")
@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
                 });
             });
 
-            // 2. Query subscriptions near limit (>= 90% usage)
+            // Query subscriptions near limit (>= 90% usage)
             const nearLimitSubs = await Subscription.find({ status: "active", deletedAt: null })
                 .populate("companyId", "companyName")
                 .populate("planId", "name maxShipmentsPerMonth")
@@ -181,7 +181,7 @@ export async function GET(req: NextRequest) {
                 }
             });
 
-            // 3. Query unread system notifications
+            // Query unread system notifications
             const unreadNotifications = await Notification.find({ isRead: false, ...ACTIVE })
                 .sort({ createdAt: -1 })
                 .limit(3)
