@@ -36,7 +36,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
         e.preventDefault();
         setFieldErrors({});
 
-        // 1. Zod Validation Check
+        // Zod Validation Check
         const validation = carrierCreateValidationSchema.safeParse(formValues);
         if (!validation.success) {
             const errors: Record<string, string> = {};
@@ -50,7 +50,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
             return;
         }
 
-        // 2. Trigger Mutation
+        // Trigger Mutation
         createCarrier(formValues, {
             onSuccess: () => {
                 onClose();
