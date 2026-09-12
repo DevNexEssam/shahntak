@@ -307,8 +307,8 @@ npx tsc --noEmit
 ### 👨‍💼 Admin Account
 
 ```text
-Email:
-Password:
+Email: admin@gmail.com
+Password: 123456
 ```
 
 ### 🏢 Company Account
