@@ -25,21 +25,21 @@ export default function DetailsPayments({ isOpen = true, payment, onClose }: Det
         ? (payment.invoiceId as Invoice)
         : null;
 
-    const invoiceNumber = invObj?.invoiceNumber || 'غير محددة';
+    const invoiceNumber = invObj?.invoiceNumber || 'Unspecified';
     const invoiceTotal = invObj?.total ?? 0;
     const companyName = invObj && typeof invObj.companyId === 'object' && invObj.companyId !== null
         ? (invObj.companyId as any).companyName
-        : 'غير محددة';
+        : 'Unspecified';
 
     const methodMap: Record<string, string> = {
-        bank_transfer: 'تحويل بنكي مباشر',
-        card: 'بطاقة ائتمانية / مدى',
-        cash: 'سداد نقدي',
-        other: 'وسيلة أخرى',
+        bank_transfer: 'Direct Bank Transfer',
+        card: 'Credit Card / Mada',
+        cash: 'Cash Payment',
+        other: 'Other Method',
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -50,8 +50,8 @@ export default function DetailsPayments({ isOpen = true, payment, onClose }: Det
                             <LuCreditCard className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تفاصيل عملية السداد</h2>
-                            <p className="text-xs text-body mt-0.5">عرض سداد الدفعة المالية الموثقة ومعلومات الفاتورة</p>
+                            <h2 className="text-xl font-extrabold text-heading">Payment Transaction Details</h2>
+                            <p className="text-xs text-body mt-0.5">View the documented payment settlement and invoice information</p>
                         </div>
                     </div>
 
@@ -59,24 +59,24 @@ export default function DetailsPayments({ isOpen = true, payment, onClose }: Det
                         type="button"
                         onClick={onClose}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-6 overflow-y-auto space-y-5 flex-1 text-right">
+                <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                     {/* Top Identity Card */}
                     <div className="p-4 rounded-2xl bg-surface-muted border border-border flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <span className="text-xs text-body block font-medium">مبلغ الدفعة</span>
-                            <h3 className="text-xl font-extrabold text-emerald-600 font-latin">{payment.amount.toLocaleString()} ر.س</h3>
+                            <span className="text-xs text-body block font-medium">Payment Amount</span>
+                            <h3 className="text-xl font-extrabold text-emerald-600 font-latin">{payment.amount.toLocaleString()} SAR</h3>
                         </div>
 
                         <div className="bg-emerald-500/10 text-emerald-600 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold">
-                            دفعة مدفوعة
+                            Payment Paid
                         </div>
                     </div>
 
@@ -85,7 +85,7 @@ export default function DetailsPayments({ isOpen = true, payment, onClose }: Det
                         <div className="flex items-center justify-between border-b border-border pb-3">
                             <span className="text-xs text-body font-semibold flex items-center gap-2">
                                 <LuReceipt className="w-4 h-4 text-accent" />
-                                الفاتورة المربوطة:
+                                Linked Invoice:
                             </span>
                             <span className="text-sm font-bold text-heading font-latin">{invoiceNumber}</span>
                         </div>
@@ -93,7 +93,7 @@ export default function DetailsPayments({ isOpen = true, payment, onClose }: Det
                         <div className="flex items-center justify-between border-b border-border pb-3">
                             <span className="text-xs text-body font-semibold flex items-center gap-2">
                                 <LuBuilding2 className="w-4 h-4 text-accent" />
-                                الشركة المشتركة:
+                                Subscribed Company:
                             </span>
                             <span className="text-sm font-bold text-heading">{companyName}</span>
                         </div>
@@ -101,7 +101,7 @@ export default function DetailsPayments({ isOpen = true, payment, onClose }: Det
                         <div className="flex items-center justify-between border-b border-border pb-3">
                             <span className="text-xs text-body font-semibold flex items-center gap-2">
                                 <LuWallet className="w-4 h-4 text-accent" />
-                                طريقة السداد:
+                                Payment Method:
                             </span>
                             <span className="text-sm font-bold text-heading">
                                 {methodMap[payment.method] || payment.method}
@@ -111,18 +111,18 @@ export default function DetailsPayments({ isOpen = true, payment, onClose }: Det
                         <div className="flex items-center justify-between border-b border-border pb-3">
                             <span className="text-xs text-body font-semibold flex items-center gap-2">
                                 <LuCoins className="w-4 h-4 text-body/60" />
-                                إجمالي قيمة الفاتورة:
+                                Total Invoice Value:
                             </span>
-                            <span className="text-sm font-bold text-heading font-latin">{invoiceTotal.toLocaleString()} ر.س</span>
+                            <span className="text-sm font-bold text-heading font-latin">{invoiceTotal.toLocaleString()} SAR</span>
                         </div>
 
                         <div className="flex items-center justify-between pt-1">
                             <span className="text-xs text-body font-semibold flex items-center gap-2">
                                 <LuCalendar className="w-4 h-4 text-body/60" />
-                                تاريخ السداد الفعلي:
+                                Actual Payment Date:
                             </span>
                             <span className="text-xs font-bold text-heading">
-                                {payment.paidAt ? new Date(payment.paidAt).toLocaleDateString('ar-SA') : 'غير محدد'}
+                                {payment.paidAt ? new Date(payment.paidAt).toLocaleDateString('en-US') : 'Not specified'}
                             </span>
                         </div>
                     </div>
@@ -136,7 +136,7 @@ export default function DetailsPayments({ isOpen = true, payment, onClose }: Det
                         onClick={onClose}
                         className="px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-xs hover:shadow transition-all cursor-pointer"
                     >
-                        إغلاق
+                        Close
                     </button>
                 </div>
 
