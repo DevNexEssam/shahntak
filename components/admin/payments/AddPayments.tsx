@@ -57,7 +57,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -70,7 +70,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -81,8 +81,8 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                             <LuCreditCard className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إثبات وسداد دفعة مالية</h2>
-                            <p className="text-xs text-body mt-0.5">تسجيل الدفعة المحصلة وتعديل حالة الفاتورة التلقائية بالمنصة</p>
+                            <h2 className="text-xl font-extrabold text-heading">Record & Settle Payment</h2>
+                            <p className="text-xs text-body mt-0.5">Record the collected payment and auto-update the invoice status on the platform</p>
                         </div>
                     </div>
 
@@ -91,7 +91,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -99,13 +99,13 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-right">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         {/* Invoice Selection */}
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuReceipt className="w-3.5 h-3.5 text-body" />
-                                الفاتورة المالية المستحقة <span className="text-red-500">*</span>
+                                Outstanding Financial Invoice <span className="text-red-500">*</span>
                             </label>
                             <select
                                 disabled={isSubmitting || isLoadingInvoices}
@@ -121,10 +121,10 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                                 className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.invoiceId ? 'border-rose-500' : 'border-border'
                                     }`}
                             >
-                                <option value="">اختر الفاتورة...</option>
+                                <option value="">Select an invoice...</option>
                                 {invoices.map((inv) => (
                                     <option key={inv._id} value={inv._id}>
-                                        فاتورة رقم {inv.invoiceNumber} (المبلغ الإجمالي: {inv.total} ر.س)
+                                        Invoice No. {inv.invoiceNumber} (Total Amount: {inv.total} SAR)
                                     </option>
                                 ))}
                             </select>
@@ -138,7 +138,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-body" />
-                                    مبلغ الدفعة المسددة (ر.س) <span className="text-red-500">*</span>
+                                    Payment Amount (SAR) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -158,7 +158,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuWallet className="w-3.5 h-3.5 text-body" />
-                                    طريقة السداد <span className="text-red-500">*</span>
+                                    Payment Method <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     disabled={isSubmitting}
@@ -166,10 +166,10 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                                     onChange={(e) => setFormValues({ ...formValues, method: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 font-medium"
                                 >
-                                    <option value="bank_transfer">تحويل بنكي مباشر</option>
-                                    <option value="card">بطاقة ائتمانية / مدى</option>
-                                    <option value="cash">سداد نقدي</option>
-                                    <option value="other">وسيلة أخرى</option>
+                                    <option value="bank_transfer">Direct Bank Transfer</option>
+                                    <option value="card">Credit Card / Mada</option>
+                                    <option value="cash">Cash Payment</option>
+                                    <option value="other">Other Method</option>
                                 </select>
                             </div>
                         </div>
@@ -178,7 +178,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuCalendar className="w-3.5 h-3.5 text-body" />
-                                تاريخ السداد الفعلي
+                                Actual Payment Date
                             </label>
                             <input
                                 type="date"
@@ -199,7 +199,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -207,7 +207,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري التسجيل..." : "تأكيد السداد"}
+                            {isSubmitting ? "Recording..." : "Confirm Payment"}
                         </button>
                     </div>
                 </form>
