@@ -23,9 +23,9 @@ interface ReportItem {
 }
 
 const savedReports: ReportItem[] = [
-    { id: 'REP-01', title: 'تقرير الالتزام بالوقت SLA لشهر أغسطس', type: 'sla', format: 'pdf', fromDate: '2026-08-01', toDate: '2026-08-31', status: 'مكتمل' },
-    { id: 'REP-02', title: 'تقرير نمو الاشتراكات الشهري (MRR)', type: 'mrr', format: 'excel', fromDate: '2026-08-01', toDate: '2026-08-31', status: 'مكتمل' },
-    { id: 'REP-03', title: 'تقرير كفاءة التوزيع بين المناطق', type: 'regions', format: 'pdf', fromDate: '2026-07-01', toDate: '2026-07-31', status: 'مكتمل' },
+    { id: 'REP-01', title: 'SLA On-Time Compliance Report — August', type: 'sla', format: 'pdf', fromDate: '2026-08-01', toDate: '2026-08-31', status: 'Completed' },
+    { id: 'REP-02', title: 'Monthly Subscription Growth Report (MRR)', type: 'mrr', format: 'excel', fromDate: '2026-08-01', toDate: '2026-08-31', status: 'Completed' },
+    { id: 'REP-03', title: 'Inter-Region Distribution Efficiency Report', type: 'regions', format: 'pdf', fromDate: '2026-07-01', toDate: '2026-07-31', status: 'Completed' },
 ];
 
 export default function Reports() {
@@ -39,8 +39,8 @@ export default function Reports() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-heading">التقارير التحليلية والنمو</h1>
-                    <p className="text-sm text-body mt-0.5">مؤشرات الأداء الرئيسية (KPIs) لنمو العمليات وتوزيع الشحنات عبر المملكة.</p>
+                    <h1 className="text-2xl font-extrabold text-heading">Analytics & Growth Reports</h1>
+                    <p className="text-sm text-body mt-0.5">Key performance indicators (KPIs) for operations growth and shipment distribution across the Kingdom.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button
@@ -48,7 +48,7 @@ export default function Reports() {
                         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>توليد تقرير جديد</span>
+                        <span>Generate New Report</span>
                     </button>
                 </div>
             </div>
@@ -59,14 +59,14 @@ export default function Reports() {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <LuClock className="w-5 h-5 text-accent" />
-                            <h2 className="text-base font-extrabold text-heading">معدل التوصيل في الوقت المحدد (SLA)</h2>
+                            <h2 className="text-base font-extrabold text-heading">On-Time Delivery Rate (SLA)</h2>
                         </div>
-                        <span className="text-success font-bold text-xs bg-success-soft px-2.5 py-1 rounded-full">٩٨.٢٪ متوسط المنصة</span>
+                        <span className="text-success font-bold text-xs bg-success-soft px-2.5 py-1 rounded-full">98.2% Platform Average</span>
                     </div>
                     <div className="h-44 bg-surface-muted/50 rounded-2xl border border-border/50 flex flex-col items-center justify-center p-6 text-center">
                         <LuTrendingUp className="w-8 h-8 text-accent mb-2" />
-                        <span className="text-sm font-bold text-heading">ملاءمة الأداء اللوجستي السريعة</span>
-                        <span className="text-xs text-body mt-1">تم تسليم ٩٨.٢٪ من الشحنات في الوقت المستهدف</span>
+                        <span className="text-sm font-bold text-heading">Fast Logistics Performance Snapshot</span>
+                        <span className="text-xs text-body mt-1">98.2% of shipments were delivered within the target time</span>
                     </div>
                 </div>
 
@@ -74,14 +74,14 @@ export default function Reports() {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <LuTrendingUp className="w-5 h-5 text-accent" />
-                            <h2 className="text-base font-extrabold text-heading">نمو الاشتراكات الشهرية (MRR)</h2>
+                            <h2 className="text-base font-extrabold text-heading">Monthly Recurring Revenue Growth (MRR)</h2>
                         </div>
-                        <span className="text-accent font-bold text-xs bg-accent/10 px-2.5 py-1 rounded-full">+١٨.٤٪ هذا الربع</span>
+                        <span className="text-accent font-bold text-xs bg-accent/10 px-2.5 py-1 rounded-full">+18.4% This Quarter</span>
                     </div>
                     <div className="h-44 bg-surface-muted/50 rounded-2xl border border-border/50 flex flex-col items-center justify-center p-6 text-center">
                         <LuTrendingUp className="w-8 h-8 text-accent mb-2" />
-                        <span className="text-sm font-bold text-heading">منحنى نمو الإيرادات المتكررة</span>
-                        <span className="text-xs text-body mt-1">زيادة إيجابية في اشتراكات الباقات المخصصة</span>
+                        <span className="text-sm font-bold text-heading">Recurring Revenue Growth Curve</span>
+                        <span className="text-xs text-body mt-1">Positive increase in custom plan subscriptions</span>
                     </div>
                 </div>
             </div>
@@ -89,9 +89,9 @@ export default function Reports() {
             {/* Reports List */}
             <div className="bg-surface rounded-2xl border border-border shadow-xs overflow-hidden">
                 <div className="p-5 border-b border-border flex items-center justify-between">
-                    <h2 className="text-base font-extrabold text-heading">التقارير المولّدة والمحفوظة</h2>
+                    <h2 className="text-base font-extrabold text-heading">Generated & Saved Reports</h2>
                     <span className="text-xs font-bold text-body bg-surface-muted px-3 py-1.5 rounded-xl border border-border">
-                        إجمالي: {savedReports.length} تقارير
+                        Total: {savedReports.length} reports
                     </span>
                 </div>
                 <div className="divide-y divide-border">
@@ -103,8 +103,8 @@ export default function Reports() {
                                 </div>
                                 <div>
                                     <h3 className="font-extrabold text-sm text-heading">{report.title}</h3>
-                                    <span className="text-xs text-body font-latin dir-ltr block mt-0.5">
-                                        {report.fromDate} ← {report.toDate} · ({report.format.toUpperCase()})
+                                    <span className="text-xs text-body font-latin block mt-0.5">
+                                        {report.fromDate} → {report.toDate} · ({report.format.toUpperCase()})
                                     </span>
                                 </div>
                             </div>
@@ -114,17 +114,17 @@ export default function Reports() {
                                         setSelectedReport(report);
                                         setIsEditModalOpen(true);
                                     }}
-                                    title="تعديل معايير التقرير"
+                                    title="Edit report criteria"
                                     className="p-2 rounded-xl bg-surface border border-border hover:bg-heading hover:text-white text-xs font-bold transition-colors cursor-pointer"
                                 >
                                     <LuPencil className="w-4 h-4" />
                                 </button>
                                 <button
-                                    title="تحميل التقرير"
+                                    title="Download report"
                                     className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface border border-border hover:bg-heading hover:text-white text-xs font-bold transition-colors cursor-pointer"
                                 >
                                     <FaDownload className="w-3.5 h-3.5" />
-                                    <span>تحميل</span>
+                                    <span>Download</span>
                                 </button>
                             </div>
                         </div>
