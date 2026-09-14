@@ -17,28 +17,28 @@ export async function POST(req: Request) {
         const role = session?.user?.role;
 
         if (!role || !can(role, "notification", "create")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         let body;
         try {
             body = await req.json();
         } catch {
-            return NextResponse.json({ success: false, message: "صيغة البيانات غير صالحة" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid data format" }, { status: 400 });
         }
 
         const validation = notificationCreateValidationSchema.safeParse(body);
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
 
         const data = validation.data;
         if (!mongoose.Types.ObjectId.isValid(data.recipientId)) {
-            return NextResponse.json({ success: false, message: "معرف المستلم غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid recipient ID" }, { status: 400 });
         }
 
         await connectDB();
@@ -46,12 +46,12 @@ export async function POST(req: Request) {
         if (data.recipientType === "user") {
             const recipientExists = await User.findOne({ _id: data.recipientId, ...ACTIVE }).lean();
             if (!recipientExists) {
-                return NextResponse.json({ success: false, message: "مستلم الإشعار (User) غير موجود بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Notification recipient (User) does not exist" }, { status: 400 });
             }
         } else if (data.recipientType === "company_user") {
             const recipientExists = await CompanyUser.findOne({ _id: data.recipientId, ...ACTIVE }).lean();
             if (!recipientExists) {
-                return NextResponse.json({ success: false, message: "مستلم الإشعار (CompanyUser) غير موجود بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Notification recipient (CompanyUser) does not exist" }, { status: 400 });
             }
         }
 
@@ -66,8 +66,8 @@ export async function POST(req: Request) {
             sentAt: data.sentAt || new Date(),
         });
 
-        return NextResponse.json({ success: true, message: "تم إرسال وحفظ الإشعار بنجاح", data: newNotification }, { status: 201 });
+        return NextResponse.json({ success: true, message: "Notification sent and saved successfully", data: newNotification }, { status: 201 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }

@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
         if (!role || !can(role, "user", "create")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         } catch (error) {
             console.error("[CREATE_USER_ERROR]", error);
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات المرسلة غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات غير صالحة",
+                    message: "Invalid data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
         if (adminExists) {
             return NextResponse.json(
-                { success: false, message: "البريد الإلكتروني مستخدم بالفعل" },
+                { success: false, message: "Email is already in use" },
                 { status: 409 }
             );
         }
@@ -81,14 +81,14 @@ export async function POST(req: Request) {
         };
 
         return NextResponse.json(
-            { success: true, message: "تم إنشاء حساب المستخدم بنجاح", user: safeUser },
+            { success: true, message: "User account created successfully", user: safeUser },
             { status: 201 }
         );
 
     } catch (error) {
         console.error("[CREATE_USER_ERROR]", error);
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً" },
+            { success: false, message: "Server error occurred, please try again later" },
             { status: 500 }
         );
     }

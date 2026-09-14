@@ -24,7 +24,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!role || !can(role, "company", "read")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -32,7 +32,7 @@ export async function GET(_req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -68,7 +68,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "الشركة غير موجودة" },
+                { success: false, message: "Company not found" },
                 { status: 404 }
             );
         }
@@ -90,7 +90,7 @@ export async function GET(_req: Request, context: any) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error, please try again later", error: error.message },
             { status: 500 }
         );
     }

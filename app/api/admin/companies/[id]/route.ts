@@ -28,7 +28,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!role || !can(role, "company", "read")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -36,7 +36,7 @@ export async function GET(_req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -72,7 +72,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "الشركة غير موجودة" },
+                { success: false, message: "Company not found" },
                 { status: 404 }
             );
         }
@@ -94,7 +94,7 @@ export async function GET(_req: Request, context: any) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -111,7 +111,7 @@ export async function PATCH(req: Request, context: any) {
 
         if (!role || !can(role, "company", "update")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -119,7 +119,7 @@ export async function PATCH(req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -129,7 +129,7 @@ export async function PATCH(req: Request, context: any) {
             updates = await req.json();
         } catch {
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -139,7 +139,7 @@ export async function PATCH(req: Request, context: any) {
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
@@ -157,7 +157,7 @@ export async function PATCH(req: Request, context: any) {
         if (updatePayload.approvedBy && updatePayload.approvedBy.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.approvedBy)) {
                 return NextResponse.json(
-                    { success: false, message: "معرف مسؤول الاعتماد (approvedBy) غير صالح" },
+                    { success: false, message: "Invalid approver ID (approvedBy)" },
                     { status: 400 }
                 );
             }
@@ -165,7 +165,7 @@ export async function PATCH(req: Request, context: any) {
             const approverExists = await User.findOne({ _id: updatePayload.approvedBy, ...ACTIVE }).lean();
             if (!approverExists) {
                 return NextResponse.json(
-                    { success: false, message: "مسؤول الاعتماد المحنط (User) غير موجود بالنظام" },
+                    { success: false, message: "Approver user not found in the system" },
                     { status: 400 }
                 );
             }
@@ -183,18 +183,18 @@ export async function PATCH(req: Request, context: any) {
 
         if (!updatedCompany) {
             return NextResponse.json(
-                { success: false, message: "الشركة غير موجودة" },
+                { success: false, message: "Company not found" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "تم تعديل بيانات الشركة بنجاح", data: updatedCompany },
+            { success: true, message: "Company details updated successfully", data: updatedCompany },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -214,7 +214,7 @@ export async function DELETE(req: Request, context: any) {
 
         if (!canSoftDelete && !canHardDelete) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -222,7 +222,7 @@ export async function DELETE(req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -293,18 +293,18 @@ export async function DELETE(req: Request, context: any) {
 
         if (!deletedCompany) {
             return NextResponse.json(
-                { success: false, message: "الشركة غير موجودة أو تم حذفها سابقاً" },
+                { success: false, message: "Company not found or already deleted" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: isHardDelete ? "تم حذف الشركة نهائياً بنجاح" : "تم أرشفة وحذف الشركة بنجاح" },
+            { success: true, message: isHardDelete ? "Company permanently deleted successfully" : "Company archived and deleted successfully" },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error, please try again later", error: error.message },
             { status: 500 }
         );
     }

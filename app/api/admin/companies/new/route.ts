@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
         if (!role || !can(role, "company", "create")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
             body = await req.json();
         } catch {
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات المرسلة غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات غير صالحة",
+                    message: "Invalid data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
 
         if (companyExists) {
             return NextResponse.json(
-                { success: false, message: "البريد الإلكتروني أو رقم الهاتف مستخدم بالفعل لشركة أخرى" },
+                { success: false, message: "Email or phone number is already in use by another company" },
                 { status: 409 }
             );
         }
@@ -91,12 +91,12 @@ export async function POST(req: Request) {
         };
 
         return NextResponse.json(
-            { success: true, message: "تم إنشاء حساب الشركة بنجاح", data: safeCompany },
+            { success: true, message: "Company account created successfully", data: safeCompany },
             { status: 201 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error, please try again later", error: error.message },
             { status: 500 }
         );
     }

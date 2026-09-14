@@ -18,22 +18,22 @@ export async function GET(_req: Request, context: any) {
         const role = session?.user?.role;
 
         if (!role || !can(role, "invoice", "read")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ success: false, message: "معرف الفاتورة غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid invoice ID" }, { status: 400 });
         }
 
         const invoice = await Invoice.findOne({ _id: id, ...ACTIVE }).populate("companyId", "companyName email");
         if (!invoice) {
-            return NextResponse.json({ success: false, message: "الفاتورة غير موجودة" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Invoice not found" }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: invoice }, { status: 200 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }
 
@@ -44,41 +44,41 @@ export async function PATCH(req: Request, context: any) {
         const role = session?.user?.role;
 
         if (!role || !can(role, "invoice", "update")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ success: false, message: "معرف الفاتورة غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid invoice ID" }, { status: 400 });
         }
 
         let updates;
         try {
             updates = await req.json();
         } catch {
-            return NextResponse.json({ success: false, message: "صيغة البيانات غير صالحة" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid data format" }, { status: 400 });
         }
 
         const validation = invoiceUpdateValidationSchema.safeParse(updates);
         if (!validation.success) {
-            return NextResponse.json({ success: false, message: "بيانات غير صالحة", errors: validation.error.flatten().fieldErrors }, { status: 422 });
+            return NextResponse.json({ success: false, message: "Invalid data", errors: validation.error.flatten().fieldErrors }, { status: 422 });
         }
 
         const updatePayload: Record<string, any> = { ...validation.data };
 
         if (updatePayload.companyId && updatePayload.companyId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.companyId)) {
-                return NextResponse.json({ success: false, message: "معرف الشركة (companyId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid company ID" }, { status: 400 });
             }
             const targetCompany = await Company.findOne({ _id: updatePayload.companyId, ...ACTIVE }).lean();
             if (!targetCompany) {
-                return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated company does not exist" }, { status: 400 });
             }
         }
 
         const existingInvoice = await Invoice.findOne({ _id: id, ...ACTIVE });
         if (!existingInvoice) {
-            return NextResponse.json({ success: false, message: "الفاتورة غير موجودة" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Invoice not found" }, { status: 404 });
         }
 
         // Re-evaluate invoice status against total payments if total updated
@@ -93,9 +93,9 @@ export async function PATCH(req: Request, context: any) {
         }
 
         const updated = await Invoice.findOneAndUpdate({ _id: id, ...ACTIVE }, updatePayload, { new: true });
-        return NextResponse.json({ success: true, message: "تم تعديل الفاتورة وإعادة حساب الحالة بنجاح", data: updated }, { status: 200 });
+        return NextResponse.json({ success: true, message: "Invoice updated and status recalculated successfully", data: updated }, { status: 200 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }
 
@@ -109,12 +109,12 @@ export async function DELETE(req: Request, context: any) {
         const canHardDelete = role && can(role, "invoice", "delete");
 
         if (!canSoftDelete && !canHardDelete) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ success: false, message: "معرف الفاتورة غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid invoice ID" }, { status: 400 });
         }
 
         const { searchParams } = new URL(req.url);
@@ -131,11 +131,11 @@ export async function DELETE(req: Request, context: any) {
         }
 
         if (!deleted) {
-            return NextResponse.json({ success: false, message: "الفاتورة غير موجودة أو تم حذفها سابقاً" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Invoice not found or already deleted" }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true, message: "تم إلغاء وحذف الفاتورة بنجاح" }, { status: 200 });
+        return NextResponse.json({ success: true, message: "Invoice cancelled and deleted successfully" }, { status: 200 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }

@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
         const role = (session?.user as any)?.role;
 
         if (!role || (role !== "admin" && role !== "super")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         const { searchParams } = new URL(req.url);
@@ -116,13 +116,13 @@ export async function GET(req: NextRequest) {
                 const todayCount = shipmentsMap.get(compIdStr) || 0;
                 const sub: any = subMap.get(compIdStr);
 
-                const planName = sub?.planId?.name ? sub.planId.name : "غير مشترك بباقة";
+                const planName = sub?.planId?.name ? sub.planId.name : "No active subscription";
                 const maxAllowed = sub?.planId?.maxShipmentsPerMonth || 0;
                 const used = sub?.shipmentsUsedThisMonth || 0;
 
                 // Calculation: (used / maxAllowed) * 100
                 const usagePct = maxAllowed > 0 ? Math.min(100, Math.round((used / maxAllowed) * 100)) : 0;
-                const statusStr = comp.status === "active" ? (usagePct >= 90 ? "تنبيه تجاوز" : "نشط") : "معطل";
+                const statusStr = comp.status === "active" ? (usagePct >= 90 ? "Usage Warning" : "Active") : "Inactive";
 
                 return {
                     _id: compIdStr,
@@ -152,8 +152,8 @@ export async function GET(req: NextRequest) {
             pendingCompanies.forEach((comp: any) => {
                 realAlerts.push({
                     id: `pending-${comp._id}`,
-                    title: "طلب تسجيل شركة جديدة",
-                    description: `شركة "${comp.companyName}" بانتظار مراجعة السجل التجاري والتفعيل.`,
+                    title: "New Company Registration Request",
+                    description: `Company "${comp.companyName}" is pending commercial record review and activation.`,
                     type: "warning",
                     createdAt: comp.createdAt,
                 });
@@ -173,8 +173,8 @@ export async function GET(req: NextRequest) {
                 if (pct >= 90 && sub.companyId) {
                     realAlerts.push({
                         id: `limit-${sub._id}`,
-                        title: "تنبيه استهلاك باقة",
-                        description: `شركة "${sub.companyId.companyName}" وصلت إلى ${pct}% من سعة خطة ${sub.planId?.name || "الحالية"}.`,
+                        title: "Plan Usage Warning",
+                        description: `Company "${sub.companyId.companyName}" reached ${pct}% capacity of plan "${sub.planId?.name || "Current"}".`,
                         type: "error",
                         createdAt: sub.updatedAt,
                     });
@@ -190,7 +190,7 @@ export async function GET(req: NextRequest) {
             unreadNotifications.forEach((notif: any) => {
                 realAlerts.push({
                     id: notif._id.toString(),
-                    title: notif.title || "تنبيه بالنظام",
+                    title: notif.title || "System Alert",
                     description: notif.body || "",
                     type: notif.event === "error" ? "error" : "info",
                     createdAt: notif.createdAt,
@@ -200,8 +200,8 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ success: true, data: realAlerts }, { status: 200 });
         }
 
-        return NextResponse.json({ success: false, message: "قسم غير معروف" }, { status: 400 });
+        return NextResponse.json({ success: false, message: "Unknown section" }, { status: 400 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم أثناء جلب الإحصائيات", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred while fetching statistics", error: error.message }, { status: 500 });
     }
 }

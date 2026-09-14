@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
         if (!role || (role !== "admin" && role !== "super")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
 
         if (!companyId || !mongoose.Types.ObjectId.isValid(companyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الشركة المطلوبة" },
+                { success: false, message: "Requested company not found" },
                 { status: 404 }
             );
         }
@@ -59,8 +59,8 @@ export async function GET(req: NextRequest) {
                     data: {
                         company,
                         hasActiveSubscription: false,
-                        planName: "غير مشترك بباقة",
-                        statusStr: "غير مشترك",
+                        planName: "No active subscription",
+                        statusStr: "Not subscribed",
                         ordersCount: { used: 0, max: 0, remaining: 0, pct: 0 },
                         shipmentsCount: { used: 0, max: 0, remaining: 0, pct: 0 },
                         features: {},
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
         const shipmentsPct = maxShipments > 0 ? Math.min(100, Math.round((usedShipments / maxShipments) * 100)) : 0;
 
         const isNearLimit = ordersPct >= 90 || shipmentsPct >= 90;
-        const statusStr = subscription.status === "active" ? (isNearLimit ? "تنبيه تجاوز السعة" : "نشط") : "منتهي";
+        const statusStr = subscription.status === "active" ? (isNearLimit ? "Capacity Warning" : "Active") : "Expired";
 
         return NextResponse.json(
             {
@@ -122,7 +122,7 @@ export async function GET(req: NextRequest) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء جلب اشتراك الشركة", error: error.message },
+            { success: false, message: "Server error occurred while fetching company subscription", error: error.message },
             { status: 500 }
         );
     }

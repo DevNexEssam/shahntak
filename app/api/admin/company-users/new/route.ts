@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
         if (!role || !can(role, "companyUser", "create")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
             body = await req.json();
         } catch {
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات غير صالحة",
+                    message: "Invalid data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
         if (!data.companyId || !mongoose.Types.ObjectId.isValid(data.companyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
         const targetCompany = await Company.findOne({ _id: data.companyId, ...ACTIVE }).lean();
         if (!targetCompany) {
             return NextResponse.json(
-                { success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" },
+                { success: false, message: "Associated company not found in the system" },
                 { status: 400 }
             );
         }
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
 
         if (userExists) {
             return NextResponse.json(
-                { success: false, message: "البريد الإلكتروني مستخدم بالفعل لموظف آخر" },
+                { success: false, message: "Email is already in use by another employee" },
                 { status: 409 }
             );
         }
@@ -103,12 +103,12 @@ export async function POST(req: Request) {
         };
 
         return NextResponse.json(
-            { success: true, message: "تم إنشاء حساب موظف الشركة بنجاح", data: safeUser },
+            { success: true, message: "Company employee account created successfully", data: safeUser },
             { status: 201 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error, please try again later", error: error.message },
             { status: 500 }
         );
     }

@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
         if (!role || !can(role, "order", "create")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
         if (!targetCompanyId || !mongoose.Types.ObjectId.isValid(targetCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "يجب اختيار وتمرير معرف شركة صالح (companyId)" },
+                { success: false, message: "A valid companyId must be provided" },
                 { status: 400 }
             );
         }
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "الشركة المحددة غير موجودة بالنظام أو معطلة" },
+                { success: false, message: "The selected company does not exist or is inactive" },
                 { status: 404 }
             );
         }
@@ -53,14 +53,14 @@ export async function POST(req: NextRequest) {
 
         if (ordersInput.length === 0) {
             return NextResponse.json(
-                { success: false, message: "لم يتم تمرير أي طلبات للاستيراد" },
+                { success: false, message: "No orders were provided for import" },
                 { status: 400 }
             );
         }
 
         if (ordersInput.length > 500) {
             return NextResponse.json(
-                { success: false, message: "حد الأقصى هو 500 طلب في الملف الواحد لتجنب إجهاد الخادم" },
+                { success: false, message: "Maximum limit is 500 orders per file" },
                 { status: 400 }
             );
         }
@@ -104,14 +104,14 @@ export async function POST(req: NextRequest) {
                 if (seenBatchNumbersSet.has(rawOrderNum)) {
                     validationErrors.push({
                         index: i,
-                        errors: { orderNumber: ["رقم الطلب مكرر أكثر من مرة في نفس الملف"] },
+                        errors: { orderNumber: ["Duplicate order number in the same file"] },
                     });
                     continue;
                 }
                 if (existingDBNumbersSet.has(rawOrderNum)) {
                     validationErrors.push({
                         index: i,
-                        errors: { orderNumber: ["رقم الطلب مسجل بالفعل في قاعدة البيانات سابقاً"] },
+                        errors: { orderNumber: ["Order number is already registered in database"] },
                     });
                     continue;
                 }
@@ -168,7 +168,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "جميع الطلبات الممررة تحتوي على أخطاء ولا يمكن استيرادها",
+                    message: "All provided orders contain errors and cannot be imported",
                     errors: validationErrors,
                 },
                 { status: 422 }
@@ -185,7 +185,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
             {
                 success: true,
-                message: `تم استيراد وإضافة ${createdOrders.length} طلب بنجاح للشركة المحددة (${company.companyName})`,
+                message: `Successfully imported ${createdOrders.length} orders for company (${company.companyName})`,
                 count: createdOrders.length,
                 data: createdOrders,
             },
@@ -195,7 +195,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء الاستيراد الجماعي للطلبات",
+                message: "Server error occurred during bulk order import",
                 error: error.message,
             },
             { status: 500 }

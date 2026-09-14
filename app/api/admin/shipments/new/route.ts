@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
         if (!role || !can(role, "shipment", "create")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
             body = await req.json();
         } catch {
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات غير صالحة",
+                    message: "Invalid data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 
         if (!mongoose.Types.ObjectId.isValid(data.companyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
         const targetCompany = await Company.findOne({ _id: data.companyId, status: "active", deletedAt: null }).lean();
         if (!targetCompany) {
-            return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام أو غير نشطة" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Associated company does not exist or is inactive" }, { status: 400 });
         }
 
         // Quota Check for Company
@@ -77,31 +77,31 @@ export async function POST(req: Request) {
 
         if (data.routeId && data.routeId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(data.routeId)) {
-                return NextResponse.json({ success: false, message: "معرف المسار (routeId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid route ID" }, { status: 400 });
             }
             const targetRoute = await Route.findOne({ _id: data.routeId, deletedAt: null }).lean();
             if (!targetRoute) {
-                return NextResponse.json({ success: false, message: "المسار المرتبط (Route) غير موجود بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated route does not exist" }, { status: 400 });
             }
         }
 
         if (data.carrierId && data.carrierId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(data.carrierId)) {
-                return NextResponse.json({ success: false, message: "معرف الناقل (carrierId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid carrier ID" }, { status: 400 });
             }
             const targetCarrier = await Carrier.findOne({ _id: data.carrierId, deletedAt: null }).lean();
             if (!targetCarrier) {
-                return NextResponse.json({ success: false, message: "الناقل المرتبط (Carrier) غير موجود بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated carrier does not exist" }, { status: 400 });
             }
         }
 
         if (data.vehicleId && data.vehicleId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(data.vehicleId)) {
-                return NextResponse.json({ success: false, message: "معرف المركبة (vehicleId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid vehicle ID" }, { status: 400 });
             }
             const targetVehicle = await Vehicle.findOne({ _id: data.vehicleId, deletedAt: null }).lean();
             if (!targetVehicle) {
-                return NextResponse.json({ success: false, message: "المركبة المرتبطة (Vehicle) غير موجودة بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated vehicle does not exist" }, { status: 400 });
             }
         }
 
@@ -109,7 +109,7 @@ export async function POST(req: Request) {
 
         if (shipmentExists) {
             return NextResponse.json(
-                { success: false, message: "رقم الشحنة مستخدم بالفعل لشحنة أخرى" },
+                { success: false, message: "Shipment number is already in use" },
                 { status: 409 }
             );
         }
@@ -199,12 +199,12 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json(
-            { success: true, message: "تم إنشاء وتجميع الشحنة بنجاح وتوليد بوليصة الشحن والفاتورة الآلية", data: newShipment },
+            { success: true, message: "Shipment created and grouped successfully with automated waybill and invoice generated", data: newShipment },
             { status: 201 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }

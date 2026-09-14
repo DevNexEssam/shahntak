@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
         const role = session?.user?.role;
 
         if (!role || !can(role, "invoice", "read")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         const { searchParams } = new URL(req.url);
@@ -80,6 +80,6 @@ export async function GET(req: NextRequest) {
             stats: { draft, issued, paid, overdue, cancelled, total, totalCollected, totalPending },
         }, { status: 200 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }

@@ -14,13 +14,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     try {
         const { id } = await params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ success: false, message: "معرف الاشتراك غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid subscription ID" }, { status: 400 });
         }
 
         const session = await getServerSession(authOptions);
         const role = session?.user?.role;
         if (!role || !can(role, "company", "read")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         await connectDB();
@@ -31,12 +31,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             .lean();
 
         if (!subscription) {
-            return NextResponse.json({ success: false, message: "الاشتراك غير موجود بالنظام" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Subscription not found" }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: subscription });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }
 
@@ -45,27 +45,27 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     try {
         const { id } = await params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ success: false, message: "معرف الاشتراك غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid subscription ID" }, { status: 400 });
         }
 
         const session = await getServerSession(authOptions);
         const role = session?.user?.role;
         if (!role || !can(role, "company", "update")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         let body;
         try {
             body = await req.json();
         } catch {
-            return NextResponse.json({ success: false, message: "صيغة البيانات غير صالحة" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid data format" }, { status: 400 });
         }
 
         const validation = subscriptionUpdateValidationSchema.safeParse(body);
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
@@ -75,7 +75,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
         const subscription = await Subscription.findOne({ _id: id, ...ACTIVE });
         if (!subscription) {
-            return NextResponse.json({ success: false, message: "الاشتراك غير موجود بالنظام" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Subscription not found" }, { status: 404 });
         }
 
         Object.assign(subscription, updates);
@@ -86,9 +86,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
             .populate("planId", "name price billingCycle maxOrdersPerMonth maxShipmentsPerMonth")
             .lean();
 
-        return NextResponse.json({ success: true, message: "تم تحديث بيانات الاشتراك بنجاح", data: updatedSubscription });
+        return NextResponse.json({ success: true, message: "Subscription updated successfully", data: updatedSubscription });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }
 
@@ -97,13 +97,13 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     try {
         const { id } = await params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ success: false, message: "معرف الاشتراك غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid subscription ID" }, { status: 400 });
         }
 
         const session = await getServerSession(authOptions);
         const role = session?.user?.role;
         if (!role || !can(role, "company", "delete")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         const { searchParams } = new URL(req.url);
@@ -113,18 +113,18 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
         const subscription = await Subscription.findOne({ _id: id, ...ACTIVE });
         if (!subscription) {
-            return NextResponse.json({ success: false, message: "الاشتراك غير موجود بالنظام" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Subscription not found" }, { status: 404 });
         }
 
         if (isHardDelete) {
             await Subscription.deleteOne({ _id: id });
-            return NextResponse.json({ success: true, message: "تم حذف الاشتراك نهائياً من النظام" });
+            return NextResponse.json({ success: true, message: "Subscription permanently deleted" });
         } else {
             subscription.deletedAt = new Date();
             await subscription.save();
-            return NextResponse.json({ success: true, message: "تم إغلاق وأرشفة الاشتراك بنجاح" });
+            return NextResponse.json({ success: true, message: "Subscription closed and archived successfully" });
         }
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }

@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
         if (!role || !can(role, "order", "read")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }

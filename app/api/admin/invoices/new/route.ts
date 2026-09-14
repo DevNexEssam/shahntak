@@ -16,35 +16,35 @@ export async function POST(req: Request) {
         const role = session?.user?.role;
 
         if (!role || !can(role, "invoice", "create")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         let body;
         try {
             body = await req.json();
         } catch {
-            return NextResponse.json({ success: false, message: "صيغة البيانات غير صالحة" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid data format" }, { status: 400 });
         }
 
         const validation = invoiceCreateValidationSchema.safeParse(body);
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
 
         const data = validation.data;
         if (!mongoose.Types.ObjectId.isValid(data.companyId)) {
-            return NextResponse.json({ success: false, message: "معرف الشركة غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid company ID" }, { status: 400 });
         }
 
         await connectDB();
 
         const targetCompany = await Company.findOne({ _id: data.companyId, status: "active", deletedAt: null }).lean();
         if (!targetCompany) {
-            return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام أو غير نشطة" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Associated company does not exist or is inactive" }, { status: 400 });
         }
 
         const effectiveTaxRate = (targetCompany as any).vatRate !== undefined ? Number((targetCompany as any).vatRate) : 15;
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
                 if (existingInvoice || targetShipment.invoiceId) {
                     return NextResponse.json(
-                        { success: false, message: `حماية النزاهة المالية: هذه الشحنة تملك فاتورة صادرة مسبقاً برقم (${existingInvoice?.invoiceNumber || "مسبقاً"})` },
+                        { success: false, message: `Financial integrity protection: This shipment already has an issued invoice with number (${existingInvoice?.invoiceNumber || "existing"})` },
                         { status: 409 }
                     );
                 }
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
 
         const exists = await Invoice.findOne({ invoiceNumber: finalInvoiceNumber, deletedAt: null }).lean();
         if (exists) {
-            return NextResponse.json({ success: false, message: "رقم الفاتورة مستخدم بالفعل في النظام" }, { status: 409 });
+            return NextResponse.json({ success: false, message: "Invoice number is already in use" }, { status: 409 });
         }
 
         // Calculate breakdown
@@ -106,8 +106,8 @@ export async function POST(req: Request) {
             await targetShipment.save();
         }
 
-        return NextResponse.json({ success: true, message: `تم إصدار الفاتورة الضريبية رقم (${finalInvoiceNumber}) بنجاح`, data: newInvoice }, { status: 201 });
+        return NextResponse.json({ success: true, message: `Tax invoice number (${finalInvoiceNumber}) issued successfully`, data: newInvoice }, { status: 201 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }

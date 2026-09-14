@@ -12,12 +12,12 @@ export async function POST() {
 
         const session = await getServerSession(authOptions);
         if (!session?.user) {
-            return NextResponse.json({ success: false, message: "يجب تسجيل الدخول أولاً" }, { status: 401 });
+            return NextResponse.json({ success: false, message: "Authentication required" }, { status: 401 });
         }
 
         const { role } = session.user as any;
         if (role !== "super_admin" && role !== "company") {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بتشغيل سكريبت الترقية" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized to run migration script" }, { status: 403 });
         }
 
         const legacyInvoices = await Invoice.find({
@@ -58,10 +58,10 @@ export async function POST() {
 
         return NextResponse.json({
             success: true,
-            message: `تم ترقية وترميم ${updatedCount} فاتورة تاريخية وتثبيت نسبتها الضريبية على (15%) بنجاح`,
+            message: `Successfully migrated ${updatedCount} legacy invoices and locked tax rate to 15%`,
             migratedInvoicesCount: updatedCount,
         });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "فشل سكريبت ترقية الفواتير", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Invoice migration script failed", error: error.message }, { status: 500 });
     }
 }

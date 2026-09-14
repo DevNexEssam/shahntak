@@ -23,7 +23,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!role || !can(role, "order", "read")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -31,7 +31,7 @@ export async function GET(_req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الطلب غير صالح" },
+                { success: false, message: "Invalid order ID" },
                 { status: 400 }
             );
         }
@@ -43,7 +43,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!order) {
             return NextResponse.json(
-                { success: false, message: "الطلب غير موجود" },
+                { success: false, message: "Order not found" },
                 { status: 404 }
             );
         }
@@ -54,7 +54,7 @@ export async function GET(_req: Request, context: any) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -71,7 +71,7 @@ export async function PATCH(req: Request, context: any) {
 
         if (!role || !can(role, "order", "update")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -79,7 +79,7 @@ export async function PATCH(req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الطلب غير صالح" },
+                { success: false, message: "Invalid order ID" },
                 { status: 400 }
             );
         }
@@ -89,7 +89,7 @@ export async function PATCH(req: Request, context: any) {
             updates = await req.json();
         } catch {
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -99,7 +99,7 @@ export async function PATCH(req: Request, context: any) {
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
@@ -108,17 +108,17 @@ export async function PATCH(req: Request, context: any) {
 
         if (updatePayload.companyId && updatePayload.companyId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.companyId)) {
-                return NextResponse.json({ success: false, message: "معرف الشركة (companyId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid company ID" }, { status: 400 });
             }
             const targetCompany = await Company.findOne({ _id: updatePayload.companyId, ...ACTIVE }).lean();
             if (!targetCompany) {
-                return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated company does not exist" }, { status: 400 });
             }
         }
 
         if (updatePayload.createdByUserId && updatePayload.createdByUserId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.createdByUserId)) {
-                return NextResponse.json({ success: false, message: "معرف منشئ الطلب غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid creator user ID" }, { status: 400 });
             }
             const targetCompUser = await CompanyUser.findOne({ _id: updatePayload.createdByUserId, ...ACTIVE }).lean();
             if (targetCompUser) {
@@ -128,18 +128,18 @@ export async function PATCH(req: Request, context: any) {
                 if (targetAdmin) {
                     updatePayload.createdByUserType = "user";
                 } else {
-                    return NextResponse.json({ success: false, message: "منشئ الطلب غير موجود بالنظام" }, { status: 400 });
+                    return NextResponse.json({ success: false, message: "Order creator does not exist" }, { status: 400 });
                 }
             }
         }
 
         if (updatePayload.shipmentId && updatePayload.shipmentId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.shipmentId)) {
-                return NextResponse.json({ success: false, message: "معرف الشحنة (shipmentId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid shipment ID" }, { status: 400 });
             }
             const targetShipment = await Shipment.findOne({ _id: updatePayload.shipmentId, ...ACTIVE }).lean();
             if (!targetShipment) {
-                return NextResponse.json({ success: false, message: "الشحنة المرتبطة (Shipment) غير موجودة بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated shipment does not exist" }, { status: 400 });
             }
         }
 
@@ -151,18 +151,18 @@ export async function PATCH(req: Request, context: any) {
 
         if (!updatedOrder) {
             return NextResponse.json(
-                { success: false, message: "الطلب غير موجود" },
+                { success: false, message: "Order not found" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "تم تعديل الطلب بنجاح", data: updatedOrder },
+            { success: true, message: "Order updated successfully", data: updatedOrder },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -182,7 +182,7 @@ export async function DELETE(_req: Request, context: any) {
 
         if (!canSoftDelete && !canHardDelete) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -190,7 +190,7 @@ export async function DELETE(_req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الطلب غير صالح" },
+                { success: false, message: "Invalid order ID" },
                 { status: 400 }
             );
         }
@@ -214,18 +214,18 @@ export async function DELETE(_req: Request, context: any) {
 
         if (!deletedOrder) {
             return NextResponse.json(
-                { success: false, message: "الطلب غير موجود أو تم حذفه سابقاً" },
+                { success: false, message: "Order not found or already deleted" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "تم حذف الطلب بنجاح" },
+            { success: true, message: "Order deleted successfully" },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }

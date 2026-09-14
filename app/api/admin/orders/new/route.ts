@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
         if (!role || !can(role, "order", "create")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
             body = await req.json();
         } catch {
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات غير صالحة",
+                    message: "Invalid data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
 
         if (!mongoose.Types.ObjectId.isValid(data.companyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 
         const targetCompany = await Company.findOne({ _id: data.companyId, ...ACTIVE }).lean();
         if (!targetCompany) {
-            return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Associated company does not exist" }, { status: 400 });
         }
 
         // Subscription Quota Check
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
             if (maxOrders !== -1 && (activeSub.ordersUsedThisMonth || 0) >= maxOrders) {
                 return NextResponse.json({
                     success: false,
-                    message: `تجاوزت الشركة الحد الأقصى للطلبات الشهرية المسموح به في باقتها الحالية (${maxOrders} طلب). يرجى ترقية الاشتراك.`
+                    message: `Company has reached the maximum allowed monthly orders limit for its plan (${maxOrders} orders). Please upgrade the subscription.`
                 }, { status: 403 });
             }
         }
@@ -118,18 +118,18 @@ export async function POST(req: Request) {
 
         if (!creatorId) {
             return NextResponse.json(
-                { success: false, message: "لم يتم التعرف على حساب منشئ الطلب بنجاح" },
+                { success: false, message: "Failed to resolve order creator account" },
                 { status: 400 }
             );
         }
 
         if (data.shipmentId && data.shipmentId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(data.shipmentId)) {
-                return NextResponse.json({ success: false, message: "معرف الشحنة (shipmentId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid shipment ID" }, { status: 400 });
             }
             const targetShipment = await Shipment.findOne({ _id: data.shipmentId, ...ACTIVE }).lean();
             if (!targetShipment) {
-                return NextResponse.json({ success: false, message: "الشحنة المرتبطة (Shipment) غير موجودة بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated shipment does not exist" }, { status: 400 });
             }
         }
 
@@ -167,12 +167,12 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json(
-            { success: true, message: "تم إنشاء الطلب بنجاح", data: newOrder },
+            { success: true, message: "Order created successfully", data: newOrder },
             { status: 201 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }

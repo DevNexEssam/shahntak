@@ -24,7 +24,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!role || !can(role, "companyUser", "read")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -32,7 +32,7 @@ export async function GET(_req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف المستخدم غير صالح" },
+                { success: false, message: "Invalid user ID" },
                 { status: 400 }
             );
         }
@@ -43,7 +43,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!user) {
             return NextResponse.json(
-                { success: false, message: "الموظف غير موجود" },
+                { success: false, message: "Employee not found" },
                 { status: 404 }
             );
         }
@@ -98,7 +98,7 @@ export async function GET(_req: Request, context: any) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -115,7 +115,7 @@ export async function PATCH(req: Request, context: any) {
 
         if (!role || !can(role, "companyUser", "update")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -123,7 +123,7 @@ export async function PATCH(req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف المستخدم غير صالح" },
+                { success: false, message: "Invalid user ID" },
                 { status: 400 }
             );
         }
@@ -133,7 +133,7 @@ export async function PATCH(req: Request, context: any) {
             updates = await req.json();
         } catch {
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -143,7 +143,7 @@ export async function PATCH(req: Request, context: any) {
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
@@ -161,14 +161,14 @@ export async function PATCH(req: Request, context: any) {
         if (updatePayload.companyId && updatePayload.companyId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.companyId)) {
                 return NextResponse.json(
-                    { success: false, message: "معرف الشركة (companyId) غير صالح" },
+                    { success: false, message: "Invalid company ID (companyId)" },
                     { status: 400 }
                 );
             }
             const targetCompany = await Company.findOne({ _id: updatePayload.companyId, ...ACTIVE }).lean();
             if (!targetCompany) {
                 return NextResponse.json(
-                    { success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" },
+                    { success: false, message: "Associated company not found in the system" },
                     { status: 400 }
                 );
             }
@@ -182,18 +182,18 @@ export async function PATCH(req: Request, context: any) {
 
         if (!updatedUser) {
             return NextResponse.json(
-                { success: false, message: "الموظف غير موجود" },
+                { success: false, message: "Employee not found" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "تم تعديل بيانات الموظف بنجاح", data: updatedUser },
+            { success: true, message: "Employee details updated successfully", data: updatedUser },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -213,7 +213,7 @@ export async function DELETE(_req: Request, context: any) {
 
         if (!canSoftDelete && !canHardDelete) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -221,7 +221,7 @@ export async function DELETE(_req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف المستخدم غير صالح" },
+                { success: false, message: "Invalid user ID" },
                 { status: 400 }
             );
         }
@@ -241,18 +241,18 @@ export async function DELETE(_req: Request, context: any) {
 
         if (!deletedUser) {
             return NextResponse.json(
-                { success: false, message: "الموظف غير موجود أو تم حذفه سابقاً" },
+                { success: false, message: "Employee not found or already deleted" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "تم حذف الموظف بنجاح" },
+            { success: true, message: "Employee deleted successfully" },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error, please try again later", error: error.message },
             { status: 500 }
         );
     }

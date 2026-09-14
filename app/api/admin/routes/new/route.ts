@@ -16,21 +16,21 @@ export async function POST(req: Request) {
         const role = session?.user?.role;
 
         if (!role || !can(role, "route", "create")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         let body;
         try {
             body = await req.json();
         } catch {
-            return NextResponse.json({ success: false, message: "صيغة البيانات غير صالحة" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid data format" }, { status: 400 });
         }
 
         const validation = routeCreateValidationSchema.safeParse(body);
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
@@ -39,11 +39,11 @@ export async function POST(req: Request) {
 
         if (validation.data.carrierId && validation.data.carrierId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(validation.data.carrierId)) {
-                return NextResponse.json({ success: false, message: "معرف الناقل (carrierId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid carrier ID" }, { status: 400 });
             }
             const targetCarrier = await Carrier.findOne({ _id: validation.data.carrierId, ...ACTIVE }).lean();
             if (!targetCarrier) {
-                return NextResponse.json({ success: false, message: "الناقل المرتبط (Carrier) غير موجود بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated carrier does not exist" }, { status: 400 });
             }
         }
         const newRoute = await Route.create({
@@ -56,8 +56,8 @@ export async function POST(req: Request) {
             isActive: validation.data.isActive ?? true,
         });
 
-        return NextResponse.json({ success: true, message: "تم إضافة المسار بنجاح", data: newRoute }, { status: 201 });
+        return NextResponse.json({ success: true, message: "Route created successfully", data: newRoute }, { status: 201 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }

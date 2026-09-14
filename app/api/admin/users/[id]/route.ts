@@ -21,7 +21,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!role || !can(role, "user", "read")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -29,7 +29,7 @@ export async function GET(_req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف المستخدم غير صالح" },
+                { success: false, message: "Invalid user ID" },
                 { status: 400 }
             );
         }
@@ -38,7 +38,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!user) {
             return NextResponse.json(
-                { success: false, message: "المستخدم غير موجود" },
+                { success: false, message: "User not found" },
                 { status: 404 }
             );
         }
@@ -49,7 +49,7 @@ export async function GET(_req: Request, context: any) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -66,7 +66,7 @@ export async function PATCH(req: Request, context: any) {
 
         if (!role || !can(role, "user", "update")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -74,7 +74,7 @@ export async function PATCH(req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف المستخدم غير صالح" },
+                { success: false, message: "Invalid user ID" },
                 { status: 400 }
             );
         }
@@ -84,7 +84,7 @@ export async function PATCH(req: Request, context: any) {
             updates = await req.json();
         } catch {
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -94,7 +94,7 @@ export async function PATCH(req: Request, context: any) {
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
@@ -116,18 +116,18 @@ export async function PATCH(req: Request, context: any) {
 
         if (!updatedUser) {
             return NextResponse.json(
-                { success: false, message: "المستخدم غير موجود" },
+                { success: false, message: "User not found" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "تم تعديل بيانات المستخدم بنجاح", data: updatedUser },
+            { success: true, message: "User details updated successfully", data: updatedUser },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -147,7 +147,7 @@ export async function DELETE(_req: Request, context: any) {
 
         if (!canSoftDelete && !canHardDelete) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -155,7 +155,7 @@ export async function DELETE(_req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف المستخدم غير صالح" },
+                { success: false, message: "Invalid user ID" },
                 { status: 400 }
             );
         }
@@ -175,19 +175,19 @@ export async function DELETE(_req: Request, context: any) {
 
         if (!deletedUser) {
             return NextResponse.json(
-                { success: false, message: "المستخدم غير موجود أو تم حذفه سابقاً" },
+                { success: false, message: "User not found or already deleted" },
                 { status: 404 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "تم حذف المستخدم بنجاح" },
+            { success: true, message: "User deleted successfully" },
             { status: 200 }
         );
 
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }

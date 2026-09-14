@@ -17,21 +17,21 @@ export async function POST(req: Request) {
         const role = session?.user?.role;
 
         if (!role || !can(role, "company", "create")) {
-            return NextResponse.json({ success: false, message: "غير مصرح لك بهذا الإجراء" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         let body;
         try {
             body = await req.json();
         } catch {
-            return NextResponse.json({ success: false, message: "صيغة البيانات غير صالحة" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid data format" }, { status: 400 });
         }
 
         const validation = subscriptionCreateValidationSchema.safeParse(body);
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         const data = validation.data;
 
         if (!mongoose.Types.ObjectId.isValid(data.companyId) || !mongoose.Types.ObjectId.isValid(data.planId)) {
-            return NextResponse.json({ success: false, message: "معرف الشركة أو الباقة غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid company or plan ID" }, { status: 400 });
         }
 
         await connectDB();
@@ -50,11 +50,11 @@ export async function POST(req: Request) {
         ]);
 
         if (!targetCompany) {
-            return NextResponse.json({ success: false, message: "الشركة غير موجودة بالنظام" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Company not found" }, { status: 404 });
         }
 
         if (!targetPlan) {
-            return NextResponse.json({ success: false, message: "الباقة غير موجودة بالنظام" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Plan not found" }, { status: 404 });
         }
 
         // Deactivate any previous active subscriptions for this company
@@ -69,8 +69,8 @@ export async function POST(req: Request) {
             .populate("planId", "name price billingCycle maxOrdersPerMonth maxShipmentsPerMonth")
             .lean();
 
-        return NextResponse.json({ success: true, message: "تم تفعيل اشتراك الشركة بنجاح", data: populatedSubscription }, { status: 201 });
+        return NextResponse.json({ success: true, message: "Company subscription activated successfully", data: populatedSubscription }, { status: 201 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred, please try again later", error: error.message }, { status: 500 });
     }
 }

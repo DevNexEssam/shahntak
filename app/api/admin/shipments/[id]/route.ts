@@ -25,7 +25,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!role || !can(role, "shipment", "read")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -33,7 +33,7 @@ export async function GET(_req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشحنة غير صالح" },
+                { success: false, message: "Invalid shipment ID" },
                 { status: 400 }
             );
         }
@@ -46,7 +46,7 @@ export async function GET(_req: Request, context: any) {
 
         if (!shipment) {
             return NextResponse.json(
-                { success: false, message: "الشحنة غير موجودة" },
+                { success: false, message: "Shipment not found" },
                 { status: 404 }
             );
         }
@@ -57,7 +57,7 @@ export async function GET(_req: Request, context: any) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -74,7 +74,7 @@ export async function PATCH(req: Request, context: any) {
 
         if (!role || !can(role, "shipment", "update")) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -82,7 +82,7 @@ export async function PATCH(req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشحنة غير صالح" },
+                { success: false, message: "Invalid shipment ID" },
                 { status: 400 }
             );
         }
@@ -90,14 +90,14 @@ export async function PATCH(req: Request, context: any) {
         const existingShipment = await Shipment.findOne({ _id: id, ...ACTIVE });
         if (!existingShipment) {
             return NextResponse.json(
-                { success: false, message: "الشحنة غير موجودة" },
+                { success: false, message: "Shipment not found" },
                 { status: 404 }
             );
         }
 
         if (existingShipment.status === "delivered") {
             return NextResponse.json(
-                { success: false, message: "الشحنة مسلّمة بالكامل (Delivered) ومقفلة نهائياً، لا يمكن إجراء أي تعديل عليها أو تغيير حالتها." },
+                { success: false, message: "Shipment is fully delivered and locked; no further modifications or status changes can be made." },
                 { status: 400 }
             );
         }
@@ -107,7 +107,7 @@ export async function PATCH(req: Request, context: any) {
             updates = await req.json();
         } catch {
             return NextResponse.json(
-                { success: false, message: "صيغة البيانات غير صالحة" },
+                { success: false, message: "Invalid data format" },
                 { status: 400 }
             );
         }
@@ -117,7 +117,7 @@ export async function PATCH(req: Request, context: any) {
         if (!validation.success) {
             return NextResponse.json({
                 success: false,
-                message: "بيانات غير صالحة",
+                message: "Invalid data",
                 errors: validation.error.flatten().fieldErrors,
             }, { status: 422 });
         }
@@ -126,41 +126,41 @@ export async function PATCH(req: Request, context: any) {
 
         if (updatePayload.companyId && updatePayload.companyId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.companyId)) {
-                return NextResponse.json({ success: false, message: "معرف الشركة (companyId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid company ID" }, { status: 400 });
             }
             const targetCompany = await Company.findOne({ _id: updatePayload.companyId, ...ACTIVE }).lean();
             if (!targetCompany) {
-                return NextResponse.json({ success: false, message: "الشركة المرتبطة (Company) غير موجودة بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated company does not exist" }, { status: 400 });
             }
         }
 
         if (updatePayload.routeId && updatePayload.routeId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.routeId)) {
-                return NextResponse.json({ success: false, message: "معرف المسار (routeId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid route ID" }, { status: 400 });
             }
             const targetRoute = await Route.findOne({ _id: updatePayload.routeId, ...ACTIVE }).lean();
             if (!targetRoute) {
-                return NextResponse.json({ success: false, message: "المسار المرتبط (Route) غير موجود بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated route does not exist" }, { status: 400 });
             }
         }
 
         if (updatePayload.carrierId && updatePayload.carrierId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.carrierId)) {
-                return NextResponse.json({ success: false, message: "معرف الناقل (carrierId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid carrier ID" }, { status: 400 });
             }
             const targetCarrier = await Carrier.findOne({ _id: updatePayload.carrierId, ...ACTIVE }).lean();
             if (!targetCarrier) {
-                return NextResponse.json({ success: false, message: "الناقل المرتبط (Carrier) غير موجود بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated carrier does not exist" }, { status: 400 });
             }
         }
 
         if (updatePayload.vehicleId && updatePayload.vehicleId.trim() !== "") {
             if (!mongoose.Types.ObjectId.isValid(updatePayload.vehicleId)) {
-                return NextResponse.json({ success: false, message: "معرف المركبة (vehicleId) غير صالح" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Invalid vehicle ID" }, { status: 400 });
             }
             const targetVehicle = await Vehicle.findOne({ _id: updatePayload.vehicleId, ...ACTIVE }).lean();
             if (!targetVehicle) {
-                return NextResponse.json({ success: false, message: "المركبة المرتبطة (Vehicle) غير موجودة بالنظام" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Associated vehicle does not exist" }, { status: 400 });
             }
         }
 
@@ -172,7 +172,7 @@ export async function PATCH(req: Request, context: any) {
 
         if (!updatedShipment) {
             return NextResponse.json(
-                { success: false, message: "الشحنة غير موجودة" },
+                { success: false, message: "Shipment not found" },
                 { status: 404 }
             );
         }
@@ -194,12 +194,12 @@ export async function PATCH(req: Request, context: any) {
         }
 
         return NextResponse.json(
-            { success: true, message: "تم تعديل بيانات الشحنة وتحديث حالة الطلبات التابعة لها بنجاح", data: updatedShipment },
+            { success: true, message: "Shipment updated and associated order statuses updated successfully", data: updatedShipment },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }
@@ -219,7 +219,7 @@ export async function DELETE(req: Request, context: any) {
 
         if (!canSoftDelete && !canHardDelete) {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك بهذا الإجراء" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -227,7 +227,7 @@ export async function DELETE(req: Request, context: any) {
         const { id } = await context.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشحنة غير صالح" },
+                { success: false, message: "Invalid shipment ID" },
                 { status: 400 }
             );
         }
@@ -251,7 +251,7 @@ export async function DELETE(req: Request, context: any) {
 
         if (!deletedShipment) {
             return NextResponse.json(
-                { success: false, message: "الشحنة غير موجودة أو تم حذفها سابقاً" },
+                { success: false, message: "Shipment not found or already deleted" },
                 { status: 404 }
             );
         }
@@ -277,12 +277,12 @@ export async function DELETE(req: Request, context: any) {
         }
 
         return NextResponse.json(
-            { success: true, message: "تم إلغاء وحذف الشحنة والفاتورة غير المدفوعة وإعادة الطلبات لقائمة الانتظار بنجاح" },
+            { success: true, message: "Shipment and unpaid invoice cancelled and deleted, and associated orders returned to pending status successfully" },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم، يرجى المحاولة لاحقاً", error: error.message },
+            { success: false, message: "Server error occurred, please try again later", error: error.message },
             { status: 500 }
         );
     }
