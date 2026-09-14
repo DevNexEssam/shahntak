@@ -92,11 +92,6 @@ const navItems: NavItem[] = [
         icon: <LuCreditCard className="w-5 h-5" />,
     },
     {
-        title: 'Reports & Analytics',
-        href: '/admin/dashboard/reports',
-        icon: <LuFileSpreadsheet className="w-5 h-5" />,
-    },
-    {
         title: 'Users & Admins',
         href: '/admin/dashboard/users',
         icon: <LuUser className="w-5 h-5" />,
