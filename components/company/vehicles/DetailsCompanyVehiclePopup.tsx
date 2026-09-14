@@ -34,15 +34,15 @@ export default function DetailsCompanyVehiclePopup({ isOpen = true, onClose, veh
                                 <h2 className="text-base font-bold text-foreground">{vehicleData.type}</h2>
                                 {isActive ? (
                                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">
-                                        نشطة ومفعلة
+                                        Active & Enabled
                                     </span>
                                 ) : (
                                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
-                                        متوقفة
+                                        Inactive
                                     </span>
                                 )}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">معرف المركبة: <span className="font-semibold text-accent">{vehicleData._id}</span></p>
+                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">Vehicle ID: <span className="font-semibold text-accent">{vehicleData._id}</span></p>
                         </div>
                     </div>
 
@@ -50,25 +50,25 @@ export default function DetailsCompanyVehiclePopup({ isOpen = true, onClose, veh
                         type="button"
                         onClick={onClose}
                         className="p-1.5 rounded-md hover:bg-surface-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-5 space-y-4 text-right">
+                <div className="p-5 space-y-4 text-left">
 
                     {/* Summary Info Row */}
                     <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between text-xs">
                         <div>
-                            <span className="text-muted-foreground block">تاريخ التسجيل بالأسطول</span>
+                            <span className="text-muted-foreground block">Fleet Registration Date</span>
                             <span className="font-bold text-foreground font-latin text-sm">
-                                {new Date(vehicleData.createdAt || Date.now()).toLocaleDateString('ar-SA')}
+                                {new Date(vehicleData.createdAt || Date.now()).toLocaleDateString('en-US')}
                             </span>
                         </div>
-                        <div className="text-left">
-                            <span className="text-muted-foreground block font-medium">نوع المركبة</span>
+                        <div className="text-right">
+                            <span className="text-muted-foreground block font-medium">Vehicle Type</span>
                             <span className="font-bold text-foreground text-xs">{vehicleData.type}</span>
                         </div>
                     </div>
@@ -77,24 +77,24 @@ export default function DetailsCompanyVehiclePopup({ isOpen = true, onClose, veh
                     <div className="p-4 rounded-md border border-border bg-surface space-y-3">
                         <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
                             <LuTruck className="w-4 h-4 text-accent" />
-                            <span>مواصفات الحمولة والسعات التشغيلية</span>
+                            <span>Payload Specifications & Operational Capacities</span>
                         </h3>
 
                         <div className="space-y-2 text-xs">
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
                                 <span className="text-muted-foreground flex items-center gap-1.5">
                                     <LuWeight className="w-4 h-4 text-accent" />
-                                    الحمولة الوزنية القصوى
+                                    Max Weight Capacity
                                 </span>
-                                <span className="font-semibold text-foreground font-latin">{vehicleData.capacityWeight || 'غير محدد'} كجم</span>
+                                <span className="font-semibold text-foreground font-latin">{vehicleData.capacityWeight ? `${vehicleData.capacityWeight} kg` : 'Unspecified'}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5">
                                 <span className="text-muted-foreground flex items-center gap-1.5">
                                     <LuBox className="w-4 h-4 text-accent" />
-                                    السعة الحجمية المتاحة
+                                    Available Volume Capacity
                                 </span>
-                                <span className="font-semibold text-foreground font-latin">{vehicleData.capacityVolume || 'غير محدد'} م³</span>
+                                <span className="font-semibold text-foreground font-latin">{vehicleData.capacityVolume ? `${vehicleData.capacityVolume} m³` : 'Unspecified'}</span>
                             </div>
                         </div>
                     </div>
@@ -108,7 +108,7 @@ export default function DetailsCompanyVehiclePopup({ isOpen = true, onClose, veh
                         onClick={onClose}
                         className="px-4 py-1.5 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-border/20 transition-colors text-foreground cursor-pointer"
                     >
-                        إغلاق
+                        Close
                     </button>
                 </div>
 

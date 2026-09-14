@@ -6,29 +6,29 @@ export const companyUserTypeEnum = ["user", "company"] as const;
 
 export const companyUserCreateValidationSchema = z.object({
     companyId: z
-        .string("معرف الشركة مطلوب")
-        .min(1, "معرف الشركة مطلوب"),
+        .string({ message: "Company ID is required" })
+        .min(1, "Company ID is required"),
     userName: z
-        .string("اسم المستخدم مطلوب")
-        .min(3, "اسم المستخدم يجب أن يكون على الأقل 3 أحرف")
-        .max(50, "اسم المستخدم يجب أن لا يتجاوز 50 حرف"),
+        .string({ message: "Username is required" })
+        .min(3, "Username must be at least 3 characters")
+        .max(50, "Username must not exceed 50 characters"),
     userEmail: z
-        .string("البريد الإلكتروني مطلوب")
-        .email("البريد الإلكتروني غير صحيح")
-        .min(8, "البريد الإلكتروني يجب أن يكون على الأقل 8 أحرف")
-        .max(70, "البريد الإلكتروني يجب أن لا يتجاوز 70 حرف"),
+        .string({ message: "Email is required" })
+        .email("Invalid email address")
+        .min(8, "Email must be at least 8 characters")
+        .max(70, "Email must not exceed 70 characters"),
     password: z
-        .string("كلمة المرور مطلوبة")
-        .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
+        .string({ message: "Password is required" })
+        .min(6, "Password must be at least 6 characters"),
     phone: z
-        .string("رقم الهاتف مطلوب")
-        .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
-        .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم"),
-    userRole: z.enum(companyUserRoleEnum, "الدور المحدد غير صالح، يجب أن يكون owner أو manager أو staff").default("staff"),
+        .string({ message: "Phone number is required" })
+        .min(3, "Phone number must be at least 3 digits")
+        .max(15, "Phone number must not exceed 15 digits"),
+    userRole: z.enum(companyUserRoleEnum, { message: "Invalid role: must be owner, manager, or staff" }).default("staff"),
     permissions: z.array(z.string()).default([]),
-    userStatus: z.enum(companyUserStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive").default("active"),
+    userStatus: z.enum(companyUserStatusEnum, { message: "Invalid status: must be active or inactive" }).default("active"),
     userIsActive: z.boolean().optional(),
-    userType: z.enum(companyUserTypeEnum, "النوع المحدد غير صالح، يجب أن يكون user أو company").default("user"),
+    userType: z.enum(companyUserTypeEnum, { message: "Invalid type: must be user or company" }).default("user"),
     createdBy: z.string().optional().or(z.literal("")),
 });
 
@@ -36,28 +36,28 @@ export const companyUserUpdateValidationSchema = z.object({
     companyId: z.string().optional(),
     userName: z
         .string()
-        .min(3, "اسم المستخدم يجب أن يكون على الأقل 3 أحرف")
-        .max(50, "اسم المستخدم يجب أن لا يتجاوز 50 حرف")
+        .min(3, "Username must be at least 3 characters")
+        .max(50, "Username must not exceed 50 characters")
         .optional(),
     userEmail: z
         .string()
-        .email("البريد الإلكتروني غير صحيح")
+        .email("Invalid email address")
         .optional(),
     password: z
         .string()
-        .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف")
+        .min(6, "Password must be at least 6 characters")
         .optional()
         .or(z.literal("")),
     phone: z
         .string()
-        .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
-        .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم")
+        .min(3, "Phone number must be at least 3 digits")
+        .max(15, "Phone number must not exceed 15 digits")
         .optional(),
-    userRole: z.enum(companyUserRoleEnum, "الدور المحدد غير صالح، يجب أن يكون owner أو manager أو staff").optional(),
+    userRole: z.enum(companyUserRoleEnum, { message: "Invalid role: must be owner, manager, or staff" }).optional(),
     permissions: z.array(z.string()).optional(),
-    userStatus: z.enum(companyUserStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive").optional(),
+    userStatus: z.enum(companyUserStatusEnum, { message: "Invalid status: must be active or inactive" }).optional(),
     userIsActive: z.boolean().optional(),
-    userType: z.enum(companyUserTypeEnum, "النوع المحدد غير صالح، يجب أن يكون user أو company").optional(),
+    userType: z.enum(companyUserTypeEnum, { message: "Invalid type: must be user or company" }).optional(),
     createdBy: z.string().optional().or(z.literal("")),
 });
 

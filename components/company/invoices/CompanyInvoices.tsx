@@ -148,25 +148,25 @@ export default function CompanyInvoices() {
             case 'paid':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                        مسدد ومحصل
+                        Paid & Collected
                     </span>
                 );
             case 'issued':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20">
-                        صادرة ومعلقة
+                        Issued & Pending
                     </span>
                 );
             case 'overdue':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                        متأخرة السداد
+                        Overdue
                     </span>
                 );
             default:
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                        مسودة
+                        Draft
                     </span>
                 );
         }
@@ -175,7 +175,7 @@ export default function CompanyInvoices() {
     const handleDownloadPdf = async (inv: any) => {
         try {
             setDownloadingInvoiceId(inv._id);
-            toast.loading(`جاري تجهيز وتنزيل الفاتورة PDF (${inv.invoiceNumber})...`, { id: 'pdf-toast' });
+            toast.loading(`Preparing and downloading invoice PDF (${inv.invoiceNumber})...`, { id: 'pdf-toast' });
             const { pdf } = await import('@react-pdf/renderer');
             const blob = await pdf(<InvoicePDFDocument invoiceData={inv} />).toBlob();
             const url = URL.createObjectURL(blob);
@@ -186,17 +186,17 @@ export default function CompanyInvoices() {
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-            toast.success(`تم تحميل الفاتورة (${inv.invoiceNumber}) بنجاح!`, { id: 'pdf-toast' });
+            toast.success(`Invoice (${inv.invoiceNumber}) downloaded successfully!`, { id: 'pdf-toast' });
         } catch (err) {
             console.error('Failed to generate PDF:', err);
-            toast.error('حدث خطأ أثناء إنشاء ملف الـ PDF', { id: 'pdf-toast' });
+            toast.error('Failed to generate PDF file', { id: 'pdf-toast' });
         } finally {
             setDownloadingInvoiceId(null);
         }
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic">
+        <div className="space-y-6 text-left">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -205,9 +205,9 @@ export default function CompanyInvoices() {
                         <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
                             <LuWallet className="w-5 h-5" />
                         </span>
-                        المعاملات المالية والمصروفات
+                        Financial Transactions & Expenses
                     </h1>
-                    <p className="text-xs text-body mt-1">إدارة فواتير المبيعات اللوجستية وتتبع نفقات الشحن والمصروفات التشغيلية لشركتك</p>
+                    <p className="text-xs text-body mt-1">Manage sales & logistics invoices and track shipping expenses & operational costs</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -217,7 +217,7 @@ export default function CompanyInvoices() {
                             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-all font-bold text-xs shadow-xs cursor-pointer"
                         >
                             <LuPlus className="w-4 h-4" />
-                            <span>إنشاء فاتورة جديدة</span>
+                            <span>Create New Invoice</span>
                         </button>
                     ) : (
                         <button
@@ -225,7 +225,7 @@ export default function CompanyInvoices() {
                             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-rose-600 text-white hover:bg-rose-700 transition-all font-bold text-xs shadow-xs cursor-pointer"
                         >
                             <LuPlus className="w-4 h-4" />
-                            <span>تسجيل مصروف جديد</span>
+                            <span>Record New Expense</span>
                         </button>
                     )}
 
@@ -235,7 +235,7 @@ export default function CompanyInvoices() {
                             else refetchExpenses();
                         }}
                         disabled={isFetchingInvoices || isFetchingExpenses}
-                        title="تحديث البيانات"
+                        title="Refresh Data"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`text-sm font-bold ${(isFetchingInvoices || isFetchingExpenses) ? 'animate-spin text-accent' : ''}`} />
@@ -246,12 +246,12 @@ export default function CompanyInvoices() {
             {/* Notifications */}
             {isErrorInvoices && (
                 <div className="mb-4">
-                    <ErrorMessege message={(invoiceError as any)?.message || 'تعذر جلب بيانات الفواتير من الخادم'} />
+                    <ErrorMessege message={(invoiceError as any)?.message || 'Failed to fetch invoice data from server'} />
                 </div>
             )}
             {isErrorExpenses && (
                 <div className="mb-4">
-                    <ErrorMessege message={(expenseError as any)?.message || 'تعذر جلب بيانات المصروفات من الخادم'} />
+                    <ErrorMessege message={(expenseError as any)?.message || 'Failed to fetch expense data from server'} />
                 </div>
             )}
 
@@ -259,7 +259,7 @@ export default function CompanyInvoices() {
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-heading">
                     <LuCalendar className="w-4 h-4 text-accent shrink-0" />
-                    <span>تصفية الفترات المالية:</span>
+                    <span>Filter Financial Period:</span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -273,7 +273,7 @@ export default function CompanyInvoices() {
                                 : 'text-body hover:text-heading'
                                 }`}
                         >
-                            اليوم (تلقائي)
+                            Today (Default)
                         </button>
                         <button
                             onClick={handlePresetMonth}
@@ -282,7 +282,7 @@ export default function CompanyInvoices() {
                                 : 'text-body hover:text-heading'
                                 }`}
                         >
-                            هذا الشهر
+                            This Month
                         </button>
                         <button
                             onClick={handlePresetAll}
@@ -291,13 +291,13 @@ export default function CompanyInvoices() {
                                 : 'text-body hover:text-heading'
                                 }`}
                         >
-                            جميع الفترات
+                            All Periods
                         </button>
                     </div>
 
                     {/* Date Inputs */}
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-body">من:</span>
+                        <span className="text-xs text-body">From:</span>
                         <input
                             type="date"
                             value={startDate}
@@ -305,9 +305,9 @@ export default function CompanyInvoices() {
                                 setStartDate(e.target.value);
                                 setDatePreset('all');
                             }}
-                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-heading focus:outline-none focus:border-accent"
+                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs text-heading focus:outline-none focus:border-accent"
                         />
-                        <span className="text-xs text-body">إلى:</span>
+                        <span className="text-xs text-body">To:</span>
                         <input
                             type="date"
                             value={endDate}
@@ -315,7 +315,7 @@ export default function CompanyInvoices() {
                                 setEndDate(e.target.value);
                                 setDatePreset('all');
                             }}
-                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-heading focus:outline-none focus:border-accent"
+                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs text-heading focus:outline-none focus:border-accent"
                         />
                     </div>
 
@@ -329,11 +329,11 @@ export default function CompanyInvoices() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الفواتير الصادرة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Invoices Issued</span>
                             <h3 className="text-2xl font-bold text-heading my-1 font-latin">{totalInvoiceRecords}</h3>
                             <p className="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-2">
                                 <LuTrendingUp className="w-3.5 h-3.5" />
-                                <span>{totalInvoicesRevenue.toFixed(2)} ر.س إيرادات</span>
+                                <span>{totalInvoicesRevenue.toFixed(2)} SAR Revenue</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
@@ -346,11 +346,11 @@ export default function CompanyInvoices() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي المصروفات التشغيلية</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Operational Expenses</span>
                             <h3 className="text-2xl font-bold text-heading my-1 font-latin">{totalExpenseRecords}</h3>
                             <p className="text-xs text-rose-600 font-bold flex items-center gap-1 mt-2">
                                 <LuTrendingDown className="w-3.5 h-3.5" />
-                                <span>-{totalExpensesAmount.toFixed(2)} ر.س نفقات</span>
+                                <span>-{totalExpensesAmount.toFixed(2)} SAR Expenses</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
@@ -363,12 +363,12 @@ export default function CompanyInvoices() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">صافي الرصيد التشغيلي</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Net Operational Balance</span>
                             <h3 className={`text-2xl font-extrabold my-1 font-latin ${netBalance >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                                {netBalance.toFixed(2)} ر.س
+                                {netBalance.toFixed(2)} SAR
                             </h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>(الإيرادات - المصروفات)</span>
+                                <span>(Revenue - Expenses)</span>
                             </p>
                         </div>
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${netBalance >= 0 ? 'bg-accent/10 text-accent' : 'bg-rose-500/10 text-rose-600'}`}>
@@ -381,10 +381,10 @@ export default function CompanyInvoices() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">فواتير محصلة ومسددة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Collected & Paid Invoices</span>
                             <h3 className="text-2xl font-bold text-heading my-1 font-latin">{invoiceServerStats?.paid ?? 0}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>تم تحصيلها بنجاح</span>
+                                <span>Successfully collected</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
@@ -405,7 +405,7 @@ export default function CompanyInvoices() {
                         }`}
                 >
                     <LuReceipt className="w-4 h-4" />
-                    <span>فواتير الإيرادات</span>
+                    <span>Revenue Invoices</span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] bg-accent/10 text-accent font-latin font-bold">
                         {totalInvoiceRecords}
                     </span>
@@ -419,7 +419,7 @@ export default function CompanyInvoices() {
                         }`}
                 >
                     <LuCoins className="w-4 h-4" />
-                    <span>سجل المصروفات</span>
+                    <span>Expenses Log</span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] bg-rose-500/10 text-rose-600 font-latin font-bold">
                         {totalExpenseRecords}
                     </span>
@@ -433,13 +433,13 @@ export default function CompanyInvoices() {
                     {/* Controller Header */}
                     <div className="bg-surface p-4 rounded-md border border-border flex items-center justify-between">
                         <div className="relative w-full md:w-96">
-                            <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                            <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                             <input
                                 type="text"
                                 value={invoiceSearch}
                                 onChange={handleInvoiceSearch}
-                                placeholder="بحث برقم الفاتورة..."
-                                className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                                placeholder="Search by invoice number..."
+                                className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                             />
                         </div>
                     </div>
@@ -448,20 +448,20 @@ export default function CompanyInvoices() {
                     <div className="bg-surface rounded-md border border-border overflow-hidden">
                         {invoicesList.length === 0 ? (
                             <div className="p-12 text-center">
-                                <EmptyData message="لا توجد فواتير مسجلة للشركة تطابق خيارات البحث والتاريخ الحالية" icon={LuReceipt} />
+                                <EmptyData message="No registered invoices match current search and date filters" icon={LuReceipt} />
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="w-full text-right text-sm border-collapse">
+                                <table className="w-full text-left text-sm border-collapse">
                                     <thead>
                                         <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                            <th className="py-3.5 px-4">رقم الفاتورة</th>
-                                            <th className="py-3.5 px-4">تاريخ الإصدار</th>
-                                            <th className="py-3.5 px-4">المبلغ قبل الضريبة</th>
-                                            <th className="py-3.5 px-4">الضريبة (VAT)</th>
-                                            <th className="py-3.5 px-4">الإجمالي الكلي</th>
-                                            <th className="py-3.5 px-4">الحالة</th>
-                                            <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                            <th className="py-3.5 px-4">Invoice #</th>
+                                            <th className="py-3.5 px-4">Issue Date</th>
+                                            <th className="py-3.5 px-4">Subtotal Before Tax</th>
+                                            <th className="py-3.5 px-4">VAT Amount</th>
+                                            <th className="py-3.5 px-4">Total Amount</th>
+                                            <th className="py-3.5 px-4">Status</th>
+                                            <th className="py-3.5 px-4 text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border font-medium">
@@ -477,21 +477,21 @@ export default function CompanyInvoices() {
                                                         {inv.invoiceNumber}
                                                     </td>
 
-                                                    <td className="py-3.5 px-4 font-latin text-xs text-heading">
-                                                        {new Date(inv.createdAt || Date.now()).toLocaleDateString('ar-SA')}
+                                                    <td className="py-3.5 px-4 text-xs text-heading font-latin">
+                                                        {new Date(inv.createdAt || Date.now()).toLocaleDateString('en-US')}
                                                     </td>
 
-                                                    <td className="py-3.5 px-4 font-latin text-xs font-bold text-heading">
-                                                        {subtotal.toFixed(2)} ر.س
+                                                    <td className="py-3.5 px-4 text-xs font-bold text-heading font-latin">
+                                                        {subtotal.toFixed(2)} SAR
                                                     </td>
 
-                                                    <td className="py-3.5 px-4 font-latin text-xs text-amber-600 font-bold">
-                                                        {vat.toFixed(2)} ر.س
-                                                        <span className="text-[10px] text-body mr-1">({snapshot}%)</span>
+                                                    <td className="py-3.5 px-4 text-xs text-amber-600 font-bold font-latin">
+                                                        {vat.toFixed(2)} SAR
+                                                        <span className="text-[10px] text-body ml-1">({snapshot}%)</span>
                                                     </td>
 
-                                                    <td className="py-3.5 px-4 font-latin text-xs font-extrabold text-emerald-600">
-                                                        {grand.toFixed(2)} ر.س
+                                                    <td className="py-3.5 px-4 text-xs font-extrabold text-emerald-600 font-latin">
+                                                        {grand.toFixed(2)} SAR
                                                     </td>
 
                                                     <td className="py-3.5 px-4">
@@ -503,7 +503,7 @@ export default function CompanyInvoices() {
                                                             <button
                                                                 onClick={() => handleDownloadPdf(inv)}
                                                                 disabled={downloadingInvoiceId === inv._id}
-                                                                title="تنزيل الفاتورة بصيغة PDF"
+                                                                title="Download Invoice PDF"
                                                                 className="p-2 rounded-md bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-600 border border-emerald-500/20 transition-all cursor-pointer disabled:opacity-50"
                                                             >
                                                                 {downloadingInvoiceId === inv._id ? (
@@ -515,7 +515,7 @@ export default function CompanyInvoices() {
 
                                                             <button
                                                                 onClick={() => setSelectedInvoiceForDetails(inv)}
-                                                                title="عرض التفاصيل"
+                                                                title="View Details"
                                                                 className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                             >
                                                                 <LuEye className="w-4 h-4" />
@@ -523,7 +523,7 @@ export default function CompanyInvoices() {
 
                                                             <button
                                                                 onClick={() => setSelectedInvoiceForEdit(inv)}
-                                                                title={inv.status === 'paid' ? 'فاتورة محصلة لا يمكن تعديلها' : 'تعديل الفاتورة'}
+                                                                title={inv.status === 'paid' ? 'Paid invoice cannot be edited' : 'Edit Invoice'}
                                                                 className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer disabled:opacity-40"
                                                             >
                                                                 <LuPencil className="w-4 h-4" />
@@ -542,7 +542,7 @@ export default function CompanyInvoices() {
                         {totalInvoicePages > 1 && (
                             <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                                 <span className="text-body font-medium">
-                                    عرض الصفحة <b className="font-latin text-heading">{invoicePage}</b> من <b className="font-latin text-heading">{totalInvoicePages}</b> (إجمالي {totalInvoiceRecords} فاتورة)
+                                    Showing page <b className="font-latin text-heading">{invoicePage}</b> of <b className="font-latin text-heading">{totalInvoicePages}</b> (Total {totalInvoiceRecords} invoices)
                                 </span>
 
                                 <div className="flex items-center gap-2">
@@ -551,8 +551,8 @@ export default function CompanyInvoices() {
                                         disabled={invoicePage === 1}
                                         className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                                     >
-                                        <LuChevronRight className="w-4 h-4" />
-                                        <span>السابق</span>
+                                        <LuChevronLeft className="w-4 h-4" />
+                                        <span>Previous</span>
                                     </button>
 
                                     <button
@@ -560,8 +560,8 @@ export default function CompanyInvoices() {
                                         disabled={invoicePage === totalInvoicePages}
                                         className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                                     >
-                                        <span>التالي</span>
-                                        <LuChevronLeft className="w-4 h-4" />
+                                        <span>Next</span>
+                                        <LuChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
@@ -571,33 +571,33 @@ export default function CompanyInvoices() {
                 </div>
             )}
 
-            {/*  EXPENSES TAB */}
+            {/* EXPENSES TAB */}
             {activeTab === 'expenses' && (
                 <div className="space-y-4 animate-in fade-in duration-150">
 
                     {/* Controller Header */}
                     <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
                         <div className="relative w-full md:w-80">
-                            <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                            <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                             <input
                                 type="text"
                                 value={expenseSearch}
                                 onChange={handleExpenseSearch}
-                                placeholder="بحث بعنوان المصروف أو الرقم..."
-                                className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-rose-500"
+                                placeholder="Search by expense title or number..."
+                                className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-rose-500"
                             />
                         </div>
 
                         {/* Category Filter Dropdown */}
                         <div className="flex items-center gap-2">
                             <LuTag className="w-4 h-4 text-rose-500 shrink-0" />
-                            <span className="text-xs font-bold text-heading whitespace-nowrap">التصنيف:</span>
+                            <span className="text-xs font-bold text-heading whitespace-nowrap">Category:</span>
                             <select
                                 value={selectedCategoryFilter}
                                 onChange={handleCategoryFilterChange}
                                 className="px-3 py-2 rounded-md bg-surface-muted border border-border text-xs font-bold text-heading focus:outline-none focus:border-rose-500 cursor-pointer"
                             >
-                                <option value="all">كل التصنيفات</option>
+                                <option value="all">All Categories</option>
                                 {defaultExpenseCategories.map((cat) => (
                                     <option key={cat} value={cat}>
                                         {cat}
@@ -611,19 +611,19 @@ export default function CompanyInvoices() {
                     <div className="bg-surface rounded-md border border-border overflow-hidden">
                         {expensesList.length === 0 ? (
                             <div className="p-12 text-center">
-                                <EmptyData message="لا توجد مصروفات مسجلة تطابق خيارات البحث والتصنيف والتاريخ الحالية" icon={LuCoins} />
+                                <EmptyData message="No registered expenses match current search, category, and date filters" icon={LuCoins} />
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="w-full text-right text-sm border-collapse">
+                                <table className="w-full text-left text-sm border-collapse">
                                     <thead>
                                         <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                            <th className="py-3.5 px-4">عنوان / بيان المصروف</th>
-                                            <th className="py-3.5 px-4">التصنيف</th>
-                                            <th className="py-3.5 px-4">رقم الإيصال</th>
-                                            <th className="py-3.5 px-4">التاريخ</th>
-                                            <th className="py-3.5 px-4">المبلغ (ر.س)</th>
-                                            <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                            <th className="py-3.5 px-4">Expense Title / Description</th>
+                                            <th className="py-3.5 px-4">Category</th>
+                                            <th className="py-3.5 px-4">Receipt #</th>
+                                            <th className="py-3.5 px-4">Date</th>
+                                            <th className="py-3.5 px-4">Amount (SAR)</th>
+                                            <th className="py-3.5 px-4 text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border font-medium">
@@ -644,22 +644,22 @@ export default function CompanyInvoices() {
                                                     </span>
                                                 </td>
 
-                                                <td className="py-3.5 px-4 font-latin text-xs text-body">
+                                                <td className="py-3.5 px-4 text-xs text-body font-latin">
                                                     {exp.receiptNumber || '—'}
                                                 </td>
 
-                                                <td className="py-3.5 px-4 font-latin text-xs text-heading">
-                                                    {new Date(exp.expenseDate || exp.createdAt || Date.now()).toLocaleDateString('ar-SA')}
+                                                <td className="py-3.5 px-4 text-xs text-heading font-latin">
+                                                    {new Date(exp.expenseDate || exp.createdAt || Date.now()).toLocaleDateString('en-US')}
                                                 </td>
 
-                                                <td className="py-3.5 px-4 font-latin text-sm font-extrabold text-rose-600">
-                                                    {Number(exp.amount || 0).toFixed(2)} ر.س
+                                                <td className="py-3.5 px-4 text-sm font-extrabold text-rose-600 font-latin">
+                                                    {Number(exp.amount || 0).toFixed(2)} SAR
                                                 </td>
 
                                                 <td className="py-3.5 px-4 text-center">
                                                     <button
                                                         onClick={() => setSelectedExpenseForEdit(exp)}
-                                                        title="تعديل أو حذف المصروف"
+                                                        title="Edit or Delete Expense"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
@@ -676,7 +676,7 @@ export default function CompanyInvoices() {
                         {totalExpensePages > 1 && (
                             <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                                 <span className="text-body font-medium">
-                                    عرض الصفحة <b className="font-latin text-heading">{expensePage}</b> من <b className="font-latin text-heading">{totalExpensePages}</b> (إجمالي {totalExpenseRecords} مصروف)
+                                    Showing page <b className="font-latin text-heading">{expensePage}</b> of <b className="font-latin text-heading">{totalExpensePages}</b> (Total {totalExpenseRecords} expenses)
                                 </span>
 
                                 <div className="flex items-center gap-2">
@@ -685,8 +685,8 @@ export default function CompanyInvoices() {
                                         disabled={expensePage === 1}
                                         className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                                     >
-                                        <LuChevronRight className="w-4 h-4" />
-                                        <span>السابق</span>
+                                        <LuChevronLeft className="w-4 h-4" />
+                                        <span>Previous</span>
                                     </button>
 
                                     <button
@@ -694,8 +694,8 @@ export default function CompanyInvoices() {
                                         disabled={expensePage === totalExpensePages}
                                         className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                                     >
-                                        <span>التالي</span>
-                                        <LuChevronLeft className="w-4 h-4" />
+                                        <span>Next</span>
+                                        <LuChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>

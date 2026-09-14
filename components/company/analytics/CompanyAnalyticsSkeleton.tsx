@@ -31,7 +31,7 @@ export default function CompanyAnalyticsSkeleton() {
                         <div className="h-3 bg-surface-muted rounded w-20"></div>
                     </div>
                     <div className="h-64 bg-surface-muted/60 rounded-md flex items-center justify-center">
-                        <span className="text-xs text-body/50">جاري تحميل البيانات الإحصائية...</span>
+                        <span className="text-xs text-body/50">Loading analytics data...</span>
                     </div>
                 </div>
 

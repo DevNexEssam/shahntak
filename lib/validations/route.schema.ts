@@ -4,17 +4,17 @@ export const routeCreateValidationSchema = z.object({
     companyId: z.string().optional().or(z.literal("")),
     createdBy: z.string().optional().or(z.literal("")),
     origin: z
-        .string("نقطة الانطلاق مطلوبة")
-        .min(2, "نقطة الانطلاق يجب أن تكون على الأقل حرفين")
-        .max(50, "نقطة الانطلاق يجب أن لا تتجاوز 50 حرف"),
+        .string({ message: "Origin location is required" })
+        .min(2, "Origin location must be at least 2 characters")
+        .max(50, "Origin location must not exceed 50 characters"),
     destination: z
-        .string("وجهة الوصول مطلوبة")
-        .min(2, "وجهة الوصول يجب أن تكون على الأقل حرفين")
-        .max(50, "وجهة الوصول يجب أن لا تتجاوز 50 حرف"),
-    vehicleType: z.string("نوع المركبة مطلوب").min(1, "نوع المركبة مطلوب"),
+        .string({ message: "Destination location is required" })
+        .min(2, "Destination location must be at least 2 characters")
+        .max(50, "Destination location must not exceed 50 characters"),
+    vehicleType: z.string({ message: "Vehicle type is required" }).min(1, "Vehicle type is required"),
     basePrice: z
-        .number({ message: "السعر الأساسي مطلوب" })
-        .min(0, "السعر الأساسي لا يمكن أن يكون بالسالب"),
+        .number({ message: "Base price is required" })
+        .min(0, "Base price cannot be negative"),
     carrierId: z.string().optional().or(z.literal("")),
     estimatedTransitTime: z.string().optional().or(z.literal("")),
     isActive: z.boolean().default(true),
@@ -25,13 +25,13 @@ export const routeUpdateValidationSchema = z.object({
     createdBy: z.string().optional().or(z.literal("")),
     origin: z
         .string()
-        .min(2, "نقطة الانطلاق يجب أن تكون على الأقل حرفين")
-        .max(50, "نقطة الانطلاق يجب أن لا تتجاوز 50 حرف")
+        .min(2, "Origin location must be at least 2 characters")
+        .max(50, "Origin location must not exceed 50 characters")
         .optional(),
     destination: z
         .string()
-        .min(2, "وجهة الوصول يجب أن تكون على الأقل حرفين")
-        .max(50, "وجهة الوصول يجب أن لا تتجاوز 50 حرف")
+        .min(2, "Destination location must be at least 2 characters")
+        .max(50, "Destination location must not exceed 50 characters")
         .optional(),
     vehicleType: z.string().optional(),
     basePrice: z.number().min(0).optional(),
@@ -43,3 +43,4 @@ export const routeUpdateValidationSchema = z.object({
 // Type Inference
 export type RouteCreateInput = z.infer<typeof routeCreateValidationSchema>;
 export type RouteUpdateInput = z.infer<typeof routeUpdateValidationSchema>;
+

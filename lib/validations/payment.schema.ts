@@ -3,17 +3,17 @@ import { z } from "zod";
 export const paymentMethodEnum = ["bank_transfer", "card", "cash", "other"] as const;
 
 export const paymentCreateValidationSchema = z.object({
-    invoiceId: z.string("معرف الفاتورة مطلوب").min(1, "معرف الفاتورة مطلوب"),
+    invoiceId: z.string({ message: "Invoice ID is required" }).min(1, "Invoice ID is required"),
     amount: z
-        .number({ message: "مبلغ الدفعة مطلوب" })
-        .positive("المبلغ يجب أن يكون رقماً موجباً"),
-    method: z.enum(paymentMethodEnum, "طريقة الدفع غير صحيحة"),
+        .number({ message: "Payment amount is required" })
+        .positive("Amount must be a positive number"),
+    method: z.enum(paymentMethodEnum, { message: "Invalid payment method" }),
     paidAt: z.coerce.date().default(() => new Date()),
 });
 
 export const paymentUpdateValidationSchema = z.object({
     amount: z.number().positive().optional(),
-    method: z.enum(paymentMethodEnum, "طريقة الدفع غير صحيحة").optional(),
+    method: z.enum(paymentMethodEnum, { message: "Invalid payment method" }).optional(),
     paidAt: z.coerce.date().optional(),
 });
 

@@ -24,11 +24,11 @@ export const CompanyReports: React.FC = () => {
     const reportData = responseData?.data || {};
 
     const tabs = [
-        { id: "analytics", label: " التحليلات الشاملة", icon: LuTrendingUp },
-        { id: "overview", label: "النظرة العامة الإحصائية", icon: LuChartPie },
-        { id: "operations", label: "تقارير العمليات والطلبات", icon: LuPackage },
-        { id: "financial", label: "التقارير المالية والفواتير", icon: LuDollarSign },
-        { id: "fleet", label: "تقارير الأسطول والموظفين", icon: LuTruck },
+        { id: "analytics", label: "Comprehensive Analytics", icon: LuTrendingUp },
+        { id: "overview", label: "Statistical Overview", icon: LuChartPie },
+        { id: "operations", label: "Operations & Orders Reports", icon: LuPackage },
+        { id: "financial", label: "Financial & Invoicing Reports", icon: LuDollarSign },
+        { id: "fleet", label: "Fleet & Employees Reports", icon: LuTruck },
     ] as const;
 
     return (
@@ -36,19 +36,19 @@ export const CompanyReports: React.FC = () => {
             {/* Header section */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">التقارير والإحصائيات التحليلية</h1>
+                    <h1 className="text-2xl font-bold text-foreground">Reports & Analytical Statistics</h1>
                     <p className="text-sm text-muted-foreground mt-1">
-                        لوحة التحليلات المتقدمة لمتابعة أداء الأسطول، الشحنات، والمبالغ المالية المفوترة للشركة.
+                        Advanced analytics dashboard to track company fleet performance, shipments, and invoiced amounts.
                     </p>
                 </div>
 
                 <button
                     onClick={() => refetch()}
                     disabled={isFetching}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md border border-border bg-surface hover:bg-border/30 transition-colors disabled:opacity-50 text-foreground"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md border border-border bg-surface hover:bg-border/30 transition-colors disabled:opacity-50 text-foreground cursor-pointer"
                 >
                     <LuRefreshCw className={`w-4 h-4 text-accent ${isFetching ? "animate-spin" : ""}`} />
-                    <span>تحديث البيانات</span>
+                    <span>Refresh Data</span>
                 </button>
             </div>
 

@@ -15,11 +15,11 @@ export function SubscriptionAlertBanner() {
                 <div className="flex items-center gap-2">
                     <LuShieldAlert className="w-5 h-5 shrink-0 text-rose-600" />
                     <span>
-                        <strong className="font-bold">تنبيه انتهاء الاشتراك:</strong> انتهت صلاحية اشتراك المنشأة. تم توقيف كافة عمليات الإضافة والتعديل والحذف تلقائياً لحين تجديد الاشتراك.
+                        <strong className="font-bold">Subscription Expired:</strong> The company subscription has expired. All creation, editing, and deletion operations have been suspended until the subscription is renewed.
                     </span>
                 </div>
                 <span className="text-xs bg-rose-600 text-white px-3 py-1 rounded-md font-bold shrink-0">
-                    تجديد الآن
+                    Renew Now
                 </span>
             </div>
         );
@@ -31,11 +31,11 @@ export function SubscriptionAlertBanner() {
                 <div className="flex items-center gap-2">
                     <LuClock className="w-4 h-4 shrink-0 text-amber-600" />
                     <span>
-                        <strong className="font-bold">اقتراب انتهاء الاشتراك:</strong> متبقي <span className="underline font-bold">{daysRemaining} أيام</span> على انتهاء اشتراك باقة ({planName}). يرجى التجديد لتجنب توقف الخدمات.
+                        <strong className="font-bold">Subscription Expiring Soon:</strong> Only <span className="underline font-bold">{daysRemaining} day(s)</span> remaining on your ({planName}) subscription. Please renew to avoid service disruption.
                     </span>
                 </div>
                 <span className="text-xs bg-amber-600 text-white px-2.5 py-1 rounded font-bold shrink-0">
-                    متابعة التجديد
+                    Proceed to Renewal
                 </span>
             </div>
         );
@@ -47,7 +47,7 @@ export function SubscriptionAlertBanner() {
                 <div className="flex items-center gap-2">
                     <LuTriangleAlert className="w-4 h-4 shrink-0 text-sky-600" />
                     <span>
-                        لا يوجد اشتراك نشط مسجل لحساب المنشأة حالياً. يرجى التواصل مع إدارة النظام لاختيار الباقة المناسبة.
+                        No active subscription is currently registered for your company account. Please contact system administration to select a suitable plan.
                     </span>
                 </div>
             </div>

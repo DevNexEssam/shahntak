@@ -4,43 +4,43 @@ export const companyStatusEnum = ["active", "inactive", "archived", "banned"] as
 
 export const companyCreateValidationSchema = z.object({
     companyName: z
-        .string("اسم الشركة مطلوب")
-        .min(3, "الاسم يجب أن يكون على الأقل 3 أحرف")
-        .max(100, "الاسم يجب أن لا يتجاوز 100 حرف"),
+        .string({ message: "Company name is required" })
+        .min(3, "Name must be at least 3 characters")
+        .max(100, "Name must not exceed 100 characters"),
     email: z
-        .string("ايميل الشركة مطلوب")
-        .email("البريد الإلكتروني غير صحيح")
-        .min(4, "البريد الإلكتروني يجب أن يكون على الأقل 4 أحرف")
-        .max(70, "البريد الإلكتروني يجب أن لا يتجاوز 70 حرف"),
+        .string({ message: "Company email is required" })
+        .email("Invalid email address")
+        .min(4, "Email must be at least 4 characters")
+        .max(70, "Email must not exceed 70 characters"),
     password: z
         .string()
-        .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف")
+        .min(6, "Password must be at least 6 characters")
         .optional()
         .or(z.literal("")),
     phone: z
-        .string("رقم الهاتف مطلوب")
-        .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
-        .max(20, "رقم الهاتف يجب أن لا يتجاوز 20 رقم"),
+        .string({ message: "Phone number is required" })
+        .min(3, "Phone number must be at least 3 digits")
+        .max(20, "Phone number must not exceed 20 digits"),
     city: z
-        .string("المدينة مطلوبة")
-        .min(1, "المدينة مطلوبة")
-        .max(50, "المدينة يجب أن لا تتجاوز 50 حرف"),
+        .string({ message: "City is required" })
+        .min(1, "City is required")
+        .max(50, "City must not exceed 50 characters"),
     taxNumber: z
         .string()
-        .max(50, "رقم الضريبة يجب أن لا يتجاوز 50 حرف")
+        .max(50, "Tax number must not exceed 50 characters")
         .optional()
         .or(z.literal("")),
     address: z
         .string()
-        .max(255, "العنوان يجب أن لا يتجاوز 255 حرف")
+        .max(255, "Address must not exceed 255 characters")
         .optional()
         .or(z.literal("")),
     facilityInfo: z
         .string()
-        .max(500, "معلومات المنشأة يجب أن لا تتجاوز 500 حرف")
+        .max(500, "Facility information must not exceed 500 characters")
         .optional()
         .or(z.literal("")),
-    status: z.enum(companyStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive أو archived أو banned").default("active"),
+    status: z.enum(companyStatusEnum, { message: "Invalid status: must be active, inactive, archived, or banned" }).default("active"),
     approvedBy: z.string().optional().or(z.literal("")),
     approvedAt: z.coerce.date().optional(),
 });
@@ -48,44 +48,44 @@ export const companyCreateValidationSchema = z.object({
 export const updateCompanyValidationSchema = z.object({
     companyName: z
         .string()
-        .min(3, "الاسم يجب أن يكون على الأقل 3 أحرف")
-        .max(100, "الاسم يجب أن لا يتجاوز 100 حرف")
+        .min(3, "Name must be at least 3 characters")
+        .max(100, "Name must not exceed 100 characters")
         .optional(),
     email: z
         .string()
-        .email("البريد الإلكتروني غير صحيح")
+        .email("Invalid email address")
         .optional(),
     phone: z
         .string()
-        .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
-        .max(20, "رقم الهاتف يجب أن لا يتجاوز 20 رقم")
+        .min(3, "Phone number must be at least 3 digits")
+        .max(20, "Phone number must not exceed 20 digits")
         .optional(),
     city: z
         .string()
-        .min(1, "المدينة مطلوبة")
-        .max(50, "المدينة يجب أن لا تتجاوز 50 حرف")
+        .min(1, "City is required")
+        .max(50, "City must not exceed 50 characters")
         .optional(),
     taxNumber: z
         .string()
-        .max(50, "رقم الضريبة يجب أن لا يتجاوز 50 حرف")
+        .max(50, "Tax number must not exceed 50 characters")
         .optional()
         .or(z.literal("")),
     address: z
         .string()
-        .max(255, "العنوان يجب أن لا يتجاوز 255 حرف")
+        .max(255, "Address must not exceed 255 characters")
         .optional()
         .or(z.literal("")),
     facilityInfo: z
         .string()
-        .max(500, "معلومات المنشأة يجب أن لا تتجاوز 500 حرف")
+        .max(500, "Facility information must not exceed 500 characters")
         .optional()
         .or(z.literal("")),
     password: z
         .string()
-        .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف")
+        .min(6, "Password must be at least 6 characters")
         .optional()
         .or(z.literal("")),
-    status: z.enum(companyStatusEnum, "الحالة المحددة غير صالحة، يجب أن تكون active أو inactive أو archived أو banned").optional(),
+    status: z.enum(companyStatusEnum, { message: "Invalid status: must be active, inactive, archived, or banned" }).optional(),
     approvedBy: z.string().optional().or(z.literal("")),
     approvedAt: z.coerce.date().optional(),
 });
@@ -93,4 +93,5 @@ export const updateCompanyValidationSchema = z.object({
 // Type Inference
 export type CompanyCreateInput = z.infer<typeof companyCreateValidationSchema>;
 export type CompanyUpdateInput = z.infer<typeof updateCompanyValidationSchema>;
+
 

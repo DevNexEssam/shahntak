@@ -4,9 +4,9 @@ export const zatcaTaxRates = [15, 0] as const;
 
 export const taxSettingsUpdateSchema = z.object({
     vatRate: z
-        .number({ message: "نسبة ضريبة القيمة المضافة مطلوبة كرمز رقمي" })
+        .number({ message: "VAT rate is required as a numeric value" })
         .refine((val) => val === 15 || val === 0, {
-            message: "نسبة ضريبة القيمة المضافة يجب أن تكون 15% (أساسية) أو 0% (معفاة) وفقاً للائحة ZATCA",
+            message: "VAT rate must be 15% (Standard) or 0% (Exempt) according to ZATCA regulations",
         }),
     vatExemptionReason: z.string().trim().optional(),
     vatRateReason: z.string().trim().optional(),
@@ -18,7 +18,7 @@ export const taxSettingsUpdateSchema = z.object({
         return true;
     },
     {
-        message: "عند اختيار نسبة الضريبة 0% (معفاة)، يجب اختيار أو إدخال سبب الإعفاء الضريبي الرسمي",
+        message: "When selecting 0% VAT rate (Exempt), an official tax exemption reason must be provided",
         path: ["vatExemptionReason"],
     }
 );

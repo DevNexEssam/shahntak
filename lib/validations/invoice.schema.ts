@@ -10,24 +10,24 @@ export const invoiceStatusEnum = [
 
 export const invoiceCreateValidationSchema = z.object({
     invoiceNumber: z.string().optional().or(z.literal("")),
-    companyId: z.string("معرف الشركة مطلوب").min(1, "معرف الشركة مطلوب"),
+    companyId: z.string({ message: "Company ID is required" }).min(1, "Company ID is required"),
     total: z
-        .number({ message: "إجمالي الفاتورة مطلوب" })
-        .min(0, "الإجمالي لا يمكن أن يكون بالسالب"),
-    discount: z.number().min(0, "مبلغ الخصم لا يمكن أن يكون بالسالب").optional().default(0),
+        .number({ message: "Invoice total is required" })
+        .min(0, "Total cannot be negative"),
+    discount: z.number().min(0, "Discount amount cannot be negative").optional().default(0),
     subtotal: z.number().min(0).optional(),
     vatAmount: z.number().min(0).optional(),
-    status: z.enum(invoiceStatusEnum, "الحالة المحددة غير صالحة").default("draft"),
+    status: z.enum(invoiceStatusEnum, { message: "Invalid invoice status" }).default("draft"),
     dueDate: z.coerce.date().optional(),
 });
 
 export const invoiceUpdateValidationSchema = z.object({
     companyId: z.string().optional(),
     total: z.number().min(0).optional(),
-    discount: z.number().min(0, "مبلغ الخصم لا يمكن أن يكون بالسالب").optional(),
+    discount: z.number().min(0, "Discount amount cannot be negative").optional(),
     subtotal: z.number().min(0).optional(),
     vatAmount: z.number().min(0).optional(),
-    status: z.enum(invoiceStatusEnum, "الحالة المحددة غير صالحة").optional(),
+    status: z.enum(invoiceStatusEnum, { message: "Invalid invoice status" }).optional(),
     dueDate: z.coerce.date().optional(),
 });
 

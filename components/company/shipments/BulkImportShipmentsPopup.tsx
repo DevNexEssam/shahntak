@@ -63,33 +63,33 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
             const cleanKey = key.trim().toLowerCase();
             const val = rawValue !== undefined && rawValue !== null ? String(rawValue).trim() : "";
 
-            if (cleanKey.includes("نوع") || cleanKey === "type") {
+            if (cleanKey.includes("نوع") || cleanKey === "type" || cleanKey.includes("shipment type")) {
                 normalized.type = val || "ftl";
-            } else if (cleanKey.includes("رمز") || cleanKey.includes("تجميع") || cleanKey.includes("مجموعة") || cleanKey === "shipmentcode" || cleanKey === "shipment_code") {
+            } else if (cleanKey.includes("رمز") || cleanKey.includes("تجميع") || cleanKey.includes("مجموعة") || cleanKey === "shipmentcode" || cleanKey === "shipment_code" || cleanKey.includes("group code")) {
                 normalized.shipmentCode = val;
-            } else if (cleanKey.includes("قيام") || cleanKey.includes("مدينة القيام") || cleanKey === "origin") {
-                normalized.origin = val || "الرياض";
-            } else if (cleanKey.includes("وصول") || cleanKey.includes("مدينة الوصول") || cleanKey === "destination") {
-                normalized.destination = val || "جدة";
-            } else if (cleanKey.includes("سعر مخصص") || cleanKey.includes("السعر المخصص") || cleanKey.includes("سعر") || cleanKey === "customprice") {
+            } else if (cleanKey.includes("قيام") || cleanKey.includes("مدينة القيام") || cleanKey === "origin" || cleanKey.includes("origin city")) {
+                normalized.origin = val || "Riyadh";
+            } else if (cleanKey.includes("وصول") || cleanKey.includes("مدينة الوصول") || cleanKey === "destination" || cleanKey.includes("destination city")) {
+                normalized.destination = val || "Jeddah";
+            } else if (cleanKey.includes("سعر مخصص") || cleanKey.includes("السعر المخصص") || cleanKey.includes("سعر") || cleanKey === "customprice" || cleanKey.includes("custom price")) {
                 normalized.customPrice = parseFloat(val) || undefined;
-            } else if (cleanKey.includes("اسم المستلم") || cleanKey.includes("اسم") || cleanKey === "recipientname") {
+            } else if (cleanKey.includes("اسم المستلم") || cleanKey.includes("اسم") || cleanKey === "recipientname" || cleanKey.includes("recipient name")) {
                 normalized.recipientName = val;
-            } else if (cleanKey.includes("جوال") || cleanKey.includes("هاتف") || cleanKey === "recipientphone") {
+            } else if (cleanKey.includes("جوال") || cleanKey.includes("هاتف") || cleanKey === "recipientphone" || cleanKey.includes("mobile phone") || cleanKey.includes("phone")) {
                 normalized.recipientPhone = val;
-            } else if (cleanKey.includes("عنوان") || cleanKey === "recipientaddress") {
+            } else if (cleanKey.includes("عنوان") || cleanKey === "recipientaddress" || cleanKey.includes("detailed address") || cleanKey.includes("address")) {
                 normalized.recipientAddress = val;
-            } else if (cleanKey.includes("حي") || cleanKey === "recipientdistrict") {
+            } else if (cleanKey.includes("حي") || cleanKey === "recipientdistrict" || cleanKey.includes("district")) {
                 normalized.recipientDistrict = val;
-            } else if (cleanKey.includes("وزن") || cleanKey === "weight") {
+            } else if (cleanKey.includes("وزن") || cleanKey === "weight" || cleanKey.includes("weight")) {
                 normalized.weight = parseFloat(val) || 0;
-            } else if (cleanKey.includes("قيمة") || cleanKey === "ordervalue") {
+            } else if (cleanKey.includes("قيمة") || cleanKey === "ordervalue" || cleanKey.includes("order value")) {
                 normalized.orderValue = parseFloat(val) || 0;
-            } else if (cleanKey.includes("دفع") || cleanKey.includes("cod") || cleanKey === "codamount") {
+            } else if (cleanKey.includes("دفع") || cleanKey.includes("cod") || cleanKey === "codamount" || cleanKey.includes("cod amount")) {
                 normalized.codAmount = parseFloat(val) || 0;
-            } else if (cleanKey.includes("كمية") || cleanKey === "quantity") {
+            } else if (cleanKey.includes("كمية") || cleanKey === "quantity" || cleanKey.includes("qty")) {
                 normalized.quantity = parseInt(val, 10) || 1;
-            } else if (cleanKey.includes("رقم الطلب") || cleanKey === "ordernumber") {
+            } else if (cleanKey.includes("رقم الطلب") || cleanKey === "ordernumber" || cleanKey.includes("order number")) {
                 normalized.orderNumber = val;
             }
         }
@@ -115,7 +115,7 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                 const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, { defval: "" });
 
                 if (!jsonData || jsonData.length === 0) {
-                    toast.error("الملف المرفوع فارغ أو غير صالح");
+                    toast.error("Uploaded file is empty or invalid");
                     setIsProcessing(false);
                     return;
                 }
@@ -126,8 +126,8 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                 jsonData.forEach((rawRow) => {
                     const norm = normalizeRowKeys(rawRow);
                     const rawCode = norm.shipmentCode || "";
-                    const origin = norm.origin || "الرياض";
-                    const destination = norm.destination || "جدة";
+                    const origin = norm.origin || "Riyadh";
+                    const destination = norm.destination || "Jeddah";
 
                     // Unique grouping key per route & group code
                     const groupKey = rawCode
@@ -155,7 +155,7 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                         orderNumber: norm.orderNumber,
                         recipientName: norm.recipientName || "",
                         recipientPhone: norm.recipientPhone || "",
-                        recipientCity: norm.destination || "جدة",
+                        recipientCity: norm.destination || "Jeddah",
                         recipientDistrict: norm.recipientDistrict || "",
                         recipientAddress: norm.recipientAddress || norm.destination || "",
                         weight: norm.weight || 1,
@@ -167,15 +167,15 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                     // Basic client validation check
                     const orderErrors: string[] = [];
                     if (!orderItem.recipientName || orderItem.recipientName.length < 2) {
-                        orderErrors.push("اسم المستلم مطلوب");
+                        orderErrors.push("Recipient name is required");
                     }
                     if (!orderItem.recipientPhone || orderItem.recipientPhone.length < 8) {
-                        orderErrors.push("رقم الجوال غير صالح");
+                        orderErrors.push("Invalid mobile phone number");
                     }
 
                     if (orderErrors.length > 0) {
                         group.isValid = false;
-                        group.errors.push(`طلب ${group.orders.length + 1}: ${orderErrors.join(" - ")}`);
+                        group.errors.push(`Order ${group.orders.length + 1}: ${orderErrors.join(" - ")}`);
                     }
 
                     group.orders.push(orderItem);
@@ -183,9 +183,9 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
 
                 const results = Array.from(groupMap.values());
                 setParsedGroups(results);
-                toast.success(`تم قراءة وتجميع ${results.length} شحنة بنجاح من الملف`);
+                toast.success(`Successfully read and grouped ${results.length} shipments from file`);
             } catch (err: any) {
-                toast.error("حدث خطأ أثناء قراءة ملف الإكسل: " + err.message);
+                toast.error("Error reading Excel file: " + err.message);
             } finally {
                 setIsProcessing(false);
             }
@@ -198,54 +198,54 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
     const handleDownloadTemplate = () => {
         const sampleData = [
             {
-                "رمز تجميع الشحنة": "SHP-GROUP-1",
-                "مدينة القيام": "الرياض",
-                "مدينة الوصول": "جدة",
-                "نوع الشحنة": "ftl",
-                "السعر المخصص (اختياري)": 1500,
-                "اسم المستلم": "محمد أحمد",
-                "رقم الجوال": "0501234567",
-                "العنوان التفصيلي": "شارع التخصصي، مبنى 12",
-                "الوزن (كجم)": 2.5,
-                "قيمة الطلب": 150,
-                "الدفع عند الاستلام": 150,
-                "رقم الطلب الخاص": "ORD-0001"
+                "Shipment Group Code": "SHP-GROUP-1",
+                "Origin City": "Riyadh",
+                "Destination City": "Jeddah",
+                "Shipment Type": "ftl",
+                "Custom Price (Optional)": 1500,
+                "Recipient Name": "Mohamed Ahmed",
+                "Mobile Phone": "0501234567",
+                "Detailed Address": "Takhassusi Street, Building 12",
+                "Weight (kg)": 2.5,
+                "Order Value": 150,
+                "COD Amount": 150,
+                "Custom Order Number": "ORD-0001"
             },
             {
-                "رمز تجميع الشحنة": "SHP-GROUP-1",
-                "مدينة القيام": "الرياض",
-                "مدينة الوصول": "جدة",
-                "نوع الشحنة": "ftl",
-                "السعر المخصص (اختياري)": 1500,
-                "اسم المستلم": "خالد محمود",
-                "رقم الجوال": "0509876543",
-                "العنوان التفصيلي": "حي الشاطئ، برج 2",
-                "الوزن (كجم)": 4.0,
-                "قيمة الطلب": 300,
-                "الدفع عند الاستلام": 0,
-                "رقم الطلب الخاص": "ORD-0002"
+                "Shipment Group Code": "SHP-GROUP-1",
+                "Origin City": "Riyadh",
+                "Destination City": "Jeddah",
+                "Shipment Type": "ftl",
+                "Custom Price (Optional)": 1500,
+                "Recipient Name": "Khaled Mahmoud",
+                "Mobile Phone": "0509876543",
+                "Detailed Address": "Al-Shati District, Tower 2",
+                "Weight (kg)": 4.0,
+                "Order Value": 300,
+                "COD Amount": 0,
+                "Custom Order Number": "ORD-0002"
             },
             {
-                "رمز تجميع الشحنة": "SHP-GROUP-2",
-                "مدينة القيام": "جدة",
-                "مدينة الوصول": "الدمام",
-                "نوع الشحنة": "ltl",
-                "السعر المخصص (اختياري)": "",
-                "اسم المستلم": "سارة سعيد",
-                "رقم الجوال": "0541122334",
-                "العنوان التفصيلي": "شارع الملك فهد، مجمع 5",
-                "الوزن (كجم)": 10.0,
-                "قيمة الطلب": 800,
-                "الدفع عند الاستلام": 800,
-                "رقم الطلب الخاص": ""
+                "Shipment Group Code": "SHP-GROUP-2",
+                "Origin City": "Jeddah",
+                "Destination City": "Dammam",
+                "Shipment Type": "ltl",
+                "Custom Price (Optional)": "",
+                "Recipient Name": "Sara Saeed",
+                "Mobile Phone": "0541122334",
+                "Detailed Address": "King Fahd Road, Complex 5",
+                "Weight (kg)": 10.0,
+                "Order Value": 800,
+                "COD Amount": 800,
+                "Custom Order Number": ""
             }
         ];
 
         const worksheet = XLSX.utils.json_to_sheet(sampleData);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "نموذج الشحنات");
-        XLSX.writeFile(workbook, "نموذج_استيراد_الشحنات_والطلبات_شحنتك.xlsx");
-        toast.success("تم تنزيل نموذج إكسل الشحنات والطلبات المدمجة بنجاح");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Shipments Template");
+        XLSX.writeFile(workbook, "Shipments_Bulk_Import_Template.xlsx");
+        toast.success("Sample Excel template for grouped shipments downloaded successfully");
     };
 
     const validGroups = parsedGroups.filter((g) => g.isValid);
@@ -254,7 +254,7 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
     // Confirm Import
     const handleConfirmImport = () => {
         if (validGroups.length === 0) {
-            toast.error("لا توجد أي شحنات صالحة للاستيراد");
+            toast.error("No valid shipments available for import");
             return;
         }
 
@@ -285,8 +285,8 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                             <LuTruck className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">استيراد الشحنات والطلبات المدمجة عبر Excel</h2>
-                            <p className="text-xs text-body mt-0.5">رفع شحنات تجميعية وربط طلباتها آلياً بضغطة زر</p>
+                            <h2 className="text-xl font-extrabold text-heading">Bulk Import Grouped Shipments & Orders via Excel</h2>
+                            <p className="text-xs text-body mt-0.5">Upload grouped shipments and link their orders automatically with one click</p>
                         </div>
                     </div>
 
@@ -295,7 +295,7 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                         onClick={handleCloseModal}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -307,8 +307,8 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                     {/* Top Helper Bar: Download Template */}
                     <div className="p-4 rounded-2xl bg-accent-soft/40 border border-accent/20 flex items-center justify-between gap-4 flex-wrap">
                         <div className="space-y-0.5">
-                            <h4 className="text-xs font-extrabold text-heading">تحميل نموذج شحنات وإكسل جاهز</h4>
-                            <p className="text-xs text-body">يمكنك تنزيل النموذج المنسق وتعبئة الشحنات وطلباتها التجميعية ثم إعادة رفعه</p>
+                            <h4 className="text-xs font-extrabold text-heading">Download Ready-made Excel & Shipment Template</h4>
+                            <p className="text-xs text-body">You can download the formatted template, fill in your shipments and grouped orders, then re-upload it.</p>
                         </div>
                         <button
                             type="button"
@@ -316,7 +316,7 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border text-accent font-bold text-xs hover:bg-accent-soft transition-all cursor-pointer shadow-xs"
                         >
                             <LuDownload className="w-4 h-4" />
-                            تنزيل نموذج Excel للشحنات
+                            Download Excel Shipment Template
                         </button>
                     </div>
 
@@ -335,8 +335,8 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                                 <div className="w-16 h-16 rounded-full bg-accent-soft text-accent flex items-center justify-center text-2xl mb-3 shadow-xs">
                                     <LuUpload className="w-8 h-8" />
                                 </div>
-                                <span className="text-sm font-extrabold text-heading">اسحب ملف إكسل الشحنات هنا أو اضغط للاختيار</span>
-                                <span className="text-xs text-body/70 mt-1">يدعم تجميع الشحنات وربط طلباتها تلقائياً (.xlsx, .csv)</span>
+                                <span className="text-sm font-extrabold text-heading">Drag & drop your Excel shipment file here, or click to browse</span>
+                                <span className="text-xs text-body/70 mt-1">Supports automatic shipment grouping and order linking (.xlsx, .csv)</span>
                             </label>
                         </div>
                     ) : (
@@ -354,25 +354,25 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                                     className="text-xs text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded-lg hover:bg-rose-50 transition-colors"
                                 >
                                     <LuTrash2 className="w-4 h-4" />
-                                    إلغاء الملف وإعادة الرفع
+                                    Remove File & Re-upload
                                 </button>
                             </div>
 
                             {/* Summary KPI Pills */}
                             <div className="grid grid-cols-3 gap-3">
                                 <div className="p-3.5 rounded-2xl bg-surface-muted border border-border text-center">
-                                    <span className="text-xs font-bold text-body block">إجمالي الشحنات المجمعّة</span>
+                                    <span className="text-xs font-bold text-body block">Total Grouped Shipments</span>
                                     <span className="text-lg font-extrabold text-heading font-latin">{parsedGroups.length}</span>
                                 </div>
                                 <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
                                     <span className="text-xs font-bold text-emerald-600 block flex items-center justify-center gap-1">
-                                        <LuCircleCheck className="w-3.5 h-3.5" /> شحنات صالحة
+                                        <LuCircleCheck className="w-3.5 h-3.5" /> Valid Shipments
                                     </span>
                                     <span className="text-lg font-extrabold text-emerald-600 font-latin">{validGroups.length}</span>
                                 </div>
                                 <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-center">
                                     <span className="text-xs font-bold text-rose-600 block flex items-center justify-center gap-1">
-                                        <LuCircleAlert className="w-3.5 h-3.5" /> شحنات بها أخطاء
+                                        <LuCircleAlert className="w-3.5 h-3.5" /> Shipments with Errors
                                     </span>
                                     <span className="text-lg font-extrabold text-rose-600 font-latin">{invalidGroups.length}</span>
                                 </div>
@@ -380,16 +380,16 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
 
                             {/* Preview Table */}
                             <div className="border border-border rounded-2xl overflow-hidden max-h-[300px] overflow-y-auto">
-                                <table className="w-full text-right text-xs">
+                                <table className="w-full text-left text-xs">
                                     <thead className="bg-surface-muted/80 text-body font-bold sticky top-0 border-b border-border">
                                         <tr>
                                             <th className="p-3">#</th>
-                                            <th className="p-3">رمز التجميع</th>
-                                            <th className="p-3">خط السير (من ⬅️ إلى)</th>
-                                            <th className="p-3">عدد الطلبات التابعة</th>
-                                            <th className="p-3">السعر المخصص</th>
-                                            <th className="p-3">الحالة</th>
-                                            <th className="p-3">الملاحظات</th>
+                                            <th className="p-3">Group Code</th>
+                                            <th className="p-3">Route Line (From → To)</th>
+                                            <th className="p-3">Attached Orders</th>
+                                            <th className="p-3">Custom Price</th>
+                                            <th className="p-3">Status</th>
+                                            <th className="p-3">Notes</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border">
@@ -400,23 +400,23 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                                             >
                                                 <td className="p-3 font-bold text-body font-latin">{idx + 1}</td>
                                                 <td className="p-3 font-bold text-accent font-latin">{group.shipmentCode}</td>
-                                                <td className="p-3 font-bold text-heading">{group.origin} ⬅️ {group.destination}</td>
-                                                <td className="p-3 font-latin text-body">{group.orders.length} طلبات</td>
-                                                <td className="p-3 font-latin text-body">{group.customPrice ? `${group.customPrice} ر.س` : "حساب تلقائي"}</td>
+                                                <td className="p-3 font-bold text-heading">{group.origin} → {group.destination}</td>
+                                                <td className="p-3 text-body">{group.orders.length} Orders</td>
+                                                <td className="p-3 text-body">{group.customPrice ? `${group.customPrice} SAR` : "Auto Calculated"}</td>
                                                 <td className="p-3">
                                                     {group.isValid ? (
                                                         <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-[11px] inline-flex items-center gap-1">
-                                                            <LuCircleCheck className="w-3 h-3" /> صالحة
+                                                            <LuCircleCheck className="w-3 h-3" /> Valid
                                                         </span>
                                                     ) : (
                                                         <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 font-bold text-[11px] inline-flex items-center gap-1">
-                                                            <LuCircleAlert className="w-3 h-3" /> خطأ
+                                                            <LuCircleAlert className="w-3 h-3" /> Error
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td className="p-3">
                                                     {group.isValid ? (
-                                                        <span className="text-emerald-600 text-[11px]">جاهز لتجميع الشحنة</span>
+                                                        <span className="text-emerald-600 text-[11px]">Ready for shipment grouping</span>
                                                     ) : (
                                                         <span className="text-rose-600 font-bold text-[11px] block max-w-[220px] truncate" title={group.errors.join(" | ")}>
                                                             {group.errors.join(" - ")}
@@ -440,7 +440,7 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                         disabled={isSubmitting || isProcessing}
                         className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                     >
-                        إلغاء
+                        Cancel
                     </button>
 
                     <button
@@ -450,13 +450,14 @@ export default function BulkImportShipmentsPopup({ isOpen = true, onClose }: Bul
                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[170px] justify-center"
                     >
                         {isSubmitting
-                            ? "جاري الاستيراد..."
+                            ? "Importing..."
                             : validGroups.length > 0
-                                ? `تأكيد وحفظ ${validGroups.length} شحنة`
-                                : "اختر ملفاً للاستيراد"}
+                                ? `Confirm & Save ${validGroups.length} Shipments`
+                                : "Select a File to Import"}
                     </button>
                 </div>
             </div>
         </div>
     );
 }
+

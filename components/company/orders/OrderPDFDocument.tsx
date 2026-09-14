@@ -6,39 +6,18 @@ import {
     Text,
     View,
     StyleSheet,
-    Font
 } from '@react-pdf/renderer';
-import { fixArabicText } from '@/lib/pdf/arabicPdfHelper';
-
-// Register Cairo Font for React-PDF
-Font.register({
-    family: 'Cairo',
-    fonts: [
-        {
-            src: 'https://cdn.jsdelivr.net/fontsource/fonts/cairo@latest/arabic-400-normal.ttf',
-            fontWeight: 'normal',
-        },
-        {
-            src: 'https://cdn.jsdelivr.net/fontsource/fonts/cairo@latest/arabic-700-normal.ttf',
-            fontWeight: 'bold',
-        },
-    ],
-});
-
-// Disable hyphenation for Arabic text
-Font.registerHyphenationCallback((word) => [word]);
 
 const styles = StyleSheet.create({
     page: {
         padding: 30,
-        fontFamily: 'Cairo',
         fontSize: 9,
         backgroundColor: '#FFFFFF',
         color: '#0F172A',
     },
     // Top Header Banner
     brandHeader: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         borderBottomWidth: 2,
@@ -47,15 +26,15 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     brandTitle: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#1E3A8A',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     brandSub: {
         fontSize: 8.5,
         color: '#64748B',
-        textAlign: 'right',
+        textAlign: 'left',
         marginTop: 2,
     },
     orderBadge: {
@@ -65,7 +44,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 5,
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
     },
     orderNumberText: {
         fontSize: 11,
@@ -80,7 +59,7 @@ const styles = StyleSheet.create({
 
     // Grid Container for 2 Columns
     gridTwo: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 12,
         gap: 10,
@@ -101,17 +80,17 @@ const styles = StyleSheet.create({
         borderBottomColor: '#CBD5E1',
         paddingBottom: 4,
         marginBottom: 6,
-        textAlign: 'right',
+        textAlign: 'left',
     },
     infoLine: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 3.5,
     },
     label: {
         fontSize: 8,
         color: '#64748B',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     val: {
         fontSize: 8.5,
@@ -129,7 +108,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     tableHeader: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         backgroundColor: '#1E3A8A',
         padding: 7,
     },
@@ -137,10 +116,10 @@ const styles = StyleSheet.create({
         fontSize: 8.5,
         fontWeight: 'bold',
         color: '#FFFFFF',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     tableRow: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         padding: 7,
         borderBottomWidth: 1,
         borderBottomColor: '#F1F5F9',
@@ -149,7 +128,7 @@ const styles = StyleSheet.create({
     tableCell: {
         fontSize: 8.5,
         color: '#334155',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     colW1: { width: '35%' },
     colW2: { width: '20%' },
@@ -164,7 +143,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         padding: 10,
         marginBottom: 15,
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
@@ -181,7 +160,7 @@ const styles = StyleSheet.create({
 
     // Signatures Section
     signatureSection: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 15,
         gap: 10,
@@ -199,7 +178,7 @@ const styles = StyleSheet.create({
         fontSize: 8.5,
         fontWeight: 'bold',
         color: '#475569',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     sigLine: {
         borderTopWidth: 1,
@@ -234,20 +213,20 @@ export const OrderPDFDocument: React.FC<OrderPDFDocumentProps> = ({ orderData })
     if (!orderData) return null;
 
     const company = orderData.companyId || orderData.company || {};
-    const creationDate = new Date(orderData.createdAt || Date.now()).toLocaleDateString('ar-SA');
+    const creationDate = new Date(orderData.createdAt || Date.now()).toLocaleDateString('en-US');
 
     const orderValue = Number(orderData.orderValue || 0);
     const codAmount = Number(orderData.codAmount || 0);
 
     const getStatusText = (status: string) => {
         switch (status) {
-            case 'pending': return 'قيد الانتظار';
-            case 'validated': return 'مؤكد ومفحوص';
-            case 'grouped': return 'مجمع بشحنة';
-            case 'shipped': return 'تم الشحن';
-            case 'delivered': return 'تم التوصيل بنجاح';
-            case 'cancelled': return 'ملغي';
-            default: return status || 'جديد';
+            case 'pending': return 'Pending';
+            case 'validated': return 'Confirmed & Inspected';
+            case 'grouped': return 'Grouped in Shipment';
+            case 'shipped': return 'Shipped';
+            case 'delivered': return 'Delivered Successfully';
+            case 'cancelled': return 'Cancelled';
+            default: return status || 'New';
         }
     };
 
@@ -257,13 +236,13 @@ export const OrderPDFDocument: React.FC<OrderPDFDocumentProps> = ({ orderData })
 
                 <View style={styles.brandHeader}>
                     <View>
-                        <Text style={styles.brandTitle}>{fixArabicText('سند وتسليم طلب شحن فردي')}</Text>
-                        <Text style={styles.brandSub}>{fixArabicText('منصة شحنتك اللوجستية - وثيقة تسليم وطرد رسمية')}</Text>
+                        <Text style={styles.brandTitle}>Single Shipment Order Receipt</Text>
+                        <Text style={styles.brandSub}>Shahntak Logistics Platform - Official Delivery Document</Text>
                     </View>
                     <View style={styles.orderBadge}>
-                        <Text style={styles.orderNumberText}>{fixArabicText(`طلب #: ${orderData.orderNumber || 'ORD-0000'}`)}</Text>
+                        <Text style={styles.orderNumberText}>{`Order #: ${orderData.orderNumber || 'ORD-0000'}`}</Text>
                         <Text style={styles.orderSourceText}>
-                            {fixArabicText(`المصدر: ${orderData.source === 'bulk_upload' ? 'رفع إكسل' : 'إدخال يدوي'}`)}
+                            {`Source: ${orderData.source === 'bulk_upload' ? 'Excel Import' : 'Manual Entry'}`}
                         </Text>
                     </View>
                 </View>
@@ -272,45 +251,45 @@ export const OrderPDFDocument: React.FC<OrderPDFDocumentProps> = ({ orderData })
 
                     {/* Sender Company Info */}
                     <View style={styles.cardHalf}>
-                        <Text style={styles.cardHeader}>{fixArabicText('بيانات المنشأة المرسلة / الشركة')}</Text>
+                        <Text style={styles.cardHeader}>Sender Company Details</Text>
 
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('اسم الشركة:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(company.companyName || 'شركة الشحن المشتركة')}</Text>
+                            <Text style={styles.label}>Company Name:</Text>
+                            <Text style={styles.val}>{company.companyName || 'Partner Logistics Co.'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('الرقم الضريبي ZATCA:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(company.taxNumber || '310459871200003')}</Text>
+                            <Text style={styles.label}>ZATCA Tax ID:</Text>
+                            <Text style={styles.val}>{company.taxNumber || '310459871200003'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('المدينة والفرع:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(company.city || 'الرياض')}</Text>
+                            <Text style={styles.label}>City & Branch:</Text>
+                            <Text style={styles.val}>{company.city || 'Riyadh'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('تواصل المنشأة:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(company.phone || company.email || 'support@shahntak.sa')}</Text>
+                            <Text style={styles.label}>Contact:</Text>
+                            <Text style={styles.val}>{company.phone || company.email || 'support@shahntak.sa'}</Text>
                         </View>
                     </View>
 
                     {/* Recipient & Customer Info */}
                     <View style={styles.cardHalf}>
-                        <Text style={styles.cardHeader}>{fixArabicText('بيانات المستلم وموقع التوصيل')}</Text>
+                        <Text style={styles.cardHeader}>Recipient & Delivery Location</Text>
 
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('اسم المستلم:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(orderData.recipientName || 'غير مسجل')}</Text>
+                            <Text style={styles.label}>Recipient Name:</Text>
+                            <Text style={styles.val}>{orderData.recipientName || 'N/A'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('رقم الجوال:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(orderData.recipientPhone || 'غير مسجل')}</Text>
+                            <Text style={styles.label}>Phone Number:</Text>
+                            <Text style={styles.val}>{orderData.recipientPhone || 'N/A'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('المدينة والحي:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(`${orderData.recipientCity || 'الرياض'} ${orderData.recipientDistrict ? `- ${orderData.recipientDistrict}` : ''}`)}</Text>
+                            <Text style={styles.label}>City & District:</Text>
+                            <Text style={styles.val}>{`${orderData.recipientCity || 'Riyadh'} ${orderData.recipientDistrict ? `- ${orderData.recipientDistrict}` : ''}`}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('العنوان التفصيلي:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(orderData.recipientAddress || 'العنوان الرئيسي')}</Text>
+                            <Text style={styles.label}>Detailed Address:</Text>
+                            <Text style={styles.val}>{orderData.recipientAddress || 'Main Address'}</Text>
                         </View>
                     </View>
 
@@ -318,40 +297,40 @@ export const OrderPDFDocument: React.FC<OrderPDFDocumentProps> = ({ orderData })
 
                 <View style={styles.table}>
                     <View style={styles.tableHeader}>
-                        <Text style={[styles.tableHeaderCell, styles.colW1]}>{fixArabicText('بيان الطرد / الطلب')}</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colW2]}>{fixArabicText('الوزن / الكمية')}</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colW3]}>{fixArabicText('تاريخ التسجيل')}</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colW4]}>{fixArabicText('الحالة الحالية')}</Text>
+                        <Text style={[styles.tableHeaderCell, styles.colW1]}>Item / Package Description</Text>
+                        <Text style={[styles.tableHeaderCell, styles.colW2]}>Weight / Quantity</Text>
+                        <Text style={[styles.tableHeaderCell, styles.colW3]}>Registration Date</Text>
+                        <Text style={[styles.tableHeaderCell, styles.colW4]}>Current Status</Text>
                     </View>
 
                     <View style={styles.tableRow}>
-                        <Text style={[styles.tableCell, styles.colW1]}>{fixArabicText(`طرد مخصص للمستلم (${orderData.recipientName || 'العميل'})`)}</Text>
-                        <Text style={[styles.tableCell, styles.colW2]}>{fixArabicText(`${orderData.weight || 1} كجم (${orderData.quantity || 1} طرد)`)}</Text>
-                        <Text style={[styles.tableCell, styles.colW3]}>{fixArabicText(creationDate)}</Text>
-                        <Text style={[styles.tableCell, styles.colW4]}>{fixArabicText(getStatusText(orderData.status))}</Text>
+                        <Text style={[styles.tableCell, styles.colW1]}>{`Package for (${orderData.recipientName || 'Customer'})`}</Text>
+                        <Text style={[styles.tableCell, styles.colW2]}>{`${orderData.weight || 1} kg (${orderData.quantity || 1} pkg)`}</Text>
+                        <Text style={[styles.tableCell, styles.colW3]}>{creationDate}</Text>
+                        <Text style={[styles.tableCell, styles.colW4]}>{getStatusText(orderData.status)}</Text>
                     </View>
                 </View>
 
                 <View style={styles.codBanner}>
-                    <Text style={styles.codTitle}>{fixArabicText('مبلغ التحصيل عند الاستلام المطلوب من العملاء (COD):')}</Text>
-                    <Text style={styles.codAmountText}>{fixArabicText(`${codAmount.toFixed(2)} ر.س`)}</Text>
+                    <Text style={styles.codTitle}>Cash on Delivery (COD) Amount Due from Customer:</Text>
+                    <Text style={styles.codAmountText}>{`${codAmount.toFixed(2)} SAR`}</Text>
                 </View>
 
                 <View style={styles.signatureSection}>
                     <View style={styles.sigBox}>
-                        <Text style={styles.sigTitle}>{fixArabicText('توقيع وختم تسليم المنشأة المرسلة:')}</Text>
+                        <Text style={styles.sigTitle}>Sender Dispatch Signature & Stamp:</Text>
                         <View style={styles.sigLine} />
                     </View>
 
                     <View style={styles.sigBox}>
-                        <Text style={styles.sigTitle}>{fixArabicText('توقيع ومصادقة استلام العميل / المستلم:')}</Text>
+                        <Text style={styles.sigTitle}>Recipient / Customer Signature:</Text>
                         <View style={styles.sigLine} />
                     </View>
                 </View>
 
                 <View style={styles.footer}>
                     <Text style={styles.footerNotice}>
-                        {fixArabicText('سند وتسليم طلب صادرة آلياً من منصة "شحنتك" اللوجستية © 2026 - جميع الحقوق محفوظة')}
+                        Official Order Receipt generated automatically by Shahntak Logistics Platform © 2026 - All Rights Reserved
                     </Text>
                 </View>
 

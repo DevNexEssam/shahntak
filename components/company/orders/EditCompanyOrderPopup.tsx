@@ -81,8 +81,8 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                             <LuPackage className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات الطلب</h2>
-                            <p className="text-xs text-body mt-0.5">تعديل بيانات المستلم والحالة والوزن والقيم اللوجستية</p>
+                            <h2 className="text-xl font-extrabold text-heading">Edit Order Details</h2>
+                            <p className="text-xs text-body mt-0.5">Modify recipient information, status, weight, and logistical values</p>
                         </div>
                     </div>
 
@@ -91,7 +91,7 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -106,27 +106,27 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuHash className="w-3.5 h-3.5 text-accent" />
-                                    رقم الطلب
+                                    Order Number
                                 </label>
-                                <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent font-latin">
+                                <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent">
                                     {orderData.orderNumber}
                                 </div>
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading">حالة الطلب</label>
+                                <label className="text-xs font-bold text-heading">Order Status</label>
                                 <select
                                     value={formValues.status}
                                     onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
                                 >
-                                    <option value="pending">قيد الانتظار</option>
-                                    <option value="validated">مؤكد</option>
-                                    <option value="grouped">مجمع بشحنة</option>
-                                    <option value="shipped">تم الشحن</option>
-                                    <option value="delivered">تم التوصيل</option>
-                                    <option value="cancelled">ملغي</option>
-                                    <option value="error">خطأ في البيانات</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="validated">Confirmed</option>
+                                    <option value="grouped">Grouped in Shipment</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    <option value="error">Data Error</option>
                                 </select>
                             </div>
                         </div>
@@ -135,14 +135,14 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                         <div className="space-y-4 pt-2 border-t border-border">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                بيانات المستلم وموقع التوصيل
+                                Recipient Details & Delivery Location
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuUser className="w-3.5 h-3.5 text-body" />
-                                        اسم المستلم
+                                        Recipient Name
                                     </label>
                                     <input
                                         type="text"
@@ -156,14 +156,14 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuPhone className="w-3.5 h-3.5 text-body" />
-                                        جوال المستلم
+                                        Recipient Phone
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.recipientPhone}
                                         onChange={(e) => setFormValues({ ...formValues, recipientPhone: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                     />
                                 </div>
                             </div>
@@ -172,7 +172,7 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                        المدينة
+                                        City
                                     </label>
                                     <input
                                         type="text"
@@ -184,7 +184,7 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-heading">الحي</label>
+                                    <label className="text-xs font-bold text-heading">District</label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
@@ -196,7 +196,7 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading">العنوان التفصيلي</label>
+                                <label className="text-xs font-bold text-heading">Detailed Address</label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
@@ -211,14 +211,14 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                         <div className="space-y-4 pt-2 border-t border-border">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                المواصفات والقيم اللوجستية
+                                Logistics Specifications & Values
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuWeight className="w-3.5 h-3.5 text-body" />
-                                        الوزن (كجم)
+                                        Weight (kg)
                                     </label>
                                     <input
                                         type="number"
@@ -226,25 +226,25 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                                         disabled={isSubmitting}
                                         value={formValues.weight}
                                         onChange={(e) => setFormValues({ ...formValues, weight: Number(e.target.value) })}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                     />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-heading">الكمية</label>
+                                    <label className="text-xs font-bold text-heading">Quantity</label>
                                     <input
                                         type="number"
                                         disabled={isSubmitting}
                                         value={formValues.quantity}
                                         onChange={(e) => setFormValues({ ...formValues, quantity: Number(e.target.value) })}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                     />
                                 </div>
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuCoins className="w-3.5 h-3.5 text-body" />
-                                        قيمة الطلب
+                                        Order Value
                                     </label>
                                     <input
                                         type="number"
@@ -252,19 +252,19 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                                         disabled={isSubmitting}
                                         value={formValues.orderValue}
                                         onChange={(e) => setFormValues({ ...formValues, orderValue: Number(e.target.value) })}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                     />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs font-bold text-heading">مبلغ COD</label>
+                                    <label className="text-xs font-bold text-heading">COD Amount</label>
                                     <input
                                         type="number"
                                         step="any"
                                         disabled={isSubmitting}
                                         value={formValues.codAmount}
                                         onChange={(e) => setFormValues({ ...formValues, codAmount: Number(e.target.value) })}
-                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                        className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                     />
                                 </div>
                             </div>
@@ -280,7 +280,7 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -288,7 +288,7 @@ export default function EditCompanyOrderPopup({ isOpen = true, onClose, orderDat
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري التحديث..." : "حفظ التعديلات"}
+                            {isSubmitting ? "Updating..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

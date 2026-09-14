@@ -31,7 +31,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
     const getSubscriptionBadge = () => {
         if (isLoading) {
             return {
-                label: 'جاري التحميل...',
+                label: 'Loading...',
                 className: 'bg-surface-muted text-body border-border',
             };
         }
@@ -39,28 +39,28 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
         switch (status) {
             case 'active':
                 return {
-                    label: `الباقة النشطة: ${planName} (نشط)`,
+                    label: `Active Plan: ${planName} (Active)`,
                     className: 'bg-accent-soft text-accent border-accent/20',
                 };
             case 'expired':
                 return {
-                    label: `الباقة: ${planName} (منتهي)`,
+                    label: `Plan: ${planName} (Expired)`,
                     className: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
                 };
             case 'cancelled':
                 return {
-                    label: `الباقة: ${planName} (ملغى)`,
+                    label: `Plan: ${planName} (Cancelled)`,
                     className: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
                 };
             case 'pending_payment':
                 return {
-                    label: `الباقة: ${planName} (في انتظار الدفع)`,
+                    label: `Plan: ${planName} (Pending Payment)`,
                     className: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
                 };
             case 'no_subscription':
             default:
                 return {
-                    label: 'لا يوجد اشتراك نشط',
+                    label: 'No Active Subscription',
                     className: 'bg-surface-muted text-body border-border',
                 };
         }
@@ -69,7 +69,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
     const badge = getSubscriptionBadge();
 
     return (
-        <header className="h-[76px] bg-surface border-b border-border px-6 flex items-center justify-between sticky top-0 z-30 font-arabic">
+        <header className="h-[76px] bg-surface border-b border-border px-6 flex items-center justify-between sticky top-0 z-30">
 
             {/* Sidebar Toggle & Search Form */}
             <div className="flex items-center gap-3">
@@ -78,7 +78,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
                         type="button"
                         onClick={onToggleSidebar}
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer"
-                        title={isSidebarCollapsed ? "فتح وتكبير القائمة الجانبية" : "طي القائمة الجانبية"}
+                        title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                     >
                         <LuPanelLeft className="w-5 h-5" />
                     </button>
@@ -87,8 +87,8 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
                 <form onSubmit={handleSearchSubmit} className="relative w-72 sm:w-80">
                     <button
                         type="submit"
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-body hover:text-accent transition-colors"
-                        title="بحث"
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-body hover:text-accent transition-colors"
+                        title="Search"
                     >
                         <LuSearch className="w-4 h-4" />
                     </button>
@@ -96,8 +96,8 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="ابحث عن طلب، شحنة، فاتورة، موظف..."
-                        className="w-full pl-4 pr-10 py-2 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                        placeholder="Search for order, shipment, invoice, employee..."
+                        className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </form>
             </div>
@@ -109,7 +109,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
                 <Link
                     href="/company/dashboard/settings"
                     className={`hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md border text-xs font-bold transition-colors hover:opacity-80 ${badge.className}`}
-                    title="عرض تفاصيل الباقة والاشتراك"
+                    title="View plan and subscription details"
                 >
                     <LuCrown className="w-3.5 h-3.5" />
                     <span>{badge.label}</span>
@@ -121,7 +121,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all cursor-pointer"
                 >
                     <LuPlus className="w-4 h-4" />
-                    <span>إضافة طلب جديد</span>
+                    <span>Add New Order</span>
                 </Link>
 
             </div>

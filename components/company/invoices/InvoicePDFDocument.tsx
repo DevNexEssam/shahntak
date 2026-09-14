@@ -297,16 +297,16 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
     const vatAmount = Number(invoiceData.vatAmount ?? Math.round((discountedSubtotal * (taxRate / 100)) * 100) / 100);
     const finalTotal = Number(invoiceData.total ?? Math.round((discountedSubtotal + vatAmount) * 100) / 100);
 
-    const issueDate = new Date(invoiceData.createdAt || Date.now()).toLocaleDateString('ar-SA');
-    const dueDate = invoiceData.dueDate ? new Date(invoiceData.dueDate).toLocaleDateString('ar-SA') : 'عند الاستلام';
+    const issueDate = new Date(invoiceData.createdAt || Date.now()).toLocaleDateString('en-US');
+    const dueDate = invoiceData.dueDate ? new Date(invoiceData.dueDate).toLocaleDateString('en-US') : 'Upon Receipt';
 
     const getStatusText = (status: string) => {
         switch (status) {
-            case 'paid': return 'مسدد ومحصل بالكامل';
-            case 'issued': return 'صادرة بانتظار التحصيل';
-            case 'overdue': return 'متأخرة السداد';
-            case 'cancelled': return 'ملغاة';
-            default: return 'مسودة فاتورة';
+            case 'paid': return 'Paid & Fully Collected';
+            case 'issued': return 'Issued - Pending Collection';
+            case 'overdue': return 'Overdue';
+            case 'cancelled': return 'Cancelled';
+            default: return 'Draft Invoice';
         }
     };
 
@@ -321,10 +321,10 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
 
     const getShipmentTypeName = (type?: string) => {
         switch (type) {
-            case 'ftl': return 'شحن نقل كامل (FTL)';
-            case 'ltl': return 'شحن طرود جزئية (LTL)';
-            case 'local_delivery': return 'توصيل محلي للميل الأخير';
-            default: return 'خدمة نقل شحن لوجستي';
+            case 'ftl': return 'Full Truck Load (FTL)';
+            case 'ltl': return 'Less Than Truckload (LTL)';
+            case 'local_delivery': return 'Local Last-Mile Delivery';
+            default: return 'Freight & Logistics Service';
         }
     };
 
@@ -334,13 +334,13 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
 
                 <View style={styles.brandHeader}>
                     <View>
-                        <Text style={styles.brandTitle}>{fixArabicText('منصة شحنتك اللوجستية')}</Text>
-                        <Text style={styles.brandSub}>{fixArabicText('فاتورة ضريبية مبسطة وسند تحصيل - بوابة الشركات')}</Text>
+                        <Text style={styles.brandTitle}>Shahntak Logistics Platform</Text>
+                        <Text style={styles.brandSub}>Simplified Tax Invoice & Payment Voucher - Company Portal</Text>
                     </View>
                     <View style={styles.invoiceMetaBadge}>
-                        <Text style={styles.invNumberText}>{fixArabicText(`فاتورة #: ${invoiceData.invoiceNumber || '---'}`)}</Text>
+                        <Text style={styles.invNumberText}>{`Invoice #: ${invoiceData.invoiceNumber || '---'}`}</Text>
                         <Text style={[styles.invStatusText, { color: getStatusColor(invoiceData.status) }]}>
-                            {fixArabicText(`الحالة: ${getStatusText(invoiceData.status)}`)}
+                            {`Status: ${getStatusText(invoiceData.status)}`}
                         </Text>
                     </View>
                 </View>
@@ -349,104 +349,104 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
 
                     {/* Company Supplier Info */}
                     <View style={styles.partyCard}>
-                        <Text style={styles.partyHeader}>{fixArabicText('بيانات المنشأة الموردة / الشركة')}</Text>
+                        <Text style={styles.partyHeader}>Supplier Entity / Company Details</Text>
 
                         <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>{fixArabicText('اسم الشركة:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(company.companyName || 'شركة الشحن المشتركة')}</Text>
+                            <Text style={styles.infoLabel}>Company Name:</Text>
+                            <Text style={styles.infoVal}>{company.companyName || 'Freight Carrier Partner'}</Text>
                         </View>
 
                         <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>{fixArabicText('الرقم الضريبي (ZATCA VAT):')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(company.taxNumber || '310459871200003')}</Text>
+                            <Text style={styles.infoLabel}>Tax Number (ZATCA VAT):</Text>
+                            <Text style={styles.infoVal}>{company.taxNumber || '310459871200003'}</Text>
                         </View>
 
                         <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>{fixArabicText('المدينة والعنوان:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(`${company.city || 'الرياض'} - ${company.address || 'المملكة العربية السعودية'}`)}</Text>
+                            <Text style={styles.infoLabel}>City & Address:</Text>
+                            <Text style={styles.infoVal}>{`${company.city || 'Riyadh'} - ${company.address || 'Saudi Arabia'}`}</Text>
                         </View>
 
                         <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>{fixArabicText('رقم التواصل / البريد:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(company.phone || company.email || 'support@shahntak.sa')}</Text>
+                            <Text style={styles.infoLabel}>Contact / Email:</Text>
+                            <Text style={styles.infoVal}>{company.phone || company.email || 'support@shahntak.sa'}</Text>
                         </View>
                     </View>
 
                     {/* Invoice Meta & Dates */}
                     <View style={styles.partyCard}>
-                        <Text style={styles.partyHeader}>{fixArabicText('بيانات الفاتورة والاستحقاق')}</Text>
+                        <Text style={styles.partyHeader}>Invoice & Due Date Details</Text>
 
                         <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>{fixArabicText('تاريخ الإصدار الرسمي:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(issueDate)}</Text>
+                            <Text style={styles.infoLabel}>Official Issue Date:</Text>
+                            <Text style={styles.infoVal}>{issueDate}</Text>
                         </View>
 
                         <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>{fixArabicText('تاريخ الاستحقاق:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(dueDate)}</Text>
+                            <Text style={styles.infoLabel}>Payment Due Date:</Text>
+                            <Text style={styles.infoVal}>{dueDate}</Text>
                         </View>
 
                         <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>{fixArabicText('نسبة الضريبة المطبقة:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(`${taxRate}%`)}</Text>
+                            <Text style={styles.infoLabel}>Applied Tax Rate:</Text>
+                            <Text style={styles.infoVal}>{`${taxRate}%`}</Text>
                         </View>
 
                         <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>{fixArabicText('عملة السداد:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText('ريال سعودي (SAR)')}</Text>
+                            <Text style={styles.infoLabel}>Payment Currency:</Text>
+                            <Text style={styles.infoVal}>Saudi Riyal (SAR)</Text>
                         </View>
                     </View>
 
                 </View>
 
                 <View style={styles.logisticsCard}>
-                    <Text style={styles.logisticsTitle}>{fixArabicText('تفاصيل الخدمة اللوجستية والنقل المربوط بالفاتورة')}</Text>
+                    <Text style={styles.logisticsTitle}>Logistics & Transport Service Details</Text>
 
                     <View style={styles.gridThreeCol}>
                         <View style={styles.colItem}>
-                            <Text style={styles.infoLabel}>{fixArabicText('رقم الشحنة المربوطة:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(linkedShipment.shipmentNumber || invoiceData.shipmentNumber || 'شحنة عامة')}</Text>
+                            <Text style={styles.infoLabel}>Linked Shipment #:</Text>
+                            <Text style={styles.infoVal}>{linkedShipment.shipmentNumber || invoiceData.shipmentNumber || 'General Shipment'}</Text>
                         </View>
                         <View style={styles.colItem}>
-                            <Text style={styles.infoLabel}>{fixArabicText('رقم بوليصة الشحن (Waybill):')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(linkedShipment.waybillNumber || 'WB-GENERAL')}</Text>
+                            <Text style={styles.infoLabel}>Waybill Number:</Text>
+                            <Text style={styles.infoVal}>{linkedShipment.waybillNumber || 'WB-GENERAL'}</Text>
                         </View>
                         <View style={styles.colItem}>
-                            <Text style={styles.infoLabel}>{fixArabicText('نوع الشحن اللوجستي:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(getShipmentTypeName(linkedShipment.type))}</Text>
+                            <Text style={styles.infoLabel}>Logistics Shipping Type:</Text>
+                            <Text style={styles.infoVal}>{getShipmentTypeName(linkedShipment.type)}</Text>
                         </View>
                     </View>
 
                     <View style={styles.gridThreeCol}>
                         <View style={styles.colItem}>
-                            <Text style={styles.infoLabel}>{fixArabicText('مسار السير والاتجاه:')}</Text>
+                            <Text style={styles.infoLabel}>Transport Route:</Text>
                             <Text style={styles.infoVal}>
-                                {fixArabicText(`${linkedShipment.origin || routeInfo.origin || 'الرياض'} ⬅️ ${linkedShipment.destination || routeInfo.destination || 'جدة'}`)}
+                                {`${linkedShipment.origin || routeInfo.origin || 'Riyadh'} ➡️ ${linkedShipment.destination || routeInfo.destination || 'Jeddah'}`}
                             </Text>
                         </View>
                         <View style={styles.colItem}>
-                            <Text style={styles.infoLabel}>{fixArabicText('اسم المسار المسجل:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(routeInfo.routeName || 'خط سير مباشر')}</Text>
+                            <Text style={styles.infoLabel}>Registered Route Name:</Text>
+                            <Text style={styles.infoVal}>{routeInfo.routeName || 'Direct Route'}</Text>
                         </View>
                         <View style={styles.colItem}>
-                            <Text style={styles.infoLabel}>{fixArabicText('عدد الطرود والطلبات:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(`${linkedShipment.ordersCount || 1} طرد مجمع`)}</Text>
+                            <Text style={styles.infoLabel}>Packages / Orders Count:</Text>
+                            <Text style={styles.infoVal}>{`${linkedShipment.ordersCount || 1} Consolidated Package(s)`}</Text>
                         </View>
                     </View>
 
                     {(linkedShipment.driverName || linkedShipment.carrierName) && (
                         <View style={styles.gridThreeCol}>
                             <View style={styles.colItem}>
-                                <Text style={styles.infoLabel}>{fixArabicText('اسم السائق / الناقل:')}</Text>
-                                <Text style={styles.infoVal}>{fixArabicText(linkedShipment.driverName || linkedShipment.carrierName || 'سائق معتمد')}</Text>
+                                <Text style={styles.infoLabel}>Driver / Carrier Name:</Text>
+                                <Text style={styles.infoVal}>{linkedShipment.driverName || linkedShipment.carrierName || 'Assigned Driver'}</Text>
                             </View>
                             <View style={styles.colItem}>
-                                <Text style={styles.infoLabel}>{fixArabicText('هاتف السائق:')}</Text>
-                                <Text style={styles.infoVal}>{fixArabicText(linkedShipment.driverPhone || 'غير مسجل')}</Text>
+                                <Text style={styles.infoLabel}>Driver Phone:</Text>
+                                <Text style={styles.infoVal}>{linkedShipment.driverPhone || 'Not Registered'}</Text>
                             </View>
                             <View style={styles.colItem}>
-                                <Text style={styles.infoLabel}>{fixArabicText('حالة الشحنة الحالية:')}</Text>
-                                <Text style={styles.infoVal}>{fixArabicText(linkedShipment.status || 'مكتملة')}</Text>
+                                <Text style={styles.infoLabel}>Shipment Status:</Text>
+                                <Text style={styles.infoVal}>{linkedShipment.status || 'Completed'}</Text>
                             </View>
                         </View>
                     )}
@@ -454,27 +454,27 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
 
                 <View style={styles.table}>
                     <View style={styles.tableHeader}>
-                        <Text style={[styles.tableHeaderCell, styles.col1]}>{fixArabicText('بيان الخدمة / التكلفة اللوجستية')}</Text>
-                        <Text style={[styles.tableHeaderCell, styles.col2]}>{fixArabicText('المبلغ قبل الضريبة')}</Text>
-                        <Text style={[styles.tableHeaderCell, styles.col3]}>{fixArabicText('الضريبة (VAT)')}</Text>
-                        <Text style={[styles.tableHeaderCell, styles.col4]}>{fixArabicText('الإجمالي شامل الضريبة')}</Text>
+                        <Text style={[styles.tableHeaderCell, styles.col1]}>Service Description / Logistics Cost</Text>
+                        <Text style={[styles.tableHeaderCell, styles.col2]}>Subtotal Before Tax</Text>
+                        <Text style={[styles.tableHeaderCell, styles.col3]}>VAT Amount</Text>
+                        <Text style={[styles.tableHeaderCell, styles.col4]}>Total Incl. VAT</Text>
                     </View>
 
                     {/* Freight Row */}
                     <View style={styles.tableRow}>
-                        <Text style={[styles.tableCell, styles.col1]}>{fixArabicText('أجور نقل وشحن لوجستي مجمع')}</Text>
-                        <Text style={[styles.tableCell, styles.col2]}>{fixArabicText(`${basePrice.toFixed(2)} ر.س`)}</Text>
-                        <Text style={[styles.tableCell, styles.col3]}>{fixArabicText(`${(basePrice * (taxRate / 100)).toFixed(2)} ر.س`)}</Text>
-                        <Text style={[styles.tableCell, styles.col4]}>{fixArabicText(`${(basePrice * (1 + taxRate / 100)).toFixed(2)} ر.س`)}</Text>
+                        <Text style={[styles.tableCell, styles.col1]}>Consolidated Freight & Transport Service Charges</Text>
+                        <Text style={[styles.tableCell, styles.col2]}>{`${basePrice.toFixed(2)} SAR`}</Text>
+                        <Text style={[styles.tableCell, styles.col3]}>{`${(basePrice * (taxRate / 100)).toFixed(2)} SAR`}</Text>
+                        <Text style={[styles.tableCell, styles.col4]}>{`${(basePrice * (1 + taxRate / 100)).toFixed(2)} SAR`}</Text>
                     </View>
 
                     {/* Discount Row (If Any) */}
                     {discount > 0 && (
                         <View style={styles.tableRowAlt}>
-                            <Text style={[styles.tableCell, styles.col1]}>{fixArabicText('خصم تجاري / مالي مطبق')}</Text>
-                            <Text style={[styles.tableCell, styles.col2]}>{fixArabicText(`-${discount.toFixed(2)} ر.س`)}</Text>
-                            <Text style={[styles.tableCell, styles.col3]}>{fixArabicText('0.00 ر.س')}</Text>
-                            <Text style={[styles.tableCell, styles.col4]}>{fixArabicText(`-${discount.toFixed(2)} ر.س`)}</Text>
+                            <Text style={[styles.tableCell, styles.col1]}>Applied Trade / Cash Discount</Text>
+                            <Text style={[styles.tableCell, styles.col2]}>{`-${discount.toFixed(2)} SAR`}</Text>
+                            <Text style={[styles.tableCell, styles.col3]}>0.00 SAR</Text>
+                            <Text style={[styles.tableCell, styles.col4]}>{`-${discount.toFixed(2)} SAR`}</Text>
                         </View>
                     )}
                 </View>
@@ -485,16 +485,16 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
                     <View style={styles.exemptionBox}>
                         {taxRate === 0 && (invoiceData.vatExemptionReason || company.vatExemptionReason) ? (
                             <View>
-                                <Text style={styles.exemptionTitle}>{fixArabicText('ملاحظة الإعفاء الضريبي الرسمي (ZATCA Exemption):')}</Text>
+                                <Text style={styles.exemptionTitle}>Official VAT Exemption Notice (ZATCA):</Text>
                                 <Text style={styles.exemptionText}>
-                                    {fixArabicText(invoiceData.vatExemptionReason || company.vatExemptionReason || 'معفاه بموجب اللائحة التنفيذية')}
+                                    {invoiceData.vatExemptionReason || company.vatExemptionReason || 'Exempted per executive regulations'}
                                 </Text>
                             </View>
                         ) : (
                             <View>
-                                <Text style={styles.exemptionTitle}>{fixArabicText('الشروط والأحكام المالية:')}</Text>
+                                <Text style={styles.exemptionTitle}>Financial Terms & Conditions:</Text>
                                 <Text style={styles.exemptionText}>
-                                    {fixArabicText('هذه الفاتورة صادرة إلكترونياً وتعتبر سنداً رسمياً مستحق الدفع لحساب الشركة الناقلة.')}
+                                    This invoice is issued electronically and serves as an official due payment voucher for the carrier company account.
                                 </Text>
                             </View>
                         )}
@@ -503,30 +503,30 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
                     {/* Financial Summary Calculation Card */}
                     <View style={styles.summaryCard}>
                         <View style={styles.summaryLine}>
-                            <Text style={styles.infoLabel}>{fixArabicText('المبلغ الأساسي (قبل الخصم):')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(`${basePrice.toFixed(2)} ر.س`)}</Text>
+                            <Text style={styles.infoLabel}>Base Subtotal (Before Discount):</Text>
+                            <Text style={styles.infoVal}>{`${basePrice.toFixed(2)} SAR`}</Text>
                         </View>
 
                         {discount > 0 && (
                             <View style={styles.summaryLine}>
-                                <Text style={styles.infoLabel}>{fixArabicText('مبلغ الخصم المالي:')}</Text>
-                                <Text style={styles.infoVal}>{fixArabicText(`-${discount.toFixed(2)} ر.س`)}</Text>
+                                <Text style={styles.infoLabel}>Applied Discount Amount:</Text>
+                                <Text style={styles.infoVal}>{`-${discount.toFixed(2)} SAR`}</Text>
                             </View>
                         )}
 
                         <View style={styles.summaryLine}>
-                            <Text style={styles.infoLabel}>{fixArabicText('الصافي الخاضع للضريبة:')}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(`${discountedSubtotal.toFixed(2)} ر.س`)}</Text>
+                            <Text style={styles.infoLabel}>Taxable Subtotal:</Text>
+                            <Text style={styles.infoVal}>{`${discountedSubtotal.toFixed(2)} SAR`}</Text>
                         </View>
 
                         <View style={styles.summaryLine}>
-                            <Text style={styles.infoLabel}>{fixArabicText(`ضريبة القيمة المضافة (${taxRate}%):`)}</Text>
-                            <Text style={styles.infoVal}>{fixArabicText(`${vatAmount.toFixed(2)} ر.س`)}</Text>
+                            <Text style={styles.infoLabel}>{`Value Added Tax (${taxRate}%):`}</Text>
+                            <Text style={styles.infoVal}>{`${vatAmount.toFixed(2)} SAR`}</Text>
                         </View>
 
                         <View style={styles.grandTotalLine}>
-                            <Text style={styles.grandTotalLabel}>{fixArabicText('الإجمالي النهائي المستحق:')}</Text>
-                            <Text style={styles.grandTotalVal}>{fixArabicText(`${finalTotal.toFixed(2)} ر.س`)}</Text>
+                            <Text style={styles.grandTotalLabel}>Final Total Amount Due:</Text>
+                            <Text style={styles.grandTotalVal}>{`${finalTotal.toFixed(2)} SAR`}</Text>
                         </View>
                     </View>
 
@@ -534,7 +534,7 @@ export const InvoicePDFDocument: React.FC<InvoicePDFDocumentProps> = ({ invoiceD
 
                 <View style={styles.footer}>
                     <Text style={styles.footerNotice}>
-                        {fixArabicText('وثيقة رسمية معتمدة صادرة من منصة "شحنتك" اللوجستية © 2026 - جميع الحقوق محفوظة')}
+                        Official certified document issued by Shahntak Logistics Platform © 2026 - All Rights Reserved
                     </Text>
                 </View>
 

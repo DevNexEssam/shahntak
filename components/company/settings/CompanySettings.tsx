@@ -11,7 +11,6 @@ import {
     LuSave,
     LuActivity,
     LuLock,
-    LuInfo,
     LuKeyRound,
     LuEye,
     LuEyeOff,
@@ -79,7 +78,7 @@ export const CompanySettings: React.FC = () => {
                 address: profile.address || "",
                 facilityInfo: profile.facilityInfo || "",
                 vatRate: currentRate,
-                vatExemptionReason: profile.vatExemptionReason || "خدمات نقل لوجستي معفاة بموجب اللائحة",
+                vatExemptionReason: profile.vatExemptionReason || "Logistics transport services exempt under regulations",
                 vatRateReason: "",
                 currentPassword: "",
                 newPassword: "",
@@ -102,7 +101,7 @@ export const CompanySettings: React.FC = () => {
         // Check if rate changed
         if (targetRate !== originalRate) {
             if (!data.vatRateReason || data.vatRateReason.trim().length < 3) {
-                toast.error("حماية النزاهة الضريبية : يجب إدخال سبب تعديل نسبة الضريبة حتمياً توثيقاً للسجل التاريخي");
+                toast.error("Tax Integrity Notice: A reason for modifying the tax rate must be provided for audit history.");
                 return;
             }
             payload.vatRate = targetRate;
@@ -110,7 +109,7 @@ export const CompanySettings: React.FC = () => {
 
             if (targetRate === 0) {
                 if (!data.vatExemptionReason || data.vatExemptionReason.trim().length < 3) {
-                    toast.error("يرجى إدخال أو اختيار سبب الإعفاء الضريبي الرسمي عند تفعيل نسبة 0%");
+                    toast.error("Please enter an official tax exemption reason when enabling a 0% rate.");
                     return;
                 }
                 payload.vatExemptionReason = data.vatExemptionReason.trim();
@@ -119,19 +118,19 @@ export const CompanySettings: React.FC = () => {
 
         if (data.currentPassword || data.newPassword || data.confirmPassword) {
             if (!data.currentPassword) {
-                toast.error("يرجى إدخال كلمة المرور الحالية لأتمتة التغيير");
+                toast.error("Please enter your current password to complete the change.");
                 return;
             }
             if (!data.newPassword) {
-                toast.error("يرجى إدخال كلمة المرور الجديدة");
+                toast.error("Please enter the new password.");
                 return;
             }
             if (data.newPassword.length < 6) {
-                toast.error("كلمة المرور الجديدة يجب أن تكون على الأقل 6 أحرف");
+                toast.error("New password must be at least 6 characters.");
                 return;
             }
             if (data.newPassword !== data.confirmPassword) {
-                toast.error("كلمة المرور الجديدة وتأكيدها غير متطابقين");
+                toast.error("New password and confirmation password do not match.");
                 return;
             }
 
@@ -156,18 +155,18 @@ export const CompanySettings: React.FC = () => {
         return (
             <div className="flex items-center justify-center py-16 text-muted-foreground">
                 <LuActivity className="w-8 h-8 animate-spin text-accent" />
-                <span className="mr-3 font-medium">جاري تحميل إعدادات وحساب الشركة...</span>
+                <span className="ml-3 font-medium">Loading company settings and account...</span>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 text-left">
             {/* Header section */}
             <div>
-                <h1 className="text-2xl font-bold text-foreground">إعدادات تفاصيل الشركة والأمان</h1>
+                <h1 className="text-2xl font-bold text-foreground">Company Details & Security Settings</h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                    إدارة الملف التعريفي، البيانات التشغيلية، وتغيير كلمة المرور الخاصة بمنشأتك اللوجستية.
+                    Manage profile details, operational data, and password for your logistics facility.
                 </p>
             </div>
 
@@ -176,7 +175,7 @@ export const CompanySettings: React.FC = () => {
                 <div className="flex items-center justify-between border-b border-border pb-4">
                     <div className="flex items-center gap-2 text-foreground font-semibold">
                         <LuCrown className="w-5 h-5 text-accent" />
-                        <span>تفاصيل الباقة والاشتراك الحالي</span>
+                        <span>Subscription & Active Plan Details</span>
                     </div>
                     {subscription && (
                         <span className={`px-2.5 py-1 text-xs font-bold rounded-md border ${
@@ -186,7 +185,7 @@ export const CompanySettings: React.FC = () => {
                                 ? 'bg-rose-500/10 text-rose-600 border-rose-500/20' 
                                 : 'bg-amber-500/10 text-amber-600 border-amber-500/20'
                         }`}>
-                            {subscription.status === 'active' ? 'اشتراك نشط' : subscription.status === 'expired' ? 'اشتراك منتهي' : 'في انتظار الدفع'}
+                            {subscription.status === 'active' ? 'Active Subscription' : subscription.status === 'expired' ? 'Expired Subscription' : 'Pending Payment'}
                         </span>
                     )}
                 </div>
@@ -195,29 +194,29 @@ export const CompanySettings: React.FC = () => {
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="p-4 rounded-md bg-surface-muted/50 border border-border">
-                                <span className="text-xs text-muted-foreground block mb-1">اسم الباقة المعتمدة</span>
+                                <span className="text-xs text-muted-foreground block mb-1">Approved Plan Name</span>
                                 <span className="text-base font-bold text-foreground flex items-center gap-1.5">
                                     <LuCrown className="w-4 h-4 text-accent" />
                                     {plan.name}
                                 </span>
                             </div>
                             <div className="p-4 rounded-md bg-surface-muted/50 border border-border">
-                                <span className="text-xs text-muted-foreground block mb-1">رسوم الاشتراك</span>
-                                <span className="text-base font-bold text-foreground font-latin">
-                                    {plan.price ? `${plan.price} ر.س / ${plan.billingCycle === 'yearly' ? 'سنوياً' : 'شهرياً'}` : 'مجاني / مخصص'}
+                                <span className="text-xs text-muted-foreground block mb-1">Subscription Fee</span>
+                                <span className="text-base font-bold text-foreground">
+                                    {plan.price ? `${plan.price} SAR / ${plan.billingCycle === 'yearly' ? 'Yearly' : 'Monthly'}` : 'Free / Custom'}
                                 </span>
                             </div>
                             <div className="p-4 rounded-md bg-surface-muted/50 border border-border">
-                                <span className="text-xs text-muted-foreground block mb-1">تاريخ نهاية الاشتراك</span>
-                                <span className="text-sm font-bold text-foreground font-latin flex items-center gap-1">
+                                <span className="text-xs text-muted-foreground block mb-1">Expiration Date</span>
+                                <span className="text-sm font-bold text-foreground flex items-center gap-1">
                                     <LuCalendar className="w-4 h-4 text-accent" />
-                                    {new Date(subscription.endDate).toLocaleDateString('ar-SA')}
+                                    {new Date(subscription.endDate).toLocaleDateString('en-US')}
                                 </span>
                             </div>
                             <div className="p-4 rounded-md bg-surface-muted/50 border border-border">
-                                <span className="text-xs text-muted-foreground block mb-1">التجديد التلقائي</span>
+                                <span className="text-xs text-muted-foreground block mb-1">Auto-Renewal</span>
                                 <span className="text-sm font-bold text-foreground">
-                                    {subscription.autoRenew ? 'مفعل تلقائياً' : 'غير مفعل'}
+                                    {subscription.autoRenew ? 'Enabled' : 'Disabled'}
                                 </span>
                             </div>
                         </div>
@@ -228,10 +227,10 @@ export const CompanySettings: React.FC = () => {
                             <div className="p-4 rounded-md border border-border bg-surface space-y-2">
                                 <div className="flex items-center justify-between text-xs font-semibold">
                                     <span className="flex items-center gap-1.5 text-muted-foreground">
-                                        <LuBoxes className="w-4 h-4 text-accent" /> حد الطلبات الشهرية
+                                        <LuBoxes className="w-4 h-4 text-accent" /> Monthly Orders Limit
                                     </span>
-                                    <span className="font-latin text-foreground font-bold">
-                                        {subscription.ordersUsedThisMonth || 0} / {plan.maxOrdersPerMonth === -1 ? 'غير محدود' : plan.maxOrdersPerMonth}
+                                    <span className="text-foreground font-bold">
+                                        {subscription.ordersUsedThisMonth || 0} / {plan.maxOrdersPerMonth === -1 ? 'Unlimited' : plan.maxOrdersPerMonth}
                                     </span>
                                 </div>
                                 {plan.maxOrdersPerMonth > 0 && (
@@ -248,10 +247,10 @@ export const CompanySettings: React.FC = () => {
                             <div className="p-4 rounded-md border border-border bg-surface space-y-2">
                                 <div className="flex items-center justify-between text-xs font-semibold">
                                     <span className="flex items-center gap-1.5 text-muted-foreground">
-                                        <LuTruck className="w-4 h-4 text-accent" /> حد الشحنات الشهرية
+                                        <LuTruck className="w-4 h-4 text-accent" /> Monthly Shipments Limit
                                     </span>
-                                    <span className="font-latin text-foreground font-bold">
-                                        {subscription.shipmentsUsedThisMonth || 0} / {plan.maxShipmentsPerMonth === -1 ? 'غير محدود' : plan.maxShipmentsPerMonth}
+                                    <span className="text-foreground font-bold">
+                                        {subscription.shipmentsUsedThisMonth || 0} / {plan.maxShipmentsPerMonth === -1 ? 'Unlimited' : plan.maxShipmentsPerMonth}
                                     </span>
                                 </div>
                                 {plan.maxShipmentsPerMonth > 0 && (
@@ -268,21 +267,21 @@ export const CompanySettings: React.FC = () => {
                             <div className="p-4 rounded-md border border-border bg-surface space-y-2">
                                 <div className="flex items-center justify-between text-xs font-semibold">
                                     <span className="flex items-center gap-1.5 text-muted-foreground">
-                                        <LuUsers className="w-4 h-4 text-accent" /> حد فريق العمل والموظفين
+                                        <LuUsers className="w-4 h-4 text-accent" /> Workforce & Team Limit
                                     </span>
-                                    <span className="font-latin text-foreground font-bold">
-                                        مسموح بـ {plan.maxCompanyUsers} موظف
+                                    <span className="text-foreground font-bold">
+                                        Allowed {plan.maxCompanyUsers} employees
                                     </span>
                                 </div>
                                 <div className="text-[11px] text-muted-foreground">
-                                    يمكن للموظفين الوصول حسب الصلاحيات الممنوحة
+                                    Employees can access based on assigned permissions
                                 </div>
                             </div>
                         </div>
                     </div>
                 ) : (
                     <div className="p-4 rounded-md bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 flex items-center justify-between">
-                        <span>لا يوجد اشتراك نشط مسجل حالياً لحساب الشركة. يرجى التواصل مع الدعم أو الإدارة لتحديد الباقة.</span>
+                        <span>No active subscription currently registered for this company account. Please contact support or administration to configure your plan.</span>
                     </div>
                 )}
             </div>
@@ -292,16 +291,16 @@ export const CompanySettings: React.FC = () => {
                 <div className="p-6 bg-surface border border-border rounded-md space-y-6">
                     <div className="flex items-center gap-2 text-foreground font-semibold border-b border-border pb-4">
                         <LuBuilding className="w-5 h-5 text-accent" />
-                        <span>بيانات الشركة والملف التعريفي</span>
+                        <span>Company Information & Profile</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Company Name (Locked) */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1 flex items-center justify-between">
-                                <span>اسم الشركة الرسمي</span>
+                                <span>Official Company Name</span>
                                 <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                    <LuLock className="w-3 h-3 text-accent" /> موثق
+                                    <LuLock className="w-3 h-3 text-accent" /> Verified
                                 </span>
                             </label>
                             <div className="relative">
@@ -318,9 +317,9 @@ export const CompanySettings: React.FC = () => {
                         {/* Email (Locked) */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1 flex items-center justify-between">
-                                <span>البريد الإلكتروني الحسابي</span>
+                                <span>Account Email</span>
                                 <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                    <LuLock className="w-3 h-3 text-accent" /> موثق
+                                    <LuLock className="w-3 h-3 text-accent" /> Verified
                                 </span>
                             </label>
                             <div className="relative">
@@ -337,9 +336,9 @@ export const CompanySettings: React.FC = () => {
                         {/* Tax Number (Locked) */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1 flex items-center justify-between">
-                                <span>الرقم الضريبي (VAT)</span>
+                                <span>Tax Number (VAT)</span>
                                 <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                    <LuLock className="w-3 h-3 text-accent" /> موثق
+                                    <LuLock className="w-3 h-3 text-accent" /> Verified
                                 </span>
                             </label>
                             <div className="relative">
@@ -356,7 +355,7 @@ export const CompanySettings: React.FC = () => {
                         {/* Phone (Editable) */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                رقم الهاتف / الجوال <span className="text-red-500">*</span>
+                                Phone / Mobile Number <span className="text-red-500">*</span>
                             </label>
                             <div className="relative">
                                 <input
@@ -371,7 +370,7 @@ export const CompanySettings: React.FC = () => {
                         {/* City (Editable) */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                المدينة الرئيسية <span className="text-red-500">*</span>
+                                Main City <span className="text-red-500">*</span>
                             </label>
                             <div className="relative">
                                 <input
@@ -386,7 +385,7 @@ export const CompanySettings: React.FC = () => {
                         {/* Address (Editable) */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                العنوان التفصيلي المقر الرئيسي
+                                Detailed Headquarters Address
                             </label>
                             <input
                                 type="text"
@@ -399,7 +398,7 @@ export const CompanySettings: React.FC = () => {
                     {/* Facility Info (Editable) */}
                     <div>
                         <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                            السجل التجاري / وصف المنشأة
+                            Commercial Register / Facility Description
                         </label>
                         <textarea
                             rows={3}
@@ -413,16 +412,16 @@ export const CompanySettings: React.FC = () => {
                 <div className="p-6 bg-surface border border-border rounded-md space-y-6">
                     <div className="flex items-center gap-2 text-foreground font-semibold border-b border-border pb-4">
                         <LuPercent className="w-5 h-5 text-accent" />
-                        <span>إعدادات ضريبة القيمة المضافة </span>
+                        <span>Value Added Tax (VAT) Settings</span>
                     </div>
 
                     <div className="p-4 rounded-md bg-accent-soft/30 border border-accent/20 text-xs text-foreground space-y-1.5">
                         <div className="flex items-center gap-2 font-bold text-accent">
                             <LuShieldAlert className="w-4 h-4" />
-                            <span>تنبيه أمني وإشعار الحماية الضريبية:</span>
+                            <span>Security Notice & Tax Protection Warning:</span>
                         </div>
                         <p className="leading-relaxed">
-                            تعديل نسبة الضريبة التشغيلية للشركة ينطبق **حصرياً على الفواتير المستقبلية الجديدة**. الفواتير الصادرة مسبقاً والمسددة تحتفظ بنسبتها ومبالغها التاريخية المطبوعة فور الإصدار دون تأثر.
+                            Modifying the company&apos;s operational tax rate applies **exclusively to new future invoices**. Previously issued and paid invoices retain their historical printed rates and amounts without being affected.
                         </p>
                     </div>
 
@@ -430,15 +429,15 @@ export const CompanySettings: React.FC = () => {
                         {/* VAT Rate Selection */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                نسبة ضريبة القيمة المضافة التشغيلية المعتمدة <span className="text-red-500">*</span>
+                                Approved Operational VAT Rate <span className="text-red-500">*</span>
                             </label>
                             <select
                                 {...register("vatRate", { valueAsNumber: true })}
                                 onChange={(e) => setSelectedVatRate(Number(e.target.value))}
                                 className="w-full px-3 py-2 text-sm rounded-md border border-border bg-surface text-foreground focus:outline-none focus:border-accent cursor-pointer"
                             >
-                                <option value={15}>15% - النسبة الأساسية القياسية (المملكة العربية السعودية)</option>
-                                <option value={0}>0% - معفى ضريبياً / نسبة صفرية</option>
+                                <option value={15}>15% - Standard Base Rate (Saudi Arabia)</option>
+                                <option value={0}>0% - Tax Exempt / Zero Rate</option>
                             </select>
                         </div>
 
@@ -446,12 +445,12 @@ export const CompanySettings: React.FC = () => {
                         {Number(watchedVatRate) === 0 && (
                             <div>
                                 <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                    سبب الإعفاء الضريبي الرسمي <span className="text-red-500">*</span>
+                                    Official Tax Exemption Reason <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     {...register("vatExemptionReason")}
-                                    placeholder="مثال: تصدير خدمات لوجستية، منشأة معفاة..."
+                                    placeholder="e.g. Export of logistics services, exempt facility..."
                                     className="w-full px-3 py-2 text-sm rounded-md border border-border bg-surface text-foreground focus:outline-none focus:border-accent"
                                 />
                             </div>
@@ -463,12 +462,12 @@ export const CompanySettings: React.FC = () => {
                         <div className="p-4 rounded-md border border-rose-500/30 bg-rose-500/5 space-y-2">
                             <label className="block text-xs font-bold text-rose-600 flex items-center gap-1.5">
                                 <LuShieldAlert className="w-4 h-4" />
-                                سبب تعديل نسبة الضريبة <span className="text-red-500">*</span>
+                                Reason for Modifying Tax Rate <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
                                 {...register("vatRateReason")}
-                                placeholder="اكتب سبب تغيير نسبة الضريبة بالشركة (مثال: صدور شهادة التسجيل الضريبي أو الإعفاء)..."
+                                placeholder="Enter reason for changing company tax rate (e.g. issuance of tax registration or exemption certificate)..."
                                 className="w-full px-3 py-2 text-sm rounded-md border border-rose-500/40 bg-surface text-foreground focus:outline-none focus:border-rose-500"
                             />
                         </div>
@@ -479,26 +478,26 @@ export const CompanySettings: React.FC = () => {
                         <div className="space-y-3 pt-2">
                             <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground border-t border-border pt-4">
                                 <LuHistory className="w-4 h-4 text-accent" />
-                                <span>سجل تدقيق وتغييرات نسبة الضريبة التاريخية (Tax Rate Audit Log)</span>
+                                <span>Tax Rate Audit Log</span>
                             </div>
 
                             <div className="overflow-x-auto border border-border rounded-md">
-                                <table className="w-full text-right text-xs">
+                                <table className="w-full text-left text-xs">
                                     <thead className="bg-surface-muted text-muted-foreground font-semibold border-b border-border">
                                         <tr>
-                                            <th className="p-2.5">تاريخ التعديل</th>
-                                            <th className="p-2.5">النسبة الجديدة</th>
-                                            <th className="p-2.5">سبب التعديل</th>
-                                            <th className="p-2.5">المنفذ</th>
+                                            <th className="p-2.5">Modification Date</th>
+                                            <th className="p-2.5">New Rate</th>
+                                            <th className="p-2.5">Reason for Change</th>
+                                            <th className="p-2.5">Executed By</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border text-foreground">
                                         {auditLogs.map((log: any, idx: number) => (
                                             <tr key={idx} className="hover:bg-surface-muted/50">
-                                                <td className="p-2.5 font-latin">{new Date(log.changedAt).toLocaleString('ar-SA')}</td>
-                                                <td className="p-2.5 font-bold font-latin text-accent">{log.rate}%</td>
+                                                <td className="p-2.5">{new Date(log.changedAt).toLocaleString('en-US')}</td>
+                                                <td className="p-2.5 font-bold text-accent">{log.rate}%</td>
                                                 <td className="p-2.5">{log.reason}</td>
-                                                <td className="p-2.5 text-muted-foreground">{log.changedByName || 'مالك الشركة'}</td>
+                                                <td className="p-2.5 text-muted-foreground">{log.changedByName || 'Company Owner'}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -512,30 +511,30 @@ export const CompanySettings: React.FC = () => {
                 <div className="p-6 bg-surface border border-border rounded-md space-y-6">
                     <div className="flex items-center gap-2 text-foreground font-semibold border-b border-border pb-4">
                         <LuKeyRound className="w-5 h-5 text-accent" />
-                        <span>أمان الحساب وتغيير كلمة المرور</span>
+                        <span>Account Security & Password Change</span>
                     </div>
 
                     <p className="text-xs text-muted-foreground">
-                        اترك حقول كلمة المرور فارغة إذا كنت لا ترغب في تغيير كلمة المرور الحالية للحساب.
+                        Leave password fields blank if you do not wish to change the current account password.
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {/* Current Password */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                كلمة المرور الحالية
+                                Current Password
                             </label>
                             <div className="relative">
                                 <input
                                     type={showCurrentPassword ? "text" : "password"}
                                     {...register("currentPassword")}
                                     placeholder="••••••••"
-                                    className="w-full px-3 py-2 text-sm rounded-md border border-border bg-surface text-foreground focus:outline-none focus:border-accent pl-9"
+                                    className="w-full px-3 py-2 text-sm rounded-md border border-border bg-surface text-foreground focus:outline-none focus:border-accent pr-9"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                                    className="absolute left-3 top-2.5 text-muted-foreground hover:text-foreground"
+                                    className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground"
                                 >
                                     {showCurrentPassword ? <LuEyeOff className="w-4 h-4" /> : <LuEye className="w-4 h-4" />}
                                 </button>
@@ -545,19 +544,19 @@ export const CompanySettings: React.FC = () => {
                         {/* New Password */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                كلمة المرور الجديدة
+                                New Password
                             </label>
                             <div className="relative">
                                 <input
                                     type={showNewPassword ? "text" : "password"}
                                     {...register("newPassword")}
                                     placeholder="••••••••"
-                                    className="w-full px-3 py-2 text-sm rounded-md border border-border bg-surface text-foreground focus:outline-none focus:border-accent pl-9"
+                                    className="w-full px-3 py-2 text-sm rounded-md border border-border bg-surface text-foreground focus:outline-none focus:border-accent pr-9"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowNewPassword(!showNewPassword)}
-                                    className="absolute left-3 top-2.5 text-muted-foreground hover:text-foreground"
+                                    className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground"
                                 >
                                     {showNewPassword ? <LuEyeOff className="w-4 h-4" /> : <LuEye className="w-4 h-4" />}
                                 </button>
@@ -567,7 +566,7 @@ export const CompanySettings: React.FC = () => {
                         {/* Confirm New Password */}
                         <div>
                             <label className="block text-xs font-semibold text-muted-foreground mb-1">
-                                تأكيد كلمة المرور الجديدة
+                                Confirm New Password
                             </label>
                             <input
                                 type="password"
@@ -584,13 +583,14 @@ export const CompanySettings: React.FC = () => {
                     <button
                         type="submit"
                         disabled={isSubmitting || updateMutation.isPending}
-                        className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors disabled:opacity-50"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors disabled:opacity-50 cursor-pointer"
                     >
                         <LuSave className="w-4 h-4" />
-                        <span>{updateMutation.isPending ? "جاري الحفظ..." : "حفظ التغيرات والأمان"}</span>
+                        <span>{updateMutation.isPending ? "Saving..." : "Save Changes & Security"}</span>
                     </button>
                 </div>
             </form>
         </div>
     );
 };
+

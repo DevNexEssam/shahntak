@@ -30,47 +30,47 @@ interface NavItem {
 
 const navItems: NavItem[] = [
     {
-        title: 'لوحة التحكم',
+        title: 'Dashboard',
         href: '/company/dashboard',
         icon: <LuLayoutDashboard className="w-5 h-5" />,
     },
     {
-        title: 'إدارة الطلبات',
+        title: 'Orders',
         href: '/company/dashboard/orders',
         icon: <LuPackage className="w-5 h-5" />,
     },
     {
-        title: 'الشحنات وتعيين الموارد',
+        title: 'Shipments & Operations',
         href: '/company/dashboard/shipments',
         icon: <LuTruck className="w-5 h-5" />,
     },
     {
-        title: 'البوالص والفواتير',
+        title: 'Invoices & Billing',
         href: '/company/dashboard/invoices',
         icon: <LuReceipt className="w-5 h-5" />,
     },
     {
-        title: 'إدارة المسارات والخطوط',
+        title: 'Routes',
         href: '/company/dashboard/routes',
         icon: <LuMapPin className="w-5 h-5" />,
     },
     {
-        title: 'فريق العمل والموظفين',
+        title: 'Team & Employees',
         href: '/company/dashboard/employees',
         icon: <LuUsers className="w-5 h-5" />,
     },
     {
-        title: 'الأسطول والشاحنات',
+        title: 'Fleet & Vehicles',
         href: '/company/dashboard/vehicles',
         icon: <LuBox className="w-5 h-5" />,
     },
     {
-        title: 'التقارير والإحصائيات',
+        title: 'Reports & Analytics',
         href: '/company/dashboard/reports',
         icon: <LuFileSpreadsheet className="w-5 h-5" />,
     },
     {
-        title: 'إعدادات الشركة',
+        title: 'Company Settings',
         href: '/company/dashboard/settings',
         icon: <LuSettings className="w-5 h-5" />,
     },
@@ -88,15 +88,15 @@ export const CompanySidebar: React.FC<CompanySidebarProps> = ({
     const pathname = usePathname();
     const { data: session } = useSession();
 
-    const userName = session?.user?.name || 'مستخدم الشركة';
-    const userRole = (session?.user as any)?.role === 'company' ? 'إدارة الشركة' : 'موظف';
-    const companyName = (session?.user as any)?.companyName || 'شركة شحن partner';
+    const userName = session?.user?.name || 'Company User';
+    const userRole = (session?.user as any)?.role === 'company' ? 'Company Admin' : 'Employee';
+    const companyName = (session?.user as any)?.companyName || 'Partner Company';
 
     return (
         <aside
             className={`${
                 isCollapsed ? 'w-20' : 'w-72'
-            } bg-heading text-white flex flex-col justify-between border-l border-white/10 shrink-0 h-screen sticky top-0 font-arabic transition-all duration-300 ease-in-out`}
+            } bg-heading text-white flex flex-col justify-between border-r border-white/10 shrink-0 h-screen sticky top-0 transition-all duration-300 ease-in-out`}
         >
             {/* Brand Header */}
             <div>
@@ -107,10 +107,10 @@ export const CompanySidebar: React.FC<CompanySidebarProps> = ({
                         </span>
                         {!isCollapsed && (
                             <div>
-                                <span className="font-extrabold text-lg block leading-tight text-white">شحنتك</span>
+                                <span className="font-extrabold text-lg block leading-tight text-white">Shahntak</span>
                                 <span className="text-[11px] font-semibold text-accent flex items-center gap-1 mt-0.5">
                                     <LuCrown className="w-3 h-3" />
-                                    بوابة الشركات
+                                    Company Portal
                                 </span>
                             </div>
                         )}
@@ -121,9 +121,9 @@ export const CompanySidebar: React.FC<CompanySidebarProps> = ({
                             type="button"
                             onClick={onToggle}
                             className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                            title="طي القائمة الجانبية"
+                            title="Collapse sidebar"
                         >
-                            <LuChevronRight className="w-5 h-5" />
+                            <LuChevronLeft className="w-5 h-5" />
                         </button>
                     )}
                 </div>
@@ -132,7 +132,7 @@ export const CompanySidebar: React.FC<CompanySidebarProps> = ({
                 <nav className="p-3 space-y-1.5 overflow-y-auto max-h-[calc(100vh-200px)]">
                     {!isCollapsed && (
                         <span className="px-3 text-[11px] font-bold text-white/40 uppercase tracking-wider block mb-2">
-                            قائمة بوابة الشركة
+                            Company Menu
                         </span>
                     )}
                     {navItems.map((item) => {
@@ -179,10 +179,10 @@ export const CompanySidebar: React.FC<CompanySidebarProps> = ({
                             className="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center font-bold text-sm shrink-0"
                             title={userName}
                         >
-                            {userName.charAt(0) || 'ش'}
+                            {userName.charAt(0) || 'C'}
                         </div>
                         {!isCollapsed && (
-                            <div className="text-right truncate">
+                            <div className="text-left truncate">
                                 <span className="block text-xs font-bold text-white truncate">{userName}</span>
                                 <span className="block text-[10px] text-white/50 truncate">{companyName} ({userRole})</span>
                             </div>
@@ -190,7 +190,7 @@ export const CompanySidebar: React.FC<CompanySidebarProps> = ({
                     </div>
                     <button
                         onClick={() => signOut({ callbackUrl: '/company/login' })}
-                        title="تسجيل الخروج"
+                        title="Logout"
                         className="text-white/40 hover:text-rose-400 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors shrink-0 cursor-pointer"
                     >
                         <LuLogOut className="w-4 h-4" />

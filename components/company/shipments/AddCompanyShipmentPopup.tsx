@@ -3,12 +3,10 @@
 import React, { useState } from 'react';
 import { useCreateCompanyShipment } from '@/hooks/company/useCompanyShipment';
 import { useAllCompanyRoutes } from '@/hooks/company/useCompanyRoute';
-import toast from 'react-hot-toast';
 import {
     LuTruck,
     LuX,
     LuMapPin,
-    LuCoins,
     LuHash,
     LuReceipt,
     LuLayers,
@@ -97,8 +95,8 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                             <LuTruck className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إنشاء شحنة جديدة</h2>
-                            <p className="text-xs text-body mt-0.5">تأطير بيانات الشحنة والمسار والتفاصيل اللوجستية لشركتك</p>
+                            <h2 className="text-xl font-extrabold text-heading">Create New Shipment</h2>
+                            <p className="text-xs text-body mt-0.5">Configure shipment details, route, and logistics information for your company</p>
                         </div>
                     </div>
 
@@ -107,7 +105,7 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -121,27 +119,27 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                التوليد الآلي لأرقام البوليصة والشحنة
+                                Automated Waybill & Shipment Number Generation
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuHash className="w-3.5 h-3.5 text-accent" />
-                                        رقم الشحنة التلقائي
+                                        Auto Shipment Number
                                     </label>
-                                    <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent font-latin flex items-center justify-between">
-                                        <span>توليد تلقائي (SHP-XXXXX)</span>
+                                    <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent flex items-center justify-between">
+                                        <span>Auto Generated (SHP-XXXXX)</span>
                                     </div>
                                 </div>
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuReceipt className="w-3.5 h-3.5 text-accent" />
-                                        رقم البوليصة الرسمية
+                                        Official Waybill Number
                                     </label>
-                                    <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent font-latin flex items-center justify-between">
-                                        <span>توليد تلقائي (WB-XXXXX)</span>
+                                    <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent flex items-center justify-between">
+                                        <span>Auto Generated (WB-XXXXX)</span>
                                     </div>
                                 </div>
                             </div>
@@ -151,39 +149,39 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                         <div className="space-y-4 pt-2 border-t border-border">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                نوع الشحنة والمسار اللوجستي
+                                Shipment Type & Logistics Route
                             </h3>
 
                             {/* Optional Pre-defined Route Select */}
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuRoute className="w-3.5 h-3.5 text-accent" />
-                                    تحديد مسار من المسارات المسجلة لدى الشركة (اختياري)
+                                    Select Registered Company Route (Optional)
                                 </label>
                                 <select
                                     value={selectedRouteId}
                                     onChange={(e) => handleRouteSelect(e.target.value)}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
                                 >
-                                    <option value="">-- مسار مخصص / إدخال يدوي --</option>
+                                    <option value="">-- Custom Route / Manual Input --</option>
                                     {routesList.map((rt: any) => (
                                         <option key={rt._id} value={rt._id}>
-                                            {rt.origin} ⬅️ {rt.destination} ({rt.vehicleType || "عام"})
+                                            {rt.origin} → {rt.destination} ({rt.vehicleType || "General"})
                                         </option>
                                     ))}
                                 </select>
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading">نوع الشحنة <span className="text-red-500">*</span></label>
+                                <label className="text-xs font-bold text-heading">Shipment Type <span className="text-red-500">*</span></label>
                                 <select
                                     value={formValues.type}
                                     onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer"
                                 >
-                                    <option value="local_delivery">توصيل محلي</option>
-                                    <option value="ltl">شحن جزئي </option>
-                                    <option value="ftl">شحن كامل </option>
+                                    <option value="local_delivery">Local Delivery</option>
+                                    <option value="ltl">Less Than Truckload (LTL)</option>
+                                    <option value="ftl">Full Truckload (FTL)</option>
                                 </select>
                             </div>
 
@@ -191,14 +189,14 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                        مدينة الانطلاق (المصدر) <span className="text-red-500">*</span>
+                                        Origin City (Source) <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.origin}
                                         onChange={(e) => setFormValues({ ...formValues, origin: e.target.value })}
-                                        placeholder="الرياض"
+                                        placeholder="e.g. Riyadh"
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                         required
                                     />
@@ -207,14 +205,14 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                        مدينة الوصول (الوجهة) <span className="text-red-500">*</span>
+                                        Destination City <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.destination}
                                         onChange={(e) => setFormValues({ ...formValues, destination: e.target.value })}
-                                        placeholder="جدة، الدمام..."
+                                        placeholder="e.g. Jeddah, Dammam..."
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                         required
                                     />
@@ -227,7 +225,7 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuLayers className="w-3.5 h-3.5 text-body" />
-                                    عدد الطلبات المرفقة
+                                    Number of Attached Orders
                                 </label>
                                 <input
                                     type="number"
@@ -235,7 +233,7 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                                     value={formValues.ordersCount}
                                     onChange={(e) => setFormValues({ ...formValues, ordersCount: Number(e.target.value) })}
                                     min={1}
-                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                 />
                             </div>
                         </div>
@@ -250,7 +248,7 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -258,7 +256,7 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإنشـاء..." : "حفظ الشحنة"}
+                            {isSubmitting ? "Creating..." : "Save Shipment"}
                         </button>
                     </div>
                 </form>
@@ -267,3 +265,4 @@ export default function AddCompanyShipmentPopup({ isOpen = true, onClose }: AddC
         </div>
     );
 }
+

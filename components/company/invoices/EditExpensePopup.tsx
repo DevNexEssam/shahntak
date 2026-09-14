@@ -43,7 +43,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                 setSelectedCategory(category);
                 setCustomCategory('');
             } else {
-                setSelectedCategory("أخرى / مخصص");
+                setSelectedCategory("Other / Custom");
                 setCustomCategory(category);
             }
             setAmount(expenseData.amount || '');
@@ -61,22 +61,22 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
         e.preventDefault();
 
         if (!title.trim()) {
-            toast.error("يرجى إدخال عنوان المصروف");
+            toast.error("Please enter expense description/title");
             return;
         }
 
-        const categoryToUse = selectedCategory === "أخرى / مخصص"
+        const categoryToUse = selectedCategory === "Other / Custom"
             ? customCategory.trim()
             : selectedCategory;
 
         if (!categoryToUse) {
-            toast.error("يرجى اختيار أو كتابة تصنيف المصروف");
+            toast.error("Please select or enter an expense category");
             return;
         }
 
         const parsedAmount = Number(amount);
         if (isNaN(parsedAmount) || parsedAmount <= 0) {
-            toast.error("يرجى إدخال مبلغ صحيح أكبر من الصفر");
+            toast.error("Please enter a valid amount greater than zero");
             return;
         }
 
@@ -100,7 +100,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
     };
 
     const handleDelete = () => {
-        if (confirm("هل أنت تأكد من رغبتك في حذف هذا المصروف؟")) {
+        if (confirm("Are you sure you want to delete this expense record?")) {
             deleteExpense(expenseData._id, {
                 onSuccess: () => {
                     onClose();
@@ -110,7 +110,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150 text-right font-arabic">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150 text-left">
             <div className="w-full max-w-lg bg-surface border border-border rounded-md shadow-lg overflow-hidden flex flex-col">
 
                 {/* Header */}
@@ -120,8 +120,8 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                             <LuPencil className="w-5 h-5" />
                         </div>
                         <div>
-                            <h2 className="text-base font-bold text-heading">تعديل بيانات المصروف</h2>
-                            <p className="text-xs text-body mt-0.5">تحديث معلومات النفقة المسجلة للشركة</p>
+                            <h2 className="text-base font-bold text-heading">Edit Expense Details</h2>
+                            <p className="text-xs text-body mt-0.5">Update registered company expense details</p>
                         </div>
                     </div>
 
@@ -129,7 +129,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                         type="button"
                         onClick={onClose}
                         className="p-1.5 rounded-md hover:bg-surface-muted text-body hover:text-heading transition-colors cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -142,15 +142,15 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                             <LuFileText className="w-3.5 h-3.5 text-accent" />
-                            بيان/عنوان المصروف <span className="text-rose-500">*</span>
+                            Expense Title / Description <span className="text-rose-500">*</span>
                         </label>
                         <input
                             type="text"
                             required
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="مثال: تعبئة وقود شاحنة"
-                            className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent font-arabic"
+                            placeholder="e.g. Truck Refill"
+                            className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent font-latin"
                         />
                     </div>
 
@@ -158,7 +158,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                             <LuTag className="w-3.5 h-3.5 text-accent" />
-                            تصنيف المصروف <span className="text-rose-500">*</span>
+                            Expense Category <span className="text-rose-500">*</span>
                         </label>
                         <select
                             value={selectedCategory}
@@ -174,18 +174,18 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                     </div>
 
                     {/* Custom Category Input if selected */}
-                    {selectedCategory === "أخرى / مخصص" && (
+                    {selectedCategory === "Other / Custom" && (
                         <div className="space-y-1.5 animate-in fade-in duration-200">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuPencil className="w-3.5 h-3.5 text-text-accent" />
-                                كتابة تصنيف مخصص يدوياً <span className="text-rose-500">*</span>
+                                Enter Custom Category Name <span className="text-rose-500">*</span>
                             </label>
                             <input
                                 type="text"
                                 required
                                 value={customCategory}
                                 onChange={(e) => setCustomCategory(e.target.value)}
-                                placeholder="أدخل اسم التصنيف المخصص..."
+                                placeholder="Enter custom category name..."
                                 className="w-full px-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                             />
                         </div>
@@ -196,7 +196,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuCoins className="w-3.5 h-3.5 text-rose-500" />
-                                مبلغ المصروف (ر.س) <span className="text-rose-500">*</span>
+                                Expense Amount (SAR) <span className="text-rose-500">*</span>
                             </label>
                             <input
                                 type="number"
@@ -212,7 +212,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuCalendar className="w-3.5 h-3.5 text-accent" />
-                                تاريخ المصروف
+                                Expense Date
                             </label>
                             <input
                                 type="date"
@@ -227,13 +227,13 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                             <LuFileCheck className="w-3.5 h-3.5 text-accent" />
-                            رقم الإيصال / سند الصرف (اختياري)
+                            Receipt / Voucher Number (Optional)
                         </label>
                         <input
                             type="text"
                             value={receiptNumber}
                             onChange={(e) => setReceiptNumber(e.target.value)}
-                            placeholder="مثال: REC-99201"
+                            placeholder="e.g. REC-99201"
                             className="w-full px-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent font-latin"
                         />
                     </div>
@@ -242,7 +242,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                             <LuFileText className="w-3.5 h-3.5 text-body" />
-                            ملاحظات تفصيلية (اختياري)
+                            Detailed Notes (Optional)
                         </label>
                         <textarea
                             rows={2}
@@ -261,7 +261,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-md bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 border border-rose-500/20 transition-all cursor-pointer disabled:opacity-50"
                         >
                             <LuTrash2 className="w-4 h-4" />
-                            <span>{isDeleting ? 'جاري الحذف...' : 'حذف المصروف'}</span>
+                            <span>{isDeleting ? 'Deleting...' : 'Delete Expense'}</span>
                         </button>
 
                         <div className="flex items-center gap-3">
@@ -270,7 +270,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                                 onClick={onClose}
                                 className="px-4 py-2 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-surface-muted transition-colors text-heading cursor-pointer"
                             >
-                                إغلاق
+                                Close
                             </button>
 
                             <button
@@ -279,7 +279,7 @@ export default function EditExpensePopup({ isOpen, expenseData, onClose }: EditE
                                 className="inline-flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-md bg-amber-600 text-white hover:bg-amber-700 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
                             >
                                 <LuSave className="w-4 h-4" />
-                                <span>{isUpdating ? 'جاري التحديث...' : 'حفظ التعديلات'}</span>
+                                <span>{isUpdating ? 'Updating...' : 'Save Changes'}</span>
                             </button>
                         </div>
                     </div>

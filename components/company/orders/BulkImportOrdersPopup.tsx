@@ -93,13 +93,13 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                 const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, { defval: "" });
 
                 if (!jsonData || jsonData.length === 0) {
-                    toast.error("الملف المرفوع فارغ أو غير صالح");
+                    toast.error("Uploaded file is empty or invalid");
                     setIsProcessing(false);
                     return;
                 }
 
                 if (jsonData.length > 500) {
-                    toast.error("الحد الأقصى هو 500 طلب في الملف الواحد");
+                    toast.error("Maximum limit is 500 orders per file");
                     setIsProcessing(false);
                     return;
                 }
@@ -112,7 +112,7 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
 
                     if (normalized.orderNumber) {
                         if (seenOrderNumbers.has(normalized.orderNumber)) {
-                            errors.push("رقم الطلب مكرر أكثر من مرة داخل هذا الملف");
+                            errors.push("Order number is duplicated within this file");
                         } else {
                             seenOrderNumbers.add(normalized.orderNumber);
                         }
@@ -142,9 +142,9 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                 });
 
                 setParsedRows(results);
-                toast.success(`تم قراءة ${results.length} صف من الملف بنجاح`);
+                toast.success(`Successfully read ${results.length} rows from file`);
             } catch (err: any) {
-                toast.error("حدث خطأ أثناء قراءة ملف الإكسل: " + err.message);
+                toast.error("An error occurred while reading Excel file: " + err.message);
             } finally {
                 setIsProcessing(false);
             }
@@ -157,38 +157,38 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
     const handleDownloadTemplate = () => {
         const sampleData = [
             {
-                "اسم المستلم": "محمد أحمد",
-                "رقم الجوال": "0501234567",
-                "المدينة": "الرياض",
-                "الحي": "حي النرجس",
-                "العنوان التفصيلي": "شارع التخصصي، مبنى 12",
-                "الوزن (كجم)": 2.5,
-                "قيمة الطلب (ر.س)": 150,
-                "الدفع عند الاستلام (COD)": 150,
-                "الكمية": 1,
-                "وصف الشحنة": "ملابس وإكسسوارات",
-                "رقم الطلب الخاص": "ORD-0001"
+                "Recipient Name": "John Doe",
+                "Phone Number": "0501234567",
+                "City": "Riyadh",
+                "District": "Al Narjis",
+                "Detailed Address": "Takhassusi St, Building 12",
+                "Weight (kg)": 2.5,
+                "Order Value (SAR)": 150,
+                "COD Amount (SAR)": 150,
+                "Quantity": 1,
+                "Description": "Clothes & Accessories",
+                "Custom Order Number": "ORD-0001"
             },
             {
-                "اسم المستلم": "عبدالله علي",
-                "رقم الجوال": "0559876543",
-                "المدينة": "جدة",
-                "الحي": "حي الشاطئ",
-                "العنوان التفصيلي": "طريق الكورنيش، برج 4",
-                "الوزن (كجم)": 5.0,
-                "قيمة الطلب (ر.س)": 320,
-                "الدفع عند الاستلام (COD)": 0,
-                "الكمية": 2,
-                "وصف الشحنة": "أجهزة إلكترونية",
-                "رقم الطلب الخاص": ""
+                "Recipient Name": "Alexander Smith",
+                "Phone Number": "0559876543",
+                "City": "Jeddah",
+                "District": "Al Shati",
+                "Detailed Address": "Corniche Road, Tower 4",
+                "Weight (kg)": 5.0,
+                "Order Value (SAR)": 320,
+                "COD Amount (SAR)": 0,
+                "Quantity": 2,
+                "Description": "Electronic Devices",
+                "Custom Order Number": ""
             }
         ];
 
         const worksheet = XLSX.utils.json_to_sheet(sampleData);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "نموذج الطلبات");
-        XLSX.writeFile(workbook, "نموذج_استيراد_الطلبات_شحنتك.xlsx");
-        toast.success("تم تنزيل نموذج الإكسل الاسترشادي بنجاح");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders Template");
+        XLSX.writeFile(workbook, "Shahntak_Orders_Import_Template.xlsx");
+        toast.success("Sample Excel template downloaded successfully");
     };
 
     // Reset uploaded file
@@ -212,7 +212,7 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
     // Submit Valid Rows
     const handleConfirmImport = () => {
         if (validRows.length === 0) {
-            toast.error("لا توجد أي طلبات صالحة للاستيراد");
+            toast.error("No valid orders available for import");
             return;
         }
 
@@ -238,8 +238,8 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                             <LuFileSpreadsheet className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">استيراد الطلبات من ملف Excel</h2>
-                            <p className="text-xs text-body mt-0.5">إضافة طلبات مجمعة دفعة واحدة بسهولة عبر رفع ملف إكسل أو CSV</p>
+                            <h2 className="text-xl font-extrabold text-heading">Import Orders from Excel File</h2>
+                            <p className="text-xs text-body mt-0.5">Bulk import orders at once by uploading an Excel or CSV file</p>
                         </div>
                     </div>
 
@@ -248,7 +248,7 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                         onClick={handleCloseModal}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -260,8 +260,8 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                     {/* Top Helper Bar: Download Template */}
                     <div className="p-4 rounded-2xl bg-accent-soft/40 border border-accent/20 flex items-center justify-between gap-4 flex-wrap">
                         <div className="space-y-0.5">
-                            <h4 className="text-xs font-extrabold text-heading">هل تريد نموذج إكسل جاهز؟</h4>
-                            <p className="text-xs text-body">يمكنك تنزيل النموذج المنسق باللغة العربية وتعبئة طلباتك ثم إعادة رفعه فوراً</p>
+                            <h4 className="text-xs font-extrabold text-heading">Need a ready-to-use Excel template?</h4>
+                            <p className="text-xs text-body">Download the template, fill in your orders, and upload it back immediately</p>
                         </div>
                         <button
                             type="button"
@@ -269,7 +269,7 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border text-accent font-bold text-xs hover:bg-accent-soft transition-all cursor-pointer shadow-xs"
                         >
                             <LuDownload className="w-4 h-4" />
-                            تنزيل نموذج Excel
+                            Download Excel Template
                         </button>
                     </div>
 
@@ -288,8 +288,8 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                                 <div className="w-16 h-16 rounded-full bg-accent-soft text-accent flex items-center justify-center text-2xl mb-3 shadow-xs">
                                     <LuUpload className="w-8 h-8" />
                                 </div>
-                                <span className="text-sm font-extrabold text-heading">اسحب ملف الإكسل هنا أو اضغط للاختيار</span>
-                                <span className="text-xs text-body/70 mt-1">يدعم الصيغ (.xlsx, .xls, .csv) - الحد الأقصى 500 طلب</span>
+                                <span className="text-sm font-extrabold text-heading">Drag & drop your Excel file here or click to browse</span>
+                                <span className="text-xs text-body/70 mt-1">Supports formats (.xlsx, .xls, .csv) - Maximum 500 orders</span>
                             </label>
                         </div>
                     ) : (
@@ -307,44 +307,44 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                                     className="text-xs text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded-lg hover:bg-rose-50 transition-colors"
                                 >
                                     <LuTrash2 className="w-4 h-4" />
-                                    إلغاء الملف وإعادة الرفع
+                                    Remove file & upload again
                                 </button>
                             </div>
 
                             {/* Summary KPI Pills */}
                             <div className="grid grid-cols-3 gap-3">
                                 <div className="p-3.5 rounded-2xl bg-surface-muted border border-border text-center">
-                                    <span className="text-xs font-bold text-body block">إجمالي الصفوف</span>
-                                    <span className="text-lg font-extrabold text-heading font-latin">{parsedRows.length}</span>
+                                    <span className="text-xs font-bold text-body block">Total Rows</span>
+                                    <span className="text-lg font-extrabold text-heading">{parsedRows.length}</span>
                                 </div>
                                 <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
                                     <span className="text-xs font-bold text-emerald-600 block flex items-center justify-center gap-1">
-                                        <LuCircleCheck className="w-3.5 h-3.5" /> طلبات صالحة
+                                        <LuCircleCheck className="w-3.5 h-3.5" /> Valid Orders
                                     </span>
-                                    <span className="text-lg font-extrabold text-emerald-600 font-latin">{validRows.length}</span>
+                                    <span className="text-lg font-extrabold text-emerald-600">{validRows.length}</span>
                                 </div>
                                 <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-center">
                                     <span className="text-xs font-bold text-rose-600 block flex items-center justify-center gap-1">
-                                        <LuCircleAlert className="w-3.5 h-3.5" /> طلبات بها أخطاء
+                                        <LuCircleAlert className="w-3.5 h-3.5" /> Orders with Errors
                                     </span>
-                                    <span className="text-lg font-extrabold text-rose-600 font-latin">{invalidRows.length}</span>
+                                    <span className="text-lg font-extrabold text-rose-600">{invalidRows.length}</span>
                                 </div>
                             </div>
 
                             {/* Data Preview Table */}
                             <div className="border border-border rounded-2xl overflow-hidden max-h-[300px] overflow-y-auto">
-                                <table className="w-full text-right text-xs">
+                                <table className="w-full text-left text-xs">
                                     <thead className="bg-surface-muted/80 text-body font-bold sticky top-0 border-b border-border">
                                         <tr>
                                             <th className="p-3">#</th>
-                                            <th className="p-3">الحالة</th>
-                                            <th className="p-3">اسم المستلم</th>
-                                            <th className="p-3">الجوال</th>
-                                            <th className="p-3">المدينة</th>
-                                            <th className="p-3">العنوان</th>
-                                            <th className="p-3">الوزن</th>
-                                            <th className="p-3">القيمة</th>
-                                            <th className="p-3">التفاصيل والأخطاء</th>
+                                            <th className="p-3">Status</th>
+                                            <th className="p-3">Recipient Name</th>
+                                            <th className="p-3">Phone</th>
+                                            <th className="p-3">City</th>
+                                            <th className="p-3">Address</th>
+                                            <th className="p-3">Weight</th>
+                                            <th className="p-3">Value</th>
+                                            <th className="p-3">Details & Errors</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border">
@@ -353,27 +353,27 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                                                 key={row.index}
                                                 className={row.isValid ? "hover:bg-emerald-50/30" : "bg-rose-500/5 hover:bg-rose-500/10"}
                                             >
-                                                <td className="p-3 font-bold text-body font-latin">{row.index}</td>
+                                                <td className="p-3 font-bold text-body">{row.index}</td>
                                                 <td className="p-3">
                                                     {row.isValid ? (
                                                         <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-[11px] inline-flex items-center gap-1">
-                                                            <LuCircleCheck className="w-3 h-3" /> صالحة
+                                                            <LuCircleCheck className="w-3 h-3" /> Valid
                                                         </span>
                                                     ) : (
                                                         <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 font-bold text-[11px] inline-flex items-center gap-1">
-                                                            <LuCircleAlert className="w-3 h-3" /> خطأ
+                                                            <LuCircleAlert className="w-3 h-3" /> Error
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td className="p-3 font-bold text-heading">{row.formattedData.recipientName || "-"}</td>
-                                                <td className="p-3 font-latin text-body">{row.formattedData.recipientPhone || "-"}</td>
+                                                <td className="p-3 text-body">{row.formattedData.recipientPhone || "-"}</td>
                                                 <td className="p-3 text-body">{row.formattedData.recipientCity || "-"}</td>
                                                 <td className="p-3 text-body max-w-[150px] truncate">{row.formattedData.recipientAddress || "-"}</td>
-                                                <td className="p-3 font-latin text-body">{row.formattedData.weight || 0} كجم</td>
-                                                <td className="p-3 font-latin text-body">{row.formattedData.orderValue || 0} ر.س</td>
+                                                <td className="p-3 text-body">{row.formattedData.weight || 0} kg</td>
+                                                <td className="p-3 text-body">{row.formattedData.orderValue || 0} SAR</td>
                                                 <td className="p-3">
                                                     {row.isValid ? (
-                                                        <span className="text-emerald-600 text-[11px]">جاهز للإضافة</span>
+                                                        <span className="text-emerald-600 text-[11px]">Ready to import</span>
                                                     ) : (
                                                         <span className="text-rose-600 font-bold text-[11px] block max-w-[200px] truncate" title={row.errors.join(" | ")}>
                                                             {row.errors.join(" - ")}
@@ -397,7 +397,7 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                         disabled={isSubmitting || isProcessing}
                         className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                     >
-                        إلغاء
+                        Cancel
                     </button>
 
                     <button
@@ -407,10 +407,10 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[160px] justify-center"
                     >
                         {isSubmitting
-                            ? "جاري الاستيراد..."
+                            ? "Importing..."
                             : validRows.length > 0
-                                ? `تأكيد وحفظ ${validRows.length} طلب`
-                                : "اختر ملفاً للاستيراد"}
+                                ? `Confirm & Import ${validRows.length} Orders`
+                                : "Select a File to Import"}
                     </button>
                 </div>
             </div>

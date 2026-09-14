@@ -3,21 +3,21 @@ import { z } from "zod";
 export const billingCycleEnum = ["monthly", "yearly"] as const;
 
 export const planCreateValidationSchema = z.object({
-    name: z.string("اسم الباقة مطلوب").min(2, "اسم الباقة يجب أن يكون على الأقل حرفين").max(100, "اسم الباقة يجب أن لا يتجاوز 100 حرف"),
+    name: z.string({ message: "Plan name is required" }).min(2, "Plan name must be at least 2 characters").max(100, "Plan name must not exceed 100 characters"),
     description: z.string().optional().or(z.literal("")),
     price: z
-        .number({ message: "سعر الباقة مطلوب" })
-        .min(0, "السعر لا يمكن أن يكون بالسالب"),
-    billingCycle: z.enum(billingCycleEnum, "دورة الفوترة غير صحيحة").default("monthly"),
+        .number({ message: "Plan price is required" })
+        .min(0, "Price cannot be negative"),
+    billingCycle: z.enum(billingCycleEnum, { message: "Invalid billing cycle" }).default("monthly"),
     maxOrdersPerMonth: z
-        .number({ message: "حد الطلبات الشهرية مطلوب" })
-        .min(-1, "الحد الأدنى هو -1 (غير محدود)"),
+        .number({ message: "Monthly orders limit is required" })
+        .min(-1, "Minimum is -1 (unlimited)"),
     maxShipmentsPerMonth: z
-        .number({ message: "حد الشحنات الشهرية مطلوب" })
-        .min(-1, "الحد الأدنى هو -1 (غير محدود)"),
+        .number({ message: "Monthly shipments limit is required" })
+        .min(-1, "Minimum is -1 (unlimited)"),
     maxCompanyUsers: z
-        .number({ message: "حد الموظفين مطلوب" })
-        .min(1, "يجب السماح بموظف واحد على الأقل"),
+        .number({ message: "Employee limit is required" })
+        .min(1, "Must allow at least 1 employee"),
     features: z.array(z.string()).default([]),
     // Checkbox Feature Flags
     hasWaybillPdfExport: z.boolean().default(true),
@@ -34,7 +34,7 @@ export const planUpdateValidationSchema = z.object({
     name: z.string().min(2).max(100).optional(),
     description: z.string().optional().or(z.literal("")),
     price: z.number().min(0).optional(),
-    billingCycle: z.enum(billingCycleEnum , "دورة الفوترة غير صحيحة").optional(),
+    billingCycle: z.enum(billingCycleEnum, { message: "Invalid billing cycle" }).optional(),
     maxOrdersPerMonth: z.number().min(-1).optional(),
     maxShipmentsPerMonth: z.number().min(-1).optional(),
     maxCompanyUsers: z.number().min(1).optional(),

@@ -5,48 +5,48 @@ export const userStatusEnum = ["active", "inactive"] as const;
 
 export const userCreateValidationSchema = z.object({
     name: z
-        .string("الاسم مطلوب")
-        .min(3, "الاسم يجب أن يكون على الأقل 3 أحرف")
-        .max(50, "الاسم يجب أن لا يتجاوز 50 حرف"),
+        .string({ message: "Name is required" })
+        .min(3, "Name must be at least 3 characters")
+        .max(50, "Name must not exceed 50 characters"),
     email: z
-        .string("البريد الإلكتروني مطلوب")
-        .email("البريد الإلكتروني غير صحيح")
-        .min(8, "البريد الإلكتروني يجب أن يكون على الأقل 8 أحرف")
-        .max(70, "البريد الإلكتروني يجب أن لا يتجاوز 70 حرف"),
+        .string({ message: "Email is required" })
+        .email("Invalid email address")
+        .min(8, "Email must be at least 8 characters")
+        .max(70, "Email must not exceed 70 characters"),
     password: z
-        .string("كلمة المرور مطلوبة")
-        .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف")
+        .string({ message: "Password is required" })
+        .min(6, "Password must be at least 6 characters")
         .default("123456"),
     phone: z
-        .string("رقم الهاتف مطلوب")
-        .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
-        .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم"),
-    role: z.enum(userRoleEnum, "الدور المحدد غير صحيح").default("admin"),
-    status: z.enum(userStatusEnum, "الحالة المحددة غير صحيحة").default("active"),
+        .string({ message: "Phone number is required" })
+        .min(3, "Phone number must be at least 3 digits")
+        .max(15, "Phone number must not exceed 15 digits"),
+    role: z.enum(userRoleEnum, { message: "Invalid user role" }).default("admin"),
+    status: z.enum(userStatusEnum, { message: "Invalid user status" }).default("active"),
 });
 
 export const userUpdateValidationSchema = z.object({
     name: z
         .string()
-        .min(3, "الاسم يجب أن يكون على الأقل 3 أحرف")
-        .max(50, "الاسم يجب أن لا يتجاوز 50 حرف")
+        .min(3, "Name must be at least 3 characters")
+        .max(50, "Name must not exceed 50 characters")
         .optional(),
     email: z
         .string()
-        .email("البريد الإلكتروني غير صحيح")
+        .email("Invalid email address")
         .optional(),
     password: z
         .string()
-        .min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف")
+        .min(6, "Password must be at least 6 characters")
         .optional()
         .or(z.literal("")),
     phone: z
-        .string("رقم الهاتف مطلوب")
-        .min(3, "رقم الهاتف يجب أن يكون على الأقل 3 أرقام")
-        .max(15, "رقم الهاتف يجب أن لا يتجاوز 15 رقم")
+        .string()
+        .min(3, "Phone number must be at least 3 digits")
+        .max(15, "Phone number must not exceed 15 digits")
         .optional(),
-    role: z.enum(userRoleEnum, "الدور المحدد غير صحيح").optional(),
-    status: z.enum(userStatusEnum, "الحالة المحددة غير صحيحة").optional(),
+    role: z.enum(userRoleEnum, { message: "Invalid user role" }).optional(),
+    status: z.enum(userStatusEnum, { message: "Invalid user status" }).optional(),
 });
 
 // Type Inference

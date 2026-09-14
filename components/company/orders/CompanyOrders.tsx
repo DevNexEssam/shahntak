@@ -130,7 +130,7 @@ export default function CompanyOrders() {
     const handleDownloadOrderPdf = async (order: any) => {
         try {
             setDownloadingOrderId(order._id);
-            toast.loading(`جاري تجهيز وتنزيل سند الطلب PDF (${order.orderNumber})...`, { id: 'order-pdf' });
+            toast.loading(`Preparing and downloading Order PDF document (${order.orderNumber})...`, { id: 'order-pdf' });
             const { pdf } = await import('@react-pdf/renderer');
             const blob = await pdf(<OrderPDFDocument orderData={order} />).toBlob();
             const url = URL.createObjectURL(blob);
@@ -141,10 +141,10 @@ export default function CompanyOrders() {
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-            toast.success(`تم تحميل سند الطلب (${order.orderNumber}) بنجاح!`, { id: 'order-pdf' });
+            toast.success(`Order document (${order.orderNumber}) downloaded successfully!`, { id: 'order-pdf' });
         } catch (err) {
             console.error('Failed to generate Order PDF:', err);
-            toast.error('حدث خطأ أثناء إنشاء سند الطلب PDF', { id: 'order-pdf' });
+            toast.error('An error occurred while generating Order PDF', { id: 'order-pdf' });
         } finally {
             setDownloadingOrderId(null);
         }
@@ -155,49 +155,49 @@ export default function CompanyOrders() {
             case 'pending':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                        قيد الانتظار
+                        Pending
                     </span>
                 );
             case 'validated':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">
-                        مؤكد
+                        Confirmed
                     </span>
                 );
             case 'grouped':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 border border-purple-500/20">
-                        مجمع بشحنة
+                        Grouped in Shipment
                     </span>
                 );
             case 'shipped':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20">
-                        تم الشحن
+                        Shipped
                     </span>
                 );
             case 'delivered':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                        تم التوصيل
+                        Delivered
                     </span>
                 );
             case 'cancelled':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                        ملغي
+                        Cancelled
                     </span>
                 );
             case 'error':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-600 border border-red-500/20">
-                        خطأ في البيانات
+                        Data Error
                     </span>
                 );
             default:
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">
-                        {status || 'جديد'}
+                        {status || 'New'}
                     </span>
                 );
         }
@@ -206,7 +206,7 @@ export default function CompanyOrders() {
     const selectedOrders = ordersList.filter((o: any) => selectedOrderIds.includes(o._id));
 
     return (
-        <div className="space-y-6 text-right font-arabic">
+        <div className="space-y-6">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -215,16 +215,16 @@ export default function CompanyOrders() {
                         <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
                             <LuPackage className="w-5 h-5" />
                         </span>
-                        إدارة طلبات الشركة
+                        Company Orders Management
                     </h1>
-                    <p className="text-xs text-body mt-1">مراقبة حية وإدارة شاملة لجميع الطلبات الخاصة بشركتك وتجميعها في شحنات</p>
+                    <p className="text-xs text-body mt-1">Live monitoring and comprehensive management of all company orders and grouping them into shipments</p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        title="تحديث البيانات"
+                        title="Refresh data"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`text-sm font-bold ${isFetching ? 'animate-spin text-accent' : ''}`} />
@@ -235,7 +235,7 @@ export default function CompanyOrders() {
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent-soft text-accent text-xs font-bold hover:bg-accent hover:text-white transition-all cursor-pointer border border-accent/20"
                     >
                         <LuFileSpreadsheet className="w-4 h-4" />
-                        <span>استيراد من Excel</span>
+                        <span>Import from Excel</span>
                     </button>
 
                     <button
@@ -243,7 +243,7 @@ export default function CompanyOrders() {
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>إضافة طلب جديد</span>
+                        <span>Add New Order</span>
                     </button>
                 </div>
             </div>
@@ -251,7 +251,7 @@ export default function CompanyOrders() {
             {/* Error Notification */}
             {isError && (
                 <div className="mb-4">
-                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات الطلبات من الخادم'} />
+                    <ErrorMessege message={(error as any)?.message || 'Failed to fetch orders data from server'} />
                 </div>
             )}
 
@@ -259,7 +259,7 @@ export default function CompanyOrders() {
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-heading">
                     <LuCalendar className="w-4 h-4 text-accent shrink-0" />
-                    <span>تصفية الفترات الزمنية للطلبات:</span>
+                    <span>Order Time Range Filter:</span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -273,7 +273,7 @@ export default function CompanyOrders() {
                                 : 'text-body hover:text-heading'
                                 }`}
                         >
-                            اليوم (تلقائي)
+                            Today (Auto)
                         </button>
                         <button
                             onClick={handlePresetMonth}
@@ -282,7 +282,7 @@ export default function CompanyOrders() {
                                 : 'text-body hover:text-heading'
                                 }`}
                         >
-                            هذا الشهر
+                            This Month
                         </button>
                         <button
                             onClick={handlePresetAll}
@@ -291,13 +291,13 @@ export default function CompanyOrders() {
                                 : 'text-body hover:text-heading'
                                 }`}
                         >
-                            جميع الفترات
+                            All Time
                         </button>
                     </div>
 
                     {/* Date Inputs */}
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-body">من:</span>
+                        <span className="text-xs text-body">From:</span>
                         <input
                             type="date"
                             value={startDate}
@@ -306,9 +306,9 @@ export default function CompanyOrders() {
                                 setDatePreset('all');
                                 setPage(1);
                             }}
-                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-heading focus:outline-none focus:border-accent"
+                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs text-heading focus:outline-none focus:border-accent"
                         />
-                        <span className="text-xs text-body">إلى:</span>
+                        <span className="text-xs text-body">To:</span>
                         <input
                             type="date"
                             value={endDate}
@@ -317,7 +317,7 @@ export default function CompanyOrders() {
                                 setDatePreset('all');
                                 setPage(1);
                             }}
-                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-heading focus:outline-none focus:border-accent"
+                            className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs text-heading focus:outline-none focus:border-accent"
                         />
                     </div>
 
@@ -329,10 +329,10 @@ export default function CompanyOrders() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الطلبات</span>
-                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.total}</h3>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Orders</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.total}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>مسجلة لشركتك</span>
+                                <span>Registered for your company</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -344,10 +344,10 @@ export default function CompanyOrders() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">قيد الانتظار</span>
-                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.pending}</h3>
+                            <span className="text-xs font-semibold text-body block mb-1">Pending</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.pending}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>جاهزة للتجميع والشحن</span>
+                                <span>Ready for grouping & shipping</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -359,10 +359,10 @@ export default function CompanyOrders() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">تم الشحن</span>
-                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.shipped}</h3>
+                            <span className="text-xs font-semibold text-body block mb-1">Shipped</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.shipped}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>في الطريق للعميل</span>
+                                <span>On the way to customer</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -374,10 +374,10 @@ export default function CompanyOrders() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">تم التوصيل</span>
-                            <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.delivered}</h3>
+                            <span className="text-xs font-semibold text-body block mb-1">Delivered</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{stats.delivered}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>مكتملة ومسلمة</span>
+                                <span>Completed & delivered</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -391,10 +391,10 @@ export default function CompanyOrders() {
             {selectedOrderIds.length > 0 && (
                 <div className="bg-accent-soft/40 border border-accent/30 p-4 rounded-xl flex items-center justify-between animate-in fade-in">
                     <div className="flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-lg bg-accent text-white font-bold flex items-center justify-center text-xs font-latin">
+                        <span className="w-8 h-8 rounded-lg bg-accent text-white font-bold flex items-center justify-center text-xs">
                             {selectedOrderIds.length}
                         </span>
-                        <span className="text-sm font-bold text-heading">طلبات محددة للتجميع في شحنة واحدة</span>
+                        <span className="text-sm font-bold text-heading">Orders selected to group into a single shipment</span>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -402,7 +402,7 @@ export default function CompanyOrders() {
                             onClick={() => setSelectedOrderIds([])}
                             className="px-3 py-1.5 rounded-lg border border-border text-xs font-bold text-body hover:text-heading hover:bg-surface transition-all cursor-pointer"
                         >
-                            إلغاء التحديد
+                            Deselect All
                         </button>
 
                         <button
@@ -410,7 +410,7 @@ export default function CompanyOrders() {
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-accent-foreground font-bold text-xs shadow-xs hover:shadow transition-all cursor-pointer"
                         >
                             <LuLayers className="w-4 h-4" />
-                            <span>تجميع الطلبات المحددة في شحنة</span>
+                            <span>Group Selected Orders into Shipment</span>
                         </button>
                     </div>
                 </div>
@@ -419,13 +419,13 @@ export default function CompanyOrders() {
             {/* Search Controller Header */}
             <div className="bg-surface p-4 rounded-md border border-border flex items-center justify-between">
                 <div className="relative w-full md:w-96">
-                    <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                    <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        placeholder="بحث برقم الطلب، اسم المستلم، الجوال، المدينة..."
-                        className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                        placeholder="Search by order #, recipient name, phone, city..."
+                        className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </div>
             </div>
@@ -434,11 +434,11 @@ export default function CompanyOrders() {
             <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {ordersList.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا توجد طلبات مسجلة للشركة تطابق خيارات البحث الحالية" icon={LuPackage} />
+                        <EmptyData message="No company orders found matching current search options" icon={LuPackage} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
                                     <th className="py-3.5 px-4 w-10 text-center">
@@ -455,13 +455,13 @@ export default function CompanyOrders() {
                                             className="rounded border-border text-accent focus:ring-accent cursor-pointer"
                                         />
                                     </th>
-                                    <th className="py-3.5 px-4">رقم الطلب</th>
-                                    <th className="py-3.5 px-4">المستلم والجوال</th>
-                                    <th className="py-3.5 px-4">المدينة والعنوان</th>
-                                    <th className="py-3.5 px-4">الوزن / الكمية</th>
-                                    <th className="py-3.5 px-4">القيمة / COD</th>
-                                    <th className="py-3.5 px-4">الحالة</th>
-                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">Order #</th>
+                                    <th className="py-3.5 px-4">Recipient & Phone</th>
+                                    <th className="py-3.5 px-4">City & Address</th>
+                                    <th className="py-3.5 px-4">Weight / Qty</th>
+                                    <th className="py-3.5 px-4">Value / COD</th>
+                                    <th className="py-3.5 px-4">Status</th>
+                                    <th className="py-3.5 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
@@ -482,14 +482,14 @@ export default function CompanyOrders() {
                                                     className="rounded border-border text-accent focus:ring-accent cursor-pointer"
                                                 />
                                             </td>
-                                            <td className="py-3.5 px-4 font-latin font-bold text-accent">
+                                            <td className="py-3.5 px-4 font-bold text-accent">
                                                 {ord.orderNumber}
                                             </td>
 
                                             <td className="py-3.5 px-4">
                                                 <div>
                                                     <span className="font-bold text-heading block">{ord.recipientName}</span>
-                                                    <span className="text-xs text-body font-latin">{ord.recipientPhone}</span>
+                                                    <span className="text-xs text-body">{ord.recipientPhone}</span>
                                                 </div>
                                             </td>
 
@@ -503,15 +503,15 @@ export default function CompanyOrders() {
                                                 </div>
                                             </td>
 
-                                            <td className="py-3.5 px-4 font-latin text-xs font-semibold text-heading">
-                                                <div>{ord.weight} كجم</div>
-                                                <div className="text-body text-[11px]">{ord.quantity || 1} طرد</div>
+                                            <td className="py-3.5 px-4 text-xs font-semibold text-heading">
+                                                <div>{ord.weight} kg</div>
+                                                <div className="text-body text-[11px]">{ord.quantity || 1} pkg</div>
                                             </td>
 
-                                            <td className="py-3.5 px-4 font-latin text-xs">
-                                                <div className="font-bold text-emerald-600">{ord.orderValue} ر.س</div>
+                                            <td className="py-3.5 px-4 text-xs">
+                                                <div className="font-bold text-emerald-600">{ord.orderValue} SAR</div>
                                                 {ord.codAmount ? (
-                                                    <div className="text-amber-600 font-medium text-[11px]">COD: {ord.codAmount}</div>
+                                                    <div className="text-amber-600 font-medium text-[11px]">COD: {ord.codAmount} SAR</div>
                                                 ) : null}
                                             </td>
 
@@ -524,7 +524,7 @@ export default function CompanyOrders() {
                                                     <button
                                                         onClick={() => handleDownloadOrderPdf(ord)}
                                                         disabled={downloadingOrderId === ord._id}
-                                                        title="تنزيل سند الطلب بصيغة PDF"
+                                                        title="Download Order PDF"
                                                         className="p-2 rounded-md bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-600 border border-emerald-500/20 transition-all cursor-pointer disabled:opacity-40"
                                                     >
                                                         {downloadingOrderId === ord._id ? (
@@ -536,7 +536,7 @@ export default function CompanyOrders() {
 
                                                     <button
                                                         onClick={() => setSelectedOrderForDetails(ord)}
-                                                        title="عرض التفاصيل"
+                                                        title="View Details"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
@@ -544,7 +544,7 @@ export default function CompanyOrders() {
 
                                                     <button
                                                         onClick={() => setSelectedOrderForEdit(ord)}
-                                                        title="تعديل البيانات"
+                                                        title="Edit Details"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
@@ -552,7 +552,7 @@ export default function CompanyOrders() {
 
                                                     <button
                                                         onClick={() => setSelectedOrderForDelete(ord)}
-                                                        title="حذف الطلب"
+                                                        title="Delete Order"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuTrash2 className="w-4 h-4" />
@@ -571,7 +571,7 @@ export default function CompanyOrders() {
                 {totalPages > 1 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
-                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} طلب)
+                            Showing page <b className="text-heading">{page}</b> of <b className="text-heading">{totalPages}</b> (Total {totalRecords} orders)
                         </span>
 
                         <div className="flex items-center gap-2">
@@ -580,8 +580,8 @@ export default function CompanyOrders() {
                                 disabled={page === 1}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <LuChevronRight className="w-4 h-4" />
-                                <span>السابق</span>
+                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Previous</span>
                             </button>
 
                             <button
@@ -589,8 +589,8 @@ export default function CompanyOrders() {
                                 disabled={page === totalPages}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <span>التالي</span>
-                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Next</span>
+                                <LuChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -632,8 +632,8 @@ export default function CompanyOrders() {
 
             <ConfirmDeletePopup
                 isOpen={!!selectedOrderForDelete}
-                title="تأكيد حذف الطلب"
-                description={`هل أنت تأكد من رغبتك في حذف الطلب (${selectedOrderForDelete?.orderNumber})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
+                title="Confirm Order Deletion"
+                description={`Are you sure you want to delete order (${selectedOrderForDelete?.orderNumber})? This action cannot be undone.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedOrderForDelete(null)}

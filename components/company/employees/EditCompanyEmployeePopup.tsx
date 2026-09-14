@@ -57,7 +57,7 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200 text-left">
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Header */}
@@ -67,8 +67,8 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                             <LuUsers className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات الموظف</h2>
-                            <p className="text-xs text-body mt-0.5">تحديث الاسم والدور وحالة الحساب</p>
+                            <h2 className="text-xl font-extrabold text-heading">Edit Employee Details</h2>
+                            <p className="text-xs text-body mt-0.5">Update name, role, and account status</p>
                         </div>
                     </div>
 
@@ -77,7 +77,7 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -91,7 +91,7 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuUser className="w-3.5 h-3.5 text-body" />
-                                    اسم الموظف
+                                    Employee Name
                                 </label>
                                 <input
                                     type="text"
@@ -105,14 +105,14 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMail className="w-3.5 h-3.5 text-body" />
-                                    البريد الإلكتروني
+                                    Email Address
                                 </label>
                                 <input
                                     type="email"
                                     disabled={isSubmitting}
                                     value={formValues.userEmail}
                                     onChange={(e) => setFormValues({ ...formValues, userEmail: e.target.value })}
-                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                 />
                             </div>
                         </div>
@@ -121,26 +121,26 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuPhone className="w-3.5 h-3.5 text-body" />
-                                    رقم الهاتف
+                                    Phone Number
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.phone}
                                     onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })}
-                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin focus:outline-none focus:border-accent"
+                                    className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                 />
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading">حالة الحساب</label>
+                                <label className="text-xs font-bold text-heading">Account Status</label>
                                 <select
                                     value={formValues.userIsActive ? 'active' : 'inactive'}
                                     onChange={(e) => setFormValues({ ...formValues, userIsActive: e.target.value === 'active' })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold"
                                 >
-                                    <option value="active">نشط ومفعل</option>
-                                    <option value="inactive">مجمد وغير نشط</option>
+                                    <option value="active">Active & Enabled</option>
+                                    <option value="inactive">Suspended / Frozen</option>
                                 </select>
                             </div>
                         </div>
@@ -148,16 +148,16 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuShieldCheck className="w-3.5 h-3.5 text-body" />
-                                دور الموظف
+                                Employee Role
                             </label>
                             <select
                                 value={formValues.userRole}
                                 onChange={(e) => setFormValues({ ...formValues, userRole: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold"
                             >
-                                <option value="staff">موظف</option>
-                                <option value="manager">مدير تشغيل</option>
-                                <option value="owner">مالك الشركة</option>
+                                <option value="staff">Staff</option>
+                                <option value="manager">Operations Manager</option>
+                                <option value="owner">Company Owner</option>
                             </select>
                         </div>
 
@@ -171,7 +171,7 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -179,7 +179,7 @@ export default function EditCompanyEmployeePopup({ isOpen = true, onClose, emplo
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري التحديث..." : "حفظ التعديلات"}
+                            {isSubmitting ? "Updating..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

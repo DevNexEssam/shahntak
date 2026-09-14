@@ -33,7 +33,7 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
         e.preventDefault();
 
         if (!formValues.type.trim()) {
-            toast.error("يرجى إدخال نوع الشاحنة/المركبة");
+            toast.error("Please enter the vehicle/truck type");
             return;
         }
 
@@ -61,8 +61,8 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                             <LuTruck className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إضافة مركبة للأسطول</h2>
-                            <p className="text-xs text-body mt-0.5">تسجيل نوع ومواصفات حمولة الشاحنة الجديدة</p>
+                            <h2 className="text-xl font-extrabold text-heading">Add Fleet Vehicle</h2>
+                            <p className="text-xs text-body mt-0.5">Register type and load specifications for the new truck</p>
                         </div>
                     </div>
 
@@ -71,7 +71,7 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -84,14 +84,14 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuTruck className="w-3.5 h-3.5 text-body" />
-                                نوع المركبة / الشاحنة <span className="text-red-500">*</span>
+                                Vehicle / Truck Type <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
                                 disabled={isSubmitting}
                                 value={formValues.type}
                                 onChange={(e) => setFormValues({ ...formValues, type: e.target.value })}
-                                placeholder="مثال: دينا 6 طن مغلقة، تريلا جوانب 12م..."
+                                placeholder="e.g. 6-Ton Closed Truck, 12m Flatbed Trailer..."
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent"
                                 required
                             />
@@ -101,7 +101,7 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuWeight className="w-3.5 h-3.5 text-body" />
-                                    الحمولة الوزنية القصوى (كجم)
+                                    Max Weight Capacity (kg)
                                 </label>
                                 <input
                                     type="number"
@@ -117,7 +117,7 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuBox className="w-3.5 h-3.5 text-body" />
-                                    السعة الحجمية القصوى (م³)
+                                    Max Volume Capacity (m³)
                                 </label>
                                 <input
                                     type="number"
@@ -132,14 +132,14 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-heading">حالة التفعيل التشغيلي</label>
+                            <label className="text-xs font-bold text-heading">Operational Status</label>
                             <select
                                 value={formValues.isActive ? 'active' : 'inactive'}
                                 onChange={(e) => setFormValues({ ...formValues, isActive: e.target.value === 'active' })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold"
                             >
-                                <option value="active">نشطة وجاهزة للتشغيل</option>
-                                <option value="inactive">متوقفة / قيد الصيانة</option>
+                                <option value="active">Active & Ready for Operation</option>
+                                <option value="inactive">Inactive / Under Maintenance</option>
                             </select>
                         </div>
 
@@ -153,7 +153,7 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -161,7 +161,7 @@ export default function AddCompanyVehiclePopup({ isOpen = true, onClose }: AddCo
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإضافة..." : "حفظ المركبة"}
+                            {isSubmitting ? "Adding..." : "Save Vehicle"}
                         </button>
                     </div>
                 </form>

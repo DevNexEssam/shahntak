@@ -19,33 +19,33 @@ export const shipmentStatusEnum = [
 ] as const;
 
 export const shipmentCreateValidationSchema = z.object({
-    shipmentNumber: z.string("رقم الشحنة مطلوب").min(1, "رقم الشحنة مطلوب"),
-    companyId: z.string("معرف الشركة مطلوب").min(1, "معرف الشركة مطلوب"),
-    type: z.enum(shipmentTypeEnum, "نوع الشحنة غير صحيح").default("ftl"),
-    origin: z.string("نقطة انطلاق الشحنة مطلوبة").min(1, "نقطة انطلاق الشحنة مطلوبة"),
-    destination: z.string("وجهة الشحنة مطلوبة").min(1, "وجهة الشحنة مطلوبة"),
+    shipmentNumber: z.string({ message: "Shipment number is required" }).min(1, "Shipment number is required"),
+    companyId: z.string({ message: "Company ID is required" }).min(1, "Company ID is required"),
+    type: z.enum(shipmentTypeEnum, { message: "Invalid shipment type" }).default("ftl"),
+    origin: z.string({ message: "Shipment origin is required" }).min(1, "Shipment origin is required"),
+    destination: z.string({ message: "Shipment destination is required" }).min(1, "Shipment destination is required"),
     routeId: z.string().optional().or(z.literal("")),
     carrierId: z.string().optional().or(z.literal("")),
     vehicleId: z.string().optional().or(z.literal("")),
     invoiceId: z.string().optional().or(z.literal("")),
     ordersCount: z.number().min(0).default(0),
     shippingCost: z
-        .number({ message: "تكلفة الشحن مطلوبة" })
-        .min(0, "التكلفة لا يمكن أن تكون بالسالب")
+        .number({ message: "Shipping cost is required" })
+        .min(0, "Cost cannot be negative")
         .default(0),
     customerPrice: z
-        .number({ message: "السعر للعميل مطلوب" })
-        .min(0, "السعر لا يمكن أن يكون بالسالب")
+        .number({ message: "Customer price is required" })
+        .min(0, "Price cannot be negative")
         .default(0),
     waybillNumber: z.string().optional().or(z.literal("")),
     trackingNumber: z.string().optional().or(z.literal("")),
-    status: z.enum(shipmentStatusEnum, "الحالة المحددة غير صحيحة").default("created"),
+    status: z.enum(shipmentStatusEnum, { message: "Invalid shipment status" }).default("created"),
     orderIds: z.array(z.string()).optional(),
 });
 
 export const shipmentUpdateValidationSchema = z.object({
     companyId: z.string().optional(),
-    type: z.enum(shipmentTypeEnum, "نوع الشحنة غير صحيح").optional(),
+    type: z.enum(shipmentTypeEnum, { message: "Invalid shipment type" }).optional(),
     origin: z.string().min(1).optional(),
     destination: z.string().min(1).optional(),
     routeId: z.string().optional().or(z.literal("")),
@@ -57,9 +57,10 @@ export const shipmentUpdateValidationSchema = z.object({
     customerPrice: z.number().min(0).optional(),
     waybillNumber: z.string().optional().or(z.literal("")),
     trackingNumber: z.string().optional().or(z.literal("")),
-    status: z.enum(shipmentStatusEnum, "الحالة المحددة غير صحيحة").optional(),
+    status: z.enum(shipmentStatusEnum, { message: "Invalid shipment status" }).optional(),
 });
 
 // Type Inference
 export type ShipmentCreateInput = z.infer<typeof shipmentCreateValidationSchema>;
 export type ShipmentUpdateInput = z.infer<typeof shipmentUpdateValidationSchema>;
+

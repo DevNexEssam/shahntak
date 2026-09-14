@@ -6,7 +6,6 @@ import {
     LuTruck,
     LuX,
     LuMapPin,
-    LuCoins,
     LuDownload,
     LuLoader
 } from 'react-icons/lu';
@@ -55,79 +54,79 @@ export default function DetailsCompanyShipmentPopup({
             case 'created':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-amber-500/10 text-amber-600">
-                        حديثة
+                        New
                     </span>
                 );
             case 'confirmed':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-500/10 text-indigo-600">
-                        مؤكدة
+                        Confirmed
                     </span>
                 );
             case 'assigned':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-blue-500/10 text-blue-600">
-                        معينة لناقل
+                        Assigned to Carrier
                     </span>
                 );
             case 'ready_for_pickup':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-purple-500/10 text-purple-600">
-                        جاهزة للاستلام
+                        Ready for Pickup
                     </span>
                 );
             case 'picked_up':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-teal-500/10 text-teal-600">
-                        تم الاستلام
+                        Picked Up
                     </span>
                 );
             case 'in_transit':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-sky-500/10 text-sky-600">
-                        في الطريق
+                        In Transit
                     </span>
                 );
             case 'arrived':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-cyan-500/10 text-cyan-600">
-                        وصلت للمركز
+                        Arrived at Facility
                     </span>
                 );
             case 'out_for_delivery':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-orange-500/10 text-orange-600">
-                        خرجت للتوصيل
+                        Out for Delivery
                     </span>
                 );
             case 'delivered':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">
-                        تم التوصيل
+                        Delivered
                     </span>
                 );
             case 'delivery_failed':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
-                        فشل التوصيل
+                        Delivery Failed
                     </span>
                 );
             case 'cancelled':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
-                        ملغية
+                        Cancelled
                     </span>
                 );
             case 'returned':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-gray-500/10 text-gray-600">
-                        مرتجعة
+                        Returned
                     </span>
                 );
             case 'exception':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
-                        حالة استثنائية
+                        Exception
                     </span>
                 );
             default:
@@ -141,21 +140,15 @@ export default function DetailsCompanyShipmentPopup({
 
     const getTypeLabel = (type: string) => {
         switch (type) {
-            case 'ftl': return 'شحن كامل ';
-            case 'ltl': return 'شحن جزئي ';
-            default: return 'توصيل محلي';
+            case 'ftl': return 'Full Truckload (FTL)';
+            case 'ltl': return 'Less Than Truckload (LTL)';
+            default: return 'Local Delivery';
         }
     };
 
-    const vehicleType = typeof activeShipment.vehicleId === 'object' && activeShipment.vehicleId !== null
-        ? activeShipment.vehicleId.type
-        : 'غير معينة';
     const carrierName = typeof activeShipment.carrierId === 'object' && activeShipment.carrierId !== null
         ? activeShipment.carrierId.name
-        : 'أسطول الشركة الذاتي';
-
-    const shippingCost = Number(activeShipment.shippingCost || 0);
-    const customerPrice = Number(activeShipment.customerPrice || 0);
+        : 'Company Fleet (In-House)';
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150">
@@ -169,10 +162,10 @@ export default function DetailsCompanyShipmentPopup({
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h2 className="text-base font-bold text-foreground">تفاصيل الشحنة والبوليصة</h2>
+                                <h2 className="text-base font-bold text-foreground">Shipment & Waybill Details</h2>
                                 {getStatusBadge(activeShipment.status)}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">رقم الشحنة: <span className="font-semibold text-accent">{activeShipment.shipmentNumber}</span></p>
+                            <p className="text-xs text-muted-foreground mt-0.5">Shipment #: <span className="font-semibold text-accent">{activeShipment.shipmentNumber}</span></p>
                         </div>
                     </div>
 
@@ -180,7 +173,7 @@ export default function DetailsCompanyShipmentPopup({
                         type="button"
                         onClick={onClose}
                         className="p-1.5 rounded-md hover:bg-surface-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -192,12 +185,12 @@ export default function DetailsCompanyShipmentPopup({
                     {/* Waybill & Print Summary Row */}
                     <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between text-xs">
                         <div>
-                            <span className="text-muted-foreground block font-medium">رقم بوليصة الشحن (Waybill)</span>
-                            <span className="font-bold text-foreground font-latin text-sm">
+                            <span className="text-muted-foreground block font-medium">Waybill Number</span>
+                            <span className="font-bold text-foreground text-sm">
                                 {activeShipment.waybillNumber || 'WB-PENDING'}
                             </span>
                             {activeShipment.trackingNumber && (
-                                <span className="text-muted-foreground text-[11px] block font-latin mt-0.5">رقم التتبع: {activeShipment.trackingNumber}</span>
+                                <span className="text-muted-foreground text-[11px] block mt-0.5">Tracking Number: {activeShipment.trackingNumber}</span>
                             )}
                         </div>
 
@@ -213,7 +206,7 @@ export default function DetailsCompanyShipmentPopup({
                                 ) : (
                                     <LuDownload className="w-4 h-4" />
                                 )}
-                                <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
+                                <span>{isGeneratingPdf ? 'Downloading...' : 'Download PDF'}</span>
                             </button>
                         </div>
                     </div>
@@ -222,28 +215,28 @@ export default function DetailsCompanyShipmentPopup({
                     <div className="p-4 rounded-md border border-border bg-surface space-y-3">
                         <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
                             <LuMapPin className="w-4 h-4 text-accent" />
-                            <span>مسار الخدمة والناقل</span>
+                            <span>Service Route & Carrier</span>
                         </h3>
 
                         <div className="space-y-2 text-xs">
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">نوع الخدمة</span>
+                                <span className="text-muted-foreground">Service Type</span>
                                 <span className="font-semibold text-foreground">{getTypeLabel(activeShipment.type)}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">خط المسار (المصدر ⬅️ الوجهة)</span>
-                                <span className="font-semibold text-foreground">{activeShipment.origin} ⬅️ {activeShipment.destination}</span>
+                                <span className="text-muted-foreground">Route Line (Origin → Destination)</span>
+                                <span className="font-semibold text-foreground">{activeShipment.origin} → {activeShipment.destination}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">الناقل المعين</span>
+                                <span className="text-muted-foreground">Assigned Carrier</span>
                                 <span className="font-semibold text-foreground">{carrierName}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 font-semibold text-foreground">
-                                <span className="text-muted-foreground font-normal">عدد الطلبات / الطرود</span>
-                                <span className="font-latin">{activeShipment.ordersCount || 1}</span>
+                                <span className="text-muted-foreground font-normal">Number of Orders / Packages</span>
+                                <span>{activeShipment.ordersCount || 1}</span>
                             </div>
                         </div>
                     </div>
@@ -257,7 +250,7 @@ export default function DetailsCompanyShipmentPopup({
                         onClick={onClose}
                         className="px-4 py-1.5 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-border/20 transition-colors text-foreground cursor-pointer"
                     >
-                        إغلاق
+                        Close
                     </button>
                 </div>
 
@@ -265,3 +258,4 @@ export default function DetailsCompanyShipmentPopup({
         </div>
     );
 }
+

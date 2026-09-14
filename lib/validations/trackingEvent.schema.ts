@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const trackingEventCreateValidationSchema = z.object({
-    shipmentId: z.string("معرف الشحنة مطلوب").min(1, "معرف الشحنة مطلوب"),
-    status: z.string("حالة التتبع مطلوبة").min(1, "حالة التتبع مطلوبة"),
+    shipmentId: z.string({ message: "Shipment ID is required" }).min(1, "Shipment ID is required"),
+    status: z.string({ message: "Tracking status is required" }).min(1, "Tracking status is required"),
     location: z
         .string()
-        .max(255, "الموقع يجب أن لا يتجاوز 255 حرف")
+        .max(255, "Location must not exceed 255 characters")
         .optional()
         .or(z.literal("")),
     occurredAt: z.coerce.date().default(() => new Date()),
@@ -15,7 +15,7 @@ export const trackingEventUpdateValidationSchema = z.object({
     status: z.string().min(1).optional(),
     location: z
         .string()
-        .max(255, "الموقع يجب أن لا يتجاوز 255 حرف")
+        .max(255, "Location must not exceed 255 characters")
         .optional()
         .or(z.literal("")),
     occurredAt: z.coerce.date().optional(),
@@ -24,3 +24,4 @@ export const trackingEventUpdateValidationSchema = z.object({
 // Type Inference
 export type TrackingEventCreateInput = z.infer<typeof trackingEventCreateValidationSchema>;
 export type TrackingEventUpdateInput = z.infer<typeof trackingEventUpdateValidationSchema>;
+

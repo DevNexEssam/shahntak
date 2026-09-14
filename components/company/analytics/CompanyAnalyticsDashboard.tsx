@@ -96,14 +96,14 @@ export default function CompanyAnalyticsDashboard() {
     };
 
     const handleExportReport = (type: 'pdf' | 'excel') => {
-        toast.success(`جاري تصدير تقرير التحليلات بصيغة (${type.toUpperCase()})...`);
+        toast.success(`Exporting analytics report as (${type.toUpperCase()})...`);
     };
 
     // Color Palette for Pie Charts using Accent System
     const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
 
     return (
-        <div className="space-y-6 text-right font-arabic">
+        <div className="space-y-6 text-left">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -112,9 +112,9 @@ export default function CompanyAnalyticsDashboard() {
                         <span className="w-10 h-10 rounded-2xl bg-accent-soft text-accent flex items-center justify-center shadow-xs">
                             <LuChartPie className="w-5 h-5" />
                         </span>
-                        لوحة التحليلات والتقارير المالية والتشغيلية
+                        Financial & Operational Analytics Dashboard
                     </h1>
-                    <p className="text-xs text-body mt-1">متابعة مؤشرات أداء الشركة، الربحية، كفاءة الأسطول، وإقرارات الزكاة والدخل</p>
+                    <p className="text-xs text-body mt-1">Track company KPIs, profitability, fleet efficiency, and VAT tax filings</p>
                 </div>
 
                 <div className="flex items-center gap-2.5">
@@ -123,7 +123,7 @@ export default function CompanyAnalyticsDashboard() {
                         className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md border border-border bg-surface hover:bg-surface-muted transition-all font-bold text-xs text-body shadow-xs cursor-pointer"
                     >
                         <LuDownload className="w-4 h-4 text-accent" />
-                        <span>تصدير TBD</span>
+                        <span>Export Report</span>
                     </button>
 
                     <button
@@ -132,7 +132,7 @@ export default function CompanyAnalyticsDashboard() {
                             refetchTab();
                         }}
                         disabled={isLoadingSummary || isFetchingTab}
-                        title="تحديث بيانات اللوحة"
+                        title="Refresh Dashboard Data"
                         className="p-2.5 rounded-md border border-border bg-surface hover:bg-surface-muted text-body hover:text-body transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`text-sm font-bold ${(isLoadingSummary || isFetchingTab) ? 'animate-spin text-accent' : ''}`} />
@@ -144,7 +144,7 @@ export default function CompanyAnalyticsDashboard() {
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-body">
                     <LuCalendar className="w-4 h-4 text-accent shrink-0" />
-                    <span>تحديد الفترة التحليلية:</span>
+                    <span>Select Analytics Period:</span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -157,7 +157,7 @@ export default function CompanyAnalyticsDashboard() {
                                 : 'text-body hover:text-body'
                                 }`}
                         >
-                            اليوم (تلقائي)
+                            Today (Auto)
                         </button>
                         <button
                             onClick={handlePresetMonth}
@@ -166,7 +166,7 @@ export default function CompanyAnalyticsDashboard() {
                                 : 'text-body hover:text-body'
                                 }`}
                         >
-                            هذا الشهر
+                            This Month
                         </button>
                         <button
                             onClick={handlePresetAll}
@@ -175,13 +175,13 @@ export default function CompanyAnalyticsDashboard() {
                                 : 'text-body hover:text-body'
                                 }`}
                         >
-                            جميع الفترات
+                            All Periods
                         </button>
                     </div>
 
                     {/* Manual Date Range Inputs */}
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-body">من:</span>
+                        <span className="text-xs text-body">From:</span>
                         <input
                             type="date"
                             value={startDate}
@@ -191,7 +191,7 @@ export default function CompanyAnalyticsDashboard() {
                             }}
                             className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-body focus:outline-none focus:border-accent"
                         />
-                        <span className="text-xs text-body">إلى:</span>
+                        <span className="text-xs text-body">To:</span>
                         <input
                             type="date"
                             value={endDate}
@@ -211,7 +211,7 @@ export default function CompanyAnalyticsDashboard() {
                     <div className="flex items-center gap-2.5">
                         <LuShieldAlert className="w-4 h-4 text-amber-500 shrink-0" />
                         <span>
-                            <strong>تنبيه الفواتير المتأخرة:</strong> توجد لشركتك <strong>{alerts.overdueCount}</strong> فواتير متأخرة السداد بقيمة إجمالية <strong>({alerts.overdueSum.toFixed(2)} ر.س)</strong> تستوجب المتابعة مع العملاء.
+                            <strong>Overdue Invoices Warning:</strong> Your company has <strong>{alerts.overdueCount}</strong> overdue invoices with a total value of <strong>({alerts.overdueSum.toFixed(2)} SAR)</strong> requiring follow-up with clients.
                         </span>
                     </div>
                 </div>
@@ -223,19 +223,19 @@ export default function CompanyAnalyticsDashboard() {
                 {/* Net Profit Card */}
                 <div className="border border-border rounded-md p-5 bg-surface shadow-xs space-y-2">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-body">صافي الربح التشغيلي</span>
+                        <span className="text-xs font-bold text-body">Net Operating Profit</span>
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${netProfit >= 0 ? 'bg-accent/10 text-accent' : 'bg-accent/10 text-accent'}`}>
                             <LuWallet className="w-5 h-5" />
                         </div>
                     </div>
-                    <h3 className={`text-2xl font-extrabold font-latinte text-body`}>
-                        {netProfit.toFixed(2)} ر.س
+                    <h3 className={`text-2xl font-extrabold font-latin text-body`}>
+                        {netProfit.toFixed(2)} SAR
                     </h3>
                     <div className="flex items-center justify-between text-xs text-body pt-1">
-                        <span>هامش الربح: <b className="font-latin text-body">{profitMargin}%</b></span>
+                        <span>Profit Margin: <b className="font-latin text-body">{profitMargin}%</b></span>
                         <span className="inline-flex items-center gap-1 text-[11px] font-bold text-accent font-latin">
                             <LuTrendingUp className="w-3 h-3" />
-                            صافي الربحية
+                            Net Profitability
                         </span>
                     </div>
                 </div>
@@ -243,16 +243,16 @@ export default function CompanyAnalyticsDashboard() {
                 {/* Gross Revenue Card */}
                 <div className="border border-border rounded-md p-5 bg-surface shadow-xs space-y-2">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-body">إجمالي الإيرادات (الفواتير)</span>
+                        <span className="text-xs font-bold text-body">Gross Revenue (Invoices)</span>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
                             <LuReceipt className="w-5 h-5" />
                         </div>
                     </div>
                     <h3 className="text-2xl font-extrabold text-body font-latin">
-                        {revenue.toFixed(2)} ر.س
+                        {revenue.toFixed(2)} SAR
                     </h3>
                     <div className="flex items-center justify-between text-xs text-body pt-1">
-                        <span>التغير مقارنة بالفترة:</span>
+                        <span>Change vs Period:</span>
                         <span className={`inline-flex items-center gap-1 text-[11px] font-bold font-latin ${revenueChange >= 0 ? 'text-accent' : 'text-rose-600'}`}>
                             {revenueChange >= 0 ? <LuTrendingUp className="w-3 h-3" /> : <LuTrendingDown className="w-3 h-3" />}
                             {revenueChange > 0 ? `+${revenueChange}%` : `${revenueChange}%`}
@@ -263,16 +263,16 @@ export default function CompanyAnalyticsDashboard() {
                 {/* Operating Expenses Card */}
                 <div className="border border-border rounded-md p-5 bg-surface shadow-xs space-y-2">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-body">إجمالي المصروفات</span>
+                        <span className="text-xs font-bold text-body">Total Operating Expenses</span>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
                             <LuCoins className="w-5 h-5" />
                         </div>
                     </div>
                     <h3 className="text-2xl font-extrabold text-body font-latin">
-                        {expenses.toFixed(2)} ر.س
+                        {expenses.toFixed(2)} SAR
                     </h3>
                     <div className="flex items-center justify-between text-xs text-body pt-1">
-                        <span>التغير مقارنة بالفترة:</span>
+                        <span>Change vs Period:</span>
                         <span className={`inline-flex items-center gap-1 text-[11px] font-bold font-latin ${expenseChange <= 0 ? 'text-accent' : 'text-rose-600'}`}>
                             {expenseChange <= 0 ? <LuTrendingDown className="w-3 h-3" /> : <LuTrendingUp className="w-3 h-3" />}
                             {expenseChange > 0 ? `+${expenseChange}%` : `${expenseChange}%`}
@@ -283,7 +283,7 @@ export default function CompanyAnalyticsDashboard() {
                 {/* Profit Margin % Card */}
                 <div className="border border-border rounded-md p-5 bg-surface shadow-xs space-y-2">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-body">نسبة كفاءة التشغيل</span>
+                        <span className="text-xs font-bold text-body">Operating Efficiency Ratio</span>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
                             <LuTrendingUp className="w-5 h-5" />
                         </div>
@@ -292,10 +292,10 @@ export default function CompanyAnalyticsDashboard() {
                         {profitMargin}%
                     </h3>
                     <div className="flex items-center justify-between text-xs text-body pt-1">
-                        <span>حالة الضريبة :</span>
+                        <span>Tax Status:</span>
                         <span className="inline-flex items-center gap-1 text-[11px] font-bold text-body">
                             <LuShieldCheck className="w-3.5 h-3.5" />
-                            {alerts.vatRate}% مطبقة
+                            {alerts.vatRate}% Applied
                         </span>
                     </div>
                 </div>
@@ -311,7 +311,7 @@ export default function CompanyAnalyticsDashboard() {
                         }`}
                 >
                     <LuReceipt className="w-4 h-4" />
-                    <span>المالي</span>
+                    <span>Financial</span>
                 </button>
 
                 <button
@@ -322,7 +322,7 @@ export default function CompanyAnalyticsDashboard() {
                         }`}
                 >
                     <LuTruck className="w-4 h-4" />
-                    <span>التشغيلي</span>
+                    <span>Operational</span>
                 </button>
 
                 <button
@@ -333,7 +333,7 @@ export default function CompanyAnalyticsDashboard() {
                         }`}
                 >
                     <LuCoins className="w-4 h-4" />
-                    <span> المصروفات</span>
+                    <span>Expenses</span>
                 </button>
 
                 <button
@@ -344,7 +344,7 @@ export default function CompanyAnalyticsDashboard() {
                         }`}
                 >
                     <LuShieldCheck className="w-4 h-4" />
-                    <span> الضريبي</span>
+                    <span>Tax & VAT</span>
                 </button>
             </div>
 
@@ -354,41 +354,41 @@ export default function CompanyAnalyticsDashboard() {
             ) : (
                 <div className="animate-in fade-in duration-200">
 
-                    {/*  FINANCIAL (المالي) */}
+                    {/* FINANCIAL */}
                     {activeTab === 'financial' && (
                         <div className="space-y-6">
                             {/* Detailed Cards Grid */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">فواتير مدفوعة ومحصلة</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Paid & Collected Invoices</span>
                                     <h4 className="text-xl font-extrabold text-body font-latin">
-                                        {(tabResponse?.data?.paidTotal || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.paidTotal || 0).toFixed(2)} SAR
                                     </h4>
-                                    <span className="text-xs text-body mt-1 block">عدد {tabResponse?.data?.paidCount || 0} فاتورة</span>
+                                    <span className="text-xs text-body mt-1 block">{tabResponse?.data?.paidCount || 0} invoices</span>
                                 </div>
 
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">فواتير صادرة ومعلقة</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Issued & Pending Invoices</span>
                                     <h4 className="text-xl font-extrabold text-body font-latin">
-                                        {(tabResponse?.data?.issuedTotal || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.issuedTotal || 0).toFixed(2)} SAR
                                     </h4>
-                                    <span className="text-xs text-body mt-1 block">عدد {tabResponse?.data?.issuedCount || 0} فاتورة</span>
+                                    <span className="text-xs text-body mt-1 block">{tabResponse?.data?.issuedCount || 0} invoices</span>
                                 </div>
 
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">فواتير متأخرة السداد</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Overdue Invoices</span>
                                     <h4 className="text-xl font-extrabold text-body font-latin">
-                                        {(tabResponse?.data?.overdueTotal || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.overdueTotal || 0).toFixed(2)} SAR
                                     </h4>
-                                    <span className="text-xs text-body mt-1 block">عدد {tabResponse?.data?.overdueCount || 0} فاتورة</span>
+                                    <span className="text-xs text-body mt-1 block">{tabResponse?.data?.overdueCount || 0} invoices</span>
                                 </div>
 
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">معدل التحصيل المالي</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Financial Collection Rate</span>
                                     <h4 className="text-xl font-extrabold text-body font-latin">
                                         {tabResponse?.data?.collectionRate || 0}%
                                     </h4>
-                                    <span className="text-xs text-body mt-1 block">متوسط الفاتورة: {(tabResponse?.data?.avgInvoiceValue || 0).toFixed(2)} ر.س</span>
+                                    <span className="text-xs text-body mt-1 block">Avg Invoice: {(tabResponse?.data?.avgInvoiceValue || 0).toFixed(2)} SAR</span>
                                 </div>
                             </div>
 
@@ -397,9 +397,9 @@ export default function CompanyAnalyticsDashboard() {
                                 <div className="flex items-center justify-between border-b border-border pb-3">
                                     <h3 className="text-sm font-bold text-body flex items-center gap-2">
                                         <LuChartLine className="w-4 h-4 text-accent" />
-                                        نمو الإيرادات التحصيلية بالفترات (Monthly Revenue Chart)
+                                        Revenue Growth Over Time
                                     </h3>
-                                    <span className="text-xs text-body">الإيراد الصافي</span>
+                                    <span className="text-xs text-body">Net Revenue</span>
                                 </div>
                                 <div className="h-72 w-full pt-2">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -407,7 +407,7 @@ export default function CompanyAnalyticsDashboard() {
                                             <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                                             <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                                             <YAxis tick={{ fontSize: 11 }} />
-                                            <Tooltip formatter={(val: any) => [`${val} ر.س`, 'الإيراد']} />
+                                            <Tooltip formatter={(val: any) => [`${val} SAR`, 'Revenue']} />
                                             <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4 }} />
                                         </LineChart>
                                     </ResponsiveContainer>
@@ -416,28 +416,28 @@ export default function CompanyAnalyticsDashboard() {
                         </div>
                     )}
 
-                    {/*  OPERATIONAL (التشغيلي والأسطول) */}
+                    {/* OPERATIONAL */}
                     {activeTab === 'operational' && (
                         <div className="space-y-6">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">إجمالي الشحنات المنفذة</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Total Completed Shipments</span>
                                     <h4 className="text-2xl font-extrabold text-body font-latin">
-                                        {tabResponse?.data?.totalShipments || 0} شحنة
+                                        {tabResponse?.data?.totalShipments || 0} shipments
                                     </h4>
                                 </div>
 
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">متوسط إيراد الشحنة الواحدة</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Average Revenue Per Shipment</span>
                                     <h4 className="text-2xl font-extrabold text-accent font-latin">
-                                        {(tabResponse?.data?.avgRevPerShipment || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.avgRevPerShipment || 0).toFixed(2)} SAR
                                     </h4>
                                 </div>
 
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">متوسط ربحية الشحنة الواحدة</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Average Profit Per Shipment</span>
                                     <h4 className="text-2xl font-extrabold text-accent font-latin">
-                                        {(tabResponse?.data?.avgProfitPerShipment || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.avgProfitPerShipment || 0).toFixed(2)} SAR
                                     </h4>
                                 </div>
                             </div>
@@ -447,9 +447,9 @@ export default function CompanyAnalyticsDashboard() {
                                 <div className="flex items-center justify-between border-b border-border pb-3">
                                     <h3 className="text-sm font-bold text-body flex items-center gap-2">
                                         <LuChartBar className="w-4 h-4 text-accent" />
-                                        معدل الشحنات المنفذة (Shipments Growth Chart)
+                                        Shipments Growth Chart
                                     </h3>
-                                    <span className="text-xs text-body">عدد الرحلات</span>
+                                    <span className="text-xs text-body">Trip Count</span>
                                 </div>
                                 <div className="h-72 w-full pt-2">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -457,7 +457,7 @@ export default function CompanyAnalyticsDashboard() {
                                             <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                                             <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                                             <YAxis tick={{ fontSize: 11 }} />
-                                            <Tooltip formatter={(val: any) => [`${val} شحنة`, 'العدد']} />
+                                            <Tooltip formatter={(val: any) => [`${val} shipments`, 'Count']} />
                                             <Bar dataKey="shipmentsCount" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                                         </BarChart>
                                     </ResponsiveContainer>
@@ -466,29 +466,29 @@ export default function CompanyAnalyticsDashboard() {
                         </div>
                     )}
 
-                    {/*  EXPENSES (المصروفات) */}
+                    {/* EXPENSES */}
                     {activeTab === 'expenses' && (
                         <div className="space-y-6">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">إجمالي نفقات المصروفات</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Total Expense Spending</span>
                                     <h4 className="text-2xl font-extrabold text-rose-600 font-latin">
-                                        {(tabResponse?.data?.totalExpensesSum || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.totalExpensesSum || 0).toFixed(2)} SAR
                                     </h4>
-                                    <span className="text-xs text-body mt-1 block">عدد {tabResponse?.data?.totalExpensesCount || 0} سند صرف</span>
+                                    <span className="text-xs text-body mt-1 block">{tabResponse?.data?.totalExpensesCount || 0} vouchers</span>
                                 </div>
 
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">أعلى تصنيف نفقات</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Top Expense Category</span>
                                     <h4 className="text-xl font-extrabold text-body">
-                                        {tabResponse?.data?.topExpenseCategory || 'لا يوجد'}
+                                        {tabResponse?.data?.topExpenseCategory || 'None'}
                                     </h4>
                                 </div>
 
                                 <div className="p-4 rounded-md border border-border bg-surface">
-                                    <span className="text-xs text-body font-bold block mb-1">متوسط مصروف الشحنة</span>
+                                    <span className="text-xs text-body font-bold block mb-1">Average Expense Per Shipment</span>
                                     <h4 className="text-2xl font-extrabold text-amber-600 font-latin">
-                                        {(tabResponse?.data?.avgExpensePerShipment || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.avgExpensePerShipment || 0).toFixed(2)} SAR
                                     </h4>
                                 </div>
                             </div>
@@ -499,7 +499,7 @@ export default function CompanyAnalyticsDashboard() {
                                     <div className="flex items-center justify-between border-b border-border pb-3">
                                         <h3 className="text-sm font-bold text-body flex items-center gap-2">
                                             <LuChartPie className="w-4 h-4 text-rose-500" />
-                                            توزيع المصروفات حسب التصنيف (Expenses Doughnut Chart)
+                                            Expenses Breakdown by Category
                                         </h3>
                                     </div>
                                     <div className="h-64 w-full pt-2">
@@ -520,7 +520,7 @@ export default function CompanyAnalyticsDashboard() {
                                                         <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                                                     ))}
                                                 </Pie>
-                                                <Tooltip formatter={(val: any) => [`${val} ر.س`, 'المبلغ']} />
+                                                <Tooltip formatter={(val: any) => [`${val} SAR`, 'Amount']} />
                                             </PieChart>
                                         </ResponsiveContainer>
                                     </div>
@@ -529,7 +529,7 @@ export default function CompanyAnalyticsDashboard() {
                                 {/* Side List of Categories */}
                                 <div className="border border-border rounded-md p-5 bg-surface space-y-3">
                                     <h3 className="text-xs font-bold text-body border-b border-border pb-2">
-                                        تفاصيل النفقات
+                                        Expense Details
                                     </h3>
                                     <div className="space-y-2.5">
                                         {(tabResponse?.data?.categoriesChart || []).map((cat: any, i: number) => (
@@ -538,7 +538,7 @@ export default function CompanyAnalyticsDashboard() {
                                                     <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }}></span>
                                                     {cat.name}
                                                 </span>
-                                                <span className="font-latin text-body font-bold">{cat.value.toFixed(2)} ر.س</span>
+                                                <span className="font-latin text-body font-bold">{cat.value.toFixed(2)} SAR</span>
                                             </div>
                                         ))}
                                     </div>
@@ -547,18 +547,18 @@ export default function CompanyAnalyticsDashboard() {
                         </div>
                     )}
 
-                    {/*  TAX ( الإقرار الضريبي) */}
+                    {/* TAX */}
                     {activeTab === 'tax' && (
                         <div className="space-y-6">
                             <div className="p-4 rounded-md bg-accent/10 border border-accent/20 flex items-center justify-between text-xs text-body">
                                 <div className="flex items-center gap-2.5">
                                     <LuShieldCheck className="w-5 h-5 text-accent shrink-0" />
                                     <span>
-                                        <strong>حالة التسجيل الضريبي بـ : </strong>
+                                        <strong>VAT Registration Status: </strong>
                                         {tabResponse?.data?.taxNumber ? (
-                                            <span className="text-accent font-bold">مسجل برقم ضريبي رسمي ({tabResponse?.data?.taxNumber})</span>
+                                            <span className="text-accent font-bold">Registered with official VAT number ({tabResponse?.data?.taxNumber})</span>
                                         ) : (
-                                            <span className="text-amber-600 font-bold">نسبة إعفاء (0%) - {tabResponse?.data?.vatExemptionReason || 'غير مسجل رقم ضريبي'}</span>
+                                            <span className="text-amber-600 font-bold">Exemption Rate (0%) - {tabResponse?.data?.vatExemptionReason || 'Not VAT registered'}</span>
                                         )}
                                     </span>
                                 </div>
@@ -566,25 +566,25 @@ export default function CompanyAnalyticsDashboard() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div className="p-4 rounded-md border border-border bg-surface space-y-1">
-                                    <span className="text-xs text-body font-bold">ضريبة المبيعات الصادرة (Output VAT)</span>
+                                    <span className="text-xs text-body font-bold">Output Sales VAT</span>
                                     <h4 className="text-2xl font-extrabold text-body font-latin">
-                                        {(tabResponse?.data?.outputVat || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.outputVat || 0).toFixed(2)} SAR
                                     </h4>
-                                    <span className="text-[11px] text-body block">المجمعة من الفواتير ({tabResponse?.data?.vatRate}%)</span>
+                                    <span className="text-[11px] text-body block">Collected from invoices ({tabResponse?.data?.vatRate}%)</span>
                                 </div>
 
                                 <div className="p-4 rounded-md border border-border bg-surface space-y-1">
-                                    <span className="text-xs text-body font-bold">ضريبة المشتريات المخصومة (Input VAT)</span>
+                                    <span className="text-xs text-body font-bold">Input Purchases VAT</span>
                                     <h4 className="text-2xl font-extrabold text-accent font-latin">
-                                        {(tabResponse?.data?.inputVat || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.inputVat || 0).toFixed(2)} SAR
                                     </h4>
-                                    <span className="text-[11px] text-body block">المسددة في المصروفات والقابلة للاسترداد</span>
+                                    <span className="text-[11px] text-body block">Paid in expenses and deductible</span>
                                 </div>
 
                                 <div className="p-4 rounded-md border border-border bg-surface space-y-1">
-                                    <span className="text-xs text-body font-bold">صافي الضريبة الواجب دفعها للهيئة</span>
+                                    <span className="text-xs text-body font-bold">Net Payable VAT to Tax Authority</span>
                                     <h4 className="text-2xl font-extrabold text-accent font-latin">
-                                        {(tabResponse?.data?.netPayableVat || 0).toFixed(2)} ر.س
+                                        {(tabResponse?.data?.netPayableVat || 0).toFixed(2)} SAR
                                     </h4>
                                     <span className="text-[11px] text-body block">(Output VAT - Input VAT)</span>
                                 </div>

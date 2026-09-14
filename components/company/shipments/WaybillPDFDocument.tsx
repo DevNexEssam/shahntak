@@ -8,37 +8,21 @@ import {
     StyleSheet,
     Font
 } from '@react-pdf/renderer';
-import { fixArabicText } from '@/lib/pdf/arabicPdfHelper';
 
-// Register Cairo Font for React-PDF
-Font.register({
-    family: 'Cairo',
-    fonts: [
-        {
-            src: 'https://cdn.jsdelivr.net/fontsource/fonts/cairo@latest/arabic-400-normal.ttf',
-            fontWeight: 'normal',
-        },
-        {
-            src: 'https://cdn.jsdelivr.net/fontsource/fonts/cairo@latest/arabic-700-normal.ttf',
-            fontWeight: 'bold',
-        },
-    ],
-});
-
-// Disable hyphenation for Arabic text
+// Disable hyphenation
 Font.registerHyphenationCallback((word) => [word]);
 
 const styles = StyleSheet.create({
     page: {
         padding: 30,
-        fontFamily: 'Cairo',
+        fontFamily: 'Helvetica',
         fontSize: 9,
         backgroundColor: '#FFFFFF',
         color: '#0F172A',
     },
     // Top Bar Header
     brandHeader: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         borderBottomWidth: 2,
@@ -50,12 +34,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#065F46',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     brandSub: {
         fontSize: 8.5,
         color: '#64748B',
-        textAlign: 'right',
+        textAlign: 'left',
         marginTop: 2,
     },
     waybillBadge: {
@@ -65,7 +49,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 5,
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
     },
     wbNumberText: {
         fontSize: 11,
@@ -86,13 +70,13 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         padding: 10,
         marginBottom: 12,
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
     routeTitleGroup: {
         flexDirection: 'column',
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
     },
     routeLabel: {
         fontSize: 8,
@@ -107,7 +91,7 @@ const styles = StyleSheet.create({
 
     // Grid Container for 2 Columns
     gridTwo: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 12,
         gap: 10,
@@ -128,17 +112,17 @@ const styles = StyleSheet.create({
         borderBottomColor: '#CBD5E1',
         paddingBottom: 4,
         marginBottom: 6,
-        textAlign: 'right',
+        textAlign: 'left',
     },
     infoLine: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 3,
     },
     label: {
         fontSize: 8,
         color: '#64748B',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     val: {
         fontSize: 8.5,
@@ -156,7 +140,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     tableHeader: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         backgroundColor: '#047857',
         padding: 6,
     },
@@ -164,10 +148,10 @@ const styles = StyleSheet.create({
         fontSize: 8.5,
         fontWeight: 'bold',
         color: '#FFFFFF',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     tableRow: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         padding: 6,
         borderBottomWidth: 1,
         borderBottomColor: '#F1F5F9',
@@ -176,7 +160,7 @@ const styles = StyleSheet.create({
     tableCell: {
         fontSize: 8.5,
         color: '#334155',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     colW1: { width: '35%' },
     colW2: { width: '25%' },
@@ -185,7 +169,7 @@ const styles = StyleSheet.create({
 
     // Signatures Box
     signatureSection: {
-        flexDirection: 'row-reverse',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 10,
         gap: 10,
@@ -203,7 +187,7 @@ const styles = StyleSheet.create({
         fontSize: 8,
         fontWeight: 'bold',
         color: '#475569',
-        textAlign: 'right',
+        textAlign: 'left',
     },
     sigLine: {
         borderTopWidth: 1,
@@ -241,31 +225,31 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
     const routeInfo = shipmentData.routeId || {};
     const carrier = typeof shipmentData.carrierId === 'object' && shipmentData.carrierId !== null
         ? shipmentData.carrierId
-        : { name: 'أسطول الشركة الذاتي' };
+        : { name: 'Company Own Fleet' };
     const vehicle = typeof shipmentData.vehicleId === 'object' && shipmentData.vehicleId !== null
         ? shipmentData.vehicleId
         : {};
 
-    const creationDate = new Date(shipmentData.createdAt || Date.now()).toLocaleDateString('ar-SA');
+    const creationDate = new Date(shipmentData.createdAt || Date.now()).toLocaleDateString('en-US');
 
     const getTypeLabel = (type: string) => {
         switch (type) {
-            case 'ftl': return 'شحن نقل كامل (FTL)';
-            case 'ltl': return 'شحن طرود جزئية (LTL)';
-            case 'local_delivery': return 'توصيل محلي للميل الأخير';
-            default: return 'نقل لوجستي عام';
+            case 'ftl': return 'Full Truckload (FTL)';
+            case 'ltl': return 'Less than Truckload (LTL)';
+            case 'local_delivery': return 'Last Mile Local Delivery';
+            default: return 'General Logistics';
         }
     };
 
     const getStatusText = (status: string) => {
         switch (status) {
-            case 'created': return 'حديثة';
-            case 'confirmed': return 'مؤكدة';
-            case 'assigned': return 'معينة لناقل';
-            case 'in_transit': return 'في الطريق';
-            case 'delivered': return 'تم التوصيل بنجاح';
-            case 'cancelled': return 'ملغية';
-            default: return status || 'نشطة';
+            case 'created': return 'Created';
+            case 'confirmed': return 'Confirmed';
+            case 'assigned': return 'Assigned to Carrier';
+            case 'in_transit': return 'In Transit';
+            case 'delivered': return 'Delivered Successfully';
+            case 'cancelled': return 'Cancelled';
+            default: return status || 'Active';
         }
     };
 
@@ -275,25 +259,25 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
 
                 <View style={styles.brandHeader}>
                     <View>
-                        <Text style={styles.brandTitle}>{fixArabicText('بوليصة شحن برية رسمية')}</Text>
-                        <Text style={styles.brandSub}>{fixArabicText('منصة شحنتك اللوجستية - سند نقل وتأكيد استلام')}</Text>
+                        <Text style={styles.brandTitle}>Official Overland Waybill</Text>
+                        <Text style={styles.brandSub}>Shahntak Logistics Platform - Transport Document & Delivery Receipt</Text>
                     </View>
                     <View style={styles.waybillBadge}>
-                        <Text style={styles.wbNumberText}>{fixArabicText(`بوليصة #: ${shipmentData.waybillNumber || 'WB-PENDING'}`)}</Text>
-                        <Text style={styles.wbTrackingText}>{fixArabicText(`تتبع #: ${shipmentData.trackingNumber || 'TRK-PENDING'}`)}</Text>
+                        <Text style={styles.wbNumberText}>{`Waybill #: ${shipmentData.waybillNumber || 'WB-PENDING'}`}</Text>
+                        <Text style={styles.wbTrackingText}>{`Tracking #: ${shipmentData.trackingNumber || 'TRK-PENDING'}`}</Text>
                     </View>
                 </View>
 
                 <View style={styles.routeBanner}>
                     <View style={styles.routeTitleGroup}>
-                        <Text style={styles.routeLabel}>{fixArabicText('خط مسار الشحنة الاتجاه المعتمد:')}</Text>
+                        <Text style={styles.routeLabel}>Approved Shipment Route:</Text>
                         <Text style={styles.routePathText}>
-                            {fixArabicText(`${shipmentData.origin || routeInfo.origin || 'الرياض'} ⬅️ ${shipmentData.destination || routeInfo.destination || 'جدة'}`)}
+                            {`${shipmentData.origin || routeInfo.origin || 'Riyadh'} ➡️ ${shipmentData.destination || routeInfo.destination || 'Jeddah'}`}
                         </Text>
                     </View>
-                    <View style={{ alignItems: 'flex-end' }}>
-                        <Text style={styles.label}>{fixArabicText('نوع الخدمة اللوجستية:')}</Text>
-                        <Text style={styles.val}>{fixArabicText(getTypeLabel(shipmentData.type))}</Text>
+                    <View style={{ alignItems: 'flex-start' }}>
+                        <Text style={styles.label}>Logistics Service Type:</Text>
+                        <Text style={styles.val}>{getTypeLabel(shipmentData.type)}</Text>
                     </View>
                 </View>
 
@@ -301,45 +285,45 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
 
                     {/* Company Supplier Card */}
                     <View style={styles.cardHalf}>
-                        <Text style={styles.cardHeader}>{fixArabicText('بيانات منشأة الشحن / المرسل')}</Text>
+                        <Text style={styles.cardHeader}>Shipper / Company Details</Text>
 
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('الشركة المرسلة:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(company.companyName || 'شركة الشحن المشتركة')}</Text>
+                            <Text style={styles.label}>Shipper Company:</Text>
+                            <Text style={styles.val}>{company.companyName || 'Joint Shipping Co.'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('الرقم الضريبي:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(company.taxNumber || '310459871200003')}</Text>
+                            <Text style={styles.label}>Tax Number:</Text>
+                            <Text style={styles.val}>{company.taxNumber || '310459871200003'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('المدينة والفرع:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(company.city || shipmentData.origin || 'الرياض')}</Text>
+                            <Text style={styles.label}>City & Branch:</Text>
+                            <Text style={styles.val}>{company.city || shipmentData.origin || 'Riyadh'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('تواصل المنشأة:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(company.phone || company.email || '0500000000')}</Text>
+                            <Text style={styles.label}>Contact Info:</Text>
+                            <Text style={styles.val}>{company.phone || company.email || '0500000000'}</Text>
                         </View>
                     </View>
 
                     {/* Shipment Meta Card */}
                     <View style={styles.cardHalf}>
-                        <Text style={styles.cardHeader}>{fixArabicText('بيانات الشحنة والجدول الزمني')}</Text>
+                        <Text style={styles.cardHeader}>Shipment & Timeline Details</Text>
 
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('رقم الشحنة الموحد:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(shipmentData.shipmentNumber || 'SHP-0000')}</Text>
+                            <Text style={styles.label}>Shipment Number:</Text>
+                            <Text style={styles.val}>{shipmentData.shipmentNumber || 'SHP-0000'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('تاريخ الإنشاء والتجميع:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(creationDate)}</Text>
+                            <Text style={styles.label}>Creation Date:</Text>
+                            <Text style={styles.val}>{creationDate}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('حالة الشحنة الحالية:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(getStatusText(shipmentData.status))}</Text>
+                            <Text style={styles.label}>Current Status:</Text>
+                            <Text style={styles.val}>{getStatusText(shipmentData.status)}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('عدد الطرود المجمعة:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(`${shipmentData.ordersCount || 1} طرد مجمع`)}</Text>
+                            <Text style={styles.label}>Consolidated Orders:</Text>
+                            <Text style={styles.val}>{`${shipmentData.ordersCount || 1} package(s)`}</Text>
                         </View>
                     </View>
 
@@ -349,37 +333,37 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
 
                     {/* Transport & Carrier Info */}
                     <View style={styles.cardHalf}>
-                        <Text style={styles.cardHeader}>{fixArabicText('بيانات الناقل والمركبة المعينة')}</Text>
+                        <Text style={styles.cardHeader}>Carrier & Vehicle Details</Text>
 
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('شركة النقل / الناقل:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(carrier.name || 'أسطول الشركة الذاتي')}</Text>
+                            <Text style={styles.label}>Carrier Company:</Text>
+                            <Text style={styles.val}>{carrier.name || 'Company Own Fleet'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('نوع الشاحنة / المركبة:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(vehicle.type || 'شاحنة نقل جاف')}</Text>
+                            <Text style={styles.label}>Truck / Vehicle Type:</Text>
+                            <Text style={styles.val}>{vehicle.type || 'Dry Cargo Truck'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('رقم اللوحة:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(vehicle.plateNumber || 'غير مسجل')}</Text>
+                            <Text style={styles.label}>Plate Number:</Text>
+                            <Text style={styles.val}>{vehicle.plateNumber || 'N/A'}</Text>
                         </View>
                     </View>
 
                     {/* Driver & Delivery Contact Info */}
                     <View style={styles.cardHalf}>
-                        <Text style={styles.cardHeader}>{fixArabicText('بيانات السائق المباشر')}</Text>
+                        <Text style={styles.cardHeader}>Driver Details</Text>
 
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('اسم السائق المسؤول:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(shipmentData.driverName || 'سائق معتمد')}</Text>
+                            <Text style={styles.label}>Driver Name:</Text>
+                            <Text style={styles.val}>{shipmentData.driverName || 'Authorized Driver'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('هاتف تواصل السائق:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(shipmentData.driverPhone || 'غير مسجل')}</Text>
+                            <Text style={styles.label}>Driver Phone:</Text>
+                            <Text style={styles.val}>{shipmentData.driverPhone || 'N/A'}</Text>
                         </View>
                         <View style={styles.infoLine}>
-                            <Text style={styles.label}>{fixArabicText('مسار النقل المعتمد:')}</Text>
-                            <Text style={styles.val}>{fixArabicText(routeInfo.routeName || 'خط سير مباشر')}</Text>
+                            <Text style={styles.label}>Approved Route:</Text>
+                            <Text style={styles.val}>{routeInfo.routeName || 'Direct Route'}</Text>
                         </View>
                     </View>
 
@@ -387,40 +371,40 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
 
                 <View style={styles.table}>
                     <View style={styles.tableHeader}>
-                        <Text style={[styles.tableHeaderCell, styles.colW1]}>{fixArabicText('بيان البضاعة والطرود الشحن')}</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colW2]}>{fixArabicText('نوع التغليف والخدمة')}</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colW3]}>{fixArabicText('الكمية / عدد الطرود')}</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colW4]}>{fixArabicText('حالة الاستلام')}</Text>
+                        <Text style={[styles.tableHeaderCell, styles.colW1]}>Cargo & Package Description</Text>
+                        <Text style={[styles.tableHeaderCell, styles.colW2]}>Service Type</Text>
+                        <Text style={[styles.tableHeaderCell, styles.colW3]}>Quantity</Text>
+                        <Text style={[styles.tableHeaderCell, styles.colW4]}>Receipt Condition</Text>
                     </View>
 
                     <View style={styles.tableRow}>
-                        <Text style={[styles.tableCell, styles.colW1]}>{fixArabicText(`شحنة مجمعة (مسار ${shipmentData.origin || 'الرياض'} إلى ${shipmentData.destination || 'جدة'})`)}</Text>
-                        <Text style={[styles.tableCell, styles.colW2]}>{fixArabicText(getTypeLabel(shipmentData.type))}</Text>
-                        <Text style={[styles.tableCell, styles.colW3]}>{fixArabicText(`${shipmentData.ordersCount || 1} طرد`)}</Text>
-                        <Text style={[styles.tableCell, styles.colW4]}>{fixArabicText('سليمة ومغلقة')}</Text>
+                        <Text style={[styles.tableCell, styles.colW1]}>{`Consolidated Shipment (${shipmentData.origin || 'Riyadh'} to ${shipmentData.destination || 'Jeddah'})`}</Text>
+                        <Text style={[styles.tableCell, styles.colW2]}>{getTypeLabel(shipmentData.type)}</Text>
+                        <Text style={[styles.tableCell, styles.colW3]}>{`${shipmentData.ordersCount || 1} package(s)`}</Text>
+                        <Text style={[styles.tableCell, styles.colW4]}>Intact & Sealed</Text>
                     </View>
                 </View>
 
                 <View style={styles.signatureSection}>
                     <View style={styles.sigBox}>
-                        <Text style={styles.sigTitle}>{fixArabicText('توقيع وختم المنشأة المرسلة:')}</Text>
+                        <Text style={styles.sigTitle}>Shipper Signature & Stamp:</Text>
                         <View style={styles.sigLine} />
                     </View>
 
                     <View style={styles.sigBox}>
-                        <Text style={styles.sigTitle}>{fixArabicText('توقيع سائق النقل / الاستلام:')}</Text>
+                        <Text style={styles.sigTitle}>Driver / Carrier Signature:</Text>
                         <View style={styles.sigLine} />
                     </View>
 
                     <View style={styles.sigBox}>
-                        <Text style={styles.sigTitle}>{fixArabicText('توقيع وختم المستلم / المركز:')}</Text>
+                        <Text style={styles.sigTitle}>Recipient Signature:</Text>
                         <View style={styles.sigLine} />
                     </View>
                 </View>
 
                 <View style={styles.footer}>
                     <Text style={styles.footerNotice}>
-                        {fixArabicText('بوليصة شحن برية رسمية صادرة آلياً من منصة "شحنتك" اللوجستية © 2026 - جميع الحقوق محفوظة')}
+                        Official Waybill automatically issued by Shahntak Logistics Platform © 2026 - All Rights Reserved
                     </Text>
                 </View>
 
@@ -428,3 +412,4 @@ export const WaybillPDFDocument: React.FC<WaybillPDFDocumentProps> = ({ shipment
         </Document>
     );
 };
+

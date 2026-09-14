@@ -95,7 +95,7 @@ export default function EditCompanyInvoicePopup({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150 text-left">
             <div className="w-full max-w-lg bg-surface border border-border rounded-md shadow-lg overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Header */}
@@ -105,8 +105,8 @@ export default function EditCompanyInvoicePopup({
                             <LuReceipt className="w-5 h-5" />
                         </div>
                         <div>
-                            <h2 className="text-base font-bold text-heading">تعديل الفاتورة المالية والتسعير</h2>
-                            <p className="text-xs text-body mt-0.5 font-latin">رقم الفاتورة: <span className="font-bold text-accent">{invoiceData.invoiceNumber}</span></p>
+                            <h2 className="text-base font-bold text-heading">Edit Financial Invoice & Pricing</h2>
+                            <p className="text-xs text-body mt-0.5 font-latin">Invoice #: <span className="font-bold text-accent">{invoiceData.invoiceNumber}</span></p>
                         </div>
                     </div>
 
@@ -114,7 +114,7 @@ export default function EditCompanyInvoicePopup({
                         type="button"
                         onClick={onClose}
                         className="p-1.5 rounded-md hover:bg-surface-muted text-body hover:text-heading transition-colors cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -128,16 +128,16 @@ export default function EditCompanyInvoicePopup({
                         <div className="p-4 rounded-md bg-rose-500/10 border border-rose-500/20 text-rose-600 flex items-start gap-3">
                             <LuTriangleAlert className="w-5 h-5 shrink-0 mt-0.5" />
                             <div className="text-xs">
-                                <span className="font-bold block mb-1">فاتورة مدفوعة ومحصلة نهائياً</span>
+                                <span className="font-bold block mb-1">Fully Paid & Collected Invoice</span>
                                 <p className="leading-relaxed">
-                                    وفقاً لقواعد النزاهة المالية والضريبية، لا يمكن تعديل أسعار أو حالة الفواتير المدفوعة بعد تحصيل مبالغها.
+                                    In accordance with financial & tax compliance rules, prices or status of paid invoices cannot be modified after collection.
                                 </p>
                             </div>
                         </div>
                     ) : (
                         <div className="p-3 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs flex items-center gap-2">
                             <LuCheck className="w-4 h-4 shrink-0" />
-                            <span>يمكنك تعديل سعر الشحن المالي للفاتورة دون تغيير مسار الشحنة المعتمد.</span>
+                            <span>You may adjust the shipping subtotal price without changing the approved transport route.</span>
                         </div>
                     )}
 
@@ -147,15 +147,15 @@ export default function EditCompanyInvoicePopup({
                             <div className="flex items-center justify-between font-bold text-heading">
                                 <span className="flex items-center gap-1.5 text-accent">
                                     <LuTruck className="w-4 h-4" />
-                                    <span>تفاصيل الشحنة والمسار (عرض فقط - ثابته)</span>
+                                    <span>Shipment & Route Details (Read-Only)</span>
                                 </span>
                                 <span className="font-latin text-accent font-extrabold">{linkedShipment.shipmentNumber}</span>
                             </div>
                             <div className="flex justify-between items-center text-body pt-1.5 border-t border-accent/15">
-                                <span>مسار النقل اللوجستي:</span>
+                                <span>Logistics Transport Route:</span>
                                 <span className="font-bold text-heading flex items-center gap-1">
                                     <LuMapPin className="w-3.5 h-3.5 text-accent shrink-0" />
-                                    <span>{linkedShipment.origin || 'الرياض'} ⬅️ {linkedShipment.destination || 'جدة'}</span>
+                                    <span>{linkedShipment.origin || 'Riyadh'} ➡️ {linkedShipment.destination || 'Jeddah'}</span>
                                 </span>
                             </div>
                         </div>
@@ -165,7 +165,7 @@ export default function EditCompanyInvoicePopup({
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                             <LuCoins className="w-3.5 h-3.5 text-accent" />
-                            سعر خدمة الشحن قبل الضريبة (ر.س)
+                            Freight Subtotal Before VAT (SAR)
                         </label>
                         <input
                             type="number"
@@ -174,7 +174,7 @@ export default function EditCompanyInvoicePopup({
                             disabled={isPaid}
                             value={subtotal}
                             onChange={(e) => setSubtotal(e.target.value)}
-                            placeholder="أدخل قيمة سعر الشحن"
+                            placeholder="Enter freight subtotal"
                             className="w-full px-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading font-latin font-bold focus:outline-none focus:border-accent disabled:opacity-50"
                         />
                     </div>
@@ -183,7 +183,7 @@ export default function EditCompanyInvoicePopup({
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                             <LuClock className="w-3.5 h-3.5 text-accent" />
-                            حالة الفاتورة الحالية
+                            Current Invoice Status
                         </label>
                         <select
                             disabled={isPaid}
@@ -191,10 +191,10 @@ export default function EditCompanyInvoicePopup({
                             onChange={(e) => setStatus(e.target.value)}
                             className="w-full px-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 cursor-pointer"
                         >
-                            <option value="draft">مسودة</option>
-                            <option value="issued">صادرة ومعلقة</option>
-                            <option value="overdue">متأخرة السداد</option>
-                            <option value="cancelled">إلغاء الفاتورة</option>
+                            <option value="draft">Draft</option>
+                            <option value="issued">Issued & Pending</option>
+                            <option value="overdue">Overdue</option>
+                            <option value="cancelled">Cancelled Invoice</option>
                         </select>
                     </div>
 
@@ -202,7 +202,7 @@ export default function EditCompanyInvoicePopup({
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                             <LuTag className="w-3.5 h-3.5 text-accent" />
-                            مبلغ الخصم المالي (ر.س)
+                            Discount Amount (SAR)
                         </label>
                         <input
                             type="number"
@@ -211,7 +211,7 @@ export default function EditCompanyInvoicePopup({
                             disabled={isPaid}
                             value={discount}
                             onChange={(e) => setDiscount(e.target.value)}
-                            placeholder="أدخل قيمة الخصم المالي"
+                            placeholder="Enter discount amount"
                             className="w-full px-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 font-latin"
                         />
                     </div>
@@ -220,7 +220,7 @@ export default function EditCompanyInvoicePopup({
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                             <LuCalendar className="w-3.5 h-3.5 text-accent" />
-                            تاريخ استحقاق السداد
+                            Payment Due Date
                         </label>
                         <input
                             type="date"
@@ -235,29 +235,29 @@ export default function EditCompanyInvoicePopup({
                     <div className="p-3.5 rounded-md border border-border bg-surface-muted space-y-2 text-xs">
                         <div className="flex items-center gap-1.5 font-bold text-heading border-b border-border pb-1.5">
                             <LuCoins className="w-3.5 h-3.5 text-accent" />
-                            <span>معاينة المعادلة المحاسبية المعدلة</span>
+                            <span>Updated Financial Calculation Preview</span>
                         </div>
                         <div className="flex justify-between items-center text-body">
-                            <span>المبلغ الأساسي (قبل الخصم والضريبة):</span>
-                            <span className="font-bold text-heading font-latin">{basePrice.toFixed(2)} ر.س</span>
+                            <span>Base Subtotal (before discount & VAT):</span>
+                            <span className="font-bold text-heading font-latin">{basePrice.toFixed(2)} SAR</span>
                         </div>
                         {validDiscount > 0 && (
                             <div className="flex justify-between items-center text-emerald-600">
-                                <span>قيمة الخصم المالي المطبق:</span>
-                                <span className="font-bold font-latin">-{validDiscount.toFixed(2)} ر.س</span>
+                                <span>Applied Discount:</span>
+                                <span className="font-bold font-latin">-{validDiscount.toFixed(2)} SAR</span>
                             </div>
                         )}
                         <div className="flex justify-between items-center text-body">
-                            <span>الصافي الخاضع للضريبة:</span>
-                            <span className="font-bold text-heading font-latin">{discountedSubtotal.toFixed(2)} ر.س</span>
+                            <span>Taxable Subtotal:</span>
+                            <span className="font-bold text-heading font-latin">{discountedSubtotal.toFixed(2)} SAR</span>
                         </div>
                         <div className="flex justify-between items-center text-body">
-                            <span>ضريبة القيمة المضافة ({taxRate}%):</span>
-                            <span className="font-bold text-heading font-latin">{vatAmount.toFixed(2)} ر.س</span>
+                            <span>Value Added Tax ({taxRate}%):</span>
+                            <span className="font-bold text-heading font-latin">{vatAmount.toFixed(2)} SAR</span>
                         </div>
                         <div className="flex justify-between items-center text-sm font-bold text-accent pt-1.5 border-t border-border">
-                            <span>الإجمالي الكلي الجديد:</span>
-                            <span className="font-latin text-base">{computedTotal.toFixed(2)} ر.س</span>
+                            <span>New Final Total Amount:</span>
+                            <span className="font-latin text-base">{computedTotal.toFixed(2)} SAR</span>
                         </div>
                     </div>
 
@@ -268,7 +268,7 @@ export default function EditCompanyInvoicePopup({
                             onClick={onClose}
                             className="px-4 py-2 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-surface-muted transition-colors text-heading cursor-pointer"
                         >
-                            إغلاق
+                            Close
                         </button>
 
                         {!isPaid && (
@@ -278,7 +278,7 @@ export default function EditCompanyInvoicePopup({
                                 className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
                             >
                                 <LuSave className="w-4 h-4" />
-                                <span>{isPending ? 'جاري الحفظ...' : 'حفظ التعديلات'}</span>
+                                <span>{isPending ? 'Saving...' : 'Save Changes'}</span>
                             </button>
                         )}
                     </div>

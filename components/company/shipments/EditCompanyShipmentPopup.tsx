@@ -8,10 +8,7 @@ import {
     LuTruck,
     LuX,
     LuMapPin,
-    LuCoins,
     LuHash,
-    LuReceipt,
-    LuLayers,
     LuRoute
 } from 'react-icons/lu';
 
@@ -79,7 +76,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
         e.preventDefault();
 
         if (isDelivered) {
-            toast.error("الشحنة مسلّمة بالكامل ومقفلة، لا يمكن التعديل عليها.");
+            toast.error("This shipment is fully delivered and locked. No modifications can be made.");
             return;
         }
 
@@ -104,8 +101,8 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                             <LuTruck className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات وتعيين الشحنة</h2>
-                            <p className="text-xs text-body mt-0.5">تعديل المسارات وحالة الشحنة والتكاليف</p>
+                            <h2 className="text-xl font-extrabold text-heading">Edit Shipment Details & Resources</h2>
+                            <p className="text-xs text-body mt-0.5">Update routes, shipment status, and logistics allocation</p>
                         </div>
                     </div>
 
@@ -114,7 +111,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -126,7 +123,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
 
                         {isDelivered && (
                             <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold flex items-center gap-2">
-                                <span>⚠️ هذه الشحنة تم تسليمها بنجاح (Delivered) وهي مقفلة نهائياً لحماية الفواتير والبيانات المالية. لا يمكن إجراء أي تعديل عليها.</span>
+                                <span>⚠️ This shipment has been successfully delivered and is permanently locked to protect invoice data. No modifications can be made.</span>
                             </div>
                         )}
 
@@ -135,7 +132,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuHash className="w-3.5 h-3.5 text-accent" />
-                                    رقم الشحنة
+                                    Shipment Number
                                 </label>
                                 <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent font-latin">
                                     {shipmentData.shipmentNumber}
@@ -143,26 +140,26 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading">حالة الشحنة والتتبع</label>
+                                <label className="text-xs font-bold text-heading">Shipment Status & Tracking</label>
                                 <select
                                     disabled={isDelivered || isSubmitting}
                                     value={formValues.status}
                                     onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
-                                    <option value="created">حديثة / تم الإنشاء</option>
-                                    <option value="confirmed">مؤكدة</option>
-                                    <option value="assigned">معينة لناقل</option>
-                                    <option value="ready_for_pickup">جاهزة للاستلام</option>
-                                    <option value="picked_up">تم الاستلام</option>
-                                    <option value="in_transit">في الطريق / جاري الشحن</option>
-                                    <option value="arrived">وصلت للمركز</option>
-                                    <option value="out_for_delivery">خرجت للتوصيل</option>
-                                    <option value="delivered">تم التوصيل بنجاح</option>
-                                    <option value="delivery_failed">فشل التوصيل</option>
-                                    <option value="cancelled">ملغية</option>
-                                    <option value="returned">مرتجعة</option>
-                                    <option value="exception">حالة استثنائية</option>
+                                    <option value="created">New / Created</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="assigned">Assigned to Carrier</option>
+                                    <option value="ready_for_pickup">Ready for Pickup</option>
+                                    <option value="picked_up">Picked Up</option>
+                                    <option value="in_transit">In Transit / Shipping</option>
+                                    <option value="arrived">Arrived at Facility</option>
+                                    <option value="out_for_delivery">Out for Delivery</option>
+                                    <option value="delivered">Successfully Delivered</option>
+                                    <option value="delivery_failed">Delivery Failed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    <option value="returned">Returned</option>
+                                    <option value="exception">Exception</option>
                                 </select>
                             </div>
                         </div>
@@ -171,14 +168,14 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                         <div className="space-y-4 pt-2 border-t border-border">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                نوع الشحنة والمسار اللوجستي
+                                Shipment Type & Logistics Route
                             </h3>
 
                             {/* Optional Pre-defined Route Select */}
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuRoute className="w-3.5 h-3.5 text-accent" />
-                                    تحديد مسار مسجّل لدى الشركة (اختياري)
+                                    Select Registered Company Route (Optional)
                                 </label>
                                 <select
                                     disabled={isDelivered || isSubmitting}
@@ -186,26 +183,26 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                     onChange={(e) => handleRouteSelect(e.target.value)}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
-                                    <option value="">-- مسار مخصص / إدخال يدوي --</option>
+                                    <option value="">-- Custom Route / Manual Input --</option>
                                     {routesList.map((rt: any) => (
                                         <option key={rt._id} value={rt._id}>
-                                            {rt.origin} ⬅️ {rt.destination} ({rt.vehicleType || "عام"})
+                                            {rt.origin} → {rt.destination} ({rt.vehicleType || "General"})
                                         </option>
                                     ))}
                                 </select>
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-heading">نوع الشحنة</label>
+                                <label className="text-xs font-bold text-heading">Shipment Type</label>
                                 <select
                                     disabled={isDelivered || isSubmitting}
                                     value={formValues.type}
                                     onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
-                                    <option value="local_delivery">توصيل محلي </option>
-                                    <option value="ltl">شحن جزئي </option>
-                                    <option value="ftl">شحن كامل </option>
+                                    <option value="local_delivery">Local Delivery</option>
+                                    <option value="ltl">Less Than Truckload (LTL)</option>
+                                    <option value="ftl">Full Truckload (FTL)</option>
                                 </select>
                             </div>
 
@@ -213,7 +210,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                        المصدر
+                                        Origin (Source)
                                     </label>
                                     <input
                                         type="text"
@@ -227,7 +224,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                        الوجهة
+                                        Destination
                                     </label>
                                     <input
                                         type="text"
@@ -250,7 +247,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -258,7 +255,7 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
                             disabled={isDelivered || isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center disabled:cursor-not-allowed"
                         >
-                            {isSubmitting ? "جاري التحديث..." : "حفظ التعديلات"}
+                            {isSubmitting ? "Updating..." : "Save Changes"}
                         </button>
                     </div>
                 </form>
@@ -267,3 +264,4 @@ export default function EditCompanyShipmentPopup({ isOpen = true, onClose, shipm
         </div>
     );
 }
+

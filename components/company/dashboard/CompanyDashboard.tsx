@@ -55,54 +55,54 @@ export default function CompanyDashboard() {
 
     // Live Recharts Data Formats from Database
     const weeklyOrdersTrend = reportData.weeklyOrdersTrend || [
-        { day: "الأحد", orders: 0 },
-        { day: "الإثنين", orders: 0 },
-        { day: "الثلاثاء", orders: 0 },
-        { day: "الأربعاء", orders: 0 },
-        { day: "الخميس", orders: 0 },
-        { day: "الجمعة", orders: 0 },
-        { day: "السبت", orders: 0 },
+        { day: "Sun", orders: 0 },
+        { day: "Mon", orders: 0 },
+        { day: "Tue", orders: 0 },
+        { day: "Wed", orders: 0 },
+        { day: "Thu", orders: 0 },
+        { day: "Fri", orders: 0 },
+        { day: "Sat", orders: 0 },
     ];
 
     const rawBreakdown = reportData.shipmentStatusBreakdown || [
-        { name: "تم التوصيل", value: 0, color: "#7444fd" },
-        { name: "ترانزيت / بالسيارة", value: 0, color: "#a855f7" },
-        { name: "مجمع بشحنة", value: 0, color: "#3b82f6" },
-        { name: "قيد الانتظار والمعالجة", value: 0, color: "#f59e0b" },
+        { name: "Delivered", value: 0, color: "#7444fd" },
+        { name: "In Transit / Truck", value: 0, color: "#a855f7" },
+        { name: "Grouped in Shipment", value: 0, color: "#3b82f6" },
+        { name: "Pending & Processing", value: 0, color: "#f59e0b" },
     ];
 
     const hasStatusData = rawBreakdown.some((item: any) => item.value > 0);
     const shipmentStatusBreakdown = hasStatusData
         ? rawBreakdown
-        : [{ name: "لا توجد شحنات أو طلبات بعد", value: 1, color: "#cbd5e1" }];
+        : [{ name: "No shipments or orders yet", value: 1, color: "#cbd5e1" }];
 
     const statusBadge = (status?: string) => {
         switch (status) {
             case "pending":
-                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-amber-500/10 text-amber-600">قيد الانتظار</span>;
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-amber-500/10 text-amber-600">Pending</span>;
             case "validated":
-                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-500/10 text-indigo-600">مؤكد</span>;
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-500/10 text-indigo-600">Validated</span>;
             case "grouped":
-                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-purple-500/10 text-purple-600">مجمع بشحنة</span>;
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-purple-500/10 text-purple-600">Grouped</span>;
             case "shipped":
-                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-sky-500/10 text-sky-600">تم الشحن</span>;
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-sky-500/10 text-sky-600">Shipped</span>;
             case "delivered":
-                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">تم التوصيل</span>;
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">Delivered</span>;
             case "cancelled":
-                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">ملغي</span>;
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">Cancelled</span>;
             case "error":
-                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">خطأ في البيانات</span>;
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">Data Error</span>;
             default:
-                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-surface-muted text-muted-foreground">{status || "جديد"}</span>;
+                return <span className="px-2.5 py-1 text-xs font-semibold rounded bg-surface-muted text-muted-foreground">{status || "New"}</span>;
         }
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 text-left">
             {/* Header section */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">الداشبورد ومركز العمليات</h1>
+                    <h1 className="text-2xl font-bold text-foreground">Dashboard & Operations Center</h1>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -111,7 +111,7 @@ export default function CompanyDashboard() {
                         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-colors shadow-xs"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>إضافة طلب جديد</span>
+                        <span>Add New Order</span>
                     </Link>
 
                     <Link
@@ -119,7 +119,7 @@ export default function CompanyDashboard() {
                         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md border border-border bg-surface hover:bg-border/30 transition-colors text-foreground"
                     >
                         <LuTruck className="w-4 h-4 text-accent" />
-                        <span>إدارة الشحنات</span>
+                        <span>Manage Shipments</span>
                     </Link>
                 </div>
             </div>
@@ -129,7 +129,7 @@ export default function CompanyDashboard() {
                 {/* Total Orders */}
                 <div className="p-5 bg-surface border border-border rounded-md shadow-xs space-y-3 hover:border-accent/50 transition-colors">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-muted-foreground">إجمالي الطلبات</span>
+                        <span className="text-xs font-semibold text-muted-foreground">Total Orders</span>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuPackage className="w-5 h-5" />
                         </div>
@@ -138,7 +138,7 @@ export default function CompanyDashboard() {
                         <h3 className="text-2xl font-bold text-foreground">{ordersStats.total}</h3>
                         <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                             <LuClock className="w-3.5 h-3.5 text-amber-500" />
-                            <span>قيد الانتظار: {ordersStats.pending}</span>
+                            <span>Pending: {ordersStats.pending}</span>
                         </p>
                     </div>
                 </div>
@@ -146,7 +146,7 @@ export default function CompanyDashboard() {
                 {/* Active Shipments */}
                 <div className="p-5 bg-surface border border-border rounded-md shadow-xs space-y-3 hover:border-accent/50 transition-colors">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-muted-foreground">الشحنات في الطريق</span>
+                        <span className="text-xs font-semibold text-muted-foreground">In-Transit Shipments</span>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuTruck className="w-5 h-5" />
                         </div>
@@ -155,7 +155,7 @@ export default function CompanyDashboard() {
                         <h3 className="text-2xl font-bold text-foreground">{shipmentsStats.in_transit || 0}</h3>
                         <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                             <LuCircleCheck className="w-3.5 h-3.5 text-emerald-500" />
-                            <span>إجمالي الشحنات: {shipmentsStats.total}</span>
+                            <span>Total Shipments: {shipmentsStats.total}</span>
                         </p>
                     </div>
                 </div>
@@ -163,7 +163,7 @@ export default function CompanyDashboard() {
                 {/* Invoices */}
                 <div className="p-5 bg-surface border border-border rounded-md shadow-xs space-y-3 hover:border-accent/50 transition-colors">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-muted-foreground">الفواتير المحصلة</span>
+                        <span className="text-xs font-semibold text-muted-foreground">Collected Invoices</span>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuFileText className="w-5 h-5" />
                         </div>
@@ -171,7 +171,7 @@ export default function CompanyDashboard() {
                     <div>
                         <h3 className="text-2xl font-bold text-foreground">{invoicesStats.paid || 0}</h3>
                         <p className="text-xs text-muted-foreground mt-1">
-                            من إجمالي {invoicesStats.total} فاتورة
+                            Out of {invoicesStats.total} total invoices
                         </p>
                     </div>
                 </div>
@@ -179,7 +179,7 @@ export default function CompanyDashboard() {
                 {/* Team */}
                 <div className="p-5 bg-surface border border-border rounded-md shadow-xs space-y-3 hover:border-accent/50 transition-colors">
                     <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-muted-foreground">فريق العمل النشط</span>
+                        <span className="text-xs font-semibold text-muted-foreground">Active Team Members</span>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuUsers className="w-5 h-5" />
                         </div>
@@ -187,7 +187,7 @@ export default function CompanyDashboard() {
                     <div>
                         <h3 className="text-2xl font-bold text-foreground">{employeesStats.active || employeesStats.total}</h3>
                         <p className="text-xs text-muted-foreground mt-1">
-                            موظفين مسجلين بالنظام
+                            Registered employees
                         </p>
                     </div>
                 </div>
@@ -200,9 +200,9 @@ export default function CompanyDashboard() {
                     <div className="flex items-center justify-between border-b border-border pb-3">
                         <div className="flex items-center gap-2 font-semibold text-foreground">
                             <LuTrendingUp className="w-5 h-5 text-accent" />
-                            <span>معدل الحركة والتدفق الأسبوعي للطلبات</span>
+                            <span>Weekly Orders Flow & Volume</span>
                         </div>
-                        <span className="text-xs text-accent font-semibold px-2 py-0.5 rounded bg-accent/10">مؤشر أداء محوري</span>
+                        <span className="text-xs text-accent font-semibold px-2 py-0.5 rounded bg-accent/10">Key Performance Indicator</span>
                     </div>
 
                     <div className="h-64 w-full pt-2">
@@ -230,7 +230,7 @@ export default function CompanyDashboard() {
                                 <Area
                                     type="monotone"
                                     dataKey="orders"
-                                    name="عدد الطلبات"
+                                    name="Order Count"
                                     stroke="#7444fd"
                                     strokeWidth={3}
                                     fillOpacity={1}
@@ -246,7 +246,7 @@ export default function CompanyDashboard() {
                     <div className="border-b border-border pb-3">
                         <div className="flex items-center gap-2 font-semibold text-foreground">
                             <LuChartPie className="w-5 h-5 text-accent" />
-                            <span>توزيع حالات العمليات والشحنات</span>
+                            <span>Shipment & Operation Status Distribution</span>
                         </div>
                     </div>
 
@@ -299,32 +299,32 @@ export default function CompanyDashboard() {
                 <div className="lg:col-span-2 p-5 bg-surface border border-border rounded-md space-y-4">
                     <div className="flex items-center justify-between border-b border-border pb-3">
                         <div>
-                            <h2 className="text-base font-bold text-foreground">أحدث طلبات الشركة</h2>
-                            <p className="text-xs text-muted-foreground mt-0.5">آخر الطلبات المسجلة بالحساب</p>
+                            <h2 className="text-base font-bold text-foreground">Recent Company Orders</h2>
+                            <p className="text-xs text-muted-foreground mt-0.5">Latest orders registered in the account</p>
                         </div>
                         <Link
                             href="/company/dashboard/orders"
                             className="text-xs font-semibold text-accent hover:underline flex items-center gap-1"
                         >
-                            <span>كل الطلبات</span>
+                            <span>All Orders</span>
                             <LuArrowUpRight className="w-3.5 h-3.5" />
                         </Link>
                     </div>
 
                     {recentOrders.length === 0 ? (
                         <div className="py-12 text-center text-muted-foreground text-sm">
-                            لا توجد طلبات مسجلة حديثاً
+                            No recent orders registered
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="w-full text-right text-xs">
+                            <table className="w-full text-left text-xs">
                                 <thead>
                                     <tr className="border-b border-border text-muted-foreground font-semibold">
-                                        <th className="py-2.5 px-3">رقم الطلب</th>
-                                        <th className="py-2.5 px-3">المستلم والمدينة</th>
-                                        <th className="py-2.5 px-3">الوزن</th>
-                                        <th className="py-2.5 px-3">القيمة</th>
-                                        <th className="py-2.5 px-3">الحالة</th>
+                                        <th className="py-2.5 px-3">Order #</th>
+                                        <th className="py-2.5 px-3">Recipient & City</th>
+                                        <th className="py-2.5 px-3">Weight</th>
+                                        <th className="py-2.5 px-3">Value</th>
+                                        <th className="py-2.5 px-3">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border">
@@ -343,10 +343,10 @@ export default function CompanyDashboard() {
                                                 </div>
                                             </td>
                                             <td className="py-3 px-3 text-foreground font-medium">
-                                                {ord.weight} كجم
+                                                {ord.weight} kg
                                             </td>
                                             <td className="py-3 px-3 font-bold text-foreground">
-                                                {(ord.orderValue || 0).toLocaleString()} ر.س
+                                                SAR {(ord.orderValue || 0).toLocaleString()}
                                             </td>
                                             <td className="py-3 px-3">
                                                 {statusBadge(ord.status)}
@@ -362,8 +362,8 @@ export default function CompanyDashboard() {
                 {/* Shortcuts & Navigation (1 Col) */}
                 <div className="p-5 bg-surface border border-border rounded-md space-y-4">
                     <div className="border-b border-border pb-3">
-                        <h2 className="text-base font-bold text-foreground">الوصول السريع والأقسام</h2>
-                        <p className="text-xs text-muted-foreground mt-0.5">الانتقال المباشر لأقسام سيستم الشركة</p>
+                        <h2 className="text-base font-bold text-foreground">Quick Access & Navigation</h2>
+                        <p className="text-xs text-muted-foreground mt-0.5">Direct navigation to company system modules</p>
                     </div>
 
                     <div className="grid grid-cols-1 gap-2.5">
@@ -373,7 +373,7 @@ export default function CompanyDashboard() {
                         >
                             <div className="flex items-center gap-2.5">
                                 <LuPackage className="w-4 h-4 text-accent" />
-                                <span>إدارة الطلبات</span>
+                                <span>Orders Management</span>
                             </div>
                             <LuArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
                         </Link>
@@ -384,7 +384,7 @@ export default function CompanyDashboard() {
                         >
                             <div className="flex items-center gap-2.5">
                                 <LuTruck className="w-4 h-4 text-accent" />
-                                <span>إدارة الشحنات</span>
+                                <span>Shipments Management</span>
                             </div>
                             <LuArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
                         </Link>
@@ -395,7 +395,7 @@ export default function CompanyDashboard() {
                         >
                             <div className="flex items-center gap-2.5">
                                 <LuFileText className="w-4 h-4 text-accent" />
-                                <span>الفواتير والمالية</span>
+                                <span>Invoices & Finance</span>
                             </div>
                             <LuArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
                         </Link>
@@ -406,7 +406,7 @@ export default function CompanyDashboard() {
                         >
                             <div className="flex items-center gap-2.5">
                                 <LuTruck className="w-4 h-4 text-accent" />
-                                <span>أسطول المركبات</span>
+                                <span>Vehicle Fleet</span>
                             </div>
                             <LuArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
                         </Link>
@@ -417,7 +417,7 @@ export default function CompanyDashboard() {
                         >
                             <div className="flex items-center gap-2.5">
                                 <LuChartPie className="w-4 h-4 text-accent" />
-                                <span>التقارير والإحصائيات</span>
+                                <span>Reports & Analytics</span>
                             </div>
                             <LuArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
                         </Link>
@@ -428,7 +428,7 @@ export default function CompanyDashboard() {
                         >
                             <div className="flex items-center gap-2.5">
                                 <LuSettings className="w-4 h-4 text-accent" />
-                                <span>إعدادات الشركة</span>
+                                <span>Company Settings</span>
                             </div>
                             <LuArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors" />
                         </Link>
