@@ -27,7 +27,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
         maxOrdersPerMonth: 500,
         maxShipmentsPerMonth: 100,
         maxCompanyUsers: 5,
-        features: ['تجميع الطلبات الآلي', 'طباعة بوالص الشحن 🖨️', 'دعم فني على مدار الساعة'],
+        features: ['Automatic order consolidation', 'Waybill printing 🖨️', '24/7 technical support'],
         hasWaybillPdfExport: true,
         hasBulkExcelImport: true,
         hasZatcaInvoicing: true,
@@ -71,7 +71,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -83,7 +83,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             <div className="relative w-full max-w-xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Modal Header */}
@@ -93,8 +93,8 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                             <LuCreditCard className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إضافة باقة سحابية جديدة</h2>
-                            <p className="text-xs text-body mt-0.5">تحديد أسعار الباقة وحدود الطلبات والشحنات والميزات</p>
+                            <h2 className="text-xl font-extrabold text-heading">Add New Cloud Plan</h2>
+                            <p className="text-xs text-body mt-0.5">Define plan pricing, order and shipment limits, and features</p>
                         </div>
                     </div>
 
@@ -103,7 +103,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -111,18 +111,18 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-right">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading">
-                                اسم الباقة <span className="text-red-500">*</span>
+                                Plan Name <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
                                 disabled={isSubmitting}
                                 value={formValues.name}
                                 onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
-                                placeholder="مثال: الباقة الاحترافية Pro"
+                                placeholder="e.g., Professional Plan Pro"
                                 className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.name ? 'border-rose-500' : 'border-border'
                                     }`}
                             />
@@ -135,7 +135,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-body" />
-                                    سعر الباقة (ر.س) <span className="text-red-500">*</span>
+                                    Plan Price (SAR) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -153,7 +153,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading block">
-                                    دورة الفوترة
+                                    Billing Cycle
                                 </label>
                                 <select
                                     disabled={isSubmitting}
@@ -161,8 +161,8 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                                     onChange={(e) => setFormValues({ ...formValues, billingCycle: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="monthly">شهري</option>
-                                    <option value="yearly">سنوي</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="yearly">Yearly</option>
                                 </select>
                             </div>
                         </div>
@@ -170,7 +170,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading block">
-                                    حد الطلبات شهرياً (-1 غير محدود)
+                                    Monthly Order Limit (-1 = Unlimited)
                                 </label>
                                 <input
                                     type="number"
@@ -183,7 +183,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading block">
-                                    حد الشحنات شهرياً
+                                    Monthly Shipment Limit
                                 </label>
                                 <input
                                     type="number"
@@ -196,7 +196,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading block">
-                                    حد موظفي الشركة
+                                    Company User Limit
                                 </label>
                                 <input
                                     type="number"
@@ -211,7 +211,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                         {/* Feature Flags Checkboxes Section */}
                         <div className="space-y-3 pt-3 border-t border-border bg-surface-muted/60 p-4 rounded-2xl border border-border">
                             <label className="text-xs font-extrabold text-heading block">
-                                تحديد مميزات وصلاحيات الباقة الذكية
+                                Configure Smart Plan Features & Permissions
                             </label>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
                                 <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
@@ -221,7 +221,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                                         onChange={(e) => setFormValues({ ...formValues, hasWaybillPdfExport: e.target.checked })}
                                         className="w-4 h-4 accent-accent rounded cursor-pointer"
                                     />
-                                    <span className="font-bold text-heading">تصدير وطباعة بوالص الـ PDF</span>
+                                    <span className="font-bold text-heading">Waybill PDF Export & Printing</span>
                                 </label>
 
                                 <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
@@ -231,7 +231,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                                         onChange={(e) => setFormValues({ ...formValues, hasBulkExcelImport: e.target.checked })}
                                         className="w-4 h-4 accent-accent rounded cursor-pointer"
                                     />
-                                    <span className="font-bold text-heading">الاستيراد الجماعي للطلبات عبر Excel</span>
+                                    <span className="font-bold text-heading">Bulk Order Import via Excel</span>
                                 </label>
 
                                 <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
@@ -241,7 +241,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                                         onChange={(e) => setFormValues({ ...formValues, hasZatcaInvoicing: e.target.checked })}
                                         className="w-4 h-4 accent-accent rounded cursor-pointer"
                                     />
-                                    <span className="font-bold text-heading">الفوترة الضريبية وإصدار فواتير ZATCA</span>
+                                    <span className="font-bold text-heading">Tax Invoicing & ZATCA Invoice Issuance</span>
                                 </label>
 
                                 <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
@@ -251,7 +251,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                                         onChange={(e) => setFormValues({ ...formValues, hasExpensesTracking: e.target.checked })}
                                         className="w-4 h-4 accent-accent rounded cursor-pointer"
                                     />
-                                    <span className="font-bold text-heading">إدارة المصروفات والنفقات التشغيلية</span>
+                                    <span className="font-bold text-heading">Expenses & Operational Costs Management</span>
                                 </label>
 
                                 <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
@@ -261,7 +261,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                                         onChange={(e) => setFormValues({ ...formValues, hasCustomRoutes: e.target.checked })}
                                         className="w-4 h-4 accent-accent rounded cursor-pointer"
                                     />
-                                    <span className="font-bold text-heading">إدارة المسارات والخطوط اللوجستية</span>
+                                    <span className="font-bold text-heading">Routes & Logistics Lanes Management</span>
                                 </label>
 
                                 <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all">
@@ -271,7 +271,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                                         onChange={(e) => setFormValues({ ...formValues, hasAdvancedAnalytics: e.target.checked })}
                                         className="w-4 h-4 accent-accent rounded cursor-pointer"
                                     />
-                                    <span className="font-bold text-heading">لوحة التحليلات والتقارير المتقدمة</span>
+                                    <span className="font-bold text-heading">Advanced Analytics & Reports Dashboard</span>
                                 </label>
 
                                 <label className="flex items-center gap-2.5 cursor-pointer bg-surface p-2.5 rounded-xl border border-border hover:border-accent transition-all sm:col-span-2">
@@ -281,7 +281,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                                         onChange={(e) => setFormValues({ ...formValues, hasAuditLogs: e.target.checked })}
                                         className="w-4 h-4 accent-accent rounded cursor-pointer"
                                     />
-                                    <span className="font-bold text-heading">سجل التدقيق والأنشطة التاريخي (Audit Logs)</span>
+                                    <span className="font-bold text-heading">Historical Audit Logs & Activity Trail</span>
                                 </label>
                             </div>
                         </div>
@@ -296,7 +296,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -304,7 +304,7 @@ export default function AddPlans({ isOpen = true, onClose }: AddPlansProps) {
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
+                            {isSubmitting ? "Adding..." : "Save Data"}
                         </button>
                     </div>
                 </form>
