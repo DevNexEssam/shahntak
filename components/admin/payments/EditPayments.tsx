@@ -41,16 +41,16 @@ export default function EditPayments({ isOpen = true, payment, onClose }: EditPa
 
     const invoiceNumber = typeof payment.invoiceId === 'object' && payment.invoiceId !== null
         ? (payment.invoiceId as Invoice).invoiceNumber
-        : 'غير محددة';
+        : 'Unspecified';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        toast.success("تم تحديث بيانات عملية السداد بنجاح");
+        toast.success("Payment record updated successfully");
         onClose();
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -61,8 +61,8 @@ export default function EditPayments({ isOpen = true, payment, onClose }: EditPa
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل سجل الدفعة المالية</h2>
-                            <p className="text-xs text-body mt-0.5">الدفعة المرتبطة بالفاتورة: <span className="font-bold text-accent font-latin">{invoiceNumber}</span></p>
+                            <h2 className="text-xl font-extrabold text-heading">Edit Payment Record</h2>
+                            <p className="text-xs text-body mt-0.5">Payment linked to invoice: <span className="font-bold text-accent font-latin">{invoiceNumber}</span></p>
                         </div>
                     </div>
 
@@ -70,7 +70,7 @@ export default function EditPayments({ isOpen = true, payment, onClose }: EditPa
                         type="button"
                         onClick={onClose}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -78,13 +78,13 @@ export default function EditPayments({ isOpen = true, payment, onClose }: EditPa
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-right">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-body" />
-                                    مبلغ الدفعة (ر.س)
+                                    Payment Amount (SAR)
                                 </label>
                                 <input
                                     type="number"
@@ -99,17 +99,17 @@ export default function EditPayments({ isOpen = true, payment, onClose }: EditPa
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuWallet className="w-3.5 h-3.5 text-body" />
-                                    طريقة السداد
+                                    Payment Method
                                 </label>
                                 <select
                                     value={formValues.method}
                                     onChange={(e) => setFormValues({ ...formValues, method: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer font-medium"
                                 >
-                                    <option value="bank_transfer">تحويل بنكي مباشر</option>
-                                    <option value="card">بطاقة ائتمانية / مدى</option>
-                                    <option value="cash">سداد نقدي</option>
-                                    <option value="other">وسيلة أخرى</option>
+                                    <option value="bank_transfer">Direct Bank Transfer</option>
+                                    <option value="card">Credit Card / Mada</option>
+                                    <option value="cash">Cash Payment</option>
+                                    <option value="other">Other Method</option>
                                 </select>
                             </div>
                         </div>
@@ -117,7 +117,7 @@ export default function EditPayments({ isOpen = true, payment, onClose }: EditPa
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuCalendar className="w-3.5 h-3.5 text-body" />
-                                تاريخ السداد
+                                Payment Date
                             </label>
                             <input
                                 type="date"
@@ -136,14 +136,14 @@ export default function EditPayments({ isOpen = true, payment, onClose }: EditPa
                             onClick={onClose}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
                             type="submit"
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer min-w-[130px] justify-center"
                         >
-                            حفظ التعديلات
+                            Save Changes
                         </button>
                     </div>
                 </form>

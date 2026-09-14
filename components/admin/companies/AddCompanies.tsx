@@ -51,7 +51,7 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -63,7 +63,7 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Header */}
@@ -73,8 +73,8 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                             <LuBuilding2 className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تسجيل شركة شحن جديدة</h2>
-                            <p className="text-xs text-body mt-0.5">إضافة شركة جديدة وحفظ بيانات الاعتماد اللوجستية</p>
+                            <h2 className="text-xl font-extrabold text-heading">Register New Shipping Company</h2>
+                            <p className="text-xs text-body mt-0.5">Add a new company and save its logistics credentials</p>
                         </div>
                     </div>
 
@@ -82,7 +82,7 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -90,30 +90,29 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-6 text-right">
+                    <div className="p-6 overflow-y-auto space-y-6 text-left">
 
                         {/* Section 1: Basic Company Info */}
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                البيانات الأساسية للشركة
+                                Basic Company Information
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                        اسم الشركة <span className="text-red-500">*</span>
+                                        Company Name <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.companyName}
                                         onChange={(e) => setFormValues({ ...formValues, companyName: e.target.value })}
-                                        placeholder="شركة السريع اللوجستية"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                            fieldErrors.companyName ? "border-rose-500" : "border-border"
-                                        }`}
+                                        placeholder="Al Saree Logistics Company"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.companyName ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.companyName && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.companyName}</p>}
                                 </div>
@@ -121,17 +120,16 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                        المدينة / المقر الرئيسي <span className="text-red-500">*</span>
+                                        City / Headquarters <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.city}
                                         onChange={(e) => setFormValues({ ...formValues, city: e.target.value })}
-                                        placeholder="الرياض"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                            fieldErrors.city ? "border-rose-500" : "border-border"
-                                        }`}
+                                        placeholder="Riyadh"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.city ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.city && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.city}</p>}
                                 </div>
@@ -141,7 +139,7 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMail className="w-3.5 h-3.5 text-body" />
-                                        البريد الإلكتروني الرسمي <span className="text-red-500">*</span>
+                                        Official Email Address <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="email"
@@ -149,9 +147,8 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                                         value={formValues.email}
                                         onChange={(e) => setFormValues({ ...formValues, email: e.target.value })}
                                         placeholder="contact@company.sa"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${
-                                            fieldErrors.email ? "border-rose-500" : "border-border"
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.email ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.email && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.email}</p>}
                                 </div>
@@ -159,7 +156,7 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuPhone className="w-3.5 h-3.5 text-body" />
-                                        رقم الهاتف <span className="text-red-500">*</span>
+                                        Phone Number <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -167,9 +164,8 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                                         value={formValues.phone}
                                         onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })}
                                         placeholder="0501234567"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${
-                                            fieldErrors.phone ? "border-rose-500" : "border-border"
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.phone ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.phone && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.phone}</p>}
                                 </div>
@@ -182,14 +178,14 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                البيانات الإضافية والأمان
+                                Additional & Security Information
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuHash className="w-3.5 h-3.5 text-body" />
-                                        الرقم الضريبي (VAT)
+                                        Tax Number (VAT)
                                     </label>
                                     <input
                                         type="text"
@@ -197,9 +193,8 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                                         value={formValues.taxNumber}
                                         onChange={(e) => setFormValues({ ...formValues, taxNumber: e.target.value })}
                                         placeholder="300000000000003"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                            fieldErrors.taxNumber ? "border-rose-500" : "border-border"
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.taxNumber ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.taxNumber && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.taxNumber}</p>}
                                 </div>
@@ -207,7 +202,7 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuLock className="w-3.5 h-3.5 text-body" />
-                                        كلمة المرور الإضافية
+                                        Additional Password
                                     </label>
                                     <input
                                         type="password"
@@ -215,9 +210,8 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                                         value={formValues.password}
                                         onChange={(e) => setFormValues({ ...formValues, password: e.target.value })}
                                         placeholder="******"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                            fieldErrors.password ? "border-rose-500" : "border-border"
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.password ? "border-rose-500" : "border-border"
+                                            }`}
                                     />
                                     {fieldErrors.password && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.password}</p>}
                                 </div>
@@ -226,17 +220,16 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    العنوان التفصيلي
+                                    Detailed Address
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.address}
                                     onChange={(e) => setFormValues({ ...formValues, address: e.target.value })}
-                                    placeholder="شارع الملك فهد، حي الملز، الرياض"
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                        fieldErrors.address ? "border-rose-500" : "border-border"
-                                    }`}
+                                    placeholder="King Fahd Road, Al Malaz District, Riyadh"
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.address ? "border-rose-500" : "border-border"
+                                        }`}
                                 />
                                 {fieldErrors.address && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.address}</p>}
                             </div>
@@ -244,17 +237,16 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuFileText className="w-3.5 h-3.5 text-body" />
-                                    معلومات المنشأة
+                                    Facility Information
                                 </label>
                                 <textarea
                                     disabled={isSubmitting}
                                     rows={2}
                                     value={formValues.facilityInfo}
                                     onChange={(e) => setFormValues({ ...formValues, facilityInfo: e.target.value })}
-                                    placeholder="نبذة أو ملاحظات عن نشاط المنشأة اللوجستية..."
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${
-                                        fieldErrors.facilityInfo ? "border-rose-500" : "border-border"
-                                    }`}
+                                    placeholder="Brief description or notes about the logistics facility's operations..."
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.facilityInfo ? "border-rose-500" : "border-border"
+                                        }`}
                                 />
                                 {fieldErrors.facilityInfo && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.facilityInfo}</p>}
                             </div>
@@ -270,7 +262,7 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -278,7 +270,7 @@ export default function AddCompanies({ isOpen = true, onClose }: AddCompaniesPro
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
+                            {isSubmitting ? "Adding..." : "Save Data"}
                         </button>
                     </div>
                 </form>

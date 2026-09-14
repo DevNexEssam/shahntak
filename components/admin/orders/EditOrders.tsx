@@ -66,7 +66,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
 
     const companyName = typeof order.companyId === 'object' && order.companyId !== null
         ? (order.companyId as Company).companyName
-        : 'شركة غير محددة';
+        : 'Unspecified Company';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -82,7 +82,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -98,7 +98,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-3xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -109,8 +109,8 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات الطلب</h2>
-                            <p className="text-xs text-body mt-0.5">تحديث بيانات المستلم والمدينة والحالة للطلب: <span className="font-bold text-accent font-latin">{order.orderNumber}</span></p>
+                            <h2 className="text-xl font-extrabold text-heading">Edit Order Data</h2>
+                            <p className="text-xs text-body mt-0.5">Update recipient, city, and status for order: <span className="font-bold text-accent font-latin">{order.orderNumber}</span></p>
                         </div>
                     </div>
 
@@ -119,7 +119,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -127,7 +127,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                    <div className="p-6 overflow-y-auto space-y-6 flex-1 text-left">
 
                         {/* Order & Company Read-Only Info */}
                         <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between flex-wrap gap-4">
@@ -136,13 +136,13 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                     <LuBuilding2 className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <span className="text-xs text-body block font-medium">الشركة المنشئة</span>
+                                    <span className="text-xs text-body block font-medium">Creating Company</span>
                                     <span className="text-sm font-bold text-heading">{companyName}</span>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <span className="text-xs text-body font-medium">رقم الطلب:</span>
+                                <span className="text-xs text-body font-medium">Order No.:</span>
                                 <span className="text-sm font-bold text-heading font-latin">{order.orderNumber}</span>
                             </div>
                         </div>
@@ -151,7 +151,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuHash className="w-3.5 h-3.5 text-body" />
-                                حالة الطلب <span className="text-red-500">*</span>
+                                Order Status <span className="text-red-500">*</span>
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -159,13 +159,13 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="pending">معلق</option>
-                                <option value="validated">مكتمل الفحص</option>
-                                <option value="grouped">مجمع بشحنة</option>
-                                <option value="shipped">جاري الشحن</option>
-                                <option value="delivered">تم التسليم</option>
-                                <option value="cancelled">ملغي</option>
-                                <option value="error">خطأ في التوصيل</option>
+                                <option value="pending">Pending</option>
+                                <option value="validated">Validated</option>
+                                <option value="grouped">Grouped in Shipment</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="error">Delivery Error</option>
                             </select>
                         </div>
 
@@ -173,24 +173,23 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                         <div className="space-y-4 pt-2 border-t border-border">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                بيانات المستلم وموقع التوصيل
+                                Recipient & Delivery Location Details
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuUser className="w-3.5 h-3.5 text-body" />
-                                        اسم المستلم <span className="text-red-500">*</span>
+                                        Recipient Name <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.recipientName}
                                         onChange={(e) => setFormValues({ ...formValues, recipientName: e.target.value })}
-                                        placeholder="اسم المستلم الثلاثي"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        placeholder="Full recipient name"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.recipientName && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientName}</span>
@@ -200,7 +199,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuPhone className="w-3.5 h-3.5 text-body" />
-                                        جوال المستلم <span className="text-red-500">*</span>
+                                        Recipient Phone <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -208,9 +207,8 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                         value={formValues.recipientPhone}
                                         onChange={(e) => setFormValues({ ...formValues, recipientPhone: e.target.value })}
                                         placeholder="0501234567"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.recipientPhone ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientPhone ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.recipientPhone && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientPhone}</span>
@@ -222,17 +220,16 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                        المدينة <span className="text-red-500">*</span>
+                                        City <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.recipientCity}
                                         onChange={(e) => setFormValues({ ...formValues, recipientCity: e.target.value })}
-                                        placeholder="الرياض، جدة..."
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        placeholder="Riyadh, Jeddah..."
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.recipientCity && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientCity}</span>
@@ -241,7 +238,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        الحي (اختياري)
+                                        District (Optional)
                                     </label>
                                     <input
                                         type="text"
@@ -255,16 +252,15 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    العنوان التفصيلي <span className="text-red-500">*</span>
+                                    Detailed Address <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.recipientAddress}
                                     onChange={(e) => setFormValues({ ...formValues, recipientAddress: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.recipientAddress && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientAddress}</span>
@@ -276,14 +272,14 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                         <div className="space-y-4 pt-2 border-t border-border">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                المواصفات والقيم اللوجستية
+                                Specifications & Logistics Values
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuWeight className="w-3.5 h-3.5 text-body" />
-                                        الوزن (كجم) <span className="text-red-500">*</span>
+                                        Weight (kg) <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="number"
@@ -298,7 +294,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        الكمية (طرد)
+                                        Quantity (Packages)
                                     </label>
                                     <input
                                         type="number"
@@ -313,7 +309,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuCoins className="w-3.5 h-3.5 text-body" />
-                                        قيمة الطلب <span className="text-red-500">*</span>
+                                        Order Value <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="number"
@@ -328,7 +324,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        مبلغ COD
+                                        COD Amount
                                     </label>
                                     <input
                                         type="number"
@@ -353,7 +349,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -361,7 +357,7 @@ export default function EditOrders({ isOpen = true, order, onClose }: EditOrders
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}
+                            {isSubmitting ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

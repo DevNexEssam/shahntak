@@ -117,7 +117,7 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                             seenOrderNumbers.add(normalized.orderNumber);
                         }
                     }
-                    
+
                     // Add dummy companyId for client-side zod validation check
                     const testPayload = {
                         ...normalized,
@@ -227,7 +227,7 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
             {/* Modal Container */}
             <div className="relative w-full max-w-4xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -409,8 +409,8 @@ export default function BulkImportOrdersPopup({ isOpen = true, onClose }: BulkIm
                         {isSubmitting
                             ? "جاري الاستيراد..."
                             : validRows.length > 0
-                            ? `تأكيد وحفظ ${validRows.length} طلب`
-                            : "اختر ملفاً للاستيراد"}
+                                ? `تأكيد وحفظ ${validRows.length} طلب`
+                                : "اختر ملفاً للاستيراد"}
                     </button>
                 </div>
             </div>

@@ -83,7 +83,7 @@ export default function Vehicles() {
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic" dir="rtl">
+        <div className="space-y-6 text-right font-arabic">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -259,11 +259,10 @@ export default function Vehicles() {
                                         </td>
 
                                         <td className="py-3.5 px-4">
-                                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${
-                                                v.isActive !== false
+                                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${v.isActive !== false
                                                     ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
                                                     : 'bg-rose-500/10 text-rose-600 border-rose-200'
-                                            }`}>
+                                                }`}>
                                                 {v.isActive !== false ? 'نشطة' : 'موقوفة'}
                                             </span>
                                         </td>

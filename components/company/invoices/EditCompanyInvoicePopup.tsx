@@ -41,7 +41,7 @@ export default function EditCompanyInvoicePopup({
         if (invoiceData) {
             setStatus(invoiceData.status || 'draft');
             setDiscount(invoiceData.discount !== undefined ? invoiceData.discount : 0);
-            
+
             const initialSubtotal = Number(
                 invoiceData.subtotal ||
                 linkedShipment?.customerPrice ||
@@ -95,7 +95,7 @@ export default function EditCompanyInvoicePopup({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150">
             <div className="w-full max-w-lg bg-surface border border-border rounded-md shadow-lg overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Header */}

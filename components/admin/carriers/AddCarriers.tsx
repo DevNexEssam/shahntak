@@ -46,7 +46,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -59,7 +59,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -70,8 +70,8 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                             <LuTruck className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إضافة ناقل شرك جديد</h2>
-                            <p className="text-xs text-body mt-0.5">تسجيل بيانات الناقل المتعاقد معه وتعيين نوع التشغيل والربط</p>
+                            <h2 className="text-xl font-extrabold text-heading">Add New Partner Carrier</h2>
+                            <p className="text-xs text-body mt-0.5">Register the contracted carrier's details and set the operation and integration type</p>
                         </div>
                     </div>
 
@@ -80,7 +80,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -88,19 +88,19 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-right">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuTruck className="w-3.5 h-3.5 text-body" />
-                                اسم الناقل / الشركة الناقلة <span className="text-red-500">*</span>
+                                Carrier / Shipping Company Name <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
                                 disabled={isSubmitting}
                                 value={formValues.name}
                                 onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
-                                placeholder="مثال: شركة السيف للنقل اللوجستي، أرامكس..."
+                                placeholder="e.g., Al Saif Logistics, Aramex..."
                                 className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.name ? 'border-rose-500' : 'border-border'
                                     }`}
                             />
@@ -112,7 +112,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuLayers className="w-3.5 h-3.5 text-body" />
-                                نوع الناقل والربط البرمجي <span className="text-red-500">*</span>
+                                Carrier & Software Integration Type <span className="text-red-500">*</span>
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -120,8 +120,8 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                                 onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="local">ناقل محلي مباشر </option>
-                                <option value="external_api">ربط خارجي عبر البرمجيات </option>
+                                <option value="local">Direct Local Carrier</option>
+                                <option value="external_api">External Software Integration</option>
                             </select>
                         </div>
 
@@ -129,7 +129,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuPhone className="w-3.5 h-3.5 text-body" />
-                                    هاتف التواصل
+                                    Contact Phone
                                 </label>
                                 <input
                                     type="text"
@@ -148,7 +148,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMail className="w-3.5 h-3.5 text-body" />
-                                    البريد الإلكتروني
+                                    Email Address
                                 </label>
                                 <input
                                     type="email"
@@ -167,7 +167,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
 
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading block">
-                                حالة الناقل
+                                Carrier Status
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -175,8 +175,8 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                                 onChange={(e) => setFormValues({ ...formValues, isActive: e.target.value === 'active' })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="active">نشط ومتاح بالمنصة</option>
-                                <option value="inactive">موقوف مؤقتاً</option>
+                                <option value="active">Active & Available on the Platform</option>
+                                <option value="inactive">Temporarily Suspended</option>
                             </select>
                         </div>
 
@@ -190,7 +190,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -198,7 +198,7 @@ export default function AddCarriers({ isOpen = true, onClose }: AddCarriersProps
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
+                            {isSubmitting ? "Adding..." : "Save Data"}
                         </button>
                     </div>
                 </form>

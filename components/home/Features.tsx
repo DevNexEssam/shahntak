@@ -3,59 +3,59 @@ import { FaBox, FaTruck, FaFileAlt, FaUsers, FaChartBar, FaUpload, FaMapMarkerAl
 const modules = [
   {
     icon: FaBox,
-    title: 'الطلبات والشحنات',
+    title: 'Orders & Shipments',
     description:
-      'تحويل طلبات الشحن الفردية إلى شحنات موحدة — شحن كامل الحمولة، شحن أقل من حمولة شاحنة، أو توصيل محلي. استيراد مجمّع عبر Excel.',
+      'Convert individual shipping requests into unified shipments — full truckload, less-than-truckload, or local delivery. Bulk import via Excel.',
     color: 'accent',
-    features: ['شحن كامل / أقل من حمولة / توصيل محلي', 'استيراد مجمّع عبر Excel', 'توحيد تلقائي'],
+    features: ['FTL / LTL / Local Delivery', 'Bulk Import via Excel', 'Automatic Consolidation'],
   },
   {
     icon: FaTruck,
-    title: 'الأسطول والمسارات',
+    title: 'Fleet & Routes',
     description:
-      'تتبع المركبات المتعاقد عليها والناقلين. تحديد المسارات والخطوط اللوجستية بين المدن مع رؤية فورية.',
+      'Track contracted vehicles and carriers. Define routes and logistics lanes between cities with real-time visibility.',
     color: 'accent',
-    features: ['تتبع المركبات والناقلين', 'تحسين المسارات', 'خطوط بين المدن'],
+    features: ['Vehicle & Carrier Tracking', 'Route Optimization', 'Inter-City Lanes'],
   },
   {
     icon: FaFileAlt,
-    title: 'الفواتير والمالية',
+    title: 'Invoices & Finance',
     description:
-      'إصدار فواتير ضريبية متوافقة مع هيئة الزكاة والضريبة والجمارك (١٥٪ / ٠٪)، مزامنة أرقام بوالص الشحن، وتسجيل المصروفات التشغيلية لحساب صافي الربح تلقائياً.',
+      'Issue tax invoices compliant with ZATCA (15% / 0%), sync waybill numbers, and record operational expenses to automatically calculate net profit.',
     color: 'accent',
-    features: ['فوترة متوافقة مع هيئة الزكاة', 'مزامنة رقم بوليصة الشحن', 'تتبع المصروفات والأرباح'],
+    features: ['ZATCA-Compliant Invoicing', 'Waybill Number Sync', 'Expense & Profit Tracking'],
   },
   {
     icon: FaUsers,
-    title: 'الفريق والموظفون',
+    title: 'Team & Employees',
     description:
-      'تعيين الصلاحيات والأدوار للموظفين داخل شركتك. التحكم في من يمكنه عرض وتحرير وإدارة كل وحدة.',
+      'Assign permissions and roles to employees within your company. Control who can view, edit, and manage each module.',
     color: 'accent',
-    features: ['التحكم القائم على الأدوار', 'إدارة الصلاحيات', 'سجلات نشاط الفريق'],
+    features: ['Role-Based Access Control', 'Permission Management', 'Team Activity Logs'],
   },
   {
     icon: FaChartBar,
-    title: 'التحليلات والتقارير',
+    title: 'Analytics & Reports',
     description:
-      'تتبع الأداء المالي والتشغيلي والمصروفات والامتثال الضريبي من خلال لوحات معلومات فورية وتقارير قابلة للتصدير.',
+      'Track financial and operational performance, expenses, and tax compliance through real-time dashboards and exportable reports.',
     color: 'accent',
-    features: ['لوحات مالية', 'مقاييس تشغيلية', 'تقارير الامتثال الضريبي'],
+    features: ['Financial Dashboards', 'Operational Metrics', 'Tax Compliance Reports'],
   },
   {
     icon: FaUpload,
-    title: 'العمليات المجمّعة',
+    title: 'Bulk Operations',
     description:
-      'استيراد مئات الطلبات دفعة واحدة عبر Excel. تصدير التقارير والفواتير وبيانات الشحن بتنسيقات قياسية.',
+      'Import hundreds of orders at once via Excel. Export reports, invoices, and shipment data in standard formats.',
     color: 'accent',
-    features: ['استيراد مجمّع عبر Excel', 'تصدير بنقرة واحدة', 'تنسيقات قياسية'],
+    features: ['Bulk Import via Excel', 'One-Click Export', 'Standard Formats'],
   },
 ];
 
 const secondaryFeatures = [
-  { icon: FaMapMarkerAlt, title: 'تتبع GPS فوري', description: 'اعرف بالضبط أين توجد كل مركبة في أي لحظة.' },
-  { icon: FaWallet, title: 'حاسبة صافي الربح', description: 'حساب الربحية تلقائياً لكل شحنة بعد المصروفات.' },
-  { icon: FaFileAlt, title: 'الفوترة الإلكترونية لهيئة الزكاة', description: 'فواتير ضريبية متوافقة جاهزة للوائح السعودية.' },
-  { icon: FaTruck, title: 'إدارة الناقلين', description: 'إدارة الناقلين المتعاقد معهم مع تقييم الأداء.' },
+  { icon: FaMapMarkerAlt, title: 'Real-Time GPS Tracking', description: 'Know exactly where every vehicle is at any moment.' },
+  { icon: FaWallet, title: 'Net Profit Calculator', description: 'Automatically calculate profitability per shipment after expenses.' },
+  { icon: FaFileAlt, title: 'ZATCA E-Invoicing', description: 'Compliant tax invoices ready for Saudi regulations.' },
+  { icon: FaTruck, title: 'Carrier Management', description: 'Manage contracted carriers with performance ratings.' },
 ];
 
 export default function Features() {
@@ -64,14 +64,14 @@ export default function Features() {
       <div className="container-narrow">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="text-accent font-extrabold text-[13.5px] tracking-[0.5px] mb-3.5 block">
-             وحدات المنصة
+             Platform Modules
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-heading tracking-tight mb-4">
-            كل ما تحتاجه شركة الشحن الخاصة بك
+            Everything Your Shipping Company Needs
           </h2>
           <p className="text-lg text-body leading-relaxed">
-            خمس وحدات متكاملة تغطي دورة الخدمات اللوجستية الكاملة — من إنشاء الطلب
-            إلى التسليم النهائي وإصدار الفاتورة.
+            Five integrated modules covering the complete logistics cycle — from order creation
+            to final delivery and invoice issuance.
           </p>
         </div>
 

@@ -107,7 +107,7 @@ export default function CompanyUsers() {
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic" dir="rtl">
+        <div className="space-y-6 text-left">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -116,10 +116,10 @@ export default function CompanyUsers() {
                         <span className="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shadow-xs">
                             <LuUsers className="w-5 h-5" />
                         </span>
-                        إدارة موظفي الشركات
+                        Company Staff Management
                     </h1>
                     <p className="text-xs text-body mt-1">
-                        متابعة وتعيين موظفي الشركات والشركاء اللوجستيين وتحديث صلاحياتهم على المنصة.
+                        Monitor and assign company staff and logistics partners, and update their permissions on the platform.
                     </p>
                 </div>
 
@@ -128,7 +128,7 @@ export default function CompanyUsers() {
                         onClick={() => refetch()}
                         disabled={isFetching}
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
-                        title="تحديث البيانات"
+                        title="Refresh data"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin text-accent" : ""}`} />
                     </button>
@@ -138,7 +138,7 @@ export default function CompanyUsers() {
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>إضافة موظف شركة جديد</span>
+                        <span>Add New Company Staff</span>
                     </button>
                 </div>
             </div>
@@ -146,8 +146,8 @@ export default function CompanyUsers() {
             {/* Error Banner */}
             {isError && (
                 <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-sm font-bold flex items-center justify-between">
-                    <span>حدث خطأ في تحميل بيانات موظفي الشركات: {(error as Error)?.message || "خطأ في الاتصال بالخادم"}</span>
-                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">إعادة المحاولة</button>
+                    <span>An error occurred while loading company staff data: {(error as Error)?.message || "Server connection error"}</span>
+                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">Retry</button>
                 </div>
             )}
 
@@ -157,10 +157,10 @@ export default function CompanyUsers() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الموظفين</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Employees</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.total || totalRecords}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>المسجلين بالمنصة</span>
+                                <span>Registered on the platform</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -173,10 +173,10 @@ export default function CompanyUsers() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الحسابات النشطة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Active Accounts</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.active}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>حسابات مفعلة</span>
+                                <span>Activated accounts</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -189,10 +189,10 @@ export default function CompanyUsers() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">مالكو الشركات</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Company Owners</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{companyUsersList.filter(u => u.userRole === 'owner').length}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>صلاحيات المالك</span>
+                                <span>Owner permissions</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -205,10 +205,10 @@ export default function CompanyUsers() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">المديرون والتشغيليون</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Managers & Operations</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{companyUsersList.filter(u => u.userRole === 'manager').length}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>إدارة العمليات</span>
+                                <span>Operations management</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -222,13 +222,13 @@ export default function CompanyUsers() {
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row items-center justify-between gap-4">
                 {/* Search Input */}
                 <div className="relative w-full md:w-96">
-                    <LuSearch className="w-4 h-4 text-body absolute right-4 top-1/2 -translate-y-1/2" />
+                    <LuSearch className="w-4 h-4 text-body absolute left-4 top-1/2 -translate-y-1/2" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        placeholder="ابحث بالاسم، البريد، الجوال، أو الشركة..."
-                        className="w-full pr-10 pl-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                        placeholder="Search by name, email, phone, or company..."
+                        className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </div>
 
@@ -236,29 +236,29 @@ export default function CompanyUsers() {
                 <div className="flex items-center gap-3 w-full md:w-auto">
                     <div className="flex items-center gap-2 bg-surface-muted px-3 py-1.5 rounded-md border border-border">
                         <LuFilter className="w-4 h-4 text-body" />
-                        <span className="text-xs font-bold text-heading">الدور:</span>
+                        <span className="text-xs font-bold text-heading">Role:</span>
                         <select
                             value={filterRole}
                             onChange={handleRoleFilterChange}
                             className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer"
                         >
-                            <option value="all">الكل</option>
-                            <option value="owner">مالك</option>
-                            <option value="manager">مدير</option>
-                            <option value="staff">موظف</option>
+                            <option value="all">All</option>
+                            <option value="owner">Owner</option>
+                            <option value="manager">Manager</option>
+                            <option value="staff">Staff</option>
                         </select>
                     </div>
 
                     <div className="flex items-center gap-2 bg-surface-muted px-3 py-1.5 rounded-md border border-border">
-                        <span className="text-xs font-bold text-heading">الحالة:</span>
+                        <span className="text-xs font-bold text-heading">Status:</span>
                         <select
                             value={filterStatus}
                             onChange={handleStatusFilterChange}
                             className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer"
                         >
-                            <option value="all">جميع الحالات</option>
-                            <option value="active">نشط</option>
-                            <option value="inactive">غير نشط</option>
+                            <option value="all">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
                         </select>
                     </div>
                 </div>
@@ -268,26 +268,26 @@ export default function CompanyUsers() {
             <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {filteredUsers.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا يوجد موظفون يطابقون خيارات البحث أو التصفية الحالية" icon={LuUsers} />
+                        <EmptyData message="No employees match the current search or filter options" icon={LuUsers} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">الموظف</th>
-                                    <th className="py-3.5 px-4">الشركة التابع لها</th>
-                                    <th className="py-3.5 px-4">رقم الجوال</th>
-                                    <th className="py-3.5 px-4">الدور</th>
-                                    <th className="py-3.5 px-4">الحالة</th>
-                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">Employee</th>
+                                    <th className="py-3.5 px-4">Company</th>
+                                    <th className="py-3.5 px-4">Phone Number</th>
+                                    <th className="py-3.5 px-4">Role</th>
+                                    <th className="py-3.5 px-4">Status</th>
+                                    <th className="py-3.5 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
                                 {filteredUsers.map((user) => {
                                     const companyName = typeof user.companyId === 'object' && user.companyId !== null
                                         ? (user.companyId as Company).companyName
-                                        : 'شركة غير محددة';
+                                        : 'Unspecified Company';
 
                                     const roleBadgeClass = {
                                         owner: 'bg-purple-500/10 text-purple-600 border-purple-200',
@@ -296,9 +296,9 @@ export default function CompanyUsers() {
                                     }[user.userRole || 'staff'];
 
                                     const roleLabel = {
-                                        owner: 'مالك شركة',
-                                        manager: 'مدير تشغيلي',
-                                        staff: 'موظف',
+                                        owner: 'Company Owner',
+                                        manager: 'Operations Manager',
+                                        staff: 'Staff',
                                     }[user.userRole || 'staff'];
 
                                     return (
@@ -341,12 +341,12 @@ export default function CompanyUsers() {
                                                 {user.userIsActive ? (
                                                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-200">
                                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                                        نشط
+                                                        Active
                                                     </span>
                                                 ) : (
                                                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-200">
                                                         <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                                                        غير نشط
+                                                        Inactive
                                                     </span>
                                                 )}
                                             </td>
@@ -356,7 +356,7 @@ export default function CompanyUsers() {
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <button
                                                         onClick={() => setSelectedUserForDetails(user)}
-                                                        title="معاينة سريعة (Popup)"
+                                                        title="Quick preview (Popup)"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-colors cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
@@ -364,7 +364,7 @@ export default function CompanyUsers() {
 
                                                     <Link
                                                         href={`/admin/dashboard/company-users/${user._id}`}
-                                                        title="عرض الصفحة التفصيلية الكاملة"
+                                                        title="View full details page"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-colors cursor-pointer inline-flex items-center justify-center"
                                                     >
                                                         <LuExternalLink className="w-4 h-4" />
@@ -372,7 +372,7 @@ export default function CompanyUsers() {
 
                                                     <button
                                                         onClick={() => setSelectedUserForEdit(user)}
-                                                        title="تعديل"
+                                                        title="Edit"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-colors cursor-pointer"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
@@ -380,7 +380,7 @@ export default function CompanyUsers() {
 
                                                     <button
                                                         onClick={() => setSelectedUserForDelete(user)}
-                                                        title="حذف"
+                                                        title="Delete"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-colors cursor-pointer"
                                                     >
                                                         <LuTrash2 className="w-4 h-4" />
@@ -399,7 +399,7 @@ export default function CompanyUsers() {
                 {totalRecords > 0 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between flex-wrap gap-4 text-xs font-bold text-body">
                         <div>
-                            عرض الصفحات: <span className="text-heading font-latin">{page}</span> من <span className="text-heading font-latin">{totalPages}</span> (إجمالي <span className="text-heading font-latin">{totalRecords}</span> موظف)
+                            Page <span className="text-heading font-latin">{page}</span> of <span className="text-heading font-latin">{totalPages}</span> ({totalRecords} employees total)
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -408,8 +408,8 @@ export default function CompanyUsers() {
                                 disabled={page === 1}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors cursor-pointer disabled:opacity-40"
                             >
-                                <LuChevronRight className="w-4 h-4" />
-                                <span>السابق</span>
+                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Previous</span>
                             </button>
 
                             <button
@@ -417,8 +417,8 @@ export default function CompanyUsers() {
                                 disabled={page >= totalPages}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors cursor-pointer disabled:opacity-40"
                             >
-                                <span>التالي</span>
-                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Next</span>
+                                <LuChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -448,8 +448,8 @@ export default function CompanyUsers() {
                 onClose={handleCloseDelete}
                 onConfirm={handleConfirmDelete}
                 isDeleting={isDeleting}
-                title="تأكيد حذف الموظف"
-                description={`هل أنت تأكد من رغبتك في حذف الموظف "${selectedUserForDelete?.userName}"؟ سيتم تعطيل حسابه مؤقتاً بالمنصة.`}
+                title="Confirm Employee Deletion"
+                description={`Are you sure you want to delete the employee "${selectedUserForDelete?.userName}"? Their account will be temporarily disabled on the platform.`}
             />
 
         </div>

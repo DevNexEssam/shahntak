@@ -23,7 +23,7 @@ export default function DetailsCarriers({ isOpen = true, carrier, onClose }: Det
     if (!isOpen || !carrier) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -34,8 +34,8 @@ export default function DetailsCarriers({ isOpen = true, carrier, onClose }: Det
                             <LuTruck className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تفاصيل بيانات الناقل</h2>
-                            <p className="text-xs text-body mt-0.5">عرض معلومات التشغيل والربط والتواصل للناقل الشريك</p>
+                            <h2 className="text-xl font-extrabold text-heading">Carrier Details</h2>
+                            <p className="text-xs text-body mt-0.5">View operation, integration, and contact information for the partner carrier</p>
                         </div>
                     </div>
 
@@ -43,14 +43,14 @@ export default function DetailsCarriers({ isOpen = true, carrier, onClose }: Det
                         type="button"
                         onClick={onClose}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-6 overflow-y-auto space-y-5 flex-1 text-right">
+                <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                     {/* Carrier Top Identity Card */}
                     <div className="p-4 rounded-2xl bg-surface-muted border border-border flex items-center justify-between flex-wrap gap-4">
@@ -59,7 +59,7 @@ export default function DetailsCarriers({ isOpen = true, carrier, onClose }: Det
                                 <LuTruck className="w-5 h-5" />
                             </div>
                             <div>
-                                <span className="text-xs text-body block font-medium">اسم الناقل</span>
+                                <span className="text-xs text-body block font-medium">Carrier Name</span>
                                 <h3 className="text-base font-extrabold text-heading">{carrier.name}</h3>
                             </div>
                         </div>
@@ -72,11 +72,11 @@ export default function DetailsCarriers({ isOpen = true, carrier, onClose }: Det
                             }`}>
                                 {carrier.isActive !== false ? (
                                     <span className="flex items-center gap-1">
-                                        <LuCheck className="w-3 h-3" /> نشط
+                                        <LuCheck className="w-3 h-3" /> Active
                                     </span>
                                 ) : (
                                     <span className="flex items-center gap-1">
-                                        <LuCloseIcon className="w-3 h-3" /> موقوف
+                                        <LuCloseIcon className="w-3 h-3" /> Suspended
                                     </span>
                                 )}
                             </span>
@@ -88,40 +88,40 @@ export default function DetailsCarriers({ isOpen = true, carrier, onClose }: Det
                         <div className="flex items-center justify-between border-b border-border pb-3">
                             <span className="text-xs text-body font-semibold flex items-center gap-2">
                                 <LuLayers className="w-4 h-4 text-accent" />
-                                نوع الربط والتشغيل:
+                                Integration & Operation Type:
                             </span>
                             <span className="text-sm font-bold text-heading">
-                                {carrier.type === 'external_api' ? 'ربط خارجي عبر البرمجيات (API)' : 'ناقل محلي مباشر'}
+                                {carrier.type === 'external_api' ? 'External Software Integration (API)' : 'Direct Local Carrier'}
                             </span>
                         </div>
 
                         <div className="flex items-center justify-between border-b border-border pb-3">
                             <span className="text-xs text-body font-semibold flex items-center gap-2">
                                 <LuPhone className="w-4 h-4 text-accent" />
-                                هاتف التواصل:
+                                Contact Phone:
                             </span>
                             <span className="text-sm font-bold text-heading font-latin">
-                                {carrier.contactPhone || 'غير محدد'}
+                                {carrier.contactPhone || 'Not specified'}
                             </span>
                         </div>
 
                         <div className="flex items-center justify-between border-b border-border pb-3">
                             <span className="text-xs text-body font-semibold flex items-center gap-2">
                                 <LuMail className="w-4 h-4 text-accent" />
-                                البريد الإلكتروني:
+                                Email Address:
                             </span>
                             <span className="text-sm font-bold text-heading font-latin">
-                                {carrier.contactEmail || 'غير محدد'}
+                                {carrier.contactEmail || 'Not specified'}
                             </span>
                         </div>
 
                         <div className="flex items-center justify-between pt-1">
                             <span className="text-xs text-body font-semibold flex items-center gap-2">
                                 <LuCalendar className="w-4 h-4 text-body/60" />
-                                تاريخ التسجيل بالمنصة:
+                                Platform Registration Date:
                             </span>
                             <span className="text-xs font-bold text-heading">
-                                {carrier.createdAt ? new Date(carrier.createdAt).toLocaleDateString('ar-SA') : 'غير محدد'}
+                                {carrier.createdAt ? new Date(carrier.createdAt).toLocaleDateString('en-US') : 'Not specified'}
                             </span>
                         </div>
                     </div>
@@ -135,7 +135,7 @@ export default function DetailsCarriers({ isOpen = true, carrier, onClose }: Det
                         onClick={onClose}
                         className="px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-xs hover:shadow transition-all cursor-pointer"
                     >
-                        إغلاق
+                        Close
                     </button>
                 </div>
 

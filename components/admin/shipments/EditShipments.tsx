@@ -138,7 +138,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
             {/* Modal Container */}
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -180,9 +180,8 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     disabled={isSubmitting || isLoadingCompanies}
                                     value={formValues.companyId}
                                     onChange={(e) => setFormValues({ ...formValues, companyId: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
-                                        fieldErrors.companyId ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.companyId ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 >
                                     <option value="">اختر الشركة...</option>
                                     {companies.map((comp) => (
@@ -223,9 +222,8 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     disabled={isSubmitting}
                                     value={formValues.origin}
                                     onChange={(e) => setFormValues({ ...formValues, origin: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.origin ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.origin ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                             </div>
 
@@ -239,9 +237,8 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     disabled={isSubmitting}
                                     value={formValues.destination}
                                     onChange={(e) => setFormValues({ ...formValues, destination: e.target.value })}
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.destination ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.destination ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                             </div>
                         </div>
@@ -323,9 +320,8 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     onChange={(e) => setFormValues({ ...formValues, shippingCost: Number(e.target.value) })}
                                     min={0}
                                     step="any"
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.shippingCost ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.shippingCost ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                             </div>
 
@@ -341,9 +337,8 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     onChange={(e) => setFormValues({ ...formValues, customerPrice: Number(e.target.value) })}
                                     min={0}
                                     step="any"
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.customerPrice ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.customerPrice ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                             </div>
                         </div>

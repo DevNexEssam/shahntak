@@ -16,15 +16,15 @@ import {
 import Image from 'next/image';
 
 const navLinks = [
-    { label: 'الميزات', href: '#features' },
-    { label: 'الأسعار', href: '#pricing' },
-    { label: 'آراء العملاء', href: '#testimonials' },
-    { label: 'اتصل بنا', href: '#cta' },
+    { label: 'Features', href: '#features' },
+    { label: 'Pricing', href: '#pricing' },
+    { label: 'Testimonials', href: '#testimonials' },
+    { label: 'Contact Us', href: '#cta' },
 ];
 
 const resourcesLinks = [
-    { label: 'مستودع GitHub', href: 'https://github.com/DevNexEssam/shahntak', icon: FaGithub, description: 'الكود المصدري والمشكلات' },
-    { label: 'نجمة على GitHub', href: 'https://github.com/DevNexEssam/shahntak', icon: FaStar, description: 'أظهر دعمك' },
+    { label: 'GitHub Repository', href: 'https://github.com/DevNexEssam/shahntak', icon: FaGithub, description: 'Source code and issues' },
+    { label: 'Star on GitHub', href: 'https://github.com/DevNexEssam/shahntak', icon: FaStar, description: 'Show your support' },
 ];
 
 export default function Navbar() {
@@ -65,33 +65,32 @@ export default function Navbar() {
     const userRole = (session?.user as any)?.role;
     const isAdmin = userRole === 'super' || userRole === 'admin';
     const dashboardHref = isAdmin ? '/admin/dashboard' : '/company/dashboard';
-    const userName = session?.user?.name || session?.user?.email || 'المستخدم';
+    const userName = session?.user?.name || session?.user?.email || 'User';
 
     const getRoleLabel = (role?: string) => {
         switch (role) {
             case 'super':
             case 'admin':
-                return 'مدير المنصة';
+                return 'Platform Admin';
             case 'company':
-                return 'حساب شركة';
+                return 'Company Account';
             case 'owner':
-                return 'مالك الحساب';
+                return 'Account Owner';
             case 'manager':
-                return 'مدير تشغيلي';
+                return 'Operations Manager';
             case 'staff':
-                return 'موظف';
+                return 'Staff';
             default:
-                return 'مستخدم مسجّل';
+                return 'Registered User';
         }
     };
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-                scrolled
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
                     ? 'bg-surface/90 backdrop-blur-md border-b border-border shadow-sm'
                     : 'bg-surface/80 backdrop-blur-md border-b border-border/50'
-            }`}
+                }`}
         >
             <nav className="container-narrow flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
                 {/* Logo */}
@@ -100,7 +99,7 @@ export default function Navbar() {
                         <FaTruck className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <span className="text-lg font-bold text-heading tracking-tight">
-                        شحنَتك
+                        Shahntak
                     </span>
                 </Link>
 
@@ -123,11 +122,10 @@ export default function Navbar() {
                             onClick={() => setResourcesOpen(!resourcesOpen)}
                             className="flex items-center gap-1.5 text-sm font-medium text-body hover:text-heading transition-colors duration-200 cursor-pointer"
                         >
-                            <span>الموارد</span>
+                            <span>Resources</span>
                             <FaChevronDown
-                                className={`w-3 h-3 transition-transform duration-200 ${
-                                    resourcesOpen ? 'rotate-180 text-primary' : ''
-                                }`}
+                                className={`w-3 h-3 transition-transform duration-200 ${resourcesOpen ? 'rotate-180 text-primary' : ''
+                                    }`}
                             />
                         </button>
 
@@ -175,7 +173,7 @@ export default function Navbar() {
                         <div className="relative" ref={userDropdownRef}>
                             <button
                                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                                className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-surface border border-border hover:border-primary/40 hover:bg-surface-muted/50 transition-all text-right shadow-xs cursor-pointer"
+                                className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-surface border border-border hover:border-primary/40 hover:bg-surface-muted/50 transition-all text-left shadow-xs cursor-pointer"
                             >
                                 <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground font-bold flex items-center justify-center shrink-0 text-sm shadow-xs">
                                     {session.user.image ? (
@@ -185,10 +183,10 @@ export default function Navbar() {
                                             className="w-8 h-8 rounded-lg object-cover"
                                         />
                                     ) : (
-                                        userName[0]?.toUpperCase() || 'ش'
+                                        userName[0]?.toUpperCase() || 'U'
                                     )}
                                 </div>
-                                <div className="flex flex-col text-right leading-tight min-w-0">
+                                <div className="flex flex-col text-left leading-tight min-w-0">
                                     <span className="text-sm font-bold text-heading truncate max-w-[120px]">
                                         {userName}
                                     </span>
@@ -197,17 +195,16 @@ export default function Navbar() {
                                     </span>
                                 </div>
                                 <FaChevronDown
-                                    className={`w-3 h-3 text-body-muted transition-transform duration-200 shrink-0 ${
-                                        userDropdownOpen ? 'rotate-180 text-primary' : ''
-                                    }`}
+                                    className={`w-3 h-3 text-body-muted transition-transform duration-200 shrink-0 ${userDropdownOpen ? 'rotate-180 text-primary' : ''
+                                        }`}
                                 />
                             </button>
 
                             {userDropdownOpen && (
                                 <div className="absolute left-0 mt-2 w-60 rounded-2xl bg-surface border border-border shadow-xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                                    <div className="px-4 py-3 border-b border-border/80 text-right bg-surface-muted/30">
+                                    <div className="px-4 py-3 border-b border-border/80 text-left bg-surface-muted/30">
                                         <p className="text-sm font-bold text-heading truncate">{userName}</p>
-                                        <p className="text-xs text-body-muted truncate mt-0.5" dir="ltr">
+                                        <p className="text-xs text-body-muted truncate mt-0.5" >
                                             {session.user.email}
                                         </p>
                                         <span className="inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-accent/10 text-accent border border-accent/20">
@@ -219,10 +216,10 @@ export default function Navbar() {
                                         <Link
                                             href={dashboardHref}
                                             onClick={() => setUserDropdownOpen(false)}
-                                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-body hover:text-heading hover:bg-surface-muted transition-colors text-right"
+                                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-body hover:text-heading hover:bg-surface-muted transition-colors text-left"
                                         >
                                             <FaTachometerAlt className="w-4 h-4 text-accent shrink-0" />
-                                            <span>لوحة التحكم</span>
+                                            <span>Dashboard</span>
                                         </Link>
                                     </div>
 
@@ -232,10 +229,10 @@ export default function Navbar() {
                                                 setUserDropdownOpen(false);
                                                 signOut({ callbackUrl: '/' });
                                             }}
-                                            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-500/10 transition-colors text-right cursor-pointer"
+                                            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-500/10 transition-colors text-left cursor-pointer"
                                         >
                                             <FaSignOutAlt className="w-4 h-4 shrink-0" />
-                                            <span>تسجيل الخروج</span>
+                                            <span>Sign Out</span>
                                         </button>
                                     </div>
                                 </div>
@@ -247,10 +244,10 @@ export default function Navbar() {
                                 href="/company/login"
                                 className="text-sm font-medium text-body hover:text-heading transition-colors"
                             >
-                                تسجيل الدخول
+                                Sign In
                             </Link>
                             <Link href="#pricing" className="btn-accent">
-                                ابدأ الآن
+                                Get Started
                             </Link>
                         </>
                     )}
@@ -260,7 +257,7 @@ export default function Navbar() {
                 <button
                     onClick={() => setMobileOpen(!mobileOpen)}
                     className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-muted transition-colors cursor-pointer"
-                    aria-label="القائمة"
+                    aria-label="Menu"
                 >
                     {mobileOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
                 </button>
@@ -283,7 +280,7 @@ export default function Navbar() {
 
                         <div className="pt-3 border-t border-border mt-3">
                             <p className="px-4 pb-2 text-xs font-secondary font-medium text-body-muted uppercase tracking-wider">
-                                الموارد
+                                Resources
                             </p>
                             {resourcesLinks.map((item) => {
                                 const Icon = item.icon;
@@ -306,7 +303,7 @@ export default function Navbar() {
                         <div className="pt-3 border-t border-border mt-3 space-y-2">
                             {status === 'authenticated' && session?.user ? (
                                 <div className="p-3 bg-surface-muted/50 rounded-xl border border-border/80 space-y-3">
-                                    <div className="flex items-center gap-3 text-right">
+                                    <div className="flex items-center gap-3 text-left">
                                         <div className="w-10 h-10 rounded-lg bg-primary text-primary-foreground font-bold flex items-center justify-center shrink-0 text-base">
                                             {session.user.image ? (
                                                 <Image
@@ -315,14 +312,14 @@ export default function Navbar() {
                                                     className="w-10 h-10 rounded-lg object-cover"
                                                 />
                                             ) : (
-                                                userName[0]?.toUpperCase() || 'ش'
+                                                userName[0]?.toUpperCase() || 'U'
                                             )}
                                         </div>
                                         <div className="flex flex-col min-w-0">
                                             <span className="text-sm font-bold text-heading truncate">
                                                 {userName}
                                             </span>
-                                            <span className="text-xs text-body-muted truncate" dir="ltr">
+                                            <span className="text-xs text-body-muted truncate" >
                                                 {session.user.email}
                                             </span>
                                         </div>
@@ -335,17 +332,17 @@ export default function Navbar() {
                                             className="flex items-center gap-2.5 px-3 py-2 text-sm font-semibold bg-primary text-primary-foreground rounded-lg transition-colors"
                                         >
                                             <FaTachometerAlt className="w-4 h-4 shrink-0" />
-                                            <span>لوحة التحكم</span>
+                                            <span>Dashboard</span>
                                         </Link>
                                         <button
                                             onClick={() => {
                                                 setMobileOpen(false);
                                                 signOut({ callbackUrl: '/' });
                                             }}
-                                            className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10 rounded-lg transition-colors text-right cursor-pointer"
+                                            className="w-full flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10 rounded-lg transition-colors text-left cursor-pointer"
                                         >
                                             <FaSignOutAlt className="w-4 h-4 shrink-0" />
-                                            <span>تسجيل الخروج</span>
+                                            <span>Sign Out</span>
                                         </button>
                                     </div>
                                 </div>
@@ -356,14 +353,14 @@ export default function Navbar() {
                                         onClick={() => setMobileOpen(false)}
                                         className="block w-full px-4 py-2.5 text-sm font-medium text-body hover:text-heading transition-colors text-center border border-border rounded-xl"
                                     >
-                                        تسجيل الدخول
+                                        Sign In
                                     </Link>
                                     <Link
                                         href="#pricing"
                                         onClick={() => setMobileOpen(false)}
                                         className="btn-accent w-full text-center block"
                                     >
-                                        ابدأ الآن
+                                        Get Started
                                     </Link>
                                 </>
                             )}

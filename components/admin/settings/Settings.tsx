@@ -71,7 +71,7 @@ export default function Settings() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-heading mb-1.5">النطاق الأساسي (Root Domain)</label>
-                            <input type="text" defaultValue="shahnetak.sa" className="w-full px-3.5 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin" dir="ltr" />
+                            <input type="text" defaultValue="shahnetak.sa" className="w-full px-3.5 py-2.5 rounded-xl bg-surface-muted border border-border text-sm text-heading font-latin" />
                         </div>
                         <div>
                             <label className="block text-xs font-bold text-heading mb-1.5">ضريبة القيمة المضافة (VAT)</label>

@@ -2,22 +2,22 @@ import { FaUserPlus, FaUsers, FaBox } from 'react-icons/fa';
 
 const steps = [
   {
-    number: '٠١',
+    number: '01',
     icon: FaUserPlus,
-    title: 'سجل شركتك',
-    body: 'أنشئ حساب شركتك في دقائق. أضف تفاصيل عملك وفروعك وخطوطك اللوجستية — بدون رسوم إعداد، بدون عقود طويلة الأجل.',
+    title: 'Register Your Company',
+    body: 'Create your company account in minutes. Add your business details, branches, and logistics lanes — no setup fees, no long-term contracts.',
   },
   {
-    number: '٠٢',
+    number: '02',
     icon: FaUsers,
-    title: 'أضف الموظفين والسائقين',
-    body: 'ادعُ أعضاء فريقك، وحدد الأدوار والصلاحيات، وسجل سائقيك والناقلين المتعاقد معهم. يحصل كل شخص على مستوى الوصول الخاص به.',
+    title: 'Add Employees & Drivers',
+    body: 'Invite your team members, define roles and permissions, and register your drivers and contracted carriers. Everyone gets their own access level.',
   },
   {
-    number: '٠٣',
+    number: '03',
     icon: FaBox,
-    title: 'ابدأ في إدارة الشحنات',
-    body: 'أنشئ الطلبات أو استوردها، ووحّدها في شحنات، وخصصها للمركبات والمسارات، وتتبع التسليم في الوقت الفعلي، وأصدر فواتير متوافقة مع هيئة الزكاة والضريبة والجمارك.',
+    title: 'Start Managing Shipments',
+    body: 'Create or import orders, consolidate them into shipments, assign them to vehicles and routes, track delivery in real time, and issue ZATCA-compliant invoices.',
   },
 ];
 
@@ -27,13 +27,13 @@ export default function HowItWorks() {
       <div className="mx-auto max-w-6xl px-5">
         <div className="mx-auto max-w-[720px] text-center">
           <span className="text-sm font-semibold uppercase tracking-widest text-accent">
-            طريقة العمل
+            How It Works
           </span>
           <h2 className="mt-3 text-3xl font-semibold text-heading md:text-4xl">
-            انطلق في ثلاث خطوات
+            Get Started in Three Steps
           </h2>
           <p className="mt-4 text-lg">
-            من التسجيل إلى أول شحنة لك — شحناتك تجعل عمليتك تنطلق بسرعة.
+            From sign-up to your first shipment — Shahntak gets your operation up and running fast.
           </p>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-3">

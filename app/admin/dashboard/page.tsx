@@ -46,13 +46,13 @@ export default function AdminDashboardPage() {
     const alerts = alertsRes?.data || [];
 
     return (
-        <div className="space-y-8" dir="rtl">
+        <div className="space-y-8" dir="ltr">
 
             {/* Page Title & Refresh Action */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-heading">مركز العمليات الرئيسي</h1>
-                    <p className="text-sm text-body mt-1">نظرة عامة لحظية على أداء جميع شركات الشحن المسجلة على منصة شحنتك.</p>
+                    <h1 className="text-2xl font-extrabold text-heading">Main Operations Center</h1>
+                    <p className="text-sm text-body mt-1">A real-time overview of the performance of all shipping companies registered on the Shahntak platform.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <button
@@ -61,7 +61,7 @@ export default function AdminDashboardPage() {
                         className="text-xs font-semibold text-body bg-surface hover:bg-surface-muted px-3 py-1.5 rounded-lg border border-border flex items-center gap-1.5 transition-colors disabled:opacity-60"
                     >
                         <LuRefreshCw className={`w-3.5 h-3.5 ${isKpisFetching ? "animate-spin text-accent" : ""}`} />
-                        <span>{isKpisFetching ? "جاري التحديث..." : "تحديث البيانات"}</span>
+                        <span>{isKpisFetching ? "Refreshing..." : "Refresh Data"}</span>
                     </button>
                 </div>
             </div>
@@ -87,9 +87,9 @@ export default function AdminDashboardPage() {
                                 {kpis?.companiesGrowthPct && kpis.companiesGrowthPct > 0 ? `+${kpis.companiesGrowthPct}%` : `${kpis?.companiesGrowthPct || 0}%`}
                             </span>
                         </div>
-                        <span className="text-xs font-semibold text-body block mb-1">الشركات النشطة المسجلة</span>
+                        <span className="text-xs font-semibold text-body block mb-1">Active Registered Companies</span>
                         <b className="font-latin text-2xl sm:text-3xl font-extrabold text-heading">
-                            {(kpis?.totalCompanies || 0).toLocaleString('ar-SA')} شركة
+                            {(kpis?.totalCompanies || 0).toLocaleString('en-US')} companies
                         </b>
                     </div>
 
@@ -108,9 +108,9 @@ export default function AdminDashboardPage() {
                                 {kpis?.shipmentsGrowthPct && kpis.shipmentsGrowthPct > 0 ? `+${kpis.shipmentsGrowthPct}%` : `${kpis?.shipmentsGrowthPct || 0}%`}
                             </span>
                         </div>
-                        <span className="text-xs font-semibold text-body block mb-1">شحنات اليوم (جميع الشركات)</span>
+                        <span className="text-xs font-semibold text-body block mb-1">Today's Shipments (All Companies)</span>
                         <b className="font-latin text-2xl sm:text-3xl font-extrabold text-heading">
-                            {(kpis?.todayShipments || 0).toLocaleString('ar-SA')}
+                            {(kpis?.todayShipments || 0).toLocaleString('en-US')}
                         </b>
                     </div>
 
@@ -129,9 +129,9 @@ export default function AdminDashboardPage() {
                                 {kpis?.revenueGrowthPct && kpis.revenueGrowthPct > 0 ? `+${kpis.revenueGrowthPct}%` : `${kpis?.revenueGrowthPct || 0}%`}
                             </span>
                         </div>
-                        <span className="text-xs font-semibold text-body block mb-1">عوائد الاشتراكات (شهرياً)</span>
+                        <span className="text-xs font-semibold text-body block mb-1">Subscription Revenue (Monthly)</span>
                         <b className="font-latin text-2xl sm:text-3xl font-extrabold text-heading">
-                            {(kpis?.monthlyRevenue || 0).toLocaleString('ar-SA')} <span className="text-xs font-normal">ر.س</span>
+                            {(kpis?.monthlyRevenue || 0).toLocaleString('en-US')} <span className="text-xs font-normal">SAR</span>
                         </b>
                     </div>
 
@@ -142,12 +142,12 @@ export default function AdminDashboardPage() {
                                 <LuUsers className="w-6 h-6" />
                             </span>
                             <span className="text-xs font-bold text-success bg-success-soft px-2 py-0.5 rounded-full">
-                                نشط الآن
+                                Active Now
                             </span>
                         </div>
-                        <span className="text-xs font-semibold text-body block mb-1">إجمالي الأسطول والمركبات</span>
+                        <span className="text-xs font-semibold text-body block mb-1">Total Fleet & Vehicles</span>
                         <b className="font-latin text-2xl sm:text-3xl font-extrabold text-heading">
-                            {(kpis?.activeDrivers || 0).toLocaleString('ar-SA')} مركبة
+                            {(kpis?.activeDrivers || 0).toLocaleString('en-US')} vehicles
                         </b>
                     </div>
 
@@ -165,26 +165,26 @@ export default function AdminDashboardPage() {
                         <div className="bg-surface rounded-2xl border border-border p-6 shadow-xs">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h2 className="text-base font-extrabold text-heading">أعلى شركات الشحن نشاطاً</h2>
-                                    <p className="text-xs text-body mt-0.5">ترتيب الشركات حسب عدد الشحنات اليومية واستخدام الباقة.</p>
+                                    <h2 className="text-base font-extrabold text-heading">Most Active Shipping Companies</h2>
+                                    <p className="text-xs text-body mt-0.5">Companies ranked by daily shipments and plan usage.</p>
                                 </div>
                                 <Link
                                     href="/admin/companies"
                                     className="text-xs font-bold text-accent hover:underline inline-flex items-center gap-1"
                                 >
-                                    عرض كل الشركات <LuArrowUpRight className="w-3.5 h-3.5" />
+                                    View All Companies <LuArrowUpRight className="w-3.5 h-3.5" />
                                 </Link>
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="w-full text-right text-sm">
+                                <table className="w-full text-left text-sm">
                                     <thead>
                                         <tr className="border-b border-border text-body text-xs">
-                                            <th className="pb-3 font-bold">الشركة</th>
-                                            <th className="pb-3 font-bold">الخطة</th>
-                                            <th className="pb-3 font-bold">شحنات اليوم</th>
-                                            <th className="pb-3 font-bold">استهلاك الخطة</th>
-                                            <th className="pb-3 font-bold">الحالة</th>
+                                            <th className="pb-3 font-bold">Company</th>
+                                            <th className="pb-3 font-bold">Plan</th>
+                                            <th className="pb-3 font-bold">Today's Shipments</th>
+                                            <th className="pb-3 font-bold">Plan Usage</th>
+                                            <th className="pb-3 font-bold">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border">
@@ -193,7 +193,7 @@ export default function AdminDashboardPage() {
                                                 <tr key={co._id} className="hover:bg-surface-muted/50 transition-colors">
                                                     <td className="py-3.5 font-bold text-heading">{co.companyName}</td>
                                                     <td className="py-3.5 text-xs text-body font-semibold">{co.planName}</td>
-                                                    <td className="py-3.5 font-latin font-bold text-heading">{co.todayShipments.toLocaleString('ar-SA')}</td>
+                                                    <td className="py-3.5 font-latin font-bold text-heading">{co.todayShipments.toLocaleString('en-US')}</td>
                                                     <td className="py-3.5">
                                                         <div className="w-24 bg-surface-muted rounded-full h-2 overflow-hidden border border-border">
                                                             <div
@@ -205,7 +205,7 @@ export default function AdminDashboardPage() {
                                                     </td>
                                                     <td className="py-3.5">
                                                         <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
-                                                            co.status === 'نشط'
+                                                            co.status === 'Active'
                                                                 ? 'bg-success-soft text-success'
                                                                 : 'bg-warning-soft text-warning'
                                                         }`}>
@@ -217,7 +217,7 @@ export default function AdminDashboardPage() {
                                         ) : (
                                             <tr>
                                                 <td colSpan={5} className="py-6 text-center text-xs text-body">
-                                                    لا توجد بيانات شركات مسجلة حالياً
+                                                    No registered company data available at the moment
                                                 </td>
                                             </tr>
                                         )}
@@ -238,7 +238,7 @@ export default function AdminDashboardPage() {
                         <div className="bg-surface rounded-2xl border border-border p-6 shadow-xs">
                             <div className="flex items-center gap-2 mb-4 text-heading">
                                 <FaAngleRight className="w-5 h-5 text-warning" />
-                                <h2 className="text-base font-extrabold">تنبيهات المنصة العاجلة</h2>
+                                <h2 className="text-base font-extrabold">Urgent Platform Alerts</h2>
                             </div>
 
                             <div className="space-y-3.5">
@@ -265,20 +265,20 @@ export default function AdminDashboardPage() {
 
                     {/* Quick Platform Controls */}
                     <div className="bg-heading text-white rounded-2xl p-6 shadow-md">
-                        <h3 className="font-extrabold text-sm mb-2 text-white">إجراءات سريعة للمنصة</h3>
-                        <p className="text-xs text-white/60 mb-4">أدوات التحكم الشاملة للعمليات والبنية التحتية.</p>
+                        <h3 className="font-extrabold text-sm mb-2 text-white">Quick Platform Actions</h3>
+                        <p className="text-xs text-white/60 mb-4">Comprehensive controls for operations and infrastructure.</p>
                         <div className="grid grid-cols-2 gap-2">
                             <Link
                                 href="/admin/invoices"
                                 className="p-2.5 rounded-md bg-white/10 hover:bg-white/15 text-xs font-bold text-center transition-colors block text-white"
                             >
-                                توليد فواتير الشهر
+                                Generate Monthly Invoices
                             </Link>
                             <Link
                                 href="/admin/reports"
                                 className="p-2.5 rounded-md bg-white/10 hover:bg-white/15 text-xs font-bold text-center transition-colors block text-white"
                             >
-                                تصدير تقرير شامل
+                                Export Full Report
                             </Link>
                         </div>
                     </div>

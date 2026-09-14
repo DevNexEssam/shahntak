@@ -89,7 +89,7 @@ export default function Users() {
   if (isLoading) return <Loading />;
 
   return (
-    <section className="p-6 text-right" dir="rtl">
+    <section className="p-6 text-right">
       {/* معالجة أخطاء الاستعلام الجانبي */}
       {isError && <ErrorMessege message={getErrorMessage(error)} />}
 
@@ -252,7 +252,7 @@ export default function AddUser({ onClose }: AddUserProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" dir="rtl">
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col text-right">
         <div className="flex justify-between items-center p-5 border-b">
           <h2 className="text-lg font-bold flex items-center gap-2">
@@ -359,7 +359,7 @@ export default function EditUser({ user, onClose }: EditUserProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" dir="rtl">
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col text-right">
         <div className="flex justify-between items-center p-5 border-b">
           <h2 className="text-lg font-bold flex items-center gap-2">
@@ -421,7 +421,7 @@ export default function DetailsUser({ user, isOpen, onClose }: DetailsUserProps)
   if (!isOpen || !user) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" dir="rtl">
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden flex flex-col text-right">
         <div className="flex justify-between items-center p-5 border-b bg-gray-50">
           <h3 className="text-lg font-bold flex items-center gap-2 text-gray-800">

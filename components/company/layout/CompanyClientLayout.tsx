@@ -34,7 +34,7 @@ export default function CompanyClientLayout({ children }: { children: React.Reac
     }
 
     return (
-        <div className="flex min-h-screen bg-surface-muted text-body font-arabic selection:bg-accent selection:text-white" dir="rtl">
+        <div className="flex min-h-screen bg-surface-muted text-body font-arabic selection:bg-accent selection:text-white">
             {/* Sidebar */}
             <CompanySidebar
                 isCollapsed={isSidebarCollapsed}

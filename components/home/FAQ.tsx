@@ -3,25 +3,25 @@ import { HiPlus } from 'react-icons/hi2';
 
 const faqData = [
     {
-        q: 'هل بيانات شركتنا منفصلة عن بيانات الشركات الأخرى على المنصة؟',
-        a: 'نعم بالكامل. كل شركة تحصل على مساحة عمل معزولة تماماً — الطلبات والفروع والسائقين والتقارير خاصة بشركتك فقط ولا تظهر لأي شركة أخرى مسجّلة على شَحنتك.',
+        q: 'Is our company data separated from other companies on the platform?',
+        a: 'Completely. Every company gets a fully isolated workspace — orders, branches, drivers, and reports belong only to your company and are never visible to any other company registered on Shahntak.',
         defaultOpen: true,
     },
     {
-        q: 'هل يوجد تطبيق منفصل للسائقين؟',
-        a: 'نعم، السائقون يستخدمون تطبيق جوال مستقل لاستلام المهام، تحديث حالة الشحنة، والتواصل مع الفرع مباشرة أثناء التوصيل.',
+        q: 'Is there a separate app for drivers?',
+        a: 'Yes, drivers use an independent mobile app to receive tasks, update shipment status, and communicate directly with the branch during delivery.',
     },
     {
-        q: 'هل ينفع نلغي الاشتراك أو نغيّر الخطة في أي وقت؟',
-        a: 'أكيد. تقدر ترفع أو تنزّل خطتك، أو تلغي اشتراكك في أي وقت من إعدادات الحساب مباشرة، بدون فترات التزام طويلة.',
+        q: 'Can we cancel the subscription or change the plan at any time?',
+        a: 'Absolutely. You can upgrade or downgrade your plan, or cancel your subscription at any time directly from your account settings, with no long-term commitments.',
     },
     {
-        q: 'هل شَحنتك يتكامل مع المتجر الإلكتروني بتاعنا؟',
-        a: 'نعم، تقدر تربط شَحنتك بمنصات زي سلة وزد وووكومرس، بالإضافة لواجهة API مفتوحة و Webhooks لبناء تكامل مخصص مع أي نظام تستخدمه.',
+        q: 'Does Shahntak integrate with our online store?',
+        a: 'Yes, you can connect Shahntak to platforms like Salla, Zid, and WooCommerce, plus an open API and Webhooks to build custom integrations with any system you use.',
     },
     {
-        q: 'هل نحتاج فريق تقني عشان نبدأ استخدام المنصة؟',
-        a: 'لا. لوحة التحكم مصممة عشان تبدأ بدون خبرة تقنية — تسجّل شركتك، تضيف فروعك وسائقيك، وتبدأ خلال دقائق. فريق الدعم متاح لو احتجت مساعدة.',
+        q: 'Do we need a technical team to start using the platform?',
+        a: 'No. The dashboard is designed so you can start without any technical expertise — register your company, add your branches and drivers, and get going within minutes. Our support team is available if you need help.',
     },
 ];
 
@@ -32,13 +32,13 @@ export const Faq: React.FC = () => {
 
                 <div className="max-w-[640px] mx-auto text-center mb-14">
                     <span className="text-accent font-extrabold text-[13.5px] tracking-[0.5px] mb-3.5 block">
-                        الأسئلة الشائعة
+                        FAQ
                     </span>
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-heading tracking-[-0.4px] mb-3.5">
-                        عندك سؤال؟ غالباً عندنا الإجابة
+                        Got a Question? We Probably Have the Answer
                     </h2>
                     <p className="text-[16.5px] text-body">
-                        ما لقيت إجابتك هنا؟ تواصل مع فريقنا وبنرد عليك بسرعة.
+                        Didn't find your answer here? Reach out to our team and we'll get back to you quickly.
                     </p>
                 </div>
 

@@ -27,7 +27,7 @@ export default function DetailsCompanyEmployeePopup({ isOpen = true, onClose, em
     const isActive = employeeData.userIsActive !== false && employeeData.status !== 'inactive';
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150">
             <div className="printable-area w-full max-w-xl bg-surface border border-border rounded-md shadow-xs overflow-hidden flex flex-col">
 
                 {/* Header */}

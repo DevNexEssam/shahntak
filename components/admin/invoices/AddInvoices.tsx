@@ -57,7 +57,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -70,7 +70,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -81,8 +81,8 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                             <LuReceipt className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إصدار فاتورة جديدة</h2>
-                            <p className="text-xs text-body mt-0.5">إنشاء فاتورة خدمات لوجستية وتحديد المستفيد والمبلغ والقيم</p>
+                            <h2 className="text-xl font-extrabold text-heading">Issue New Invoice</h2>
+                            <p className="text-xs text-body mt-0.5">Create a logistics services invoice and specify the beneficiary, amount, and values</p>
                         </div>
                     </div>
 
@@ -91,7 +91,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -99,15 +99,15 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         <div className="bg-accent/10 border border-accent/30 p-3.5 rounded-xl flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg bg-accent text-accent-foreground flex items-center justify-center shrink-0">
                                 <LuHash className="w-4 h-4" />
                             </div>
                             <div>
-                                <span className="text-xs font-bold text-heading block">رقم الفاتورة الآلي</span>
-                                <span className="text-[11px] text-body">سيتم توليد رقم الفاتورة فريداً أوتوماتيكياً من النظام فور الاعتماد (مثال: INV-2026-XXXX)</span>
+                                <span className="text-xs font-bold text-heading block">Automatic Invoice Number</span>
+                                <span className="text-[11px] text-body">A unique invoice number will be generated automatically by the system upon confirmation (e.g., INV-2026-XXXX)</span>
                             </div>
                         </div>
 
@@ -137,7 +137,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-body" />
-                                    إجمالي الفاتورة (ر.س) <span className="text-red-500">*</span>
+                                    Invoice Total (SAR) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -157,7 +157,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCalendar className="w-3.5 h-3.5 text-body" />
-                                    تاريخ الاستحقاق
+                                    Due Date
                                 </label>
                                 <input
                                     type="date"
@@ -171,7 +171,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
 
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading block">
-                                حالة الفاتورة
+                                Invoice Status
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -179,11 +179,11 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="issued">صادرة بانتظار التحصيل</option>
-                                <option value="paid">مدفوعة ومحصلة</option>
-                                <option value="draft">مسودة</option>
-                                <option value="overdue">متأخرة السداد</option>
-                                <option value="cancelled">ملغاة</option>
+                                <option value="issued">Issued — Awaiting Collection</option>
+                                <option value="paid">Paid & Collected</option>
+                                <option value="draft">Draft</option>
+                                <option value="overdue">Overdue</option>
+                                <option value="cancelled">Cancelled</option>
                             </select>
                         </div>
 
@@ -197,7 +197,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -205,7 +205,7 @@ export default function AddInvoices({ isOpen = true, onClose }: AddInvoicesProps
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
+                            {isSubmitting ? "Adding..." : "Save Data"}
                         </button>
                     </div>
                 </form>

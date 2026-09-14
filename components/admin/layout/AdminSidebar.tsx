@@ -32,72 +32,72 @@ interface NavItem {
 
 const navItems: NavItem[] = [
     {
-        title: 'لوحة التحكم',
+        title: 'Dashboard',
         href: '/admin/dashboard',
         icon: <LuLayoutDashboard className="w-5 h-5" />,
     },
     {
-        title: 'الشركات المشتركة',
+        title: 'Subscribed Companies',
         href: '/admin/dashboard/companies',
         icon: <LuBuilding2 className="w-5 h-5" />,
     },
     {
-        title: 'الباقات السحابية',
+        title: 'Cloud Plans',
         href: '/admin/dashboard/plans',
         icon: <LuCreditCard className="w-5 h-5" />,
     },
     {
-        title: 'اشتراكات الشركات',
+        title: 'Company Subscriptions',
         href: '/admin/dashboard/subscriptions',
         icon: <LuCrown className="w-5 h-5" />,
     },
     {
-        title: 'موظفو الشركات',
+        title: 'Company Staff',
         href: '/admin/dashboard/company-users',
         icon: <LuUsers className="w-5 h-5" />,
     },
     {
-        title: 'الناقلون والشركاء',
+        title: 'Carriers & Partners',
         href: '/admin/dashboard/carriers',
         icon: <LuTruck className="w-5 h-5" />,
     },
     {
-        title: 'إدارة الطلبات',
+        title: 'Order Management',
         href: '/admin/dashboard/orders',
         icon: <LuPackage className="w-5 h-5" />,
     },
     {
-        title: 'الشحنات وتعيين الموارد',
+        title: 'Shipments & Resource Assignment',
         href: '/admin/dashboard/shipments',
         icon: <LuTruck className="w-5 h-5" />,
     },
     {
-        title: 'المسارات والخطوط',
+        title: 'Routes & Lanes',
         href: '/admin/dashboard/routes',
         icon: <LuMapPin className="w-5 h-5" />,
     },
     {
-        title: 'الأسطول والشاحنات',
+        title: 'Fleet & Trucks',
         href: '/admin/dashboard/vehicles',
         icon: <LuBox className="w-5 h-5" />,
     },
     {
-        title: 'البوالص والفواتير',
+        title: 'Waybills & Invoices',
         href: '/admin/dashboard/invoices',
         icon: <LuReceipt className="w-5 h-5" />,
     },
     {
-        title: 'سداد المدفوعات',
+        title: 'Payment Settlement',
         href: '/admin/dashboard/payments',
         icon: <LuCreditCard className="w-5 h-5" />,
     },
     {
-        title: 'التقارير والإحصائيات',
+        title: 'Reports & Analytics',
         href: '/admin/dashboard/reports',
         icon: <LuFileSpreadsheet className="w-5 h-5" />,
     },
     {
-        title: 'المستخدمون والمدراء',
+        title: 'Users & Admins',
         href: '/admin/dashboard/users',
         icon: <LuUser className="w-5 h-5" />,
     },
@@ -115,14 +115,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     const pathname = usePathname();
     const { data: session } = useSession();
 
-    const userName = session?.user?.name || 'مدير المنصة';
-    const userRole = (session?.user as any)?.role === 'super' ? 'سوبر أدمن' : 'مدير أدمن';
+    const userName = session?.user?.name || 'Platform Admin';
+    const userRole = (session?.user as any)?.role === 'super' ? 'Super Admin' : 'Admin';
 
     return (
         <aside
             className={`${
                 isCollapsed ? 'w-20' : 'w-72'
-            } bg-heading text-white flex flex-col justify-between border-l border-white/10 shrink-0 h-screen sticky top-0 font-arabic transition-all duration-300 ease-in-out`}
+            } bg-heading text-white flex flex-col justify-between border-r border-white/10 shrink-0 h-screen sticky top-0 transition-all duration-300 ease-in-out`}
         >
             {/* Brand Header */}
             <div>
@@ -133,10 +133,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                         </span>
                         {!isCollapsed && (
                             <div>
-                                <span className="font-extrabold text-lg block leading-tight text-white">شحنتك</span>
+                                <span className="font-extrabold text-lg block leading-tight text-white">Shahntak</span>
                                 <span className="text-[11px] font-semibold text-accent flex items-center gap-1 mt-0.5">
                                     <LuShieldAlert className="w-3 h-3" />
-                                    لوحة الأدمن العامة
+                                    Global Admin Panel
                                 </span>
                             </div>
                         )}
@@ -147,7 +147,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                             type="button"
                             onClick={onToggle}
                             className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                            title="طي القائمة الجانبية"
+                            title="Collapse sidebar"
                         >
                             <LuChevronRight className="w-5 h-5" />
                         </button>
@@ -158,7 +158,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 <nav className="p-3 space-y-1.5 overflow-y-auto max-h-[calc(100vh-200px)]">
                     {!isCollapsed && (
                         <span className="px-3 text-[11px] font-bold text-white/40 uppercase tracking-wider block mb-2">
-                            قائمة إدارة المنصة
+                            Platform Management Menu
                         </span>
                     )}
                     {navItems.map((item) => {
@@ -205,18 +205,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                             className="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center font-bold text-sm shrink-0"
                             title={userName}
                         >
-                            {userName.charAt(0) || 'أ'}
+                            {userName.charAt(0) || 'A'}
                         </div>
                         {!isCollapsed && (
-                            <div className="text-right truncate">
+                            <div className="text-left truncate">
                                 <span className="block text-xs font-bold text-white truncate">{userName}</span>
-                                <span className="block text-[10px] text-white/50 truncate">منصة شحنتك ({userRole})</span>
+                                <span className="block text-[10px] text-white/50 truncate">Shahntak Platform ({userRole})</span>
                             </div>
                         )}
                     </div>
                     <button
                         onClick={() => signOut({ callbackUrl: '/admin/login' })}
-                        title="تسجيل الخروج"
+                        title="Sign out"
                         className="text-white/40 hover:text-rose-400 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors shrink-0 cursor-pointer"
                     >
                         <LuLogOut className="w-4 h-4" />

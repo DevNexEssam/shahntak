@@ -27,7 +27,7 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
         : 'جميع الناقلين المتاحين';
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
             {/* Modal Container */}
             <div className="relative w-full max-w-xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -116,8 +116,8 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                     <div className="p-4 rounded-2xl bg-surface border border-border flex items-center justify-between">
                         <span className="text-xs font-bold text-body">حالة المسار اللوجستي:</span>
                         <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold border ${route.isActive !== false
-                                ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
-                                : 'bg-rose-500/10 text-rose-600 border-rose-200'
+                            ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
+                            : 'bg-rose-500/10 text-rose-600 border-rose-200'
                             }`}>
                             {route.isActive !== false ? 'نشط ومتاح' : 'موقوف مؤقتاً'}
                         </span>

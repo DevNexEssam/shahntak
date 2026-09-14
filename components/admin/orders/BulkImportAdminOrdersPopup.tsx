@@ -52,27 +52,27 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
             const cleanKey = key.trim().toLowerCase();
             const val = rawValue !== undefined && rawValue !== null ? String(rawValue).trim() : "";
 
-            if (cleanKey.includes("اسم المستلم") || cleanKey.includes("اسم") || cleanKey === "recipientname" || cleanKey === "name") {
+            if (cleanKey.includes("recipient name") || cleanKey.includes("name") || cleanKey === "recipientname") {
                 normalized.recipientName = val;
-            } else if (cleanKey.includes("جوال") || cleanKey.includes("هاتف") || cleanKey === "recipientphone" || cleanKey === "phone") {
+            } else if (cleanKey.includes("phone") || cleanKey.includes("mobile") || cleanKey === "recipientphone") {
                 normalized.recipientPhone = val;
-            } else if (cleanKey.includes("مدينة") || cleanKey.includes("المدينة") || cleanKey === "recipientcity" || cleanKey === "city") {
+            } else if (cleanKey.includes("city") || cleanKey === "recipientcity") {
                 normalized.recipientCity = val;
-            } else if (cleanKey.includes("حي") || cleanKey.includes("الحي") || cleanKey === "recipientdistrict" || cleanKey === "district") {
+            } else if (cleanKey.includes("district") || cleanKey.includes("neighborhood") || cleanKey === "recipientdistrict") {
                 normalized.recipientDistrict = val;
-            } else if (cleanKey.includes("عنوان") || cleanKey.includes("العنوان") || cleanKey === "recipientaddress" || cleanKey === "address") {
+            } else if (cleanKey.includes("address") || cleanKey === "recipientaddress") {
                 normalized.recipientAddress = val;
-            } else if (cleanKey.includes("وصف") || cleanKey === "description") {
+            } else if (cleanKey.includes("description") || cleanKey.includes("details")) {
                 normalized.description = val;
-            } else if (cleanKey.includes("وزن") || cleanKey === "weight") {
+            } else if (cleanKey.includes("weight")) {
                 normalized.weight = parseFloat(val) || 0;
-            } else if (cleanKey.includes("قيمة") || cleanKey === "ordervalue" || cleanKey === "value") {
+            } else if (cleanKey.includes("value") || cleanKey === "ordervalue") {
                 normalized.orderValue = parseFloat(val) || 0;
-            } else if (cleanKey.includes("دفع") || cleanKey.includes("cod") || cleanKey === "codamount") {
+            } else if (cleanKey.includes("cod") || cleanKey.includes("cash on delivery") || cleanKey === "codamount") {
                 normalized.codAmount = parseFloat(val) || 0;
-            } else if (cleanKey.includes("كمية") || cleanKey === "quantity") {
+            } else if (cleanKey.includes("quantity") || cleanKey.includes("qty")) {
                 normalized.quantity = parseInt(val, 10) || 1;
-            } else if (cleanKey.includes("رقم الطلب") || cleanKey === "ordernumber") {
+            } else if (cleanKey.includes("order number") || cleanKey === "ordernumber") {
                 normalized.orderNumber = val;
             }
         }
@@ -97,13 +97,13 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                 const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, { defval: "" });
 
                 if (!jsonData || jsonData.length === 0) {
-                    toast.error("الملف المرفوع فارغ أو غير صالح");
+                    toast.error("The uploaded file is empty or invalid");
                     setIsProcessing(false);
                     return;
                 }
 
                 if (jsonData.length > 500) {
-                    toast.error("الحد الأقصى هو 500 طلب في الملف الواحد");
+                    toast.error("The maximum is 500 orders per file");
                     setIsProcessing(false);
                     return;
                 }
@@ -116,7 +116,7 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
 
                     if (normalized.orderNumber) {
                         if (seenOrderNumbers.has(normalized.orderNumber)) {
-                            errors.push("رقم الطلب مكرر أكثر من مرة داخل هذا الملف");
+                            errors.push("Order number is duplicated more than once within this file");
                         } else {
                             seenOrderNumbers.add(normalized.orderNumber);
                         }
@@ -145,9 +145,9 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                 });
 
                 setParsedRows(results);
-                toast.success(`تم قراءة ${results.length} صف من الملف بنجاح`);
+                toast.success(`Successfully read ${results.length} rows from the file`);
             } catch (err: any) {
-                toast.error("حدث خطأ أثناء قراءة ملف الإكسل: " + err.message);
+                toast.error("An error occurred while reading the Excel file: " + err.message);
             } finally {
                 setIsProcessing(false);
             }
@@ -159,25 +159,25 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
     const handleDownloadTemplate = () => {
         const sampleData = [
             {
-                "اسم المستلم": "محمد أحمد",
-                "رقم الجوال": "0501234567",
-                "المدينة": "الرياض",
-                "الحي": "حي النرجس",
-                "العنوان التفصيلي": "شارع التخصصي، مبنى 12",
-                "الوزن (كجم)": 2.5,
-                "قيمة الطلب (ر.س)": 150,
-                "الدفع عند الاستلام (COD)": 150,
-                "الكمية": 1,
-                "وصف الشحنة": "ملابس وإكسسوارات",
-                "رقم الطلب الخاص": "ORD-0001"
+                "Recipient Name": "Mohammed Ahmed",
+                "Phone Number": "0501234567",
+                "City": "Riyadh",
+                "District": "Al Narjis District",
+                "Detailed Address": "Takhassusi Street, Building 12",
+                "Weight (kg)": 2.5,
+                "Order Value (SAR)": 150,
+                "Cash on Delivery (COD)": 150,
+                "Quantity": 1,
+                "Shipment Description": "Clothing and accessories",
+                "Custom Order Number": "ORD-0001"
             }
         ];
 
         const worksheet = XLSX.utils.json_to_sheet(sampleData);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "نموذج الطلبات");
-        XLSX.writeFile(workbook, "نموذج_استيراد_الطلبات_شحنتك.xlsx");
-        toast.success("تم تنزيل نموذج الإكسل الاسترشادي بنجاح");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Orders Template");
+        XLSX.writeFile(workbook, "Shahntak_Orders_Import_Template.xlsx");
+        toast.success("Sample Excel template downloaded successfully");
     };
 
     const handleReset = () => {
@@ -198,12 +198,12 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
 
     const handleConfirmImport = async () => {
         if (!selectedCompanyId) {
-            toast.error("يرجى اختيار الشركة المستهدفة أولاً");
+            toast.error("Please select the target company first");
             return;
         }
 
         if (validRows.length === 0) {
-            toast.error("لا توجد أي طلبات صالحة للاستيراد");
+            toast.error("There are no valid orders to import");
             return;
         }
 
@@ -217,20 +217,20 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
             });
 
             if (data.success) {
-                toast.success(data.message || `تم استيراد ${data.count} طلب بنجاح`);
+                toast.success(data.message || `Successfully imported ${data.count} orders`);
                 queryClient.invalidateQueries({ queryKey: ["orders"] });
                 queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
                 handleCloseModal();
             }
         } catch (err: any) {
-            toast.error(err.response?.data?.message || "حدث خطأ أثناء الاستيراد الجماعي للطلبات");
+            toast.error(err.response?.data?.message || "An error occurred during bulk order import");
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             <div className="relative w-full max-w-4xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Modal Header */}
@@ -240,8 +240,8 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                             <LuFileSpreadsheet className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">استيراد الطلبات الجماعي للأدمن</h2>
-                            <p className="text-xs text-body mt-0.5">رفع ملف Excel مجمع بعد تحديد الشركة واستعراض سعة باقتها الحية</p>
+                            <h2 className="text-xl font-extrabold text-heading">Admin Bulk Order Import</h2>
+                            <p className="text-xs text-body mt-0.5">Upload a bulk Excel file after selecting the company and reviewing its live plan quota</p>
                         </div>
                     </div>
 
@@ -250,14 +250,14 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                         onClick={handleCloseModal}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                <div className="p-6 overflow-y-auto space-y-6 flex-1 text-left">
 
                     {/* Company Selector & Live Subscription Widget */}
                     <div className="space-y-3">
@@ -274,8 +274,8 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                     {/* Helper Bar */}
                     <div className="p-4 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-between gap-4 flex-wrap">
                         <div className="space-y-0.5">
-                            <h4 className="text-xs font-extrabold text-heading">تنزيل نموذج Excel الاسترشادي</h4>
-                            <p className="text-xs text-body">يمكنك استخدام هذا النموذج وتعبئة بيانات المستلمين ثم رفعه مباشرة</p>
+                            <h4 className="text-xs font-extrabold text-heading">Download Sample Excel Template</h4>
+                            <p className="text-xs text-body">You can use this template, fill in the recipient data, then upload it directly</p>
                         </div>
                         <button
                             type="button"
@@ -283,7 +283,7 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border text-accent font-bold text-xs hover:bg-accent/10 transition-all cursor-pointer shadow-xs"
                         >
                             <LuDownload className="w-4 h-4" />
-                            تنزيل النموذج
+                            Download Template
                         </button>
                     </div>
 
@@ -302,8 +302,8 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                                 <div className="w-14 h-14 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xl mb-2 shadow-xs">
                                     <LuUpload className="w-7 h-7" />
                                 </div>
-                                <span className="text-sm font-extrabold text-heading">اسحب ملف الإكسل هنا أو اضغط للاختيار</span>
-                                <span className="text-xs text-body/70 mt-1">يدعم الصيغ (.xlsx, .xls, .csv) - الحد الأقصى 500 طلب</span>
+                                <span className="text-sm font-extrabold text-heading">Drag the Excel file here or click to browse</span>
+                                <span className="text-xs text-body/70 mt-1">Supported formats (.xlsx, .xls, .csv) — Max 500 orders</span>
                             </label>
                         </div>
                     ) : (
@@ -319,24 +319,24 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                                     className="text-xs text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded-lg hover:bg-rose-50 transition-colors"
                                 >
                                     <LuTrash2 className="w-4 h-4" />
-                                    إلغاء الملف وإعادة الرفع
+                                    Cancel file and re-upload
                                 </button>
                             </div>
 
                             <div className="grid grid-cols-3 gap-3">
                                 <div className="p-3.5 rounded-2xl bg-surface-muted border border-border text-center">
-                                    <span className="text-xs font-bold text-body block">إجمالي الصفوف</span>
+                                    <span className="text-xs font-bold text-body block">Total Rows</span>
                                     <span className="text-lg font-extrabold text-heading font-latin">{parsedRows.length}</span>
                                 </div>
                                 <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
                                     <span className="text-xs font-bold text-emerald-600 block flex items-center justify-center gap-1">
-                                        <LuCheck className="w-3.5 h-3.5" /> طلبات صالحة
+                                        <LuCheck className="w-3.5 h-3.5" /> Valid Orders
                                     </span>
                                     <span className="text-lg font-extrabold text-emerald-600 font-latin">{validRows.length}</span>
                                 </div>
                                 <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-center">
                                     <span className="text-xs font-bold text-rose-600 block flex items-center justify-center gap-1">
-                                        <LuTriangle className="w-3.5 h-3.5" /> طلبات بها أخطاء
+                                        <LuTriangle className="w-3.5 h-3.5" /> Orders with Errors
                                     </span>
                                     <span className="text-lg font-extrabold text-rose-600 font-latin">{invalidRows.length}</span>
                                 </div>
@@ -353,7 +353,7 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                         disabled={isSubmitting || isProcessing}
                         className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                     >
-                        إلغاء
+                        Cancel
                     </button>
 
                     <button
@@ -363,10 +363,10 @@ export default function BulkImportAdminOrdersPopup({ isOpen = true, onClose }: B
                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[160px] justify-center"
                     >
                         {isSubmitting
-                            ? "جاري الاستيراد..."
+                            ? "Importing..."
                             : validRows.length > 0
-                            ? `تأكيد وحفظ ${validRows.length} طلب للشركة`
-                            : "اختر ملفاً وشراكة"}
+                                ? `Confirm and Save ${validRows.length} Orders to Company`
+                                : "Select a file and company"}
                     </button>
                 </div>
             </div>

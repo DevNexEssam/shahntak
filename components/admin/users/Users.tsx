@@ -79,7 +79,7 @@ export default function Users() {
     };
 
     return (
-        <section className="space-y-6 text-right font-arabic" dir="rtl">
+        <section className="space-y-6 text-right font-arabic">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -27,7 +27,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
     };
 
     return (
-        <header className="h-[76px] bg-surface border-b border-border px-6 flex items-center justify-between sticky top-0 z-30 font-arabic">
+        <header className="h-[76px] bg-surface border-b border-border px-6 flex items-center justify-between sticky top-0 z-30">
 
             {/* Sidebar Toggle & Search Form */}
             <div className="flex items-center gap-3">
@@ -36,7 +36,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                         type="button"
                         onClick={onToggleSidebar}
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer"
-                        title={isSidebarCollapsed ? "فتح وتكبير القائمة الجانبية" : "طي القائمة الجانبية"}
+                        title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                     >
                         <LuPanelLeft className="w-5 h-5" />
                     </button>
@@ -45,8 +45,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                 <form onSubmit={handleSearchSubmit} className="relative w-72 sm:w-80">
                     <button
                         type="submit"
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-body hover:text-accent transition-colors"
-                        title="بحث"
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-body hover:text-accent transition-colors"
+                        title="Search"
                     >
                         <LuSearch className="w-4 h-4" />
                     </button>
@@ -54,8 +54,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="ابحث عن شركة، بوليصة، شحنة، مستخدم..."
-                        className="w-full pl-4 pr-10 py-2 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                        placeholder="Search for a company, waybill, shipment, user..."
+                        className="w-full pr-4 pl-10 py-2 rounded-xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </form>
             </div>
@@ -66,10 +66,10 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                 {/* Platform System Health Indicator */}
                 <div
                     className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md border text-xs font-bold bg-accent/10 text-accent border-accent/20"
-                    title="حالة الخوادم والأنظمة المركزية"
+                    title="Status of servers and core systems"
                 >
                     <LuShieldCheck className="w-3.5 h-3.5 text-accent" />
-                    <span>حالة النظام: خوادم نشطة (99.9%)</span>
+                    <span>System Status: Servers Active (99.9%)</span>
                 </div>
 
                 {/* Add New Company Quick Button */}
@@ -78,7 +78,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-accent text-accent-foreground text-xs font-bold hover:shadow-md hover:shadow-accent/20 transition-all cursor-pointer"
                 >
                     <LuPlus className="w-4 h-4" />
-                    <span>إضافة شركة جديدة</span>
+                    <span>Add New Company</span>
                 </Link>
 
             </div>

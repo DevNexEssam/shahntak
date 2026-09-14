@@ -47,7 +47,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
 
     const companyName = typeof invoice.companyId === 'object' && invoice.companyId !== null
         ? (invoice.companyId as Company).companyName
-        : 'شركة غير محددة';
+        : 'Unspecified Company';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -68,7 +68,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -84,7 +84,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -95,8 +95,8 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات الفاتورة</h2>
-                            <p className="text-xs text-body mt-0.5">تحديث مبلغ وحالة الفاتورة رقم: <span className="font-bold text-accent font-latin">{invoice.invoiceNumber}</span></p>
+                            <h2 className="text-xl font-extrabold text-heading">Edit Invoice Data</h2>
+                            <p className="text-xs text-body mt-0.5">Update amount and status for invoice number: <span className="font-bold text-accent font-latin">{invoice.invoiceNumber}</span></p>
                         </div>
                     </div>
 
@@ -105,7 +105,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -113,14 +113,14 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         {/* Readonly Info Header */}
                         <div className="p-4 rounded-md bg-surface-muted border border-border flex items-center justify-between flex-wrap gap-3">
                             <div className="flex items-center gap-2.5">
                                 <LuBuilding2 className="w-4 h-4 text-accent" />
                                 <div>
-                                    <span className="text-xs text-body block font-medium">الشركة المفلتر لها</span>
+                                    <span className="text-xs text-body block font-medium">Associated Company</span>
                                     <span className="text-sm font-bold text-heading">{companyName}</span>
                                 </div>
                             </div>
@@ -135,7 +135,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-body" />
-                                    إجمالي الفاتورة (ر.س) <span className="text-red-500">*</span>
+                                    Invoice Total (SAR) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -144,9 +144,8 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
                                     onChange={(e) => setFormValues({ ...formValues, total: Number(e.target.value) })}
                                     min={0}
                                     step="any"
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.total ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.total ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.total && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.total}</span>
@@ -156,7 +155,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCalendar className="w-3.5 h-3.5 text-body" />
-                                    تاريخ الاستحقاق
+                                    Due Date
                                 </label>
                                 <input
                                     type="date"
@@ -170,7 +169,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
 
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading block">
-                                حالة الفاتورة السدادية
+                                Invoice Payment Status
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -178,11 +177,11 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="issued">صادرة بانتظار التحصيل</option>
-                                <option value="paid">مدفوعة ومحصلة</option>
-                                <option value="draft">مسودة </option>
-                                <option value="overdue">متأخرة السداد </option>
-                                <option value="cancelled">ملغاة </option>
+                                <option value="issued">Issued — Awaiting Collection</option>
+                                <option value="paid">Paid & Collected</option>
+                                <option value="draft">Draft</option>
+                                <option value="overdue">Overdue</option>
+                                <option value="cancelled">Cancelled</option>
                             </select>
                         </div>
 
@@ -196,7 +195,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -204,7 +203,7 @@ export default function EditInvoices({ isOpen = true, invoice, onClose }: EditIn
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}
+                            {isSubmitting ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

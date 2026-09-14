@@ -75,7 +75,7 @@ export const Integrations: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-[#0c0c0c] rounded-[14px] p-[18px] font-latin font-mono text-[12.5px] leading-relaxed overflow-x-auto text-left" dir="ltr">
+            <div className="bg-[#0c0c0c] rounded-[14px] p-[18px] font-latin font-mono text-[12.5px] leading-relaxed overflow-x-auto text-left" >
               <span className="text-[#6a7280] block">// Shipment status update payload</span>
               <span className="text-[#b39bff] font-bold">POST</span> <span className="text-white">/webhooks/shipment.updated</span><br />
               &#123;<br />

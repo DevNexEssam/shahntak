@@ -103,25 +103,25 @@ export default function Companies() {
             case "active":
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-200">
-                        نشط
+                        Active
                     </span>
                 );
             case "inactive":
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-200">
-                        غير نشط
+                        Inactive
                     </span>
                 );
             case "archived":
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-200">
-                        مؤرشف
+                        Archived
                     </span>
                 );
             case "banned":
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-200">
-                        محظور
+                        Banned
                     </span>
                 );
             default:
@@ -130,7 +130,7 @@ export default function Companies() {
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic" dir="rtl">
+        <div className="space-y-6 text-left">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -139,10 +139,10 @@ export default function Companies() {
                         <span className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuBuilding2 className="w-5 h-5" />
                         </span>
-                        إدارة الشركات المسجلة
+                        Registered Companies Management
                     </h1>
                     <p className="text-xs text-body mt-1">
-                        متابعة حسابات شركات الشحن، تفاصيل الاعتماد، والسجلات المحدثة على المنصة.
+                        Monitor shipping company accounts, approval details, and updated records on the platform.
                     </p>
                 </div>
 
@@ -151,7 +151,7 @@ export default function Companies() {
                         onClick={() => refetch()}
                         disabled={isFetching}
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
-                        title="تحديث البيانات"
+                        title="Refresh data"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin text-accent" : ""}`} />
                     </button>
@@ -162,7 +162,7 @@ export default function Companies() {
                             onClick={() => setViewMode("grid")}
                             className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${viewMode === "grid" ? "bg-accent text-accent-foreground shadow-xs" : "text-body hover:text-heading"
                                 }`}
-                            title="عرض البطاقات"
+                            title="Card view"
                         >
                             <LuLayoutGrid className="w-4 h-4" />
                         </button>
@@ -170,7 +170,7 @@ export default function Companies() {
                             onClick={() => setViewMode("table")}
                             className={`p-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${viewMode === "table" ? "bg-accent text-accent-foreground shadow-xs" : "text-body hover:text-heading"
                                 }`}
-                            title="عرض الجدول المدمج"
+                            title="Compact table view"
                         >
                             <LuTable className="w-4 h-4" />
                         </button>
@@ -181,7 +181,7 @@ export default function Companies() {
                         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-all font-bold text-xs shadow-xs cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>تسجيل شركة شحن</span>
+                        <span>Register Shipping Company</span>
                     </button>
                 </div>
             </div>
@@ -189,12 +189,11 @@ export default function Companies() {
             {/* Error Banner if any */}
             {isError && (
                 <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-sm font-bold flex items-center justify-between">
-                    <span>حدث خطأ أثناء جلب قائمة الشركات: {(error as Error)?.message || "خطأ في الاتصال بالخادم"}</span>
-                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">إعادة المحاولة</button>
+                    <span>An error occurred while fetching the companies list: {(error as Error)?.message || "Server connection error"}</span>
+                    <button onClick={() => refetch()} className="underline text-xs cursor-pointer">Retry</button>
                 </div>
             )}
 
-            {/* KPI Stats Grid - Exact Admin Dashboard Cards Structure */}
             {/* KPI Stats Grid - Simple & Clean Design with Our Colors */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
@@ -202,10 +201,10 @@ export default function Companies() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الشركات</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Companies</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.total}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>المسجلة في المنصة</span>
+                                <span>Registered on the platform</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -218,10 +217,10 @@ export default function Companies() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الشركات النشطة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Active Companies</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.active}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>تعمل حالياً</span>
+                                <span>Currently operating</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -234,10 +233,10 @@ export default function Companies() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الشركات غير النشطة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Inactive Companies</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.inactive}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>بحاجة للتفعيل</span>
+                                <span>Need activation</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -250,10 +249,10 @@ export default function Companies() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الشركات المحظورة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Banned Companies</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.banned}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>موقوفة مؤقتاً</span>
+                                <span>Temporarily suspended</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -267,45 +266,45 @@ export default function Companies() {
             {/* Filter and Search Bar */}
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">
-                    <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                    <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        placeholder="بحث باسم الشركة، البريد، الهاتف، أو المدينة..."
-                        className="w-full pr-11 pl-4 py-2.5 rounded-2xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
+                        placeholder="Search by company name, email, phone, or city..."
+                        className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent"
                     />
                 </div>
 
                 <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto">
-                    <LuFilter className="w-4 h-4 text-body shrink-0 ml-1" />
+                    <LuFilter className="w-4 h-4 text-body shrink-0 mr-1" />
                     <button
                         onClick={() => handleFilterStatusChange("all")}
                         className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${filterStatus === "all" ? "bg-accent text-accent-foreground shadow-xs" : "bg-surface-muted text-body hover:text-heading border border-border"
                             }`}
                     >
-                        الكل ({totalRecords})
+                        All ({totalRecords})
                     </button>
                     <button
                         onClick={() => handleFilterStatusChange("active")}
                         className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${filterStatus === "active" ? "bg-emerald-600 text-white shadow-xs" : "bg-surface-muted text-body hover:text-heading border border-border"
                             }`}
                     >
-                        النشطة
+                        Active
                     </button>
                     <button
                         onClick={() => handleFilterStatusChange("inactive")}
                         className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${filterStatus === "inactive" ? "bg-amber-600 text-white shadow-xs" : "bg-surface-muted text-body hover:text-heading border border-border"
                             }`}
                     >
-                        غير النشطة
+                        Inactive
                     </button>
                     <button
                         onClick={() => handleFilterStatusChange("banned")}
                         className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${filterStatus === "banned" ? "bg-rose-600 text-white shadow-xs" : "bg-surface-muted text-body hover:text-heading border border-border"
                             }`}
                     >
-                        المحظورة
+                        Banned
                     </button>
                 </div>
             </div>
@@ -313,7 +312,7 @@ export default function Companies() {
             {/* Empty State */}
             {filteredCompanies.length === 0 ? (
                 <div className="p-12 bg-surface border border-border rounded-3xl text-center shadow-xs">
-                    <EmptyData message="لا يوجد شركات مسجلة مطابقة لخيارات البحث والحالة" icon={LuBuilding2} />
+                    <EmptyData message="No registered companies match the current search and status filters" icon={LuBuilding2} />
                 </div>
             ) : (
                 <>
@@ -339,7 +338,7 @@ export default function Companies() {
                                                     </h3>
                                                     <span className="text-xs text-body flex items-center gap-1 mt-1 font-medium">
                                                         <LuMapPin className="w-3.5 h-3.5 text-accent" />
-                                                        {comp.city || "غير محدد"}
+                                                        {comp.city || "Not specified"}
                                                     </span>
                                                 </div>
                                             </div>
@@ -352,7 +351,7 @@ export default function Companies() {
                                             <div className="flex items-center justify-between text-body">
                                                 <span className="flex items-center gap-1.5 text-body font-medium">
                                                     <LuMail className="w-3.5 h-3.5 text-body/60" />
-                                                    البريد:
+                                                    Email:
                                                 </span>
                                                 <span className="font-mono font-bold text-heading dir-ltr">{comp.email}</span>
                                             </div>
@@ -360,14 +359,14 @@ export default function Companies() {
                                             <div className="flex items-center justify-between text-body">
                                                 <span className="flex items-center gap-1.5 text-body font-medium">
                                                     <LuPhone className="w-3.5 h-3.5 text-body/60" />
-                                                    الهاتف:
+                                                    Phone:
                                                 </span>
                                                 <span className="font-mono font-bold text-heading dir-ltr">{comp.phone}</span>
                                             </div>
 
                                             {comp.taxNumber && (
                                                 <div className="flex items-center justify-between text-body">
-                                                    <span className="text-body font-medium">الرقم الضريبي:</span>
+                                                    <span className="text-body font-medium">Tax Number:</span>
                                                     <span className="font-mono font-bold text-heading">{comp.taxNumber}</span>
                                                 </div>
                                             )}
@@ -378,7 +377,7 @@ export default function Companies() {
                                             {comp.approvedBy ? (
                                                 <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-emerald-500/10 px-3 py-1.5 rounded-2xl border border-emerald-200">
                                                     <LuShieldCheck className="w-4 h-4" />
-                                                    <span>معتمدة من الإدارة</span>
+                                                    <span>Approved by Admin</span>
                                                 </div>
                                             ) : (
                                                 <button
@@ -387,7 +386,7 @@ export default function Companies() {
                                                     className="w-full py-2 px-3 rounded-2xl border border-amber-200 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                                                 >
                                                     <LuShieldCheck className="w-4 h-4" />
-                                                    <span>اعتماد الشركة الآن</span>
+                                                    <span>Approve Company Now</span>
                                                 </button>
                                             )}
                                         </div>
@@ -403,7 +402,7 @@ export default function Companies() {
                                                     setIsDetailsModalOpen(true);
                                                 }}
                                                 className="p-2 rounded-xl border border-border bg-surface hover:bg-accent-soft text-body hover:text-accent transition-all cursor-pointer"
-                                                title="معاينة سريعة (Modal)"
+                                                title="Quick preview (Modal)"
                                             >
                                                 <LuEye className="w-4 h-4" />
                                             </button>
@@ -411,7 +410,7 @@ export default function Companies() {
                                             <Link
                                                 href={`/admin/dashboard/companies/${comp._id}`}
                                                 className="p-2 rounded-xl border border-border bg-surface hover:bg-accent-soft text-body hover:text-accent transition-all cursor-pointer inline-flex items-center justify-center"
-                                                title="عرض الصفحة التفصيلية الشاملة"
+                                                title="View full details page"
                                             >
                                                 <LuExternalLink className="w-4 h-4" />
                                             </Link>
@@ -423,7 +422,7 @@ export default function Companies() {
                                                 setIsEditModalOpen(true);
                                             }}
                                             className="p-2 rounded-xl border border-border bg-surface hover:bg-amber-500/10 text-body hover:text-amber-600 transition-all cursor-pointer"
-                                            title="تعديل"
+                                            title="Edit"
                                         >
                                             <LuPencil className="w-4 h-4" />
                                         </button>
@@ -431,7 +430,7 @@ export default function Companies() {
                                         <button
                                             onClick={() => setCompanyToDeleteId(comp._id)}
                                             className="p-2 rounded-xl border border-border bg-surface hover:bg-rose-500/10 text-body hover:text-rose-600 transition-all cursor-pointer"
-                                            title="حذف"
+                                            title="Delete"
                                         >
                                             <LuTrash2 className="w-4 h-4" />
                                         </button>
@@ -445,15 +444,15 @@ export default function Companies() {
                     {viewMode === "table" && (
                         <div className="bg-surface rounded-md border border-border overflow-hidden">
                             <div className="overflow-x-auto">
-                                <table className="w-full text-right text-sm border-collapse">
+                                <table className="w-full text-left text-sm border-collapse">
                                     <thead className="bg-surface-muted/60 border-b border-border text-xs text-body font-bold">
                                         <tr>
-                                            <th className="py-4 px-6">اسم الشركة والمقر</th>
-                                            <th className="py-4 px-5">بيانات الاتصال</th>
-                                            <th className="py-4 px-5">الرقم الضريبي</th>
-                                            <th className="py-4 px-5">الحالة</th>
-                                            <th className="py-4 px-5">الاعتماد</th>
-                                            <th className="py-4 px-6 text-center">الإجراءات</th>
+                                            <th className="py-4 px-6">Company Name & Location</th>
+                                            <th className="py-4 px-5">Contact Info</th>
+                                            <th className="py-4 px-5">Tax Number</th>
+                                            <th className="py-4 px-5">Status</th>
+                                            <th className="py-4 px-5">Approval</th>
+                                            <th className="py-4 px-6 text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-border">
@@ -466,7 +465,7 @@ export default function Companies() {
                                                         </div>
                                                         <div>
                                                             <b className="text-heading block font-extrabold">{comp.companyName}</b>
-                                                            <span className="text-xs text-body font-medium">{comp.city || "غير محدد"}</span>
+                                                            <span className="text-xs text-body font-medium">{comp.city || "Not specified"}</span>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -483,7 +482,7 @@ export default function Companies() {
                                                 <td className="py-4 px-5">
                                                     {comp.approvedBy ? (
                                                         <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-200">
-                                                            معتمدة
+                                                            Approved
                                                         </span>
                                                     ) : (
                                                         <button
@@ -491,7 +490,7 @@ export default function Companies() {
                                                             disabled={isApproving}
                                                             className="text-xs font-bold text-amber-700 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-1 rounded-full border border-amber-200 transition-colors cursor-pointer"
                                                         >
-                                                            اعتماد
+                                                            Approve
                                                         </button>
                                                     )}
                                                 </td>
@@ -502,14 +501,14 @@ export default function Companies() {
                                                                 setSelectedCompany(comp);
                                                                 setIsDetailsModalOpen(true);
                                                             }}
-                                                            title="معاينة سريعة (Modal)"
+                                                            title="Quick preview (Modal)"
                                                             className="p-2 rounded-xl bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                         >
                                                             <LuEye className="w-4 h-4" />
                                                         </button>
                                                         <Link
                                                             href={`/admin/dashboard/companies/${comp._id}`}
-                                                            title="عرض الصفحة التفصيلية الشاملة"
+                                                            title="View full details page"
                                                             className="p-2 rounded-xl bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer inline-flex items-center justify-center"
                                                         >
                                                             <LuExternalLink className="w-4 h-4" />
@@ -519,14 +518,14 @@ export default function Companies() {
                                                                 setSelectedCompany(comp);
                                                                 setIsEditModalOpen(true);
                                                             }}
-                                                            title="تعديل"
+                                                            title="Edit"
                                                             className="p-2 rounded-xl bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                         >
                                                             <LuPencil className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => setCompanyToDeleteId(comp._id)}
-                                                            title="حذف"
+                                                            title="Delete"
                                                             className="p-2 rounded-xl bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                         >
                                                             <LuTrash2 className="w-4 h-4" />
@@ -545,7 +544,7 @@ export default function Companies() {
                     {totalPages > 1 && (
                         <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs">
                             <span className="text-body font-medium">
-                                عرض الصفحة <b className="font-latin text-heading">{page}</b> من أصل <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} شركة)
+                                Showing page <b className="font-latin text-heading">{page}</b> of <b className="font-latin text-heading">{totalPages}</b> ({totalRecords} companies total)
                             </span>
                             <div className="flex items-center gap-2">
                                 <button
@@ -553,16 +552,16 @@ export default function Companies() {
                                     disabled={page === 1}
                                     className="p-2 border rounded-xl border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 flex items-center gap-1 cursor-pointer"
                                 >
-                                    <LuChevronRight className="w-4 h-4" />
-                                    <span>السابقة</span>
+                                    <LuChevronLeft className="w-4 h-4" />
+                                    <span>Previous</span>
                                 </button>
                                 <button
                                     onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                                     disabled={page >= totalPages}
                                     className="p-2 border rounded-xl border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 flex items-center gap-1 cursor-pointer"
                                 >
-                                    <span>التالية</span>
-                                    <LuChevronLeft className="w-4 h-4" />
+                                    <span>Next</span>
+                                    <LuChevronRight className="w-4 h-4" />
                                 </button>
                             </div>
                         </div>
@@ -609,8 +608,8 @@ export default function Companies() {
                     }
                 }}
                 isDeleting={isDeleting}
-                title="تأكيد الحذف النهائي للشركة"
-                description="هل أنت متأكد من حذف هذه الشركة نهائياً؟ سيؤدي هذا الإجراء إلى مسح كافة البيانات المرتبطة بالشركة بشكل كامل (الموظفين، الطلبات، الشحنات، الفواتير، والمدفوعات)، ولا يمكن التراجع عن هذا الإجراء."
+                title="Confirm Permanent Company Deletion"
+                description="Are you sure you want to permanently delete this company? This action will completely erase all data associated with the company (employees, orders, shipments, invoices, and payments), and it cannot be undone."
             />
         </div>
     );

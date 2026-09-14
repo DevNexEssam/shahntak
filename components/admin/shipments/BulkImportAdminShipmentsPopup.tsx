@@ -275,7 +275,7 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
             <div className="relative w-full max-w-4xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Modal Header */}
@@ -410,8 +410,8 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                         {isSubmitting
                             ? "جاري الاستيراد..."
                             : validGroups.length > 0
-                            ? `تأكيد وحفظ ${validGroups.length} شحنة للشركة`
-                            : "اختر ملفاً وشراكة"}
+                                ? `تأكيد وحفظ ${validGroups.length} شحنة للشركة`
+                                : "اختر ملفاً وشراكة"}
                     </button>
                 </div>
             </div>

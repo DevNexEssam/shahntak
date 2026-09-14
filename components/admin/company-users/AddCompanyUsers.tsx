@@ -57,7 +57,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -70,7 +70,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -81,8 +81,8 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                             <LuUser className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إضافة موظف شركة جديد</h2>
-                            <p className="text-xs text-body mt-0.5">تسجيل موظف جديد وتحديد الشركة التابع لها والدور والصلاحيات</p>
+                            <h2 className="text-xl font-extrabold text-heading">Add New Company Staff</h2>
+                            <p className="text-xs text-body mt-0.5">Register a new employee and specify their company, role, and permissions</p>
                         </div>
                     </div>
 
@@ -91,6 +91,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -98,12 +99,12 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                    <div className="p-6 overflow-y-auto space-y-6 flex-1 text-left">
 
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                بيانات الموظف والشركة
+                                Employee & Company Information
                             </h3>
 
                             {/* Company Selection with Live Subscription Quota */}
@@ -132,14 +133,14 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuUser className="w-3.5 h-3.5 text-body" />
-                                        اسم الموظف <span className="text-red-500">*</span>
+                                        Employee Name <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.userName}
                                         onChange={(e) => setFormValues({ ...formValues, userName: e.target.value })}
-                                        placeholder="مثال: خالد العتيبي"
+                                        placeholder="e.g., Khalid Al-Otaibi"
                                         className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.userName ? 'border-rose-500' : 'border-border'
                                             }`}
                                     />
@@ -151,7 +152,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMail className="w-3.5 h-3.5 text-body" />
-                                        البريد الإلكتروني <span className="text-red-500">*</span>
+                                        Email Address <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="email"
@@ -172,7 +173,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuPhone className="w-3.5 h-3.5 text-body" />
-                                        رقم الجوال <span className="text-red-500">*</span>
+                                        Phone Number <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -191,7 +192,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuKey className="w-3.5 h-3.5 text-body" />
-                                        كلمة المرور <span className="text-red-500">*</span>
+                                        Password <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="password"
@@ -212,7 +213,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuShieldCheck className="w-3.5 h-3.5 text-body" />
-                                        دور الموظف <span className="text-red-500">*</span>
+                                        Employee Role <span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         disabled={isSubmitting}
@@ -220,9 +221,9 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         onChange={(e) => setFormValues({ ...formValues, userRole: e.target.value as 'owner' | 'manager' | 'staff' })}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
-                                        <option value="staff">موظف</option>
-                                        <option value="manager">مدير تشغيلي</option>
-                                        <option value="owner">مالك شركة</option>
+                                        <option value="staff">Staff</option>
+                                        <option value="manager">Operations Manager</option>
+                                        <option value="owner">Company Owner</option>
                                     </select>
                                     {fieldErrors.userRole && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.userRole}</span>
@@ -231,7 +232,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        حالة الموظف
+                                        Employee Status
                                     </label>
                                     <select
                                         disabled={isSubmitting}
@@ -239,8 +240,8 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                                         onChange={(e) => setFormValues({ ...formValues, userIsActive: e.target.value === 'active' })}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
-                                        <option value="active">نشط</option>
-                                        <option value="inactive">غير نشط</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
                                     </select>
                                 </div>
                             </div>
@@ -256,7 +257,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -264,7 +265,7 @@ export default function AddCompanyUsers({ isOpen = true, onClose }: AddCompanyUs
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
+                            {isSubmitting ? "Adding..." : "Save Data"}
                         </button>
                     </div>
                 </form>

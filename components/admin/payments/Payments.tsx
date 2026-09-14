@@ -82,10 +82,10 @@ export default function Payments() {
 
     const methodBadge = (method?: string) => {
         const map: Record<string, { label: string; bg: string }> = {
-            bank_transfer: { label: 'تحويل بنكي', bg: 'bg-blue-500/10 text-blue-600 border-blue-200' },
-            card: { label: 'بطاقة ائتمانية', bg: 'bg-emerald-500/10 text-emerald-600 border-emerald-200' },
-            cash: { label: 'نقدي', bg: 'bg-amber-500/10 text-amber-600 border-amber-200' },
-            other: { label: 'وسيلة أخرى', bg: 'bg-slate-500/10 text-slate-600 border-slate-200' },
+            bank_transfer: { label: 'Bank Transfer', bg: 'bg-blue-500/10 text-blue-600 border-blue-200' },
+            card: { label: 'Credit Card', bg: 'bg-emerald-500/10 text-emerald-600 border-emerald-200' },
+            cash: { label: 'Cash', bg: 'bg-amber-500/10 text-amber-600 border-amber-200' },
+            other: { label: 'Other Method', bg: 'bg-slate-500/10 text-slate-600 border-slate-200' },
         };
         const st = map[method || 'bank_transfer'] || { label: method || '', bg: 'bg-surface-muted text-body border-border' };
 
@@ -97,7 +97,7 @@ export default function Payments() {
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic" dir="rtl">
+        <div className="space-y-6 text-left">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -106,16 +106,16 @@ export default function Payments() {
                         <span className="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shadow-xs">
                             <LuCreditCard className="w-5 h-5" />
                         </span>
-                        سداد المدفوعات والمعاملات المالية
+                        Payment Settlement & Financial Transactions
                     </h1>
-                    <p className="text-xs text-body mt-1">متابعة وإثبات عمليات السداد والتحويلات المالية وتحديث الفواتير بالمنصة</p>
+                    <p className="text-xs text-body mt-1">Monitor and record payment and money transfer operations, and update invoices on the platform</p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        title="تحديث البيانات"
+                        title="Refresh data"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
@@ -126,7 +126,7 @@ export default function Payments() {
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>تسجيل سداد جديد</span>
+                        <span>Record New Payment</span>
                     </button>
                 </div>
             </div>
@@ -134,7 +134,7 @@ export default function Payments() {
             {/* Error Notification Banner */}
             {isError && (
                 <div className="mb-4">
-                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات المدفوعات من الخادم'} />
+                    <ErrorMessege message={(error as any)?.message || 'Failed to fetch payment data from the server'} />
                 </div>
             )}
 
@@ -144,10 +144,10 @@ export default function Payments() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الحركات المحصلة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Collected Transactions</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{serverStats?.total ?? totalRecords}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>عمليات سداد مؤكدة</span>
+                                <span>Confirmed payments</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -160,10 +160,10 @@ export default function Payments() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي المبالغ المحصلة</span>
-                            <h3 className="text-2xl font-bold text-heading my-1">{totalAmount.toLocaleString()} <span className="text-xs font-normal">ر.س</span></h3>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Amount Collected</span>
+                            <h3 className="text-2xl font-bold text-heading my-1">{totalAmount.toLocaleString()} <span className="text-xs font-normal">SAR</span></h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>إجمالي السيولة المسددة</span>
+                                <span>Total settled liquidity</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -176,10 +176,10 @@ export default function Payments() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">التحويلات البنكية</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Bank Transfers</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{bankTransferCount}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>حوالة بنكية مؤكدة</span>
+                                <span>Confirmed bank transfers</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -192,10 +192,10 @@ export default function Payments() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الدفع الإلكتروني (مدى/ائتمان)</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Electronic Payment (Mada/Card)</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{cardCount}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>عمليات سداد إلكتروني</span>
+                                <span>Electronic payment transactions</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -208,13 +208,13 @@ export default function Payments() {
             {/* Filter and Search Controller Header */}
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">
-                    <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                    <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        placeholder="بحث برقم الفاتورة أو المبلغ..."
-                        className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                        placeholder="Search by invoice number or amount..."
+                        className="w-full pr-4 pl-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </div>
 
@@ -226,11 +226,11 @@ export default function Payments() {
                             onChange={handleFilterMethodChange}
                             className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer w-full"
                         >
-                            <option value="all">جميع وسائل السداد</option>
-                            <option value="bank_transfer">تحويل بنكي</option>
-                            <option value="card">بطاقة ائتمانية</option>
-                            <option value="cash">سداد نقدي</option>
-                            <option value="other">وسيلة أخرى</option>
+                            <option value="all">All Payment Methods</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="card">Credit Card</option>
+                            <option value="cash">Cash Payment</option>
+                            <option value="other">Other Method</option>
                         </select>
                     </div>
                 </div>
@@ -240,19 +240,19 @@ export default function Payments() {
             <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {paymentsList.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا توجد عمليات سداد تطابق خيارات البحث أو التصفية الحالية" icon={LuCreditCard} />
+                        <EmptyData message="No payments match the current search or filter options" icon={LuCreditCard} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">رقم الفاتورة</th>
-                                    <th className="py-3.5 px-4">الشركة المشتركة</th>
-                                    <th className="py-3.5 px-4">مبلغ الدفعة</th>
-                                    <th className="py-3.5 px-4">طريقة السداد</th>
-                                    <th className="py-3.5 px-4">تاريخ السداد</th>
-                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">Invoice No.</th>
+                                    <th className="py-3.5 px-4">Subscribed Company</th>
+                                    <th className="py-3.5 px-4">Payment Amount</th>
+                                    <th className="py-3.5 px-4">Payment Method</th>
+                                    <th className="py-3.5 px-4">Payment Date</th>
+                                    <th className="py-3.5 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
@@ -261,10 +261,10 @@ export default function Payments() {
                                         ? (pmt.invoiceId as Invoice)
                                         : null;
 
-                                    const invNum = invObj?.invoiceNumber || 'غير محددة';
+                                    const invNum = invObj?.invoiceNumber || 'Unspecified';
                                     const compName = invObj && typeof invObj.companyId === 'object' && invObj.companyId !== null
                                         ? (invObj.companyId as any).companyName
-                                        : 'غير محددة';
+                                        : 'Unspecified';
 
                                     return (
                                         <tr key={pmt._id} className="hover:bg-surface-muted/40 transition-colors">
@@ -280,7 +280,7 @@ export default function Payments() {
                                             </td>
 
                                             <td className="py-3.5 px-4 font-latin font-bold text-emerald-600">
-                                                {pmt.amount.toLocaleString()} ر.س
+                                                {pmt.amount.toLocaleString()} SAR
                                             </td>
 
                                             <td className="py-3.5 px-4">
@@ -288,14 +288,14 @@ export default function Payments() {
                                             </td>
 
                                             <td className="py-3.5 px-4 text-xs text-body font-medium">
-                                                {pmt.paidAt ? new Date(pmt.paidAt).toLocaleDateString('ar-SA') : 'غير محدد'}
+                                                {pmt.paidAt ? new Date(pmt.paidAt).toLocaleDateString('en-US') : 'Not specified'}
                                             </td>
 
                                             <td className="py-3.5 px-4 text-center">
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <button
                                                         onClick={() => setSelectedPaymentForDetails(pmt)}
-                                                        title="عرض التفاصيل"
+                                                        title="View details"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
@@ -303,7 +303,7 @@ export default function Payments() {
 
                                                     <button
                                                         onClick={() => setSelectedPaymentForEdit(pmt)}
-                                                        title="تعديل الدفعة"
+                                                        title="Edit payment"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
@@ -311,7 +311,7 @@ export default function Payments() {
 
                                                     <button
                                                         onClick={() => setSelectedPaymentForDelete(pmt)}
-                                                        title="حذف الدفعة"
+                                                        title="Delete payment"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuTrash2 className="w-4 h-4" />
@@ -330,7 +330,7 @@ export default function Payments() {
                 {totalPages > 1 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
-                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} حركة)
+                            Showing page <b className="font-latin text-heading">{page}</b> of <b className="font-latin text-heading">{totalPages}</b> ({totalRecords} transactions total)
                         </span>
 
                         <div className="flex items-center gap-2">
@@ -339,8 +339,8 @@ export default function Payments() {
                                 disabled={page === 1}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <LuChevronRight className="w-4 h-4" />
-                                <span>السابق</span>
+                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Previous</span>
                             </button>
 
                             <button
@@ -348,8 +348,8 @@ export default function Payments() {
                                 disabled={page === totalPages}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <span>التالي</span>
-                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Next</span>
+                                <LuChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -376,8 +376,8 @@ export default function Payments() {
 
             <ConfirmDeletePopup
                 isOpen={!!selectedPaymentForDelete}
-                title="تأكيد حذف سجل عملية السداد"
-                description={`هل أنت تأكد من رغبتك في حذف سجل عملية الدفع للمبلغ (${selectedPaymentForDelete?.amount.toLocaleString()} ر.س)؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
+                title="Confirm Payment Record Deletion"
+                description={`Are you sure you want to delete the payment record for the amount (${selectedPaymentForDelete?.amount.toLocaleString()} SAR)? This action cannot be undone.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedPaymentForDelete(null)}

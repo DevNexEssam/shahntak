@@ -122,7 +122,7 @@ export default function AddShipments({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
             {/* Modal Container */}
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -227,9 +227,8 @@ export default function AddShipments({
                                     value={formValues.origin}
                                     onChange={(e) => setFormValues({ ...formValues, origin: e.target.value })}
                                     placeholder="الرياض، مستودع السلي..."
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.origin ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.origin ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.origin && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.origin}</span>
@@ -247,9 +246,8 @@ export default function AddShipments({
                                     value={formValues.destination}
                                     onChange={(e) => setFormValues({ ...formValues, destination: e.target.value })}
                                     placeholder="جدة، ميناء الخمرة..."
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.destination ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.destination ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.destination && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.destination}</span>
@@ -334,9 +332,8 @@ export default function AddShipments({
                                     onChange={(e) => setFormValues({ ...formValues, shippingCost: Number(e.target.value) })}
                                     min={0}
                                     step="any"
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.shippingCost ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.shippingCost ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.shippingCost && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.shippingCost}</span>
@@ -355,9 +352,8 @@ export default function AddShipments({
                                     onChange={(e) => setFormValues({ ...formValues, customerPrice: Number(e.target.value) })}
                                     min={0}
                                     step="any"
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.customerPrice ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.customerPrice ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.customerPrice && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.customerPrice}</span>

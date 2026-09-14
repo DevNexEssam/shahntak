@@ -21,7 +21,7 @@ export default function DetailsVehicles({ isOpen = true, vehicle, onClose }: Det
     if (!isOpen || !vehicle) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -62,11 +62,10 @@ export default function DetailsVehicles({ isOpen = true, vehicle, onClose }: Det
                             </div>
                         </div>
 
-                        <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold border ${
-                            vehicle.isActive !== false
+                        <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold border ${vehicle.isActive !== false
                                 ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
                                 : 'bg-rose-500/10 text-rose-600 border-rose-200'
-                        }`}>
+                            }`}>
                             {vehicle.isActive !== false ? 'نشط بالأسطول' : 'موقوف'}
                         </span>
                     </div>

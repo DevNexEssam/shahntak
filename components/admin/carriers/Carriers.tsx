@@ -91,7 +91,7 @@ export default function Carriers() {
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic" dir="rtl">
+        <div className="space-y-6 text-left" dir="ltr">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -100,16 +100,16 @@ export default function Carriers() {
                         <span className="w-10 h-10 rounded-2xl bg-accent/10 text-accent flex items-center justify-center shadow-xs">
                             <LuTruck className="w-5 h-5" />
                         </span>
-                        إدارة الناقلين والشركاء اللوجستيين
+                        Carriers & Logistics Partners Management
                     </h1>
-                    <p className="text-xs text-body mt-1">إدارة الشركات الناقلة الشريكة وتحديد نوع الربط ووسائل الاتصال المباشرة</p>
+                    <p className="text-xs text-body mt-1">Manage partner carrier companies, define integration type, and direct contact methods</p>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        title="تحديث البيانات"
+                        title="Refresh data"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
@@ -120,7 +120,7 @@ export default function Carriers() {
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>إضافة ناقل جديد</span>
+                        <span>Add New Carrier</span>
                     </button>
                 </div>
             </div>
@@ -128,7 +128,7 @@ export default function Carriers() {
             {/* Error Notification Banner */}
             {isError && (
                 <div className="mb-4">
-                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات الناقلين من الخادم'} />
+                    <ErrorMessege message={(error as any)?.message || 'Failed to fetch carrier data from the server'} />
                 </div>
             )}
 
@@ -138,10 +138,10 @@ export default function Carriers() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الناقلين</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Carriers</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.total}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>المسجلين بالمنصة</span>
+                                <span>Registered on the platform</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -154,10 +154,10 @@ export default function Carriers() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الناقلون المحليون</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Local Carriers</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.local}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>تشغيل محلي مباشر</span>
+                                <span>Direct local operation</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -170,10 +170,10 @@ export default function Carriers() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الربط الخارجي (API)</span>
+                            <span className="text-xs font-semibold text-body block mb-1">External Integration (API)</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.external}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>متصل عبر البرمجيات</span>
+                                <span>Connected via software</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -186,10 +186,10 @@ export default function Carriers() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الناقلون النشطون</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Active Carriers</span>
                             <h3 className="text-2xl font-bold text-heading my-1">{stats.active}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>جاهزون للاستخدام</span>
+                                <span>Ready for use</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -202,13 +202,13 @@ export default function Carriers() {
             {/* Filter and Search Controller Header */}
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div className="relative w-full md:w-96">
-                    <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                    <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={handleSearchChange}
-                        placeholder="بحث باسم الناقل، الجوال، البريد..."
-                        className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                        placeholder="Search by carrier name, phone, email..."
+                        className="w-full pr-4 pl-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </div>
 
@@ -220,9 +220,9 @@ export default function Carriers() {
                             onChange={handleFilterTypeChange}
                             className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer w-full"
                         >
-                            <option value="all">جميع الأنواع</option>
-                            <option value="local">مستقل محلي</option>
-                            <option value="external_api">ربط خارجي API</option>
+                            <option value="all">All Types</option>
+                            <option value="local">Local Independent</option>
+                            <option value="external_api">External API Integration</option>
                         </select>
                     </div>
 
@@ -233,9 +233,9 @@ export default function Carriers() {
                             onChange={handleFilterStatusChange}
                             className="bg-transparent text-xs font-bold text-heading focus:outline-none cursor-pointer w-full"
                         >
-                            <option value="all">جميع الحالات</option>
-                            <option value="active">نشط ومتاح</option>
-                            <option value="inactive">موقوف مؤقتاً</option>
+                            <option value="all">All Statuses</option>
+                            <option value="active">Active & Available</option>
+                            <option value="inactive">Temporarily Suspended</option>
                         </select>
                     </div>
                 </div>
@@ -245,19 +245,19 @@ export default function Carriers() {
             <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {carriersList.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا يوجد ناقلون يطابقون خيارات البحث أو التصفية الحالية" icon={LuTruck} />
+                        <EmptyData message="No carriers match the current search or filter options" icon={LuTruck} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">اسم الناقل</th>
-                                    <th className="py-3.5 px-4">نوع الناقل والربط</th>
-                                    <th className="py-3.5 px-4">هاتف التواصل</th>
-                                    <th className="py-3.5 px-4">البريد الإلكتروني</th>
-                                    <th className="py-3.5 px-4">الحالة</th>
-                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">Carrier Name</th>
+                                    <th className="py-3.5 px-4">Carrier & Integration Type</th>
+                                    <th className="py-3.5 px-4">Contact Phone</th>
+                                    <th className="py-3.5 px-4">Email</th>
+                                    <th className="py-3.5 px-4">Status</th>
+                                    <th className="py-3.5 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
@@ -278,21 +278,21 @@ export default function Carriers() {
                                                     ? 'bg-purple-500/10 text-purple-600 border-purple-200'
                                                     : 'bg-blue-500/10 text-blue-600 border-blue-200'
                                             }`}>
-                                                {car.type === 'external_api' ? 'ربط خارجي API' : 'ناقل محلي'}
+                                                {car.type === 'external_api' ? 'External API Integration' : 'Local Carrier'}
                                             </span>
                                         </td>
 
                                         <td className="py-3.5 px-4 text-xs font-latin text-heading">
                                             <div className="flex items-center gap-1.5">
                                                 <LuPhone className="w-3.5 h-3.5 text-accent shrink-0" />
-                                                <span>{car.contactPhone || 'غير محدد'}</span>
+                                                <span>{car.contactPhone || 'Not specified'}</span>
                                             </div>
                                         </td>
 
                                         <td className="py-3.5 px-4 text-xs font-latin text-heading">
                                             <div className="flex items-center gap-1.5">
                                                 <LuMail className="w-3.5 h-3.5 text-accent shrink-0" />
-                                                <span>{car.contactEmail || 'غير محدد'}</span>
+                                                <span>{car.contactEmail || 'Not specified'}</span>
                                             </div>
                                         </td>
 
@@ -302,7 +302,7 @@ export default function Carriers() {
                                                     ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
                                                     : 'bg-rose-500/10 text-rose-600 border-rose-200'
                                             }`}>
-                                                {car.isActive !== false ? 'نشط' : 'موقوف'}
+                                                {car.isActive !== false ? 'Active' : 'Suspended'}
                                             </span>
                                         </td>
 
@@ -310,7 +310,7 @@ export default function Carriers() {
                                             <div className="flex items-center justify-center gap-1.5">
                                                 <button
                                                     onClick={() => setSelectedCarrierForDetails(car)}
-                                                    title="عرض التفاصيل"
+                                                    title="View details"
                                                     className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                 >
                                                     <LuEye className="w-4 h-4" />
@@ -318,7 +318,7 @@ export default function Carriers() {
 
                                                 <button
                                                     onClick={() => setSelectedCarrierForEdit(car)}
-                                                    title="تعديل الناقل"
+                                                    title="Edit carrier"
                                                     className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                 >
                                                     <LuPencil className="w-4 h-4" />
@@ -326,7 +326,7 @@ export default function Carriers() {
 
                                                 <button
                                                     onClick={() => setSelectedCarrierForDelete(car)}
-                                                    title="حذف الناقل"
+                                                    title="Delete carrier"
                                                     className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                 >
                                                     <LuTrash2 className="w-4 h-4" />
@@ -344,7 +344,7 @@ export default function Carriers() {
                 {totalPages > 1 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
-                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} ناقل)
+                            Showing page <b className="font-latin text-heading">{page}</b> of <b className="font-latin text-heading">{totalPages}</b> ({totalRecords} carriers total)
                         </span>
 
                         <div className="flex items-center gap-2">
@@ -353,8 +353,8 @@ export default function Carriers() {
                                 disabled={page === 1}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <LuChevronRight className="w-4 h-4" />
-                                <span>السابق</span>
+                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Previous</span>
                             </button>
 
                             <button
@@ -362,8 +362,8 @@ export default function Carriers() {
                                 disabled={page === totalPages}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <span>التالي</span>
-                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Next</span>
+                                <LuChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -390,8 +390,8 @@ export default function Carriers() {
 
             <ConfirmDeletePopup
                 isOpen={!!selectedCarrierForDelete}
-                title="تأكيد حذف الناقل"
-                description={`هل أنت تأكد من رغبتك في حذف الناقل (${selectedCarrierForDelete?.name})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
+                title="Confirm Carrier Deletion"
+                description={`Are you sure you want to delete the carrier (${selectedCarrierForDelete?.name})? This action cannot be undone.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedCarrierForDelete(null)}

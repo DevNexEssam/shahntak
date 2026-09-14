@@ -64,7 +64,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -76,7 +76,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             <div className="relative w-full max-w-3xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Modal Header */}
@@ -86,8 +86,8 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                             <LuPackage className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إضافة طلب شحنة جديد</h2>
-                            <p className="text-xs text-body mt-0.5">إنشاء طلب جديد نيابة عن الشركة المحددة وتأكيد رصيد الباقة الحية</p>
+                            <h2 className="text-xl font-extrabold text-heading">Add New Shipment Order</h2>
+                            <p className="text-xs text-body mt-0.5">Create a new order on behalf of the specified company and confirm the live plan quota</p>
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -104,26 +104,26 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                    <div className="p-6 overflow-y-auto space-y-6 flex-1 text-left">
 
                         {/* Order & Company Selection with Live Subscription Widget */}
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                بيانات الشركة المستهدفة والرصيد
+                                Target Company & Quota Information
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuHash className="w-3.5 h-3.5 text-accent" />
-                                        رقم الطلب
+                                        Order Number
                                     </label>
                                     <div className="w-full px-4 py-2.5 rounded-md bg-surface-muted/70 border border-border text-sm font-extrabold text-accent font-latin flex items-center justify-between">
-                                        <span>توليد تلقائي فريد (ORD-0001)</span>
-                                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-accent/10 text-accent font-bold">توليد تلقائي إجباري</span>
+                                        <span>Auto-generated unique (ORD-0001)</span>
+                                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-accent/10 text-accent font-bold">Auto-generated (Required)</span>
                                     </div>
-                                    <span className="text-[11px] text-body/70 block">يُنشأ كود الطلب تلقائياً من الخادم بالنمط التسلسلي <b>ORD-0001</b></span>
+                                    <span className="text-[11px] text-body/70 block">The order code is generated automatically by the server in the sequential pattern <b>ORD-0001</b></span>
                                 </div>
 
                                 <AdminCompanySelect
@@ -144,21 +144,21 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                         <div className="space-y-4 pt-2 border-t border-border">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                بيانات المستلم وموقع التوصيل
+                                Recipient & Delivery Location Details
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuUser className="w-3.5 h-3.5 text-body" />
-                                        اسم المستلم <span className="text-red-500">*</span>
+                                        Recipient Name <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.recipientName}
                                         onChange={(e) => setFormValues({ ...formValues, recipientName: e.target.value })}
-                                        placeholder="اسم المستلم الثلاثي"
+                                        placeholder="Full recipient name"
                                         className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
                                             }`}
                                     />
@@ -170,7 +170,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuPhone className="w-3.5 h-3.5 text-body" />
-                                        جوال المستلم <span className="text-red-500">*</span>
+                                        Recipient Phone <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -191,14 +191,14 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                        المدينة <span className="text-red-500">*</span>
+                                        City <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.recipientCity}
                                         onChange={(e) => setFormValues({ ...formValues, recipientCity: e.target.value })}
-                                        placeholder="الرياض، جدة، الدمام..."
+                                        placeholder="Riyadh, Jeddah, Dammam..."
                                         className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
                                             }`}
                                     />
@@ -209,14 +209,14 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        الحي (اختياري)
+                                        District (Optional)
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.recipientDistrict}
                                         onChange={(e) => setFormValues({ ...formValues, recipientDistrict: e.target.value })}
-                                        placeholder="حي النرجس..."
+                                        placeholder="Al Narjis District..."
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50"
                                     />
                                 </div>
@@ -224,14 +224,14 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
 
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                    العنوان التفصيلي <span className="text-red-500">*</span>
+                                    Detailed Address <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.recipientAddress}
                                     onChange={(e) => setFormValues({ ...formValues, recipientAddress: e.target.value })}
-                                    placeholder="شارع التخصصي، عمائر النصر..."
+                                    placeholder="Takhassusi Street, Al Nasr Buildings..."
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
                                         }`}
                                 />
@@ -245,14 +245,14 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                         <div className="space-y-4 pt-2 border-t border-border">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                المواصفات والقيم اللوجستية
+                                Specifications & Logistics Values
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuWeight className="w-3.5 h-3.5 text-body" />
-                                        الوزن (كجم) <span className="text-red-500">*</span>
+                                        Weight (kg) <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="number"
@@ -267,7 +267,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        الكمية (عدد الطرود)
+                                        Quantity (Packages)
                                     </label>
                                     <input
                                         type="number"
@@ -282,7 +282,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuCoins className="w-3.5 h-3.5 text-body" />
-                                        قيمة الطلب <span className="text-red-500">*</span>
+                                        Order Value <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="number"
@@ -297,7 +297,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        مبلغ COD عند الاستلام
+                                        COD Amount on Delivery
                                     </label>
                                     <input
                                         type="number"
@@ -322,7 +322,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -330,7 +330,7 @@ export default function AddOrders({ isOpen = true, onClose }: AddOrdersProps) {
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
+                            {isSubmitting ? "Adding..." : "Save Data"}
                         </button>
                     </div>
                 </form>

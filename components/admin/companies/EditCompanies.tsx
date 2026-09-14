@@ -69,7 +69,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة");
+            toast.error("Please correct the highlighted errors");
             return;
         }
 
@@ -84,7 +84,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Header */}
@@ -94,9 +94,9 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات الشركة</h2>
+                            <h2 className="text-xl font-extrabold text-heading">Edit Company Data</h2>
                             <p className="text-xs text-body mt-0.5">
-                                تحديث المعلومات الأساسية والحالة لـ (<span className="font-bold text-accent">{company.companyName}</span>)
+                                Update basic information and status for (<span className="font-bold text-accent">{company.companyName}</span>)
                             </p>
                         </div>
                     </div>
@@ -105,7 +105,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -113,27 +113,27 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-6 text-right">
+                    <div className="p-6 overflow-y-auto space-y-6 text-left">
 
                         {/* Section 1: Basic Company Info */}
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                البيانات الأساسية
+                                Basic Information
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                        اسم الشركة <span className="text-red-500">*</span>
+                                        Company Name <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.companyName}
                                         onChange={(e) => setFormValues({ ...formValues, companyName: e.target.value })}
-                                        placeholder="اسم الشركة"
+                                        placeholder="Company Name"
                                         className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.companyName ? "border-rose-500" : "border-border"
                                             }`}
                                     />
@@ -143,14 +143,14 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                        المدينة / المقر الرئيسي <span className="text-red-500">*</span>
+                                        City / Headquarters <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
                                         disabled={isSubmitting}
                                         value={formValues.city}
                                         onChange={(e) => setFormValues({ ...formValues, city: e.target.value })}
-                                        placeholder="الرياض"
+                                        placeholder="Riyadh"
                                         className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.city ? "border-rose-500" : "border-border"
                                             }`}
                                     />
@@ -162,7 +162,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMail className="w-3.5 h-3.5 text-body" />
-                                        البريد الإلكتروني <span className="text-red-500">*</span>
+                                        Email Address <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="email"
@@ -170,7 +170,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                         value={formValues.email}
                                         onChange={(e) => setFormValues({ ...formValues, email: e.target.value })}
                                         placeholder="contact@company.sa"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${fieldErrors.email ? "border-rose-500" : "border-border"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.email ? "border-rose-500" : "border-border"
                                             }`}
                                     />
                                     {fieldErrors.email && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.email}</p>}
@@ -179,7 +179,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuPhone className="w-3.5 h-3.5 text-body" />
-                                        رقم الهاتف <span className="text-red-500">*</span>
+                                        Phone Number <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -187,7 +187,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                         value={formValues.phone}
                                         onChange={(e) => setFormValues({ ...formValues, phone: e.target.value })}
                                         placeholder="0501234567"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent dir-ltr text-right disabled:opacity-60 ${fieldErrors.phone ? "border-rose-500" : "border-border"
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.phone ? "border-rose-500" : "border-border"
                                             }`}
                                     />
                                     {fieldErrors.phone && <p className="text-rose-500 text-xs mt-1 font-medium">{fieldErrors.phone}</p>}
@@ -201,14 +201,14 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                حالة الحساب والبيانات الرسمية
+                                Account Status & Official Information
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuHash className="w-3.5 h-3.5 text-body" />
-                                        الرقم الضريبي (VAT)
+                                        Tax Number (VAT)
                                     </label>
                                     <input
                                         type="text"
@@ -225,7 +225,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuShieldCheck className="w-3.5 h-3.5 text-body" />
-                                        حالة الشركة بالنظام
+                                        Company Status in System
                                     </label>
                                     <select
                                         disabled={isSubmitting}
@@ -233,10 +233,10 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                                         onChange={(e) => setFormValues({ ...formValues, status: e.target.value as Company["status"] })}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-60"
                                     >
-                                        <option value="active">نشط</option>
-                                        <option value="inactive">غير نشط</option>
-                                        <option value="archived">مؤرشف (Archived)</option>
-                                        <option value="banned">محظور (Banned)</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                        <option value="archived">Archived</option>
+                                        <option value="banned">Banned</option>
                                     </select>
                                 </div>
                             </div>
@@ -244,14 +244,14 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    العنوان التفصيلي
+                                    Detailed Address
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.address}
                                     onChange={(e) => setFormValues({ ...formValues, address: e.target.value })}
-                                    placeholder="العنوان التفصيلي"
+                                    placeholder="Detailed Address"
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.address ? "border-rose-500" : "border-border"
                                         }`}
                                 />
@@ -261,14 +261,14 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuFileText className="w-3.5 h-3.5 text-body" />
-                                    معلومات المنشأة
+                                    Facility Information
                                 </label>
                                 <textarea
                                     disabled={isSubmitting}
                                     rows={2}
                                     value={formValues.facilityInfo}
                                     onChange={(e) => setFormValues({ ...formValues, facilityInfo: e.target.value })}
-                                    placeholder="معلومات عن المنشأة..."
+                                    placeholder="Information about the facility..."
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-60 ${fieldErrors.facilityInfo ? "border-rose-500" : "border-border"
                                         }`}
                                 />
@@ -286,7 +286,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -294,7 +294,7 @@ export default function EditCompanies({ isOpen = true, onClose, company }: EditC
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}
+                            {isSubmitting ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

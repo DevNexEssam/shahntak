@@ -25,7 +25,7 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
 
     const companyName = typeof order.companyId === 'object' && order.companyId !== null
         ? (order.companyId as Company).companyName
-        : 'شركة غير محددة';
+        : 'Unspecified Company';
 
     const handleDownloadPdf = async () => {
         try {
@@ -53,43 +53,43 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
             case 'pending':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-amber-500/10 text-amber-600">
-                        قيد الانتظار
+                        Pending
                     </span>
                 );
             case 'validated':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-500/10 text-indigo-600">
-                        مؤكد
+                        Confirmed
                     </span>
                 );
             case 'grouped':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-purple-500/10 text-purple-600">
-                        مجمع بشحنة
+                        Grouped in Shipment
                     </span>
                 );
             case 'shipped':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-sky-500/10 text-sky-600">
-                        تم الشحن
+                        Shipped
                     </span>
                 );
             case 'delivered':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">
-                        تم التوصيل
+                        Delivered
                     </span>
                 );
             case 'cancelled':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
-                        ملغي
+                        Cancelled
                     </span>
                 );
             case 'error':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
-                        خطأ في البيانات
+                        Data Error
                     </span>
                 );
             default:
@@ -105,7 +105,7 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
     const codAmount = Number(order.codAmount || 0);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="ltr">
             <div className="printable-area w-full max-w-xl bg-surface border border-border rounded-md shadow-xs overflow-hidden flex flex-col">
 
                 {/* Header */}
@@ -116,10 +116,10 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h2 className="text-base font-bold text-foreground">تفاصيل الطلب</h2>
+                                <h2 className="text-base font-bold text-foreground">Order Details</h2>
                                 {getStatusBadge(order.status || 'pending')}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">رقم الطلب: <span className="font-semibold text-accent">{order.orderNumber}</span></p>
+                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">Order No.: <span className="font-semibold text-accent">{order.orderNumber}</span></p>
                         </div>
                     </div>
 
@@ -127,25 +127,25 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
                         type="button"
                         onClick={onClose}
                         className="p-1.5 rounded-md hover:bg-surface-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-5 space-y-4">
+                <div className="p-5 space-y-4 text-left">
 
                     {/* Summary Info Row */}
                     <div className="p-4 rounded-md bg-surface-muted border border-border flex flex-wrap items-center justify-between gap-3 text-xs">
                         <div>
-                            <span className="text-muted-foreground block">تاريخ تسجيل الطلب</span>
+                            <span className="text-muted-foreground block">Order Registration Date</span>
                             <span className="font-bold text-foreground font-latin text-sm">
-                                {new Date(order.createdAt || Date.now()).toLocaleDateString('ar-SA')}
+                                {new Date(order.createdAt || Date.now()).toLocaleDateString('en-US')}
                             </span>
                         </div>
                         <div>
-                            <span className="text-muted-foreground block">الشركة المالكة للطلب</span>
+                            <span className="text-muted-foreground block">Order Owner Company</span>
                             <span className="font-bold text-foreground text-xs flex items-center gap-1.5 mt-0.5">
                                 <LuBuilding2 className="w-3.5 h-3.5 text-accent" />
                                 {companyName}
@@ -164,7 +164,7 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
                                 ) : (
                                     <LuDownload className="w-4 h-4" />
                                 )}
-                                <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
+                                <span>{isGeneratingPdf ? 'Downloading...' : 'Download PDF'}</span>
                             </button>
                         </div>
                     </div>
@@ -173,27 +173,27 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
                     <div className="p-4 rounded-md border border-border bg-surface space-y-3">
                         <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
                             <LuUser className="w-4 h-4 text-accent" />
-                            <span>بيانات المستلم وموقع التوصيل</span>
+                            <span>Recipient & Delivery Location Details</span>
                         </h3>
 
                         <div className="space-y-2 text-xs">
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">اسم المستلم</span>
+                                <span className="text-muted-foreground">Recipient Name</span>
                                 <span className="font-semibold text-foreground">{order.recipientName}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">رقم الجوال</span>
-                                <span className="font-semibold text-foreground font-latin dir-ltr">{order.recipientPhone}</span>
+                                <span className="text-muted-foreground">Phone Number</span>
+                                <span className="font-semibold text-foreground font-latin">{order.recipientPhone}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">المدينة والحي</span>
+                                <span className="text-muted-foreground">City & District</span>
                                 <span className="font-semibold text-foreground">{order.recipientCity} {order.recipientDistrict ? `- ${order.recipientDistrict}` : ''}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5">
-                                <span className="text-muted-foreground">العنوان التفصيلي</span>
+                                <span className="text-muted-foreground">Detailed Address</span>
                                 <span className="font-semibold text-foreground">{order.recipientAddress}</span>
                             </div>
                         </div>
@@ -203,23 +203,23 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
                     <div className="p-4 rounded-md border border-border bg-surface space-y-3">
                         <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
                             <LuCoins className="w-4 h-4 text-accent" />
-                            <span>المواصفات والقيم المالية</span>
+                            <span>Specifications & Financial Values</span>
                         </h3>
 
                         <div className="space-y-2 text-xs">
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">وزن الطرد / عدد الكميات</span>
-                                <span className="font-semibold text-foreground font-latin">{order.weight || 1} كجم ({order.quantity || 1} طرد)</span>
+                                <span className="text-muted-foreground">Package Weight / Quantity</span>
+                                <span className="font-semibold text-foreground font-latin">{order.weight || 1} kg ({order.quantity || 1} package(s))</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">قيمة الطلب المعترفة</span>
-                                <span className="font-semibold text-emerald-600 font-latin">{orderValue.toFixed(2)} ر.س</span>
+                                <span className="text-muted-foreground">Declared Order Value</span>
+                                <span className="font-semibold text-emerald-600 font-latin">{orderValue.toFixed(2)} SAR</span>
                             </div>
 
                             <div className="flex justify-between items-center pt-1 text-sm font-bold">
-                                <span className="text-foreground">مبلغ التحصيل عند الاستلام (COD)</span>
-                                <span className="text-amber-600 font-latin text-base font-bold">{codAmount.toFixed(2)} ر.س</span>
+                                <span className="text-foreground">Cash on Delivery Amount (COD)</span>
+                                <span className="text-amber-600 font-latin text-base font-bold">{codAmount.toFixed(2)} SAR</span>
                             </div>
                         </div>
                     </div>
@@ -233,7 +233,7 @@ export default function DetailsOrders({ isOpen = true, order, onClose }: Details
                         onClick={onClose}
                         className="px-4 py-1.5 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-border/20 transition-colors text-foreground cursor-pointer"
                     >
-                        إغلاق
+                        Close
                     </button>
                 </div>
 

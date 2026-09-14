@@ -59,31 +59,31 @@ export default function DetailsCompanies({
             case "active":
                 return (
                     <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-200">
-                        نشط
+                        Active
                     </span>
                 );
             case "inactive":
                 return (
                     <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-amber-500/10 text-amber-600 border border-amber-200">
-                        غير نشط
+                        Inactive
                     </span>
                 );
             case "archived":
                 return (
                     <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-slate-500/10 text-slate-600 border border-slate-200">
-                        مؤرشف (Archived)
+                        Archived
                     </span>
                 );
             case "banned":
                 return (
                     <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-rose-500/10 text-rose-600 border border-rose-200">
-                        محظور (Banned)
+                        Banned
                     </span>
                 );
             default:
                 return (
                     <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-surface-muted text-body">
-                        {status || "غير معروف"}
+                        {status || "Unknown"}
                     </span>
                 );
         }
@@ -92,7 +92,7 @@ export default function DetailsCompanies({
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200"
-            dir="rtl"
+            dir="ltr"
         >
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -105,10 +105,10 @@ export default function DetailsCompanies({
                         <div>
                             <div className="flex items-center gap-2">
                                 <h2 className="text-xl font-extrabold text-heading">
-                                    {company?.companyName || "تفاصيل الشركة"}
+                                    {company?.companyName || "Company Details"}
                                 </h2>
                                 {isFetching && (
-                                    <LuRefreshCw className="w-3.5 h-3.5 animate-spin text-accent" title="جاري تحديث البيانات..." />
+                                    <LuRefreshCw className="w-3.5 h-3.5 animate-spin text-accent" title="Refreshing data..." />
                                 )}
                             </div>
                         </div>
@@ -117,30 +117,30 @@ export default function DetailsCompanies({
                     <button
                         onClick={onClose}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body */}
-                <div className="p-6 overflow-y-auto space-y-5 text-sm text-right flex-1">
+                <div className="p-6 overflow-y-auto space-y-5 text-sm text-left flex-1">
                     {isLoading && !company ? (
                         <div className="py-12 flex flex-col items-center justify-center text-center space-y-3">
                             <LuRefreshCw className="w-8 h-8 animate-spin text-accent" />
-                            <p className="text-xs font-bold text-body">جاري جلب تفاصيل وإحصائيات الشركة...</p>
+                            <p className="text-xs font-bold text-body">Fetching company details and statistics...</p>
                         </div>
                     ) : company ? (
                         <>
                             {/* KPI Metrics fetched from /api/admin/companies/[id] */}
                             <div className="space-y-2">
-                                <span className="text-xs font-bold text-body/80 block">الإحصائيات الحالية :</span>
+                                <span className="text-xs font-bold text-body/80 block">Current Statistics:</span>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
 
                                     {/* Employees Count */}
                                     <div className="p-3 bg-surface-muted/70 rounded-2xl border border-border flex flex-col justify-between">
                                         <div className="flex items-center justify-between text-body/70 mb-1">
-                                            <span className="text-xs font-semibold">الموظفون</span>
+                                            <span className="text-xs font-semibold">Employees</span>
                                             <LuUsers className="w-4 h-4 text-accent" />
                                         </div>
                                         <p className="text-xl font-extrabold text-heading font-mono">{employeesCount}</p>
@@ -149,7 +149,7 @@ export default function DetailsCompanies({
                                     {/* Orders Count */}
                                     <div className="p-3 bg-surface-muted/70 rounded-2xl border border-border flex flex-col justify-between">
                                         <div className="flex items-center justify-between text-body/70 mb-1">
-                                            <span className="text-xs font-semibold">الطلبات</span>
+                                            <span className="text-xs font-semibold">Orders</span>
                                             <LuPackage className="w-4 h-4 text-accent" />
                                         </div>
                                         <p className="text-xl font-extrabold text-heading font-mono">{ordersCount}</p>
@@ -158,13 +158,13 @@ export default function DetailsCompanies({
                                     {/* Shipments Count */}
                                     <div className="p-3 bg-surface-muted/70 rounded-2xl border border-border flex flex-col justify-between">
                                         <div className="flex items-center justify-between text-body/70 mb-1">
-                                            <span className="text-xs font-semibold">الشحنات</span>
+                                            <span className="text-xs font-semibold">Shipments</span>
                                             <LuTruck className="w-4 h-4 text-accent" />
                                         </div>
                                         <div>
                                             <p className="text-xl font-extrabold text-heading font-mono">{shipmentsCount}</p>
                                             <span className="text-[10px] text-body/70 block">
-                                                {completedShipmentsCount} مكتملة | {activeShipmentsCount} نشطة
+                                                {completedShipmentsCount} completed | {activeShipmentsCount} active
                                             </span>
                                         </div>
                                     </div>
@@ -172,16 +172,16 @@ export default function DetailsCompanies({
                                     {/* Total Revenue */}
                                     <div className="p-3 bg-surface-muted/70 rounded-2xl border border-border flex flex-col justify-between">
                                         <div className="flex items-center justify-between text-body/70 mb-1">
-                                            <span className="text-xs font-semibold">الإيرادات</span>
+                                            <span className="text-xs font-semibold">Revenue</span>
                                             <LuWallet className="w-4 h-4 text-emerald-600" />
                                         </div>
                                         <div>
                                             <p className="text-lg font-extrabold text-emerald-600 font-mono">
-                                                {totalRevenue.toLocaleString()} <span className="text-xs">ر.س</span>
+                                                {totalRevenue.toLocaleString()} <span className="text-xs">SAR</span>
                                             </p>
                                             {pendingAmount > 0 && (
                                                 <span className="text-[10px] text-amber-600 font-bold block">
-                                                    معلق: {pendingAmount.toLocaleString()} ر.س
+                                                    Pending: {pendingAmount.toLocaleString()} SAR
                                                 </span>
                                             )}
                                         </div>
@@ -197,33 +197,33 @@ export default function DetailsCompanies({
                                 <div className="p-3.5 bg-surface-muted rounded-2xl border border-border space-y-1">
                                     <span className="text-xs font-semibold text-body/70 flex items-center gap-1.5">
                                         <LuMail className="w-3.5 h-3.5 text-accent" />
-                                        البريد الإلكتروني
+                                        Email Address
                                     </span>
-                                    <p className="font-mono font-bold text-heading dir-ltr text-right">{company.email}</p>
+                                    <p className="font-mono font-bold text-heading">{company.email}</p>
                                 </div>
 
                                 <div className="p-3.5 bg-surface-muted rounded-2xl border border-border space-y-1">
                                     <span className="text-xs font-semibold text-body/70 flex items-center gap-1.5">
                                         <LuPhone className="w-3.5 h-3.5 text-accent" />
-                                        رقم الهاتف
+                                        Phone Number
                                     </span>
-                                    <p className="font-mono font-bold text-heading dir-ltr text-right">{company.phone}</p>
+                                    <p className="font-mono font-bold text-heading">{company.phone}</p>
                                 </div>
 
                                 <div className="p-3.5 bg-surface-muted rounded-2xl border border-border space-y-1">
                                     <span className="text-xs font-semibold text-body/70 flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-accent" />
-                                        المدينة / الفرع الرئيسي
+                                        City / Main Branch
                                     </span>
-                                    <p className="font-bold text-heading">{company.city || "غير محدد"}</p>
+                                    <p className="font-bold text-heading">{company.city || "Not specified"}</p>
                                 </div>
 
                                 <div className="p-3.5 bg-surface-muted rounded-2xl border border-border space-y-1">
                                     <span className="text-xs font-semibold text-body/70 flex items-center gap-1.5">
                                         <LuHash className="w-3.5 h-3.5 text-accent" />
-                                        الرقم الضريبي (VAT)
+                                        Tax Number (VAT)
                                     </span>
-                                    <p className="font-mono font-bold text-heading">{company.taxNumber || "غير مسجل"}</p>
+                                    <p className="font-mono font-bold text-heading">{company.taxNumber || "Not registered"}</p>
                                 </div>
                             </div>
 
@@ -232,7 +232,7 @@ export default function DetailsCompanies({
                                 <div className="p-3.5 bg-surface-muted rounded-2xl border border-border space-y-1">
                                     <span className="text-xs font-semibold text-body/70 flex items-center gap-1.5">
                                         <LuMapPin className="w-3.5 h-3.5 text-accent" />
-                                        العنوان التفصيلي
+                                        Detailed Address
                                     </span>
                                     <p className="text-heading font-medium">{company.address}</p>
                                 </div>
@@ -242,7 +242,7 @@ export default function DetailsCompanies({
                                 <div className="p-3.5 bg-surface-muted rounded-2xl border border-border space-y-1">
                                     <span className="text-xs font-semibold text-body/70 flex items-center gap-1.5">
                                         <LuFileText className="w-3.5 h-3.5 text-accent" />
-                                        معلومات المنشأة
+                                        Facility Information
                                     </span>
                                     <p className="text-heading leading-relaxed">{company.facilityInfo}</p>
                                 </div>
@@ -251,18 +251,18 @@ export default function DetailsCompanies({
                             {/* Status & Approval */}
                             <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-surface-muted/60 rounded-2xl border border-border">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs font-semibold text-body">حالة الشركة:</span>
+                                    <span className="text-xs font-semibold text-body">Company Status:</span>
                                     {getCompanyStatusBadge(company.status)}
                                 </div>
 
                                 {company.approvedBy ? (
                                     <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-200">
                                         <LuShieldCheck className="w-4 h-4" />
-                                        <span>معتمدة بالنظام</span>
+                                        <span>Approved in System</span>
                                     </div>
                                 ) : (
                                     <div className="flex items-center gap-1.5 text-xs text-amber-600 font-bold bg-amber-500/10 px-3 py-1 rounded-full border border-amber-200">
-                                        <span>بانتظار الاعتماد الإداري</span>
+                                        <span>Awaiting Admin Approval</span>
                                     </div>
                                 )}
                             </div>
@@ -271,16 +271,16 @@ export default function DetailsCompanies({
                             <div className="flex justify-between items-center text-xs text-body/70 pt-1 px-1">
                                 <span className="flex items-center gap-1">
                                     <LuCalendar className="w-3.5 h-3.5 text-accent" />
-                                    تاريخ التسجيل: {company.createdAt ? format(new Date(company.createdAt), "dd MMMM yyyy") : "غير متوفر"}
+                                    Registration Date: {company.createdAt ? format(new Date(company.createdAt), "dd MMMM yyyy") : "Not available"}
                                 </span>
                                 {company.updatedAt && (
-                                    <span>آخر تحديث: {format(new Date(company.updatedAt), "dd MMM yyyy")}</span>
+                                    <span>Last Updated: {format(new Date(company.updatedAt), "dd MMM yyyy")}</span>
                                 )}
                             </div>
                         </>
                     ) : (
                         <div className="py-8 text-center text-rose-600 font-bold text-xs">
-                            تعذر تحميل بيانات هذه الشركة.
+                            Failed to load this company's data.
                         </div>
                     )}
                 </div>
@@ -293,7 +293,7 @@ export default function DetailsCompanies({
                             className="inline-flex items-center gap-2 text-xs font-bold text-accent hover:underline cursor-pointer"
                         >
                             <LuExternalLink className="w-4 h-4" />
-                            <span>عرض الصفحة التفصيلية المتقدمة</span>
+                            <span>View Advanced Details Page</span>
                         </Link>
                     ) : <div />}
 
@@ -302,7 +302,7 @@ export default function DetailsCompanies({
                         onClick={onClose}
                         className="px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-xs hover:shadow transition-all cursor-pointer"
                     >
-                        إغلاق
+                        Close
                     </button>
                 </div>
 

@@ -2,53 +2,53 @@ import { FaCheck, FaArrowRight, FaStar } from 'react-icons/fa';
 
 const plans = [
   {
-    name: 'الباقة الأولى',
-    description: 'مناسبة للشركات الصغيرة التي تبدأ عملياتها الرقمية.',
+    name: 'Starter Plan',
+    description: 'Ideal for small companies starting their digital operations.',
     price: '1',
-    period: '/شهر',
+    period: '/mo',
     badge: null,
     features: [
-      'ميزة واحد',
-      'ميزة اتنين',
-      'ميزة تلاتة',
-      'ميزة أربعة',
-      'ميزة خمسة',
+      'Feature One',
+      'Feature Two',
+      'Feature Three',
+      'Feature Four',
+      'Feature Five',
     ],
-    cta: 'ابدأ الآن',
+    cta: 'Get Started',
     ctaStyle: 'outline',
     highlighted: false,
   },
   {
-    name: 'الباقة الثانية',
-    description: 'مناسبة للشركات المتنامية التي تحتاج إلى مزايا أكثر.',
+    name: 'Growth Plan',
+    description: 'Ideal for growing companies that need more features.',
     price: '1',
-    period: '/شهر',
-    badge: 'الأكثر شيوعاً',
+    period: '/mo',
+    badge: 'Most Popular',
     features: [
-      'ميزة واحد',
-      'ميزة اتنين',
-      'ميزة تلاتة',
-      'ميزة أربعة',
-      'ميزة خمسة',
+      'Feature One',
+      'Feature Two',
+      'Feature Three',
+      'Feature Four',
+      'Feature Five',
     ],
-    cta: 'ابدأ الآن',
+    cta: 'Get Started',
     ctaStyle: 'accent',
     highlighted: true,
   },
   {
-    name: 'الباقة الثالثة',
-    description: 'مناسبة للشركات الكبيرة والعمليات المتقدمة.',
+    name: 'Enterprise Plan',
+    description: 'Ideal for large companies and advanced operations.',
     price: '1',
-    period: '/شهر',
+    period: '/mo',
     badge: null,
     features: [
-      'ميزة واحد',
-      'ميزة اتنين',
-      'ميزة تلاتة',
-      'ميزة أربعة',
-      'ميزة خمسة',
+      'Feature One',
+      'Feature Two',
+      'Feature Three',
+      'Feature Four',
+      'Feature Five',
     ],
-    cta: 'تواصل معنا',
+    cta: 'Contact Us',
     ctaStyle: 'outline',
     highlighted: false,
   },
@@ -62,14 +62,14 @@ export default function Pricing() {
       <div className="container-narrow relative">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="text-sm font-semibold uppercase tracking-widest text-accent">
-            خطط الأسعار
+            Pricing Plans
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-heading tracking-tight mb-4">
-            أسعار بسيطة وشفافة
+            Simple, Transparent Pricing
           </h2>
           <p className="text-lg text-body leading-relaxed">
-            اختر الخطة التي تناسب حجم شركتك. قم بالترقية أو التخفيض في أي وقت —
-            بدون عقود طويلة الأجل.
+            Choose the plan that fits your company's size. Upgrade or downgrade at any time —
+            no long-term contracts.
           </p>
         </div>
 
@@ -98,8 +98,8 @@ export default function Pricing() {
               </p>
 
               <div className="flex items-baseline gap-1 mb-1">
-                {plan.price !== 'مخصص' && (
-                  <span className="text-lg font-secondary font-medium text-body">ر.س</span>
+                {plan.price !== 'Custom' && (
+                  <span className="text-lg font-secondary font-medium text-body">SAR</span>
                 )}
                 <span className="text-4xl font-bold text-heading font-secondary tracking-tight">
                   {plan.price}
@@ -109,7 +109,7 @@ export default function Pricing() {
                 )}
               </div>
               <p className="text-xs text-body mb-6">
-                {plan.price === 'مخصص' ? 'مصمم حسب احتياجاتك' : 'فوترة شهرية، إلغاء في أي وقت'}
+                {plan.price === 'Custom' ? 'Tailored to your needs' : 'Monthly billing, cancel anytime'}
               </p>
 
               <a
@@ -140,7 +140,7 @@ export default function Pricing() {
         </div>
 
         <p className="text-center text-sm text-body mt-10">
-          جميع الخطط تشمل نسخة تجريبية مجانية لمدة ١٤ يوماً. لا حاجة لبطاقة ائتمان.
+          All plans include a 14-day free trial. No credit card required.
         </p>
       </div>
     </section>

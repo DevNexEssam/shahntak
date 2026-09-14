@@ -1,16 +1,16 @@
 import { FaArrowRight, FaCheckCircle } from 'react-icons/fa';
 
 const stats = [
-  { label: 'شحنة مُدارة', value: '٠م+' },
-  { label: 'شركة نشطة', value: '٠+' },
-  { label: 'مدينة مغطاة', value: '٠+' },
-  { label: 'وقت تشغيل', value: '٠٪' },
+  { label: 'Shipments Managed', value: '0M+' },
+  { label: 'Active Companies', value: '0+' },
+  { label: 'Cities Covered', value: '0+' },
+  { label: 'Uptime', value: '0%' },
 ];
 
 const checkItems = [
-  'دعم الشحنات الكاملة والشحنات الأقل من حمولة شاحنة',
-  'فوترة ضريبية متوافقة مع هيئة الزكاة والضريبة والجمارك',
-  'تتبع الأسطول في الوقت الفعلي وتخطيط المسار',
+  'Support for full truckload and less-than-truckload shipments',
+  'Tax invoicing compliant with ZATCA (Zakat, Tax and Customs Authority)',
+  'Real-time fleet tracking and route planning',
 ];
 
 export default function Hero() {
@@ -24,27 +24,27 @@ export default function Hero() {
         <div className="max-w-3xl mx-auto text-center animate-fade-up">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full  text-heading/40 text-xs font-secondary font-medium mb-6">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            تثق  شركات الشحن في جميع أنحاء السعودية
+            Trusted by shipping companies across Saudi Arabia
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-heading leading-[1.1] tracking-tight mb-6">
-            إدارة شحناتك، أسطولك، وفواتيرك من{' '}
-            <span className="text-gradient">مكان واحد</span>
+            Manage your shipments, fleet, and invoices from{' '}
+            <span className="text-gradient">one place</span>
           </h1>
 
           <p className="text-lg text-body leading-relaxed mb-8 max-w-2xl mx-auto">
-            شحناتك هي منصة سحابية للشركات لإدارة الخدمات اللوجستية،
-            النقل، وعمليات الشحن — مع شحنات موحدة،
-            تتبع الأسطول في الوقت الفعلي، وفوترة متوافقة مع هيئة الزكاة والضريبة والجمارك.
+            Shahntak is a cloud platform for businesses to manage logistics,
+            transportation, and shipping operations — with unified shipments,
+            real-time fleet tracking, and ZATCA-compliant invoicing.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
             <a href="#cta" className="btn-primary">
-              ابدأ الآن
+              Get Started
               <FaArrowRight className="w-4 h-4" />
             </a>
             <a href="#features" className="btn-outline">
-              استكشف الميزات
+              Explore Features
             </a>
           </div>
 

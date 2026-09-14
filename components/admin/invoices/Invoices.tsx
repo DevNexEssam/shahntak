@@ -110,7 +110,7 @@ export default function Invoices() {
     const handleDownloadPdf = async (inv: any) => {
         try {
             setDownloadingInvoiceId(inv._id);
-            toast.loading(`جاري تجهيز وتنزيل فاتورة ZATCA الضريبية PDF (${inv.invoiceNumber})...`, { id: 'pdf-toast' });
+            toast.loading(`Preparing and downloading ZATCA tax invoice PDF (${inv.invoiceNumber})...`, { id: 'pdf-toast' });
             const { pdf } = await import('@react-pdf/renderer');
             const blob = await pdf(<InvoicePDFDocument invoiceData={inv} />).toBlob();
             const url = URL.createObjectURL(blob);
@@ -121,10 +121,10 @@ export default function Invoices() {
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-            toast.success(`تم تحميل الفاتورة (${inv.invoiceNumber}) بنجاح!`, { id: 'pdf-toast' });
+            toast.success(`Invoice (${inv.invoiceNumber}) downloaded successfully!`, { id: 'pdf-toast' });
         } catch (err) {
             console.error('Failed to generate PDF:', err);
-            toast.error('حدث خطأ أثناء إنشاء ملف الـ PDF', { id: 'pdf-toast' });
+            toast.error('An error occurred while generating the PDF file', { id: 'pdf-toast' });
         } finally {
             setDownloadingInvoiceId(null);
         }
@@ -152,38 +152,38 @@ export default function Invoices() {
             case 'paid':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                        مدفوعة ومحصلة
+                        Paid & Collected
                     </span>
                 );
             case 'issued':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20">
-                        صادرة ومعلقة
+                        Issued & Pending
                     </span>
                 );
             case 'overdue':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
-                        متأخرة السداد
+                        Overdue
                     </span>
                 );
             case 'cancelled':
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">
-                        ملغاة
+                        Cancelled
                     </span>
                 );
             default:
                 return (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                        مسودة
+                        Draft
                     </span>
                 );
         }
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic" dir="rtl">
+        <div className="space-y-6 text-left">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -192,9 +192,9 @@ export default function Invoices() {
                         <span className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuReceipt className="w-5 h-5" />
                         </span>
-                        فواتير الأدمن والنزاهة المالية ZATCA
+                        Admin Invoices & ZATCA Financial Compliance
                     </h1>
-                    <p className="text-xs text-body mt-1">متابعة وإصدار الفواتير الضريبية وتتبع التحصيل المالي وحسابات ضريبة القيمة المضافة 15%</p>
+                    <p className="text-xs text-body mt-1">Monitor and issue tax invoices, track financial collection, and manage 15% VAT calculations</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -203,13 +203,13 @@ export default function Invoices() {
                         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-all font-bold text-xs shadow-xs cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>إصدار فاتورة جديدة</span>
+                        <span>Issue New Invoice</span>
                     </button>
 
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        title="تحديث البيانات"
+                        title="Refresh data"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
@@ -220,7 +220,7 @@ export default function Invoices() {
             {/* Error Notification Banner */}
             {isError && (
                 <div className="mb-4">
-                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات الفواتير من الخادم'} />
+                    <ErrorMessege message={(error as any)?.message || 'Failed to fetch invoice data from the server'} />
                 </div>
             )}
 
@@ -228,7 +228,7 @@ export default function Invoices() {
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-heading">
                     <LuCalendar className="w-4 h-4 text-accent shrink-0" />
-                    <span>تصفية الفترات المالية:</span>
+                    <span>Filter Financial Periods:</span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -241,7 +241,7 @@ export default function Invoices() {
                                 : 'text-body hover:text-heading'
                                 }`}
                         >
-                            اليوم (تلقائي)
+                            Today (Auto)
                         </button>
                         <button
                             onClick={handlePresetMonth}
@@ -250,7 +250,7 @@ export default function Invoices() {
                                 : 'text-body hover:text-heading'
                                 }`}
                         >
-                            هذا الشهر
+                            This Month
                         </button>
                         <button
                             onClick={handlePresetAll}
@@ -259,13 +259,13 @@ export default function Invoices() {
                                 : 'text-body hover:text-heading'
                                 }`}
                         >
-                            جميع الفترات
+                            All Periods
                         </button>
                     </div>
 
                     {/* Date Inputs */}
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-body">من:</span>
+                        <span className="text-xs text-body">From:</span>
                         <input
                             type="date"
                             value={startDate}
@@ -276,7 +276,7 @@ export default function Invoices() {
                             }}
                             className="px-3 py-1.5 rounded-md bg-surface-muted border border-border text-xs font-latin text-heading focus:outline-none focus:border-accent"
                         />
-                        <span className="text-xs text-body">إلى:</span>
+                        <span className="text-xs text-body">To:</span>
                         <input
                             type="date"
                             value={endDate}
@@ -296,10 +296,10 @@ export default function Invoices() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الفواتير</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Invoices</span>
                             <h3 className="text-2xl font-bold text-heading my-1 font-latin">{serverStats?.total ?? totalRecords}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>المصدرة بالفترة</span>
+                                <span>Issued in period</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -311,12 +311,12 @@ export default function Invoices() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">المحصل والمدفوع</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Collected & Paid</span>
                             <h3 className="text-2xl font-bold text-emerald-600 my-1 font-latin">
-                                {totalCollected.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span className="text-xs font-normal">ر.س</span>
+                                {totalCollected.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span className="text-xs font-normal">SAR</span>
                             </h3>
                             <p className="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-2">
-                                <span>فواتير محصلة بنجاح</span>
+                                <span>Successfully collected invoices</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
@@ -328,12 +328,12 @@ export default function Invoices() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">معلق بانتظار التحصيل</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Pending Collection</span>
                             <h3 className="text-2xl font-bold text-amber-600 my-1 font-latin">
-                                {totalPending.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span className="text-xs font-normal">ر.س</span>
+                                {totalPending.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span className="text-xs font-normal">SAR</span>
                             </h3>
                             <p className="text-xs text-amber-600 font-bold flex items-center gap-1 mt-2">
-                                <span>ذمم مالية غير مسددة</span>
+                                <span>Outstanding receivables</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center">
@@ -347,12 +347,12 @@ export default function Invoices() {
             <div className="space-y-4">
                 <div className="border-b border-border flex items-center gap-2 overflow-x-auto">
                     {[
-                        { key: 'all', label: 'جميع الفواتير', count: serverStats?.total ?? totalRecords },
-                        { key: 'paid', label: 'مدفوعة ومحصلة', count: serverStats?.paid ?? 0 },
-                        { key: 'issued', label: 'صادرة ومعلقة', count: serverStats?.issued ?? 0 },
-                        { key: 'draft', label: 'مسودة', count: serverStats?.draft ?? 0 },
-                        { key: 'overdue', label: 'متأخرة', count: serverStats?.overdue ?? 0 },
-                        { key: 'cancelled', label: 'ملغاة', count: serverStats?.cancelled ?? 0 },
+                        { key: 'all', label: 'All Invoices', count: serverStats?.total ?? totalRecords },
+                        { key: 'paid', label: 'Paid & Collected', count: serverStats?.paid ?? 0 },
+                        { key: 'issued', label: 'Issued & Pending', count: serverStats?.issued ?? 0 },
+                        { key: 'draft', label: 'Draft', count: serverStats?.draft ?? 0 },
+                        { key: 'overdue', label: 'Overdue', count: serverStats?.overdue ?? 0 },
+                        { key: 'cancelled', label: 'Cancelled', count: serverStats?.cancelled ?? 0 },
                     ].map((tab) => (
                         <button
                             key={tab.key}
@@ -373,13 +373,13 @@ export default function Invoices() {
 
                 <div className="bg-surface p-4 rounded-md border border-border flex items-center justify-between">
                     <div className="relative w-full md:w-96">
-                        <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                        <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            placeholder="بحث برقم الفاتورة..."
-                            className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                            placeholder="Search by invoice number..."
+                            className="w-full pr-4 pl-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                         />
                     </div>
                 </div>
@@ -389,28 +389,28 @@ export default function Invoices() {
             <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {invoicesList.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا توجد فواتير مسجلة تطابق خيارات البحث والتاريخ والتصفية الحالية" icon={LuReceipt} />
+                        <EmptyData message="No invoices match the current search, date range, or filter options" icon={LuReceipt} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">رقم الفاتورة</th>
-                                    <th className="py-3.5 px-4">الشركة Mapped</th>
-                                    <th className="py-3.5 px-4">تاريخ الإصدار</th>
-                                    <th className="py-3.5 px-4">المبلغ قبل الضريبة</th>
-                                    <th className="py-3.5 px-4">الضريبة (VAT)</th>
-                                    <th className="py-3.5 px-4">الإجمالي الكلي</th>
-                                    <th className="py-3.5 px-4">الحالة</th>
-                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">Invoice No.</th>
+                                    <th className="py-3.5 px-4">Mapped Company</th>
+                                    <th className="py-3.5 px-4">Issue Date</th>
+                                    <th className="py-3.5 px-4">Subtotal (Pre-Tax)</th>
+                                    <th className="py-3.5 px-4">VAT</th>
+                                    <th className="py-3.5 px-4">Grand Total</th>
+                                    <th className="py-3.5 px-4">Status</th>
+                                    <th className="py-3.5 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
                                 {invoicesList.map((inv: any) => {
                                     const compName = typeof inv.companyId === 'object' && inv.companyId !== null
                                         ? (inv.companyId as Company).companyName
-                                        : 'شركة عامة';
+                                        : 'General Company';
 
                                     const grand = Number(inv.total ?? inv.amount ?? inv.totalAmount ?? 0);
                                     const snapshot = inv.taxRateSnapshot !== undefined ? Number(inv.taxRateSnapshot) : 15;
@@ -431,20 +431,20 @@ export default function Invoices() {
                                             </td>
 
                                             <td className="py-3.5 px-4 font-latin text-xs text-heading">
-                                                {new Date(inv.createdAt || Date.now()).toLocaleDateString('ar-SA')}
+                                                {new Date(inv.createdAt || Date.now()).toLocaleDateString('en-US')}
                                             </td>
 
                                             <td className="py-3.5 px-4 font-latin text-xs font-bold text-heading">
-                                                {subtotal.toFixed(2)} ر.س
+                                                {subtotal.toFixed(2)} SAR
                                             </td>
 
                                             <td className="py-3.5 px-4 font-latin text-xs text-amber-600 font-bold">
-                                                {vat.toFixed(2)} ر.س
-                                                <span className="text-[10px] text-body mr-1">({snapshot}%)</span>
+                                                {vat.toFixed(2)} SAR
+                                                <span className="text-[10px] text-body ml-1">({snapshot}%)</span>
                                             </td>
 
                                             <td className="py-3.5 px-4 font-latin text-xs font-extrabold text-emerald-600">
-                                                {grand.toFixed(2)} ر.س
+                                                {grand.toFixed(2)} SAR
                                             </td>
 
                                             <td className="py-3.5 px-4">
@@ -456,7 +456,7 @@ export default function Invoices() {
                                                     <button
                                                         onClick={() => handleDownloadPdf(inv)}
                                                         disabled={downloadingInvoiceId === inv._id}
-                                                        title="تنزيل الفاتورة بصيغة PDF"
+                                                        title="Download invoice as PDF"
                                                         className="p-2 rounded-md bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-600 border border-emerald-500/20 transition-all cursor-pointer disabled:opacity-50"
                                                     >
                                                         {downloadingInvoiceId === inv._id ? (
@@ -468,7 +468,7 @@ export default function Invoices() {
 
                                                     <button
                                                         onClick={() => setSelectedInvoiceForDetails(inv)}
-                                                        title="عرض التفاصيل"
+                                                        title="View details"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
@@ -476,7 +476,7 @@ export default function Invoices() {
 
                                                     <button
                                                         onClick={() => setSelectedInvoiceForEdit(inv)}
-                                                        title={inv.status === 'paid' ? 'فاتورة محصلة لا يمكن تعديلها' : 'تعديل الفاتورة'}
+                                                        title={inv.status === 'paid' ? 'Collected invoice cannot be edited' : 'Edit invoice'}
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer disabled:opacity-40"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
@@ -484,7 +484,7 @@ export default function Invoices() {
 
                                                     <button
                                                         onClick={() => setSelectedInvoiceForDelete(inv)}
-                                                        title="حذف الفاتورة"
+                                                        title="Delete invoice"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuTrash2 className="w-4 h-4" />
@@ -503,7 +503,7 @@ export default function Invoices() {
                 {totalPages > 1 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
-                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} فاتورة)
+                            Showing page <b className="font-latin text-heading">{page}</b> of <b className="font-latin text-heading">{totalPages}</b> ({totalRecords} invoices total)
                         </span>
 
                         <div className="flex items-center gap-2">
@@ -512,8 +512,8 @@ export default function Invoices() {
                                 disabled={page === 1}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <LuChevronRight className="w-4 h-4" />
-                                <span>السابق</span>
+                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Previous</span>
                             </button>
 
                             <button
@@ -521,8 +521,8 @@ export default function Invoices() {
                                 disabled={page === totalPages}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <span>التالي</span>
-                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Next</span>
+                                <LuChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -549,8 +549,8 @@ export default function Invoices() {
 
             <ConfirmDeletePopup
                 isOpen={!!selectedInvoiceForDelete}
-                title="تأكيد حذف الفاتورة"
-                description={`هل أنت تأكد من رغبتك في حذف الفاتورة رقم (${selectedInvoiceForDelete?.invoiceNumber})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
+                title="Confirm Invoice Deletion"
+                description={`Are you sure you want to delete invoice number (${selectedInvoiceForDelete?.invoiceNumber})? This action cannot be undone.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedInvoiceForDelete(null)}

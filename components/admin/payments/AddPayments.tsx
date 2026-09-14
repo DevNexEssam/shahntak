@@ -70,7 +70,7 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -118,9 +118,8 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                                         amount: selectedInv ? selectedInv.total : formValues.amount,
                                     });
                                 }}
-                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${
-                                    fieldErrors.invoiceId ? 'border-rose-500' : 'border-border'
-                                }`}
+                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.invoiceId ? 'border-rose-500' : 'border-border'
+                                    }`}
                             >
                                 <option value="">اختر الفاتورة...</option>
                                 {invoices.map((inv) => (
@@ -148,9 +147,8 @@ export default function AddPayments({ isOpen = true, onClose }: AddPaymentsProps
                                     onChange={(e) => setFormValues({ ...formValues, amount: Number(e.target.value) })}
                                     min={0.01}
                                     step="any"
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.amount ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.amount ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.amount && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.amount}</span>

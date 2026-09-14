@@ -5,7 +5,7 @@ import React from 'react';
 
 export default function CompanyAnalyticsSkeleton() {
     return (
-        <div className="space-y-6 animate-pulse" dir="rtl">
+        <div className="space-y-6 animate-pulse">
 
             {/* Top 4 KPI Cards Skeleton */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

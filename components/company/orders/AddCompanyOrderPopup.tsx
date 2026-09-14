@@ -88,7 +88,7 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
             {/* Modal Container */}
             <div className="relative w-full max-w-3xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -158,9 +158,8 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         value={formValues.recipientName}
                                         onChange={(e) => setFormValues({ ...formValues, recipientName: e.target.value })}
                                         placeholder="مثال: محمد أحمد"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientName ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.recipientName && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientName}</span>
@@ -178,9 +177,8 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         value={formValues.recipientPhone}
                                         onChange={(e) => setFormValues({ ...formValues, recipientPhone: e.target.value })}
                                         placeholder="مثال: 0501234567"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.recipientPhone ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientPhone ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.recipientPhone && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientPhone}</span>
@@ -200,9 +198,8 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                         value={formValues.recipientCity}
                                         onChange={(e) => setFormValues({ ...formValues, recipientCity: e.target.value })}
                                         placeholder="مثال: الرياض"
-                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                            fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
-                                        }`}
+                                        className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientCity ? 'border-rose-500' : 'border-border'
+                                            }`}
                                     />
                                     {fieldErrors.recipientCity && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientCity}</span>
@@ -234,9 +231,8 @@ export default function AddCompanyOrderPopup({ isOpen = true, onClose }: AddComp
                                     value={formValues.recipientAddress}
                                     onChange={(e) => setFormValues({ ...formValues, recipientAddress: e.target.value })}
                                     placeholder="مثال: شارع التخصصي، مبنى 12"
-                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                        fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
-                                    }`}
+                                    className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.recipientAddress ? 'border-rose-500' : 'border-border'
+                                        }`}
                                 />
                                 {fieldErrors.recipientAddress && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.recipientAddress}</span>

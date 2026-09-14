@@ -75,7 +75,7 @@ export default function EditVehicles({ isOpen = true, vehicle, onClose }: EditVe
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="rtl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
             {/* Modal Container */}
             <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -116,9 +116,8 @@ export default function EditVehicles({ isOpen = true, vehicle, onClose }: EditVe
                                 disabled={isSubmitting}
                                 value={formValues.type}
                                 onChange={(e) => setFormValues({ ...formValues, type: e.target.value })}
-                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${
-                                    fieldErrors.type ? 'border-rose-500' : 'border-border'
-                                }`}
+                                className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.type ? 'border-rose-500' : 'border-border'
+                                    }`}
                             />
                             {fieldErrors.type && (
                                 <span className="text-xs text-rose-500 font-medium block">{fieldErrors.type}</span>

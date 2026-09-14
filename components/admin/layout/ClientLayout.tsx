@@ -33,7 +33,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     }
 
     return (
-        <div className="flex min-h-screen bg-surface-muted text-body font-arabic selection:bg-accent selection:text-white" dir="rtl">
+        <div className="flex min-h-screen bg-surface-muted text-body font-arabic selection:bg-accent selection:text-white">
             {/* Sidebar */}
             <AdminSidebar
                 isCollapsed={isSidebarCollapsed}

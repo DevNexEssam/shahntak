@@ -15,16 +15,16 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-primary-foreground/50">
-            © 2026 شَحنتك. جميع الحقوق محفوظة.
+            © 2026 Shahntak. All rights reserved.
           </p>
           <div className="flex items-center gap-1">
             <span className="text-xs text-primary-foreground/50">
-              تطوير بواسطة
+              Developed by
             </span>
             <Link
               href={"https://essammohamed.vercel.app/"}
               className="text-xs text-primary-foreground/50 font-secondary hover:text-accent">
-              عصام محمد
+              Essam Mohamed
             </Link>
           </div>
         </div>

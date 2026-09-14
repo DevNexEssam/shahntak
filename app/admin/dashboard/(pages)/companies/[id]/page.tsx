@@ -41,7 +41,7 @@ export default function CompanyDetailsPage({ params }: PageProps) {
 
     if (isError || !res || !res.company) {
         return (
-            <div className="space-y-6 text-right font-arabic p-4" dir="rtl">
+            <div className="space-y-6 text-right font-arabic p-4">
                 <Link
                     href="/admin/dashboard/companies"
                     className="inline-flex items-center gap-2 text-xs font-bold text-body hover:text-heading transition-colors"
@@ -98,7 +98,7 @@ export default function CompanyDetailsPage({ params }: PageProps) {
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic" dir="rtl">
+        <div className="space-y-6 text-right font-arabic">
 
             {/* Navigation Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
