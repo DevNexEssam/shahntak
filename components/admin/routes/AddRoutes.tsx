@@ -23,10 +23,10 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
     const [formValues, setFormValues] = useState({
         origin: '',
         destination: '',
-        vehicleType: 'شاحنة كبيرة (دينا)',
+        vehicleType: 'Large Truck (Dina)',
         basePrice: 500,
         carrierId: '',
-        estimatedTransitTime: '24 ساعة',
+        estimatedTransitTime: '24 hours',
         isActive: true,
     });
 
@@ -53,7 +53,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -66,7 +66,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -77,8 +77,8 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             <LuMapPin className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">إضافة مسار لوجستي جديد</h2>
-                            <p className="text-xs text-body mt-0.5">تحديد نقطة الانطلاق والوصول ونوع المركبة والتسعيرة</p>
+                            <h2 className="text-xl font-extrabold text-heading">Add New Logistics Route</h2>
+                            <p className="text-xs text-body mt-0.5">Define the origin, destination, vehicle type, and pricing</p>
                         </div>
                     </div>
 
@@ -87,7 +87,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -95,20 +95,20 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    نقطة الانطلاق <span className="text-red-500">*</span>
+                                    Origin Point <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.origin}
                                     onChange={(e) => setFormValues({ ...formValues, origin: e.target.value })}
-                                    placeholder="الرياض، جدة، الدمام..."
+                                    placeholder="Riyadh, Jeddah, Dammam..."
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.origin ? 'border-rose-500' : 'border-border'
                                         }`}
                                 />
@@ -120,14 +120,14 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    وجهة الوصول  <span className="text-red-500">*</span>
+                                    Destination Point <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.destination}
                                     onChange={(e) => setFormValues({ ...formValues, destination: e.target.value })}
-                                    placeholder="مكة، المدينة، مجمع الهفوف..."
+                                    placeholder="Makkah, Madinah, Hofuf Complex..."
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading placeholder:text-body/50 focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.destination ? 'border-rose-500' : 'border-border'
                                         }`}
                                 />
@@ -141,7 +141,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuTruck className="w-3.5 h-3.5 text-body" />
-                                    نوع المركبة المطلوبة <span className="text-red-500">*</span>
+                                    Required Vehicle Type <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     disabled={isSubmitting}
@@ -150,10 +150,10 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.vehicleType ? 'border-rose-500' : 'border-border'
                                         }`}
                                 >
-                                    <option value="شاحنة كبيرة (دينا)">شاحنة كبيرة (دينا)</option>
-                                    <option value="شاحنة مغلقة (تريلا)">شاحنة مغلقة (تريلا)</option>
-                                    <option value="سيارة نقل صغيرة (وانيت)">سيارة نقل صغيرة (وانيت)</option>
-                                    <option value="شاحنة مبردة">شاحنة مبردة </option>
+                                    <option value="Large Truck (Dina)">Large Truck (Dina)</option>
+                                    <option value="Enclosed Truck (Trailer)">Enclosed Truck (Trailer)</option>
+                                    <option value="Small Transport Vehicle (Pickup)">Small Transport Vehicle (Pickup)</option>
+                                    <option value="Refrigerated Truck">Refrigerated Truck</option>
                                 </select>
                                 {fieldErrors.vehicleType && (
                                     <span className="text-xs text-rose-500 font-medium block">{fieldErrors.vehicleType}</span>
@@ -163,7 +163,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-body" />
-                                    السعر الأساسي للمسار (ر.س) <span className="text-red-500">*</span>
+                                    Route Base Price (SAR) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -185,14 +185,14 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuClock className="w-3.5 h-3.5 text-body" />
-                                    وقت الترانزيت التقديري
+                                    Estimated Transit Time
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.estimatedTransitTime}
                                     onChange={(e) => setFormValues({ ...formValues, estimatedTransitTime: e.target.value })}
-                                    placeholder="مثال: 24 ساعة / يومين"
+                                    placeholder="e.g., 24 hours / 2 days"
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50"
                                 />
                             </div>
@@ -200,7 +200,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                    تخصيص ناقل محدد (اختياري)
+                                    Assign Specific Carrier (Optional)
                                 </label>
                                 <select
                                     disabled={isSubmitting || isLoadingCarriers}
@@ -208,7 +208,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                                     onChange={(e) => setFormValues({ ...formValues, carrierId: e.target.value })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="">جميع الناقلين المتاحين</option>
+                                    <option value="">All Available Carriers</option>
                                     {carriers.map((car) => (
                                         <option key={car._id} value={car._id}>
                                             {car.name}
@@ -220,7 +220,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
 
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading block">
-                                حالة المسار
+                                Route Status
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -228,8 +228,8 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                                 onChange={(e) => setFormValues({ ...formValues, isActive: e.target.value === 'active' })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="active">نشط ومتاح</option>
-                                <option value="inactive">موقوف مؤقتاً</option>
+                                <option value="active">Active & Available</option>
+                                <option value="inactive">Temporarily Suspended</option>
                             </select>
                         </div>
 
@@ -243,7 +243,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -251,7 +251,7 @@ export default function AddRoutes({ isOpen = true, onClose }: AddRoutesProps) {
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإضافة..." : "حفظ البيانات"}
+                            {isSubmitting ? "Adding..." : "Save Data"}
                         </button>
                     </div>
                 </form>

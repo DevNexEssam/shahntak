@@ -59,26 +59,26 @@ export default function Subscriptions() {
     const statusBadge = (st: string) => {
         switch (st) {
             case 'active':
-                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">نشط وساري</span>;
+                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">Active</span>;
             case 'pending_payment':
-                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">بانتظار الدفع</span>;
+                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">Pending Payment</span>;
             case 'expired':
-                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">منتهي الصلاحية</span>;
+                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">Expired</span>;
             case 'cancelled':
-                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">ملغى</span>;
+                return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">Cancelled</span>;
             default:
                 return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600">{st}</span>;
         }
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic">
+        <div className="space-y-6 text-left">
 
             {/* Header Section */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-heading">اشتراكات الشركات وحصص الاستهلاك</h1>
-                    <p className="text-sm text-body mt-1">متابعة الاشتراكات السحابية النشطة للشركات، معدلات الاستهلاك، والترقية والتجديد.</p>
+                    <h1 className="text-2xl font-extrabold text-heading">Company Subscriptions & Usage Quotas</h1>
+                    <p className="text-sm text-body mt-1">Monitor active cloud subscriptions, usage rates, and upgrades and renewals.</p>
                 </div>
 
                 <button
@@ -86,7 +86,7 @@ export default function Subscriptions() {
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer hover:bg-accent/90"
                 >
                     <LuPlus className="w-5 h-5" />
-                    <span>تفعيل اشتراك لشركة</span>
+                    <span>Activate Company Subscription</span>
                 </button>
             </div>
 
@@ -95,10 +95,10 @@ export default function Subscriptions() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي الاشتراكات</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Subscriptions</span>
                             <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats?.total ?? 0}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>الاشتراكات الموثقة بالمنصة</span>
+                                <span>Verified subscriptions on the platform</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
@@ -110,10 +110,10 @@ export default function Subscriptions() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الاشتراكات النشطة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Active Subscriptions</span>
                             <h3 className="text-2xl font-bold text-emerald-600 my-1 font-latin">{stats?.active ?? 0}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>سارية ومتاحة للاستخدام</span>
+                                <span>Valid and available for use</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
@@ -125,10 +125,10 @@ export default function Subscriptions() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">بانتظار التحصيل</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Awaiting Collection</span>
                             <h3 className="text-2xl font-bold text-amber-600 my-1 font-latin">{stats?.pending_payment ?? 0}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>بانتظار تأكيد الدفع</span>
+                                <span>Awaiting payment confirmation</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
@@ -140,10 +140,10 @@ export default function Subscriptions() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الاشتراكات المنتهية</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Expired Subscriptions</span>
                             <h3 className="text-2xl font-bold text-rose-600 my-1 font-latin">{stats?.expired ?? 0}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>تتطلب التجديد الفوري</span>
+                                <span>Require immediate renewal</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
@@ -156,13 +156,13 @@ export default function Subscriptions() {
             {/* Search and Filters */}
             <div className="bg-surface p-4 rounded-md border border-border flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="relative w-full md:w-96">
-                    <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                    <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                     <input
                         type="text"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        placeholder="ابحث باسم الشركة..."
-                        className="w-full pr-10 pl-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                        placeholder="Search by company name..."
+                        className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                     />
                 </div>
 
@@ -174,7 +174,7 @@ export default function Subscriptions() {
                             : 'bg-surface-muted text-body border border-border hover:text-heading'
                             }`}
                     >
-                        الكل
+                        All
                     </button>
                     <button
                         onClick={() => setStatus('active')}
@@ -183,7 +183,7 @@ export default function Subscriptions() {
                             : 'bg-surface-muted text-body border border-border hover:text-heading'
                             }`}
                     >
-                        النشطة
+                        Active
                     </button>
                     <button
                         onClick={() => setStatus('pending_payment')}
@@ -192,7 +192,7 @@ export default function Subscriptions() {
                             : 'bg-surface-muted text-body border border-border hover:text-heading'
                             }`}
                     >
-                        بانتظار الدفع
+                        Pending Payment
                     </button>
                     <button
                         onClick={() => setStatus('expired')}
@@ -201,7 +201,7 @@ export default function Subscriptions() {
                             : 'bg-surface-muted text-body border border-border hover:text-heading'
                             }`}
                     >
-                        المنتهية
+                        Expired
                     </button>
                 </div>
             </div>
@@ -211,20 +211,20 @@ export default function Subscriptions() {
                 {isLoading ? (
                     <Loading />
                 ) : isError ? (
-                    <ErrorMessage message="حدث خطأ أثناء تحميل بيانات الاشتراكات" />
+                    <ErrorMessage message="An error occurred while loading subscription data" />
                 ) : subsList.length === 0 ? (
-                    <EmptyData message="لم يتم تفعيل أي اشتراكات سحابية للشركات تشمل هذه الفلاتر حتى الآن." icon={LuCrown} />
+                    <EmptyData message="No cloud subscriptions matching these filters have been activated for companies yet." icon={LuCrown} />
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs text-body font-bold">
-                                    <th className="py-3.5 px-4">الشركة المشتركة</th>
-                                    <th className="py-3.5 px-4">الباقة السحابية</th>
-                                    <th className="py-3.5 px-4">تاريخ الانتهاء</th>
-                                    <th className="py-3.5 px-4">استهلاك الطلبات</th>
-                                    <th className="py-3.5 px-4">الحالة</th>
-                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">Subscribed Company</th>
+                                    <th className="py-3.5 px-4">Cloud Plan</th>
+                                    <th className="py-3.5 px-4">Expiry Date</th>
+                                    <th className="py-3.5 px-4">Order Usage</th>
+                                    <th className="py-3.5 px-4">Status</th>
+                                    <th className="py-3.5 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
@@ -241,7 +241,7 @@ export default function Subscriptions() {
                                                         <LuBuilding2 className="w-4 h-4" />
                                                     </div>
                                                     <div>
-                                                        <span className="block font-extrabold">{company?.companyName || 'شركة مشتركة'}</span>
+                                                        <span className="block font-extrabold">{company?.companyName || 'Subscribed Company'}</span>
                                                         <span className="text-[11px] text-body font-normal">{company?.email}</span>
                                                     </div>
                                                 </div>
@@ -249,16 +249,16 @@ export default function Subscriptions() {
 
                                             <td className="py-3.5 px-4">
                                                 <span className="font-extrabold text-accent bg-accent/10 px-2.5 py-1 rounded-md text-xs border border-accent/20">
-                                                    {plan?.name || 'غير محددة'}
+                                                    {plan?.name || 'Unspecified'}
                                                 </span>
                                             </td>
 
                                             <td className="py-3.5 px-4 font-latin font-bold text-heading text-xs">
-                                                {sub.endDate ? new Date(sub.endDate).toLocaleDateString('ar-SA') : '-'}
+                                                {sub.endDate ? new Date(sub.endDate).toLocaleDateString('en-US') : '-'}
                                             </td>
 
                                             <td className="py-3.5 px-4 font-latin font-bold text-heading text-xs">
-                                                <span className="text-accent">{sub.ordersUsedThisMonth || 0}</span> / {maxOrders === -1 ? '∞' : maxOrders} طلب
+                                                <span className="text-accent">{sub.ordersUsedThisMonth || 0}</span> / {maxOrders === -1 ? '∞' : maxOrders} orders
                                             </td>
 
                                             <td className="py-3.5 px-4">
@@ -269,7 +269,7 @@ export default function Subscriptions() {
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <button
                                                         onClick={() => setSelectedSubForDetails(sub)}
-                                                        title="عرض التفاصيل"
+                                                        title="View details"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
@@ -277,7 +277,7 @@ export default function Subscriptions() {
 
                                                     <button
                                                         onClick={() => setSelectedSubForEdit(sub)}
-                                                        title="تعديل أو تجديد الاشتراك"
+                                                        title="Edit or renew subscription"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
@@ -285,7 +285,7 @@ export default function Subscriptions() {
 
                                                     <button
                                                         onClick={() => setSelectedSubForDelete(sub)}
-                                                        title="حذف الاشتراك"
+                                                        title="Delete subscription"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuTrash2 className="w-4 h-4" />
@@ -303,21 +303,21 @@ export default function Subscriptions() {
                 {/* Pagination */}
                 {totalPages > 1 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs">
-                        <span className="text-body">عرض الصفحة <strong className="text-heading font-latin">{page}</strong> من <strong className="text-heading font-latin">{totalPages}</strong></span>
+                        <span className="text-body">Showing page <strong className="text-heading font-latin">{page}</strong> of <strong className="text-heading font-latin">{totalPages}</strong></span>
                         <div className="flex items-center gap-2">
                             <button
                                 disabled={page === 1}
                                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                                 className="p-2 rounded-md border border-border bg-surface hover:bg-surface-muted text-body disabled:opacity-40 cursor-pointer"
                             >
-                                <LuChevronRight className="w-4 h-4" />
+                                <LuChevronLeft className="w-4 h-4" />
                             </button>
                             <button
                                 disabled={page >= totalPages}
                                 onClick={() => setPage((p) => p + 1)}
                                 className="p-2 rounded-md border border-border bg-surface hover:bg-surface-muted text-body disabled:opacity-40 cursor-pointer"
                             >
-                                <LuChevronLeft className="w-4 h-4" />
+                                <LuChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -350,8 +350,8 @@ export default function Subscriptions() {
 
             <ConfirmDeletePopup
                 isOpen={!!selectedSubForDelete}
-                title="تأكيد حذف اشتراك الشركة"
-                description="هل أنت متأكد من رغبتك في حذف وإلغاء هذا الاشتراك السحابي؟"
+                title="Confirm Company Subscription Deletion"
+                description="Are you sure you want to delete and cancel this cloud subscription?"
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedSubForDelete(null)}

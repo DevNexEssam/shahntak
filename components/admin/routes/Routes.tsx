@@ -85,7 +85,7 @@ export default function Routes() {
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic">
+        <div className="space-y-6 text-left">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -94,9 +94,9 @@ export default function Routes() {
                         <span className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuMapPin className="w-5 h-5" />
                         </span>
-                        إدارة المسارات والخطوط اللوجستية
+                        Routes & Logistics Lanes Management
                     </h1>
-                    <p className="text-xs text-body mt-1">تحديد الخطوط النقلية والربط بين المدن والأسعار الافتراضية ومدد الشحن</p>
+                    <p className="text-xs text-body mt-1">Define transport lanes, inter-city connections, default pricing, and shipping durations</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -105,13 +105,13 @@ export default function Routes() {
                         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-all font-bold text-xs shadow-xs cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>إضافة مسار جديد</span>
+                        <span>Add New Route</span>
                     </button>
 
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        title="تحديث البيانات"
+                        title="Refresh data"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
@@ -122,7 +122,7 @@ export default function Routes() {
             {/* Error Notification Banner */}
             {isError && (
                 <div className="mb-4">
-                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات المسارات من الخادم'} />
+                    <ErrorMessege message={(error as any)?.message || 'Failed to fetch route data from the server'} />
                 </div>
             )}
 
@@ -131,10 +131,10 @@ export default function Routes() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي المسارات</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Routes</span>
                             <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.total}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>المسجلة في النظام</span>
+                                <span>Registered in the system</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -146,10 +146,10 @@ export default function Routes() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">المسارات النشطة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Active Routes</span>
                             <h3 className="text-2xl font-bold text-emerald-600 my-1 font-latin">{stats.active}</h3>
                             <p className="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-2">
-                                <span>نشطة ومتاحة</span>
+                                <span>Active and available</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -161,10 +161,10 @@ export default function Routes() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">المسارات الموقوفة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Suspended Routes</span>
                             <h3 className="text-2xl font-bold text-rose-600 my-1 font-latin">{stats.inactive}</h3>
                             <p className="text-xs text-rose-600 font-bold flex items-center gap-1 mt-2">
-                                <span>موقوفة مؤقتاً</span>
+                                <span>Temporarily suspended</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -178,9 +178,9 @@ export default function Routes() {
             <div className="space-y-4">
                 <div className="border-b border-border flex items-center gap-2 overflow-x-auto">
                     {[
-                        { key: 'all', label: 'جميع المسارات', count: stats.total },
-                        { key: 'active', label: 'مسارات نشطة', count: stats.active },
-                        { key: 'inactive', label: 'مسارات موقوفة', count: stats.inactive },
+                        { key: 'all', label: 'All Routes', count: stats.total },
+                        { key: 'active', label: 'Active Routes', count: stats.active },
+                        { key: 'inactive', label: 'Suspended Routes', count: stats.inactive },
                     ].map((tab) => (
                         <button
                             key={tab.key}
@@ -204,13 +204,13 @@ export default function Routes() {
 
                 <div className="bg-surface p-4 rounded-md border border-border flex items-center justify-between">
                     <div className="relative w-full md:w-96">
-                        <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                        <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            placeholder="بحث بنقطة الانطلاق، الوجهة، نوع المركبة..."
-                            className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                            placeholder="Search by origin, destination, vehicle type..."
+                            className="w-full pr-4 pl-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                         />
                     </div>
                 </div>
@@ -220,34 +220,34 @@ export default function Routes() {
             <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {routesList.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا توجد مسارات لوجستية تطابق خيارات البحث أو التصفية الحالية" icon={LuMapPin} />
+                        <EmptyData message="No logistics routes match the current search or filter options" icon={LuMapPin} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">مسار الخط</th>
-                                    <th className="py-3.5 px-4">نوع المركبة</th>
-                                    <th className="py-3.5 px-4">السعر الأساسي</th>
-                                    <th className="py-3.5 px-4">الترانزيت التقديري</th>
-                                    <th className="py-3.5 px-4">الناقل المعين</th>
-                                    <th className="py-3.5 px-4">الحالة</th>
-                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">Route Lane</th>
+                                    <th className="py-3.5 px-4">Vehicle Type</th>
+                                    <th className="py-3.5 px-4">Base Price</th>
+                                    <th className="py-3.5 px-4">Estimated Transit</th>
+                                    <th className="py-3.5 px-4">Assigned Carrier</th>
+                                    <th className="py-3.5 px-4">Status</th>
+                                    <th className="py-3.5 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
                                 {routesList.map((rt) => {
                                     const carrierName = typeof rt.carrierId === 'object' && rt.carrierId !== null
                                         ? (rt.carrierId as Carrier).name
-                                        : 'جميع الناقلين';
+                                        : 'All Carriers';
 
                                     return (
                                         <tr key={rt._id} className="hover:bg-surface-muted/40 transition-colors">
                                             <td className="py-3.5 px-4 font-bold text-heading">
                                                 <div className="flex items-center gap-2">
                                                     <span>{rt.origin}</span>
-                                                    <span className="text-accent text-xs">←</span>
+                                                    <span className="text-accent text-xs">→</span>
                                                     <span>{rt.destination}</span>
                                                 </div>
                                             </td>
@@ -260,13 +260,13 @@ export default function Routes() {
                                             </td>
 
                                             <td className="py-3.5 px-4 font-latin font-bold text-emerald-600">
-                                                {rt.basePrice} ر.س
+                                                {rt.basePrice} SAR
                                             </td>
 
                                             <td className="py-3.5 px-4 text-xs text-body font-medium">
                                                 <div className="flex items-center gap-1">
                                                     <LuClock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                                                    <span>{rt.estimatedTransitTime || 'غير محدد'}</span>
+                                                    <span>{rt.estimatedTransitTime || 'Not specified'}</span>
                                                 </div>
                                             </td>
 
@@ -282,7 +282,7 @@ export default function Routes() {
                                                         ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
                                                         : 'bg-rose-500/10 text-rose-600 border-rose-200'
                                                     }`}>
-                                                    {rt.isActive !== false ? 'نشط' : 'موقوف'}
+                                                    {rt.isActive !== false ? 'Active' : 'Suspended'}
                                                 </span>
                                             </td>
 
@@ -290,7 +290,7 @@ export default function Routes() {
                                                 <div className="flex items-center justify-center gap-1.5">
                                                     <button
                                                         onClick={() => setSelectedRouteForDetails(rt)}
-                                                        title="عرض التفاصيل"
+                                                        title="View details"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuEye className="w-4 h-4" />
@@ -298,7 +298,7 @@ export default function Routes() {
 
                                                     <button
                                                         onClick={() => setSelectedRouteForEdit(rt)}
-                                                        title="تعديل المسار"
+                                                        title="Edit route"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuPencil className="w-4 h-4" />
@@ -306,7 +306,7 @@ export default function Routes() {
 
                                                     <button
                                                         onClick={() => setSelectedRouteForDelete(rt)}
-                                                        title="حذف المسار"
+                                                        title="Delete route"
                                                         className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                     >
                                                         <LuTrash2 className="w-4 h-4" />
@@ -325,7 +325,7 @@ export default function Routes() {
                 {totalPages > 1 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
-                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} مسار)
+                            Showing page <b className="font-latin text-heading">{page}</b> of <b className="font-latin text-heading">{totalPages}</b> ({totalRecords} routes total)
                         </span>
 
                         <div className="flex items-center gap-2">
@@ -334,8 +334,8 @@ export default function Routes() {
                                 disabled={page === 1}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <LuChevronRight className="w-4 h-4" />
-                                <span>السابق</span>
+                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Previous</span>
                             </button>
 
                             <button
@@ -343,8 +343,8 @@ export default function Routes() {
                                 disabled={page === totalPages}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <span>التالي</span>
-                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Next</span>
+                                <LuChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -371,8 +371,8 @@ export default function Routes() {
 
             <ConfirmDeletePopup
                 isOpen={!!selectedRouteForDelete}
-                title="تأكيد حذف المسار"
-                description={`هل أنت تأكد من رغبتك في حذف المسار (${selectedRouteForDelete?.origin} ← ${selectedRouteForDelete?.destination})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
+                title="Confirm Route Deletion"
+                description={`Are you sure you want to delete the route (${selectedRouteForDelete?.origin} → ${selectedRouteForDelete?.destination})? This action cannot be undone.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedRouteForDelete(null)}

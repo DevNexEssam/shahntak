@@ -83,7 +83,7 @@ export default function Vehicles() {
     };
 
     return (
-        <div className="space-y-6 text-right font-arabic">
+        <div className="space-y-6 text-left">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -92,9 +92,9 @@ export default function Vehicles() {
                         <span className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuTruck className="w-5 h-5" />
                         </span>
-                        إدارة أسطول المركبات والشاحنات
+                        Fleet & Vehicle Management
                     </h1>
-                    <p className="text-xs text-body mt-1">تحديد وتسجيل أنواع مركبات الأسطول وسعاتها وأوزانها التشغيلية</p>
+                    <p className="text-xs text-body mt-1">Manage and register fleet vehicle types, capacities, and operational weight limits</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -103,13 +103,13 @@ export default function Vehicles() {
                         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-all font-bold text-xs shadow-xs cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>إضافة مركبة للأسطول</span>
+                        <span>Add Fleet Vehicle</span>
                     </button>
 
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        title="تحديث البيانات"
+                        title="Refresh Data"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin text-accent' : ''}`} />
@@ -120,7 +120,7 @@ export default function Vehicles() {
             {/* Error Notification Banner */}
             {isError && (
                 <div className="mb-4">
-                    <ErrorMessege message={(error as any)?.message || 'تعذر جلب بيانات الأسطول من الخادم'} />
+                    <ErrorMessege message={(error as any)?.message || 'Failed to fetch fleet data from server'} />
                 </div>
             )}
 
@@ -129,10 +129,10 @@ export default function Vehicles() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي أسطول المركبات</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Vehicle Fleet</span>
                             <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.total}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>المسجلة في المنصة</span>
+                                <span>Registered on platform</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -144,10 +144,10 @@ export default function Vehicles() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">المركبات النشطة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Active Vehicles</span>
                             <h3 className="text-2xl font-bold text-emerald-600 my-1 font-latin">{stats.active}</h3>
                             <p className="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-2">
-                                <span>نشطة ومتاحة</span>
+                                <span>Active and available</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -159,10 +159,10 @@ export default function Vehicles() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">الموقوفة / الصيانة</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Inactive / Maintenance</span>
                             <h3 className="text-2xl font-bold text-rose-600 my-1 font-latin">{stats.inactive}</h3>
                             <p className="text-xs text-rose-600 font-bold flex items-center gap-1 mt-2">
-                                <span>غير نشطة حالياً</span>
+                                <span>Currently inactive</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -176,9 +176,9 @@ export default function Vehicles() {
             <div className="space-y-4">
                 <div className="border-b border-border flex items-center gap-2 overflow-x-auto">
                     {[
-                        { key: 'all', label: 'جميع المركبات', count: stats.total },
-                        { key: 'active', label: 'مركبات نشطة', count: stats.active },
-                        { key: 'inactive', label: 'مركبات موقوفة', count: stats.inactive },
+                        { key: 'all', label: 'All Vehicles', count: stats.total },
+                        { key: 'active', label: 'Active Vehicles', count: stats.active },
+                        { key: 'inactive', label: 'Inactive Vehicles', count: stats.inactive },
                     ].map((tab) => (
                         <button
                             key={tab.key}
@@ -202,13 +202,13 @@ export default function Vehicles() {
 
                 <div className="bg-surface p-4 rounded-md border border-border flex items-center justify-between">
                     <div className="relative w-full md:w-96">
-                        <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                        <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            placeholder="بحث بنوع المركبة..."
-                            className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                            placeholder="Search by vehicle type..."
+                            className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                         />
                     </div>
                 </div>
@@ -218,18 +218,18 @@ export default function Vehicles() {
             <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {vehiclesList.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا توجد مركبات تطابق خيارات البحث أو التصفية الحالية" icon={LuTruck} />
+                        <EmptyData message="No vehicles match current search or filter options" icon={LuTruck} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">نوع المركبة</th>
-                                    <th className="py-3.5 px-4">الوزن الأقصى (كجم)</th>
-                                    <th className="py-3.5 px-4">الحجم الأقصى (م³)</th>
-                                    <th className="py-3.5 px-4">الحالة</th>
-                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">Vehicle Type</th>
+                                    <th className="py-3.5 px-4">Max Weight (kg)</th>
+                                    <th className="py-3.5 px-4">Max Volume (m³)</th>
+                                    <th className="py-3.5 px-4">Status</th>
+                                    <th className="py-3.5 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
@@ -247,14 +247,14 @@ export default function Vehicles() {
                                         <td className="py-3.5 px-4 font-latin font-bold text-heading">
                                             <div className="flex items-center gap-1.5 text-xs">
                                                 <LuWeight className="w-3.5 h-3.5 text-accent shrink-0" />
-                                                <span>{v.capacityWeight ? `${v.capacityWeight} كجم` : 'غير حدد'}</span>
+                                                <span>{v.capacityWeight ? `${v.capacityWeight} kg` : 'Not specified'}</span>
                                             </div>
                                         </td>
 
                                         <td className="py-3.5 px-4 font-latin font-bold text-heading">
                                             <div className="flex items-center gap-1.5 text-xs">
                                                 <LuBox className="w-3.5 h-3.5 text-accent shrink-0" />
-                                                <span>{v.capacityVolume ? `${v.capacityVolume} م³` : 'غير حدد'}</span>
+                                                <span>{v.capacityVolume ? `${v.capacityVolume} m³` : 'Not specified'}</span>
                                             </div>
                                         </td>
 
@@ -263,7 +263,7 @@ export default function Vehicles() {
                                                     ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
                                                     : 'bg-rose-500/10 text-rose-600 border-rose-200'
                                                 }`}>
-                                                {v.isActive !== false ? 'نشطة' : 'موقوفة'}
+                                                {v.isActive !== false ? 'Active' : 'Inactive'}
                                             </span>
                                         </td>
 
@@ -271,7 +271,7 @@ export default function Vehicles() {
                                             <div className="flex items-center justify-center gap-1.5">
                                                 <button
                                                     onClick={() => setSelectedVehicleForDetails(v)}
-                                                    title="عرض التفاصيل"
+                                                    title="View details"
                                                     className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                 >
                                                     <LuEye className="w-4 h-4" />
@@ -279,7 +279,7 @@ export default function Vehicles() {
 
                                                 <button
                                                     onClick={() => setSelectedVehicleForEdit(v)}
-                                                    title="تعديل المركبة"
+                                                    title="Edit vehicle"
                                                     className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                 >
                                                     <LuPencil className="w-4 h-4" />
@@ -287,7 +287,7 @@ export default function Vehicles() {
 
                                                 <button
                                                     onClick={() => setSelectedVehicleForDelete(v)}
-                                                    title="حذف المركبة"
+                                                    title="Delete vehicle"
                                                     className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                 >
                                                     <LuTrash2 className="w-4 h-4" />
@@ -305,7 +305,7 @@ export default function Vehicles() {
                 {totalPages > 1 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
-                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {totalRecords} مركبة)
+                            Showing page <b className="font-latin text-heading">{page}</b> of <b className="font-latin text-heading">{totalPages}</b> (Total {totalRecords} vehicles)
                         </span>
 
                         <div className="flex items-center gap-2">
@@ -314,8 +314,8 @@ export default function Vehicles() {
                                 disabled={page === 1}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <LuChevronRight className="w-4 h-4" />
-                                <span>السابق</span>
+                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Previous</span>
                             </button>
 
                             <button
@@ -323,8 +323,8 @@ export default function Vehicles() {
                                 disabled={page === totalPages}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <span>التالي</span>
-                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Next</span>
+                                <LuChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -351,8 +351,8 @@ export default function Vehicles() {
 
             <ConfirmDeletePopup
                 isOpen={!!selectedVehicleForDelete}
-                title="تأكيد حذف المركبة"
-                description={`هل أنت تأكد من رغبتك في حذف المركبة (${selectedVehicleForDelete?.type})؟ لا يمكن التراجع عن هذا الإجراء لاحقاً.`}
+                title="Confirm Vehicle Deletion"
+                description={`Are you sure you want to delete the vehicle (${selectedVehicleForDelete?.type})? This action cannot be undone.`}
                 isDeleting={isDeleting}
                 onConfirm={handleDeleteConfirm}
                 onClose={() => setSelectedVehicleForDelete(null)}

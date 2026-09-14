@@ -29,13 +29,13 @@ export default function DetailsSubscriptions({ isOpen = true, subscription, onCl
     const statusBadge = (status: string) => {
         switch (status) {
             case 'active':
-                return <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">نشط وساري</span>;
+                return <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">Active</span>;
             case 'pending_payment':
-                return <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">بانتظار الدفع</span>;
+                return <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">Pending Payment</span>;
             case 'expired':
-                return <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">منتهي الصلاحية</span>;
+                return <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">Expired</span>;
             case 'cancelled':
-                return <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">ملغى</span>;
+                return <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/20">Cancelled</span>;
             default:
                 return <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600">{status}</span>;
         }
@@ -56,8 +56,8 @@ export default function DetailsSubscriptions({ isOpen = true, subscription, onCl
                             <LuCrown className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تفاصيل اشتراك الشركة</h2>
-                            <p className="text-xs text-body mt-0.5">بيانات الباقة، مدة التجديد ورصيد الاستهلاك</p>
+                            <h2 className="text-xl font-extrabold text-heading">Company Subscription Details</h2>
+                            <p className="text-xs text-body mt-0.5">Plan info, renewal period, and usage balance</p>
                         </div>
                     </div>
 
@@ -65,14 +65,14 @@ export default function DetailsSubscriptions({ isOpen = true, subscription, onCl
                         type="button"
                         onClick={onClose}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Details Body */}
-                <div className="p-6 overflow-y-auto space-y-5 text-right">
+                <div className="p-6 overflow-y-auto space-y-5 text-left">
 
                     {/* Company and Status Header */}
                     <div className="p-4 rounded-2xl bg-surface-muted/80 border border-border flex items-center justify-between">
@@ -81,7 +81,7 @@ export default function DetailsSubscriptions({ isOpen = true, subscription, onCl
                                 <LuBuilding2 className="w-5 h-5" />
                             </div>
                             <div>
-                                <h3 className="text-base font-extrabold text-heading">{company?.companyName || 'شركة مشتركة'}</h3>
+                                <h3 className="text-base font-extrabold text-heading">{company?.companyName || 'Subscribed Company'}</h3>
                                 <span className="text-xs text-body block">{company?.email} | {company?.city}</span>
                             </div>
                         </div>
@@ -91,12 +91,12 @@ export default function DetailsSubscriptions({ isOpen = true, subscription, onCl
                     {/* Plan Summary */}
                     <div className="p-4 rounded-2xl bg-accent/10 border border-accent/20 space-y-2">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-body">الباقة المسندة:</span>
-                            <span className="text-sm font-black text-accent">{plan?.name || 'غير محددة'}</span>
+                            <span className="text-xs font-bold text-body">Assigned Plan:</span>
+                            <span className="text-sm font-black text-accent">{plan?.name || 'Unspecified'}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-body">قيمة الاشتراك:</span>
-                            <span className="text-sm font-extrabold text-heading font-latin">{plan?.price?.toLocaleString('ar-SA')} ر.س / {plan?.billingCycle === 'monthly' ? 'شهرياً' : 'سنوياً'}</span>
+                            <span className="text-xs font-bold text-body">Subscription Price:</span>
+                            <span className="text-sm font-extrabold text-heading font-latin">SAR {plan?.price?.toLocaleString('en-US')} / {plan?.billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}</span>
                         </div>
                     </div>
 
@@ -105,10 +105,10 @@ export default function DetailsSubscriptions({ isOpen = true, subscription, onCl
                         <div className="flex items-center justify-between text-xs font-bold">
                             <span className="text-heading flex items-center gap-1.5">
                                 <LuBox className="w-4 h-4 text-accent" />
-                                استهلاك الطلبات الشهرية
+                                Monthly Orders Usage
                             </span>
                             <span className="text-accent font-latin font-extrabold">
-                                {ordersUsed} / {maxOrders === -1 ? 'غير محدود' : maxOrders}
+                                {ordersUsed} / {maxOrders === -1 ? 'Unlimited' : maxOrders}
                             </span>
                         </div>
 
@@ -124,7 +124,7 @@ export default function DetailsSubscriptions({ isOpen = true, subscription, onCl
                         {ordersPercent >= 90 && maxOrders !== -1 && (
                             <p className="text-[11px] text-rose-500 font-bold flex items-center gap-1 mt-1">
                                 <LuTriangleAlert className="w-3.5 h-3.5 shrink-0" />
-                                تنبيه: الشركة أوشكت على إنهاء رصيد الطلبات المتاحة في الباقة.
+                                Warning: Company is close to reaching the plan order limit.
                             </p>
                         )}
                     </div>
@@ -133,17 +133,17 @@ export default function DetailsSubscriptions({ isOpen = true, subscription, onCl
                     <div className="grid grid-cols-2 gap-3 text-center">
                         <div className="p-3 rounded-xl bg-surface-muted border border-border">
                             <LuCalendar className="w-4 h-4 text-body mx-auto mb-1" />
-                            <span className="text-[11px] text-body block font-bold">تاريخ البدء</span>
+                            <span className="text-[11px] text-body block font-bold">Start Date</span>
                             <span className="text-xs font-extrabold text-heading font-latin">
-                                {subscription.startDate ? new Date(subscription.startDate).toLocaleDateString('ar-SA') : '-'}
+                                {subscription.startDate ? new Date(subscription.startDate).toLocaleDateString('en-US') : '-'}
                             </span>
                         </div>
 
                         <div className="p-3 rounded-xl bg-surface-muted border border-border">
                             <LuCalendar className="w-4 h-4 text-body mx-auto mb-1" />
-                            <span className="text-[11px] text-body block font-bold">تاريخ الانتهاء</span>
+                            <span className="text-[11px] text-body block font-bold">End Date</span>
                             <span className="text-xs font-extrabold text-heading font-latin">
-                                {subscription.endDate ? new Date(subscription.endDate).toLocaleDateString('ar-SA') : '-'}
+                                {subscription.endDate ? new Date(subscription.endDate).toLocaleDateString('en-US') : '-'}
                             </span>
                         </div>
                     </div>
@@ -157,7 +157,7 @@ export default function DetailsSubscriptions({ isOpen = true, subscription, onCl
                         onClick={onClose}
                         className="px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer"
                     >
-                        إغلاق
+                        Close
                     </button>
                 </div>
 

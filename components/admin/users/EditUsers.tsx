@@ -73,7 +73,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -103,8 +103,8 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات المستخدم</h2>
-                            <p className="text-xs text-body mt-0.5">تحديث المعلومات الشخصية والصلاحيات لـ ({userData.name})</p>
+                            <h2 className="text-xl font-extrabold text-heading">Edit User Details</h2>
+                            <p className="text-xs text-body mt-0.5">Update personal details and permissions for ({userData.name})</p>
                         </div>
                     </div>
 
@@ -113,7 +113,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                         onClick={onClose}
                         disabled={isPending}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -121,19 +121,19 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-6 flex-1 text-right">
+                    <div className="p-6 overflow-y-auto space-y-6 flex-1 text-left">
 
                         <div className="space-y-4">
                             <h3 className="text-xs font-extrabold uppercase tracking-wider text-accent flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-accent" />
-                                بيانات المستخدم
+                                User Information
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuUser className="w-3.5 h-3.5 text-body" />
-                                        الاسم الكامل <span className="text-red-500">*</span>
+                                        Full Name <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -151,7 +151,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuMail className="w-3.5 h-3.5 text-body" />
-                                        البريد الإلكتروني <span className="text-red-500">*</span>
+                                        Email Address <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="email"
@@ -171,7 +171,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuPhone className="w-3.5 h-3.5 text-body" />
-                                        رقم الجوال <span className="text-red-500">*</span>
+                                        Phone Number <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -189,7 +189,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuShieldCheck className="w-3.5 h-3.5 text-body" />
-                                        الدور والصلاحيات <span className="text-red-500">*</span>
+                                        Role & Permissions <span className="text-red-500">*</span>
                                     </label>
                                     <select
                                         disabled={isPending}
@@ -197,8 +197,8 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                         onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'super' })}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
-                                        <option value="admin">مدير نظام (Admin)</option>
-                                        <option value="super">سوبر أدمن (Super Admin)</option>
+                                        <option value="admin">System Admin</option>
+                                        <option value="super">Super Admin</option>
                                     </select>
                                     {fieldErrors.role && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.role}</span>
@@ -210,14 +210,14 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                         <LuKey className="w-3.5 h-3.5 text-body" />
-                                        تغيير كلمة المرور (اختياري)
+                                        Change Password (Optional)
                                     </label>
                                     <input
                                         type="password"
                                         disabled={isPending}
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                        placeholder="اتركه فارغاً للإبقاء على الحالية"
+                                        placeholder="Leave blank to keep current password"
                                         className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading font-latin focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.password ? 'border-rose-500' : 'border-border'
                                             }`}
                                     />
@@ -228,7 +228,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-heading flex items-center gap-1.5">
-                                        الحالة
+                                        Status
                                     </label>
                                     <select
                                         disabled={isPending}
@@ -236,8 +236,8 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                                         onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
                                         className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                     >
-                                        <option value="active">نشط</option>
-                                        <option value="inactive">غير نشط</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
                                     </select>
                                     {fieldErrors.status && (
                                         <span className="text-xs text-rose-500 font-medium block">{fieldErrors.status}</span>
@@ -256,7 +256,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                             disabled={isPending}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -264,7 +264,7 @@ export default function EditUsers({ isOpen = false, onClose, userData }: EditUse
                             disabled={isPending}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isPending ? "جاري التعديل..." : "حفظ التعديلات"}
+                            {isPending ? "Updating..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

@@ -10,7 +10,7 @@ import {
     LuClock,
     LuBuilding2,
     LuCalendar,
-    LuArrowLeft
+    LuArrowRight
 } from 'react-icons/lu';
 
 interface DetailsRoutesProps {
@@ -24,10 +24,10 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
 
     const carrierName = typeof route.carrierId === 'object' && route.carrierId !== null
         ? (route.carrierId as Carrier).name
-        : 'جميع الناقلين المتاحين';
+        : 'All Available Carriers';
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -38,8 +38,8 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                             <LuMapPin className="w-5 h-5" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تفاصيل المسار اللوجستي</h2>
-                            <p className="text-xs text-body mt-0.5">عرض اتجاه الخط النظيري والتسعيرة ونوع المركبة</p>
+                            <h2 className="text-xl font-extrabold text-heading">Logistics Route Details</h2>
+                            <p className="text-xs text-body mt-0.5">View the lane direction, pricing, and vehicle type</p>
                         </div>
                     </div>
 
@@ -47,28 +47,28 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                         type="button"
                         onClick={onClose}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-6 overflow-y-auto space-y-6 flex-1 text-right">
+                <div className="p-6 overflow-y-auto space-y-6 flex-1 text-left">
 
                     {/* Origin -> Destination Card */}
                     <div className="p-5 rounded-2xl bg-surface-muted border border-border flex items-center justify-between gap-4">
                         <div className="text-center flex-1">
-                            <span className="text-xs text-body font-medium block mb-1">نقطة الانطلاق</span>
+                            <span className="text-xs text-body font-medium block mb-1">Origin Point</span>
                             <span className="text-lg font-extrabold text-heading">{route.origin}</span>
                         </div>
 
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center shrink-0">
-                            <LuArrowLeft className="w-5 h-5" />
+                            <LuArrowRight className="w-5 h-5" />
                         </div>
 
                         <div className="text-center flex-1">
-                            <span className="text-xs text-body font-medium block mb-1">وجهة الوصول</span>
+                            <span className="text-xs text-body font-medium block mb-1">Destination Point</span>
                             <span className="text-lg font-extrabold text-heading">{route.destination}</span>
                         </div>
                     </div>
@@ -78,7 +78,7 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                         <div className="p-4 rounded-2xl bg-surface border border-border space-y-1">
                             <span className="text-xs text-body font-medium flex items-center gap-1.5">
                                 <LuTruck className="w-4 h-4 text-accent" />
-                                نوع المركبة المطلوبة
+                                Required Vehicle Type
                             </span>
                             <span className="text-sm font-bold text-heading block">{route.vehicleType}</span>
                         </div>
@@ -86,9 +86,9 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                         <div className="p-4 rounded-2xl bg-surface border border-border space-y-1">
                             <span className="text-xs text-body font-medium flex items-center gap-1.5">
                                 <LuCoins className="w-4 h-4 text-emerald-600" />
-                                السعر الأساسي للمسار
+                                Route Base Price
                             </span>
-                            <span className="text-sm font-bold text-emerald-600 font-latin block">{route.basePrice} ر.س</span>
+                            <span className="text-sm font-bold text-emerald-600 font-latin block">{route.basePrice} SAR</span>
                         </div>
                     </div>
 
@@ -96,17 +96,17 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                         <div className="p-4 rounded-2xl bg-surface border border-border space-y-1">
                             <span className="text-xs text-body font-medium flex items-center gap-1.5">
                                 <LuClock className="w-4 h-4 text-amber-600" />
-                                وقت الترانزيت التقديري
+                                Estimated Transit Time
                             </span>
                             <span className="text-sm font-bold text-heading block">
-                                {route.estimatedTransitTime || 'غير محدد'}
+                                {route.estimatedTransitTime || 'Not specified'}
                             </span>
                         </div>
 
                         <div className="p-4 rounded-2xl bg-surface border border-border space-y-1">
                             <span className="text-xs text-body font-medium flex items-center gap-1.5">
                                 <LuBuilding2 className="w-4 h-4 text-accent" />
-                                الناقل المعين
+                                Assigned Carrier
                             </span>
                             <span className="text-sm font-bold text-heading block">{carrierName}</span>
                         </div>
@@ -114,12 +114,12 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
 
                     {/* Status Badge */}
                     <div className="p-4 rounded-2xl bg-surface border border-border flex items-center justify-between">
-                        <span className="text-xs font-bold text-body">حالة المسار اللوجستي:</span>
+                        <span className="text-xs font-bold text-body">Logistics Route Status:</span>
                         <span className={`px-3.5 py-1.5 rounded-full text-xs font-bold border ${route.isActive !== false
                             ? 'bg-emerald-500/10 text-emerald-600 border-emerald-200'
                             : 'bg-rose-500/10 text-rose-600 border-rose-200'
                             }`}>
-                            {route.isActive !== false ? 'نشط ومتاح' : 'موقوف مؤقتاً'}
+                            {route.isActive !== false ? 'Active & Available' : 'Temporarily Suspended'}
                         </span>
                     </div>
 
@@ -127,7 +127,7 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                     <div className="pt-4 border-t border-border flex items-center justify-between text-xs text-body">
                         <div className="flex items-center gap-1.5">
                             <LuCalendar className="w-3.5 h-3.5 text-body/60" />
-                            <span>تاريخ الإنشاء: {route.createdAt ? new Date(route.createdAt).toLocaleDateString('ar-SA') : 'غير محدد'}</span>
+                            <span>Created on: {route.createdAt ? new Date(route.createdAt).toLocaleDateString('en-US') : 'Not specified'}</span>
                         </div>
                     </div>
 
@@ -140,7 +140,7 @@ export default function DetailsRoutes({ isOpen = true, route, onClose }: Details
                         onClick={onClose}
                         className="px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-xs hover:shadow transition-all cursor-pointer"
                     >
-                        إغلاق
+                        Close
                     </button>
                 </div>
 

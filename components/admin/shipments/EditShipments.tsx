@@ -122,7 +122,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -138,7 +138,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -149,8 +149,8 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات الشحنة</h2>
-                            <p className="text-xs text-body mt-0.5">تعديل معلومات الشحنة: <span className="font-bold text-accent font-latin">{shipment.shipmentNumber}</span></p>
+                            <h2 className="text-xl font-extrabold text-heading">Edit Shipment Data</h2>
+                            <p className="text-xs text-body mt-0.5">Edit shipment information: <span className="font-bold text-accent font-latin">{shipment.shipmentNumber}</span></p>
                         </div>
                     </div>
 
@@ -159,7 +159,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -167,14 +167,14 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-right">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         {/* Company & Type Selection */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                    الشركة المالكة للشحنة
+                                    Shipment Owning Company
                                 </label>
                                 <select
                                     disabled={isSubmitting || isLoadingCompanies}
@@ -183,7 +183,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.companyId ? 'border-rose-500' : 'border-border'
                                         }`}
                                 >
-                                    <option value="">اختر الشركة...</option>
+                                    <option value="">Select a company...</option>
                                     {companies.map((comp) => (
                                         <option key={comp._id} value={comp._id}>
                                             {comp.companyName} ({comp.city})
@@ -195,7 +195,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuLayers className="w-3.5 h-3.5 text-body" />
-                                    نوع الشحنة
+                                    Shipment Type
                                 </label>
                                 <select
                                     disabled={isSubmitting}
@@ -203,9 +203,9 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="ftl">حمولة كاملة</option>
-                                    <option value="ltl">حمولة جزئية</option>
-                                    <option value="local_delivery">توصيل محلي</option>
+                                    <option value="ftl">Full Truckload</option>
+                                    <option value="ltl">Less-Than-Truckload</option>
+                                    <option value="local_delivery">Local Delivery</option>
                                 </select>
                             </div>
                         </div>
@@ -215,7 +215,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-emerald-600" />
-                                    نقطة انطلاق الشحنة
+                                    Shipment Origin Point
                                 </label>
                                 <input
                                     type="text"
@@ -230,7 +230,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-rose-600" />
-                                    وجهة وصول الشحنة
+                                    Shipment Destination Point
                                 </label>
                                 <input
                                     type="text"
@@ -248,7 +248,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuRoute className="w-3.5 h-3.5 text-body" />
-                                    المسار المعتمد
+                                    Approved Route
                                 </label>
                                 <select
                                     disabled={isSubmitting || isLoadingRoutes}
@@ -256,7 +256,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     onChange={(e) => setFormValues({ ...formValues, routeId: e.target.value })}
                                     className="w-full px-3 py-2 rounded-md bg-surface border border-border text-xs text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="">بدون مسار محدد...</option>
+                                    <option value="">No route specified...</option>
                                     {routes.map((rt) => (
                                         <option key={rt._id} value={rt._id}>
                                             {rt.origin} ➔ {rt.destination}
@@ -268,7 +268,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuTruck className="w-3.5 h-3.5 text-body" />
-                                    الناقل الشريك
+                                    Partner Carrier
                                 </label>
                                 <select
                                     disabled={isSubmitting || isLoadingCarriers}
@@ -276,7 +276,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     onChange={(e) => setFormValues({ ...formValues, carrierId: e.target.value })}
                                     className="w-full px-3 py-2 rounded-md bg-surface border border-border text-xs text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="">بدون ناقل محدد...</option>
+                                    <option value="">No carrier specified...</option>
                                     {carriers.map((car) => (
                                         <option key={car._id} value={car._id}>
                                             {car.name}
@@ -288,7 +288,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuBox className="w-3.5 h-3.5 text-body" />
-                                    المركبة المعينة
+                                    Assigned Vehicle
                                 </label>
                                 <select
                                     disabled={isSubmitting || isLoadingVehicles}
@@ -296,10 +296,10 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                     onChange={(e) => setFormValues({ ...formValues, vehicleId: e.target.value })}
                                     className="w-full px-3 py-2 rounded-md bg-surface border border-border text-xs text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="">بدون مركبة مخصصة...</option>
+                                    <option value="">No vehicle assigned...</option>
                                     {vehicles.map((veh) => (
                                         <option key={veh._id} value={veh._id}>
-                                            مركبة ({veh.type}) - {veh.capacityWeight} طن
+                                            Vehicle ({veh.type}) - {veh.capacityWeight} tons
                                         </option>
                                     ))}
                                 </select>
@@ -311,7 +311,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-body" />
-                                    تكلفة الشحن (ر.س)
+                                    Shipping Cost (SAR)
                                 </label>
                                 <input
                                     type="number"
@@ -328,7 +328,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-emerald-600" />
-                                    سعر العميل (ر.س)
+                                    Customer Price (SAR)
                                 </label>
                                 <input
                                     type="number"
@@ -346,7 +346,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                         {/* Status */}
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading block">
-                                حالة الشحنة التشغيلية
+                                Shipment Operational Status
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -354,18 +354,18 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 font-medium"
                             >
-                                <option value="created">تمت الإنشائية مبدئياً</option>
-                                <option value="confirmed">مؤكدة بانتظار التخصيص</option>
-                                <option value="assigned">تم تعيين الناقل والمركبة</option>
-                                <option value="ready_for_pickup">جاهزة للتحميل</option>
-                                <option value="picked_up">تم التحميل بالموقع</option>
-                                <option value="in_transit">في الطريق اللوجستي</option>
-                                <option value="arrived">وصلت المحطة النهائية</option>
-                                <option value="out_for_delivery">خرجت للتسليم اللحظي</option>
-                                <option value="delivered">تم التسليم بنجاح للعميل</option>
-                                <option value="delivery_failed">فشل التسليم</option>
-                                <option value="cancelled">ملغاة</option>
-                                <option value="returned">مرجعة للمستودع</option>
+                                <option value="created">Initially Created</option>
+                                <option value="confirmed">Confirmed — Awaiting Assignment</option>
+                                <option value="assigned">Carrier & Vehicle Assigned</option>
+                                <option value="ready_for_pickup">Ready for Loading</option>
+                                <option value="picked_up">Picked Up On-Site</option>
+                                <option value="in_transit">In Logistics Transit</option>
+                                <option value="arrived">Arrived at Final Station</option>
+                                <option value="out_for_delivery">Out for Final Delivery</option>
+                                <option value="delivered">Successfully Delivered to Customer</option>
+                                <option value="delivery_failed">Delivery Failed</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="returned">Returned to Warehouse</option>
                             </select>
                         </div>
 
@@ -379,7 +379,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -387,7 +387,7 @@ export default function EditShipments({ isOpen = true, shipment, onClose }: Edit
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}
+                            {isSubmitting ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

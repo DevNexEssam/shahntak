@@ -53,7 +53,7 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors in the form");
             return;
         }
 
@@ -75,8 +75,8 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                             <LuCrown className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تفعيل اشتراك جديد لشركة</h2>
-                            <p className="text-xs text-body mt-0.5">إسناد باقة سحابية لشركة وتحديد مدة الصلاحية والاستهلاك</p>
+                            <h2 className="text-xl font-extrabold text-heading">Activate New Company Subscription</h2>
+                            <p className="text-xs text-body mt-0.5">Assign a cloud plan to a company and define validity period and quotas</p>
                         </div>
                     </div>
 
@@ -85,7 +85,7 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -93,13 +93,13 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-right">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         {/* Company Selection */}
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                الشركة المشتركة <span className="text-red-500">*</span>
+                                Subscribed Company <span className="text-red-500">*</span>
                             </label>
                             <select
                                 disabled={isSubmitting || isLoadingCompanies}
@@ -108,7 +108,7 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                                 className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.companyId ? 'border-rose-500' : 'border-border'
                                     }`}
                             >
-                                <option value="">اختر الشركة...</option>
+                                <option value="">Select company...</option>
                                 {companies.map((comp) => (
                                     <option key={comp._id} value={comp._id}>
                                         {comp.companyName} ({comp.city})
@@ -124,7 +124,7 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                 <LuCreditCard className="w-3.5 h-3.5 text-body" />
-                                الباقة السحابية المطلوبة <span className="text-red-500">*</span>
+                                Requested Cloud Plan <span className="text-red-500">*</span>
                             </label>
                             <select
                                 disabled={isSubmitting || isLoadingPlans}
@@ -133,10 +133,10 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                                 className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50 ${fieldErrors.planId ? 'border-rose-500' : 'border-border'
                                     }`}
                             >
-                                <option value="">اختر الباقة السحابية...</option>
+                                <option value="">Select cloud plan...</option>
                                 {plans.map((pl) => (
                                     <option key={pl._id} value={pl._id}>
-                                        {pl.name} - {pl.price} ر.س / {pl.billingCycle === 'monthly' ? 'شهرياً' : 'سنوياً'}
+                                        {pl.name} - SAR {pl.price} / {pl.billingCycle === 'monthly' ? 'Monthly' : 'Yearly'}
                                     </option>
                                 ))}
                             </select>
@@ -150,7 +150,7 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCalendar className="w-3.5 h-3.5 text-body" />
-                                    تاريخ بدء الاشتراك
+                                    Subscription Start Date
                                 </label>
                                 <input
                                     type="date"
@@ -164,7 +164,7 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCalendar className="w-3.5 h-3.5 text-body" />
-                                    تاريخ انتهاء الاشتراك <span className="text-red-500">*</span>
+                                    Subscription End Date <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="date"
@@ -182,7 +182,7 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
 
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading block">
-                                حالة الاشتراك
+                                Subscription Status
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -190,10 +190,10 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="active">نشط وساري</option>
-                                <option value="pending_payment">بانتظار التأكيد أو الدفع</option>
-                                <option value="expired">منتهي الصلاحية</option>
-                                <option value="cancelled">ملغى</option>
+                                <option value="active">Active</option>
+                                <option value="pending_payment">Pending Payment</option>
+                                <option value="expired">Expired</option>
+                                <option value="cancelled">Cancelled</option>
                             </select>
                         </div>
 
@@ -207,7 +207,7 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -215,7 +215,7 @@ export default function AddSubscriptions({ isOpen = true, onClose }: AddSubscrip
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري التفعيل..." : "تأكيد الاشتراك"}
+                            {isSubmitting ? "Activating..." : "Confirm Subscription"}
                         </button>
                     </div>
                 </form>

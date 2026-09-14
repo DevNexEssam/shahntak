@@ -46,8 +46,8 @@ export default function AddShipments({
         shipmentNumber: `SHP-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
         companyId: initialCompanyId || '',
         type: 'ftl' as 'ftl' | 'ltl' | 'local_delivery',
-        origin: 'الرياض',
-        destination: initialDestination || 'جدة',
+        origin: 'Riyadh',
+        destination: initialDestination || 'Jeddah',
         routeId: '',
         carrierId: '',
         vehicleId: '',
@@ -109,7 +109,7 @@ export default function AddShipments({
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -122,7 +122,7 @@ export default function AddShipments({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-2xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -134,12 +134,12 @@ export default function AddShipments({
                         </div>
                         <div>
                             <h2 className="text-xl font-extrabold text-heading">
-                                {isGroupingMode ? `تجميع ${initialOrderIds?.length || ''} طلبات في شحنة واحدة` : 'إنشاء شحنة لوجستية جديدة'}
+                                {isGroupingMode ? `Group ${initialOrderIds?.length || ''} Orders into One Shipment` : 'Create New Logistics Shipment'}
                             </h2>
                             <p className="text-xs text-body mt-0.5">
                                 {isGroupingMode
-                                    ? 'سيتم توليد رقم الشحنة والبوليصة أوتوماتيكياً وتحويل الطلبات التابعة إلى مجمعة'
-                                    : 'تسجيل بيانات الشحنة وتعيين الشركة والمسار والناقل الشريك والمركبة'}
+                                    ? 'The shipment and waybill numbers will be auto-generated and the linked orders will be converted to grouped'
+                                    : 'Register shipment data and assign the company, route, partner carrier, and vehicle'}
                             </p>
                         </div>
                     </div>
@@ -149,7 +149,7 @@ export default function AddShipments({
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -157,14 +157,14 @@ export default function AddShipments({
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-right">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         {/* Top Info: Shipment Number & Type */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuHash className="w-3.5 h-3.5 text-accent" />
-                                    رقم الشحنة التلقائي <span className="text-xs font-normal text-emerald-600 font-arabic bg-emerald-500/10 px-2 py-0.5 rounded-md">(مولد آلياً)</span>
+                                    Auto Shipment Number <span className="text-xs font-normal text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-md">(Auto-generated)</span>
                                 </label>
                                 <input
                                     type="text"
@@ -177,7 +177,7 @@ export default function AddShipments({
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuLayers className="w-3.5 h-3.5 text-body" />
-                                    نوع الشحنة اللوجستية <span className="text-red-500">*</span>
+                                    Logistics Shipment Type <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     disabled={isSubmitting}
@@ -185,9 +185,9 @@ export default function AddShipments({
                                     onChange={(e) => setFormValues({ ...formValues, type: e.target.value as any })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="ftl">حمولة كاملة</option>
-                                    <option value="ltl">حمولة جزئية</option>
-                                    <option value="local_delivery">توصيل محلي مباشر</option>
+                                    <option value="ftl">Full Truckload</option>
+                                    <option value="ltl">Less-Than-Truckload</option>
+                                    <option value="local_delivery">Direct Local Delivery</option>
                                 </select>
                             </div>
                         </div>
@@ -219,14 +219,14 @@ export default function AddShipments({
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-emerald-600" />
-                                    نقطة انطلاق الشحنة <span className="text-red-500">*</span>
+                                    Shipment Origin Point <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.origin}
                                     onChange={(e) => setFormValues({ ...formValues, origin: e.target.value })}
-                                    placeholder="الرياض، مستودع السلي..."
+                                    placeholder="Riyadh, Sulay Warehouse..."
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.origin ? 'border-rose-500' : 'border-border'
                                         }`}
                                 />
@@ -238,14 +238,14 @@ export default function AddShipments({
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-rose-600" />
-                                    وجهة وصول الشحنة <span className="text-red-500">*</span>
+                                    Shipment Destination Point <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     disabled={isSubmitting}
                                     value={formValues.destination}
                                     onChange={(e) => setFormValues({ ...formValues, destination: e.target.value })}
-                                    placeholder="جدة، ميناء الخمرة..."
+                                    placeholder="Jeddah, Al Khumrah Port..."
                                     className={`w-full px-4 py-2.5 rounded-md bg-surface-muted border text-sm text-heading focus:outline-none focus:border-accent disabled:opacity-50 ${fieldErrors.destination ? 'border-rose-500' : 'border-border'
                                         }`}
                                 />
@@ -260,7 +260,7 @@ export default function AddShipments({
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuRoute className="w-3.5 h-3.5 text-body" />
-                                    المسار المعتمد
+                                    Approved Route
                                 </label>
                                 <select
                                     disabled={isSubmitting || isLoadingRoutes}
@@ -268,10 +268,10 @@ export default function AddShipments({
                                     onChange={(e) => setFormValues({ ...formValues, routeId: e.target.value })}
                                     className="w-full px-3 py-2 rounded-md bg-surface border border-border text-xs text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="">بدون مسار محدد...</option>
+                                    <option value="">No route specified...</option>
                                     {routes.map((rt) => (
                                         <option key={rt._id} value={rt._id}>
-                                            {rt.origin} ➔ {rt.destination} ({rt.basePrice} ر.س)
+                                            {rt.origin} ➔ {rt.destination} ({rt.basePrice} SAR)
                                         </option>
                                     ))}
                                 </select>
@@ -280,7 +280,7 @@ export default function AddShipments({
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuTruck className="w-3.5 h-3.5 text-body" />
-                                    الناقل الشريك
+                                    Partner Carrier
                                 </label>
                                 <select
                                     disabled={isSubmitting || isLoadingCarriers}
@@ -288,10 +288,10 @@ export default function AddShipments({
                                     onChange={(e) => setFormValues({ ...formValues, carrierId: e.target.value })}
                                     className="w-full px-3 py-2 rounded-md bg-surface border border-border text-xs text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="">بدون ناقل محدد...</option>
+                                    <option value="">No carrier specified...</option>
                                     {carriers.map((car) => (
                                         <option key={car._id} value={car._id}>
-                                            {car.name} ({car.type === 'external_api' ? 'API' : 'محلي'})
+                                            {car.name} ({car.type === 'external_api' ? 'API' : 'Local'})
                                         </option>
                                     ))}
                                 </select>
@@ -300,7 +300,7 @@ export default function AddShipments({
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuBox className="w-3.5 h-3.5 text-body" />
-                                    المركبة المعينة
+                                    Assigned Vehicle
                                 </label>
                                 <select
                                     disabled={isSubmitting || isLoadingVehicles}
@@ -308,22 +308,22 @@ export default function AddShipments({
                                     onChange={(e) => setFormValues({ ...formValues, vehicleId: e.target.value })}
                                     className="w-full px-3 py-2 rounded-md bg-surface border border-border text-xs text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="">بدون مركبة مخصصة...</option>
+                                    <option value="">No vehicle assigned...</option>
                                     {vehicles.map((veh) => (
                                         <option key={veh._id} value={veh._id}>
-                                            مركبة ({veh.type}) - حمولة {veh.capacityWeight} طن
+                                            Vehicle ({veh.type}) - Capacity {veh.capacityWeight} tons
                                         </option>
                                     ))}
                                 </select>
                             </div>
                         </div>
 
-                        {/* Financials & Step="any" */}
+                        {/* Financials */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-body" />
-                                    تكلفة الشحن الفلية (ر.س) <span className="text-red-500">*</span>
+                                    Actual Shipping Cost (SAR) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -343,7 +343,7 @@ export default function AddShipments({
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-emerald-600" />
-                                    سعر الفاتورة للعميل (ر.س) <span className="text-red-500">*</span>
+                                    Customer Invoice Price (SAR) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -364,7 +364,7 @@ export default function AddShipments({
                         {/* Shipment Status */}
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading block">
-                                حالة الشحنة المبدئية
+                                Initial Shipment Status
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -372,12 +372,12 @@ export default function AddShipments({
                                 onChange={(e) => setFormValues({ ...formValues, status: e.target.value as any })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="created">تمت الإنشائية مبدئياً</option>
-                                <option value="confirmed">مؤكدة بانتظار التخصيص</option>
-                                <option value="assigned">تم تعيين الناقل والمركبة</option>
-                                <option value="ready_for_pickup">جاهزة للتحميل من المستودع</option>
-                                <option value="in_transit">في الطريق بالطريق اللوجستي</option>
-                                <option value="delivered">تم التسليم النهائي للعميل</option>
+                                <option value="created">Initially Created</option>
+                                <option value="confirmed">Confirmed — Awaiting Assignment</option>
+                                <option value="assigned">Carrier & Vehicle Assigned</option>
+                                <option value="ready_for_pickup">Ready for Warehouse Loading</option>
+                                <option value="in_transit">In Logistics Transit</option>
+                                <option value="delivered">Final Delivery to Customer Completed</option>
                             </select>
                         </div>
 
@@ -391,7 +391,7 @@ export default function AddShipments({
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -399,7 +399,7 @@ export default function AddShipments({
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري الإضافة..." : "حفظ الشحنة"}
+                            {isSubmitting ? "Adding..." : "Save Shipment"}
                         </button>
                     </div>
                 </form>

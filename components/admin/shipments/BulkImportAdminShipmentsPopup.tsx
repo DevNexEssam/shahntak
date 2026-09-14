@@ -66,33 +66,33 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
             const cleanKey = key.trim().toLowerCase();
             const val = rawValue !== undefined && rawValue !== null ? String(rawValue).trim() : "";
 
-            if (cleanKey.includes("نوع") || cleanKey === "type") {
+            if (cleanKey.includes("type")) {
                 normalized.type = val || "ftl";
-            } else if (cleanKey.includes("رمز") || cleanKey.includes("تجميع") || cleanKey.includes("مجموعة") || cleanKey === "shipmentcode" || cleanKey === "shipment_code") {
+            } else if (cleanKey.includes("shipment code") || cleanKey.includes("group code") || cleanKey === "shipmentcode" || cleanKey === "shipment_code") {
                 normalized.shipmentCode = val;
-            } else if (cleanKey.includes("قيام") || cleanKey.includes("مدينة القيام") || cleanKey === "origin") {
-                normalized.origin = val || "الرياض";
-            } else if (cleanKey.includes("وصول") || cleanKey.includes("مدينة الوصول") || cleanKey === "destination") {
-                normalized.destination = val || "جدة";
-            } else if (cleanKey.includes("سعر مخصص") || cleanKey.includes("السعر المخصص") || cleanKey.includes("سعر") || cleanKey === "customprice") {
+            } else if (cleanKey.includes("origin") || cleanKey.includes("pickup city")) {
+                normalized.origin = val || "Riyadh";
+            } else if (cleanKey.includes("destination") || cleanKey.includes("delivery city")) {
+                normalized.destination = val || "Jeddah";
+            } else if (cleanKey.includes("custom price") || cleanKey.includes("customprice")) {
                 normalized.customPrice = parseFloat(val) || undefined;
-            } else if (cleanKey.includes("اسم المستلم") || cleanKey.includes("اسم") || cleanKey === "recipientname") {
+            } else if (cleanKey.includes("recipient name") || cleanKey === "recipientname" || cleanKey.includes("name")) {
                 normalized.recipientName = val;
-            } else if (cleanKey.includes("جوال") || cleanKey.includes("هاتف") || cleanKey === "recipientphone") {
+            } else if (cleanKey.includes("phone") || cleanKey.includes("mobile") || cleanKey === "recipientphone") {
                 normalized.recipientPhone = val;
-            } else if (cleanKey.includes("عنوان") || cleanKey === "recipientaddress") {
+            } else if (cleanKey.includes("address") || cleanKey === "recipientaddress") {
                 normalized.recipientAddress = val;
-            } else if (cleanKey.includes("حي") || cleanKey === "recipientdistrict") {
+            } else if (cleanKey.includes("district") || cleanKey.includes("neighborhood") || cleanKey === "recipientdistrict") {
                 normalized.recipientDistrict = val;
-            } else if (cleanKey.includes("وزن") || cleanKey === "weight") {
+            } else if (cleanKey.includes("weight")) {
                 normalized.weight = parseFloat(val) || 0;
-            } else if (cleanKey.includes("قيمة") || cleanKey === "ordervalue") {
+            } else if (cleanKey.includes("value") || cleanKey === "ordervalue") {
                 normalized.orderValue = parseFloat(val) || 0;
-            } else if (cleanKey.includes("دفع") || cleanKey.includes("cod") || cleanKey === "codamount") {
+            } else if (cleanKey.includes("cod") || cleanKey.includes("cash on delivery") || cleanKey === "codamount") {
                 normalized.codAmount = parseFloat(val) || 0;
-            } else if (cleanKey.includes("كمية") || cleanKey === "quantity") {
+            } else if (cleanKey.includes("quantity") || cleanKey.includes("qty")) {
                 normalized.quantity = parseInt(val, 10) || 1;
-            } else if (cleanKey.includes("رقم الطلب") || cleanKey === "ordernumber") {
+            } else if (cleanKey.includes("order number") || cleanKey === "ordernumber") {
                 normalized.orderNumber = val;
             }
         }
@@ -117,7 +117,7 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                 const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, { defval: "" });
 
                 if (!jsonData || jsonData.length === 0) {
-                    toast.error("الملف المرفوع فارغ أو غير صالح");
+                    toast.error("The uploaded file is empty or invalid");
                     setIsProcessing(false);
                     return;
                 }
@@ -127,8 +127,8 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                 jsonData.forEach((rawRow) => {
                     const norm = normalizeRowKeys(rawRow);
                     const rawCode = norm.shipmentCode || "";
-                    const origin = norm.origin || "الرياض";
-                    const destination = norm.destination || "جدة";
+                    const origin = norm.origin || "Riyadh";
+                    const destination = norm.destination || "Jeddah";
 
                     const groupKey = rawCode
                         ? `${rawCode}_${origin}_${destination}`
@@ -155,7 +155,7 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                         orderNumber: norm.orderNumber,
                         recipientName: norm.recipientName || "",
                         recipientPhone: norm.recipientPhone || "",
-                        recipientCity: norm.destination || "جدة",
+                        recipientCity: norm.destination || "Jeddah",
                         recipientDistrict: norm.recipientDistrict || "",
                         recipientAddress: norm.recipientAddress || norm.destination || "",
                         weight: norm.weight || 1,
@@ -166,15 +166,15 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
 
                     const orderErrors: string[] = [];
                     if (!orderItem.recipientName || orderItem.recipientName.length < 2) {
-                        orderErrors.push("اسم المستلم مطلوب");
+                        orderErrors.push("Recipient name is required");
                     }
                     if (!orderItem.recipientPhone || orderItem.recipientPhone.length < 8) {
-                        orderErrors.push("رقم الجوال غير صالح");
+                        orderErrors.push("Invalid phone number");
                     }
 
                     if (orderErrors.length > 0) {
                         group.isValid = false;
-                        group.errors.push(`طلب ${group.orders.length + 1}: ${orderErrors.join(" - ")}`);
+                        group.errors.push(`Order ${group.orders.length + 1}: ${orderErrors.join(" - ")}`);
                     }
 
                     group.orders.push(orderItem);
@@ -182,9 +182,9 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
 
                 const results = Array.from(groupMap.values());
                 setParsedGroups(results);
-                toast.success(`تم قراءة وتجميع ${results.length} شحنة بنجاح من الملف`);
+                toast.success(`Successfully read and grouped ${results.length} shipments from the file`);
             } catch (err: any) {
-                toast.error("حدث خطأ أثناء قراءة ملف الإكسل: " + err.message);
+                toast.error("An error occurred while reading the Excel file: " + err.message);
             } finally {
                 setIsProcessing(false);
             }
@@ -196,40 +196,40 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
     const handleDownloadTemplate = () => {
         const sampleData = [
             {
-                "رمز تجميع الشحنة": "SHP-GROUP-1",
-                "مدينة القيام": "الرياض",
-                "مدينة الوصول": "جدة",
-                "نوع الشحنة": "ftl",
-                "السعر المخصص (اختياري)": 1500,
-                "اسم المستلم": "محمد أحمد",
-                "رقم الجوال": "0501234567",
-                "العنوان التفصيلي": "شارع التخصصي، مبنى 12",
-                "الوزن (كجم)": 2.5,
-                "قيمة الطلب": 150,
-                "الدفع عند الاستلام": 150,
-                "رقم الطلب الخاص": "ORD-0001"
+                "Shipment Group Code": "SHP-GROUP-1",
+                "Pickup City": "Riyadh",
+                "Delivery City": "Jeddah",
+                "Shipment Type": "ftl",
+                "Custom Price (Optional)": 1500,
+                "Recipient Name": "Mohammed Ahmed",
+                "Phone Number": "0501234567",
+                "Detailed Address": "Takhassusi Street, Building 12",
+                "Weight (kg)": 2.5,
+                "Order Value": 150,
+                "Cash on Delivery": 150,
+                "Custom Order Number": "ORD-0001"
             },
             {
-                "رمز تجميع الشحنة": "SHP-GROUP-1",
-                "مدينة القيام": "الرياض",
-                "مدينة الوصول": "جدة",
-                "نوع الشحنة": "ftl",
-                "السعر المخصص (اختياري)": 1500,
-                "اسم المستلم": "خالد محمود",
-                "رقم الجوال": "0509876543",
-                "العنوان التفصيلي": "حي الشاطئ، برج 2",
-                "الوزن (كجم)": 4.0,
-                "قيمة الطلب": 300,
-                "الدفع عند الاستلام": 0,
-                "رقم الطلب الخاص": "ORD-0002"
+                "Shipment Group Code": "SHP-GROUP-1",
+                "Pickup City": "Riyadh",
+                "Delivery City": "Jeddah",
+                "Shipment Type": "ftl",
+                "Custom Price (Optional)": 1500,
+                "Recipient Name": "Khalid Mahmoud",
+                "Phone Number": "0509876543",
+                "Detailed Address": "Al Shati District, Tower 2",
+                "Weight (kg)": 4.0,
+                "Order Value": 300,
+                "Cash on Delivery": 0,
+                "Custom Order Number": "ORD-0002"
             }
         ];
 
         const worksheet = XLSX.utils.json_to_sheet(sampleData);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "نموذج الشحنات");
-        XLSX.writeFile(workbook, "نموذج_استيراد_الشحنات_للأدمن_شحنتك.xlsx");
-        toast.success("تم تنزيل نموذج إكسل الشحنات بنجاح");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Shipments Template");
+        XLSX.writeFile(workbook, "Shahntak_Admin_Shipments_Import_Template.xlsx");
+        toast.success("Shipments Excel template downloaded successfully");
     };
 
     const validGroups = parsedGroups.filter((g) => g.isValid);
@@ -237,12 +237,12 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
 
     const handleConfirmImport = async () => {
         if (!selectedCompanyId) {
-            toast.error("يرجى اختيار الشركة المستهدفة أولاً");
+            toast.error("Please select the target company first");
             return;
         }
 
         if (validGroups.length === 0) {
-            toast.error("لا توجد أي شحنات صالحة للاستيراد");
+            toast.error("There are no valid shipments to import");
             return;
         }
 
@@ -262,20 +262,20 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
             });
 
             if (data.success) {
-                toast.success(data.message || `تم استيراد ${data.count} شحنة بنجاح`);
+                toast.success(data.message || `Successfully imported ${data.count} shipments`);
                 queryClient.invalidateQueries({ queryKey: ["shipments"] });
                 queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
                 handleCloseModal();
             }
         } catch (err: any) {
-            toast.error(err.response?.data?.message || "حدث خطأ أثناء الاستيراد الجماعي للشحنات");
+            toast.error(err.response?.data?.message || "An error occurred during bulk shipment import");
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             <div className="relative w-full max-w-4xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Modal Header */}
@@ -285,8 +285,8 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                             <LuTruck className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">استيراد الشحنات الجماعي للأدمن عبر Excel</h2>
-                            <p className="text-xs text-body mt-0.5">رفع شحنات تجميعية بعد تحديد الشركة المستهدفة وربط طلباتها آلياً</p>
+                            <h2 className="text-xl font-extrabold text-heading">Admin Bulk Shipment Import via Excel</h2>
+                            <p className="text-xs text-body mt-0.5">Upload grouped shipments after selecting the target company and linking their orders automatically</p>
                         </div>
                     </div>
 
@@ -295,14 +295,14 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                         onClick={handleCloseModal}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-6 overflow-y-auto space-y-6 flex-1">
+                <div className="p-6 overflow-y-auto space-y-6 flex-1 text-left">
 
                     {/* Company Selector & Live Subscription Widget */}
                     <div className="space-y-3">
@@ -319,8 +319,8 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                     {/* Helper Bar */}
                     <div className="p-4 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-between gap-4 flex-wrap">
                         <div className="space-y-0.5">
-                            <h4 className="text-xs font-extrabold text-heading">تنزيل نموذج Excel الاسترشادي للشحنات</h4>
-                            <p className="text-xs text-body">يمكنك تعبئة بيانات الشحنات المجمعة والطلبات التابعة ثم رفعها فوراً</p>
+                            <h4 className="text-xs font-extrabold text-heading">Download Sample Shipments Excel Template</h4>
+                            <p className="text-xs text-body">You can fill in the grouped shipment data and their linked orders, then upload it directly</p>
                         </div>
                         <button
                             type="button"
@@ -328,7 +328,7 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border text-accent font-bold text-xs hover:bg-accent/10 transition-all cursor-pointer shadow-xs"
                         >
                             <LuDownload className="w-4 h-4" />
-                            تنزيل النموذج
+                            Download Template
                         </button>
                     </div>
 
@@ -347,8 +347,8 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                                 <div className="w-14 h-14 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xl mb-2 shadow-xs">
                                     <LuUpload className="w-7 h-7" />
                                 </div>
-                                <span className="text-sm font-extrabold text-heading">اسحب ملف إكسل الشحنات هنا أو اضغط للاختيار</span>
-                                <span className="text-xs text-body/70 mt-1">يدعم تجميع الشحنات وربط طلباتها تلقائياً (.xlsx, .csv)</span>
+                                <span className="text-sm font-extrabold text-heading">Drag the shipments Excel file here or click to browse</span>
+                                <span className="text-xs text-body/70 mt-1">Supports shipment grouping and automatic order linking (.xlsx, .csv)</span>
                             </label>
                         </div>
                     ) : (
@@ -364,24 +364,24 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                                     className="text-xs text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1.5 cursor-pointer px-2 py-1 rounded-lg hover:bg-rose-50 transition-colors"
                                 >
                                     <LuTrash2 className="w-4 h-4" />
-                                    إلغاء الملف وإعادة الرفع
+                                    Cancel file and re-upload
                                 </button>
                             </div>
 
                             <div className="grid grid-cols-3 gap-3">
                                 <div className="p-3.5 rounded-2xl bg-surface-muted border border-border text-center">
-                                    <span className="text-xs font-bold text-body block">إجمالي الشحنات المجمعة</span>
+                                    <span className="text-xs font-bold text-body block">Total Grouped Shipments</span>
                                     <span className="text-lg font-extrabold text-heading font-latin">{parsedGroups.length}</span>
                                 </div>
                                 <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
                                     <span className="text-xs font-bold text-emerald-600 block flex items-center justify-center gap-1">
-                                        <LuCircleCheck className="w-3.5 h-3.5" /> شحنات صالحة
+                                        <LuCircleCheck className="w-3.5 h-3.5" /> Valid Shipments
                                     </span>
                                     <span className="text-lg font-extrabold text-emerald-600 font-latin">{validGroups.length}</span>
                                 </div>
                                 <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-center">
                                     <span className="text-xs font-bold text-rose-600 block flex items-center justify-center gap-1">
-                                        <LuCircleAlert className="w-3.5 h-3.5" /> شحنات بها أخطاء
+                                        <LuCircleAlert className="w-3.5 h-3.5" /> Shipments with Errors
                                     </span>
                                     <span className="text-lg font-extrabold text-rose-600 font-latin">{invalidGroups.length}</span>
                                 </div>
@@ -398,7 +398,7 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                         disabled={isSubmitting || isProcessing}
                         className="px-5 py-2.5 rounded-xl border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                     >
-                        إلغاء
+                        Cancel
                     </button>
 
                     <button
@@ -408,10 +408,10 @@ export default function BulkImportAdminShipmentsPopup({ isOpen = true, onClose }
                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[170px] justify-center"
                     >
                         {isSubmitting
-                            ? "جاري الاستيراد..."
+                            ? "Importing..."
                             : validGroups.length > 0
-                                ? `تأكيد وحفظ ${validGroups.length} شحنة للشركة`
-                                : "اختر ملفاً وشراكة"}
+                                ? `Confirm and Save ${validGroups.length} Shipments to Company`
+                                : "Select a file and company"}
                     </button>
                 </div>
             </div>

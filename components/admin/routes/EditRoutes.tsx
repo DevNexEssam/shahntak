@@ -73,7 +73,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                 }
             });
             setFieldErrors(errors);
-            toast.error("يرجى تصحيح الأخطاء الموضحة في النموذج");
+            toast.error("Please correct the errors highlighted in the form");
             return;
         }
 
@@ -89,7 +89,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heading/50 backdrop-blur-xs animate-in fade-in duration-200" dir="ltr">
             {/* Modal Container */}
             <div className="relative w-full max-w-xl bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -100,8 +100,8 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             <LuPencil className="w-6 h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-extrabold text-heading">تعديل بيانات المسار</h2>
-                            <p className="text-xs text-body mt-0.5">تحديث معلومات المسار اللوجستي: <span className="font-bold text-accent">{route.origin} ← {route.destination}</span></p>
+                            <h2 className="text-xl font-extrabold text-heading">Edit Route Data</h2>
+                            <p className="text-xs text-body mt-0.5">Update logistics route information: <span className="font-bold text-accent">{route.origin} → {route.destination}</span></p>
                         </div>
                     </div>
 
@@ -110,7 +110,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                         onClick={onClose}
                         disabled={isSubmitting}
                         className="p-2.5 rounded-xl hover:bg-surface-muted text-body hover:text-heading border border-transparent hover:border-border transition-all cursor-pointer disabled:opacity-50"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
@@ -118,13 +118,13 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
 
                 {/* Form Body */}
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-                    <div className="p-6 overflow-y-auto space-y-5 flex-1">
+                    <div className="p-6 overflow-y-auto space-y-5 flex-1 text-left">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    نقطة الانطلاق <span className="text-red-500">*</span>
+                                    Origin Point <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -142,7 +142,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuMapPin className="w-3.5 h-3.5 text-body" />
-                                    وجهة الوصول <span className="text-red-500">*</span>
+                                    Destination Point <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -162,7 +162,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuTruck className="w-3.5 h-3.5 text-body" />
-                                    نوع المركبة <span className="text-red-500">*</span>
+                                    Vehicle Type <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -180,7 +180,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuCoins className="w-3.5 h-3.5 text-body" />
-                                    السعر الأساسي للمسار (ر.س) <span className="text-red-500">*</span>
+                                    Route Base Price (SAR) <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -202,7 +202,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuClock className="w-3.5 h-3.5 text-body" />
-                                    وقت الترانزيت التقديري
+                                    Estimated Transit Time
                                 </label>
                                 <input
                                     type="text"
@@ -216,7 +216,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-heading flex items-center gap-1.5">
                                     <LuBuilding2 className="w-3.5 h-3.5 text-body" />
-                                    الناقل المعين
+                                    Assigned Carrier
                                 </label>
                                 <select
                                     disabled={isSubmitting || isLoadingCarriers}
@@ -224,7 +224,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                                     onChange={(e) => setFormValues({ ...formValues, carrierId: e.target.value })}
                                     className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                                 >
-                                    <option value="">جميع الناقلين المتاحين</option>
+                                    <option value="">All Available Carriers</option>
                                     {carriers.map((car) => (
                                         <option key={car._id} value={car._id}>
                                             {car.name}
@@ -236,7 +236,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
 
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-heading block">
-                                حالة المسار
+                                Route Status
                             </label>
                             <select
                                 disabled={isSubmitting}
@@ -244,8 +244,8 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                                 onChange={(e) => setFormValues({ ...formValues, isActive: e.target.value === 'active' })}
                                 className="w-full px-4 py-2.5 rounded-md bg-surface-muted border border-border text-sm text-heading focus:outline-none focus:border-accent cursor-pointer disabled:opacity-50"
                             >
-                                <option value="active">نشط ومتاح</option>
-                                <option value="inactive">موقوف مؤقتاً</option>
+                                <option value="active">Active & Available</option>
+                                <option value="inactive">Temporarily Suspended</option>
                             </select>
                         </div>
 
@@ -259,7 +259,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             disabled={isSubmitting}
                             className="px-5 py-2.5 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted font-bold text-sm transition-colors cursor-pointer disabled:opacity-50"
                         >
-                            إلغاء
+                            Cancel
                         </button>
 
                         <button
@@ -267,7 +267,7 @@ export default function EditRoutes({ isOpen = true, route, onClose }: EditRoutes
                             disabled={isSubmitting}
                             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-accent text-accent-foreground font-bold text-sm shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 min-w-[130px] justify-center"
                         >
-                            {isSubmitting ? "جاري التعديل..." : "حفظ التعديلات"}
+                            {isSubmitting ? "Saving..." : "Save Changes"}
                         </button>
                     </div>
                 </form>

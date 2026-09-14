@@ -45,90 +45,90 @@ export default function DetailsShipments({ isOpen = true, shipment, onClose }: D
 
     const companyName = typeof shipment.companyId === 'object' && shipment.companyId !== null
         ? (shipment.companyId as Company).companyName
-        : 'غير محددة';
+        : 'Unspecified';
 
     const carrierName = typeof shipment.carrierId === 'object' && shipment.carrierId !== null
         ? (shipment.carrierId as Carrier).name
-        : 'أسطول الشركة الذاتي';
+        : 'Company Own Fleet';
 
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'created':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-amber-500/10 text-amber-600">
-                        حديثة
+                        New
                     </span>
                 );
             case 'confirmed':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-500/10 text-indigo-600">
-                        مؤكدة
+                        Confirmed
                     </span>
                 );
             case 'assigned':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-blue-500/10 text-blue-600">
-                        معينة لناقل
+                        Assigned to Carrier
                     </span>
                 );
             case 'ready_for_pickup':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-purple-500/10 text-purple-600">
-                        جاهزة للاستلام
+                        Ready for Pickup
                     </span>
                 );
             case 'picked_up':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-teal-500/10 text-teal-600">
-                        تم الاستلام
+                        Picked Up
                     </span>
                 );
             case 'in_transit':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-sky-500/10 text-sky-600">
-                        في الطريق
+                        In Transit
                     </span>
                 );
             case 'arrived':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-cyan-500/10 text-cyan-600">
-                        وصلت للمركز
+                        Arrived at Hub
                     </span>
                 );
             case 'out_for_delivery':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-orange-500/10 text-orange-600">
-                        خرجت للتوصيل
+                        Out for Delivery
                     </span>
                 );
             case 'delivered':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-emerald-500/10 text-emerald-600">
-                        تم التوصيل
+                        Delivered
                     </span>
                 );
             case 'delivery_failed':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
-                        فشل التوصيل
+                        Delivery Failed
                     </span>
                 );
             case 'cancelled':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
-                        ملغية
+                        Cancelled
                     </span>
                 );
             case 'returned':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-gray-500/10 text-gray-600">
-                        مرتجعة
+                        Returned
                     </span>
                 );
             case 'exception':
                 return (
                     <span className="px-2.5 py-1 text-xs font-semibold rounded bg-rose-500/10 text-rose-600">
-                        حالة استثنائية
+                        Exception
                     </span>
                 );
             default:
@@ -142,9 +142,9 @@ export default function DetailsShipments({ isOpen = true, shipment, onClose }: D
 
     const getTypeLabel = (type: string) => {
         switch (type) {
-            case 'ftl': return 'شحن كامل ';
-            case 'ltl': return 'شحن جزئي ';
-            default: return 'توصيل محلي';
+            case 'ftl': return 'Full Truckload';
+            case 'ltl': return 'Less-Than-Truckload';
+            default: return 'Local Delivery';
         }
     };
 
@@ -152,7 +152,7 @@ export default function DetailsShipments({ isOpen = true, shipment, onClose }: D
     const customerPrice = Number(shipment.customerPrice || 0);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-150" dir="ltr">
             <div className="printable-area w-full max-w-xl bg-surface border border-border rounded-md shadow-xs overflow-hidden flex flex-col">
 
                 {/* Header */}
@@ -163,10 +163,10 @@ export default function DetailsShipments({ isOpen = true, shipment, onClose }: D
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h2 className="text-base font-bold text-foreground">تفاصيل الشحنة والبوليصة</h2>
+                                <h2 className="text-base font-bold text-foreground">Shipment & Waybill Details</h2>
                                 {getStatusBadge(shipment.status || 'created')}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">رقم الشحنة: <span className="font-semibold text-accent">{shipment.shipmentNumber}</span></p>
+                            <p className="text-xs text-muted-foreground mt-0.5 font-latin">Shipment No.: <span className="font-semibold text-accent">{shipment.shipmentNumber}</span></p>
                         </div>
                     </div>
 
@@ -174,29 +174,29 @@ export default function DetailsShipments({ isOpen = true, shipment, onClose }: D
                         type="button"
                         onClick={onClose}
                         className="p-1.5 rounded-md hover:bg-surface-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="إغلاق"
+                        title="Close"
                     >
                         <LuX className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-5 space-y-4">
+                <div className="p-5 space-y-4 text-left">
 
                     {/* Waybill & Print Summary Row */}
                     <div className="p-4 rounded-md bg-surface-muted border border-border flex flex-wrap items-center justify-between gap-3 text-xs">
                         <div>
-                            <span className="text-muted-foreground block font-medium">رقم بوليصة الشحن (Waybill)</span>
+                            <span className="text-muted-foreground block font-medium">Waybill Number</span>
                             <span className="font-bold text-foreground font-latin text-sm">
                                 {shipment.waybillNumber || 'WB-PENDING'}
                             </span>
                             {shipment.trackingNumber && (
-                                <span className="text-muted-foreground text-[11px] block font-latin mt-0.5">رقم التتبع: {shipment.trackingNumber}</span>
+                                <span className="text-muted-foreground text-[11px] block font-latin mt-0.5">Tracking No.: {shipment.trackingNumber}</span>
                             )}
                         </div>
 
                         <div>
-                            <span className="text-muted-foreground block font-medium">الشركة المالكة</span>
+                            <span className="text-muted-foreground block font-medium">Owning Company</span>
                             <span className="font-bold text-foreground text-xs flex items-center gap-1 mt-0.5">
                                 <LuBuilding2 className="w-3.5 h-3.5 text-accent" />
                                 {companyName}
@@ -215,7 +215,7 @@ export default function DetailsShipments({ isOpen = true, shipment, onClose }: D
                                 ) : (
                                     <LuDownload className="w-4 h-4" />
                                 )}
-                                <span>{isGeneratingPdf ? 'جاري التحميل...' : 'تنزيل PDF'}</span>
+                                <span>{isGeneratingPdf ? 'Downloading...' : 'Download PDF'}</span>
                             </button>
                         </div>
                     </div>
@@ -224,38 +224,38 @@ export default function DetailsShipments({ isOpen = true, shipment, onClose }: D
                     <div className="p-4 rounded-md border border-border bg-surface space-y-3">
                         <h3 className="text-xs font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
                             <LuMapPin className="w-4 h-4 text-accent" />
-                            <span>مسار الخدمة والناقل والأسعار</span>
+                            <span>Service Route, Carrier & Pricing</span>
                         </h3>
 
                         <div className="space-y-2 text-xs">
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">نوع الخدمة</span>
+                                <span className="text-muted-foreground">Service Type</span>
                                 <span className="font-semibold text-foreground">{getTypeLabel(shipment.type)}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">خط المسار (المصدر ⬅️ الوجهة)</span>
-                                <span className="font-semibold text-foreground">{shipment.origin} ⬅️ {shipment.destination}</span>
+                                <span className="text-muted-foreground">Route Lane (Origin → Destination)</span>
+                                <span className="font-semibold text-foreground">{shipment.origin} → {shipment.destination}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">الناقل المعين</span>
+                                <span className="text-muted-foreground">Assigned Carrier</span>
                                 <span className="font-semibold text-foreground">{carrierName}</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground font-normal">عدد الطلبات المرفقة</span>
-                                <span className="font-semibold text-foreground font-latin">{shipment.ordersCount || 1} طلبات</span>
+                                <span className="text-muted-foreground font-normal">Attached Orders Count</span>
+                                <span className="font-semibold text-foreground font-latin">{shipment.ordersCount || 1} orders</span>
                             </div>
 
                             <div className="flex justify-between items-center py-1.5 border-b border-border">
-                                <span className="text-muted-foreground">التكلفة التشغيلية (Shipping Cost)</span>
-                                <span className="font-semibold text-foreground font-latin">{shippingCost.toFixed(2)} ر.س</span>
+                                <span className="text-muted-foreground">Operational Cost (Shipping Cost)</span>
+                                <span className="font-semibold text-foreground font-latin">{shippingCost.toFixed(2)} SAR</span>
                             </div>
 
                             <div className="flex justify-between items-center pt-1 text-sm font-bold">
-                                <span className="text-foreground">سعر الفاتورة للعميل (Customer Price)</span>
-                                <span className="text-emerald-600 font-latin text-base font-bold">{customerPrice.toFixed(2)} ر.س</span>
+                                <span className="text-foreground">Customer Invoice Price (Customer Price)</span>
+                                <span className="text-emerald-600 font-latin text-base font-bold">{customerPrice.toFixed(2)} SAR</span>
                             </div>
                         </div>
                     </div>
@@ -269,7 +269,7 @@ export default function DetailsShipments({ isOpen = true, shipment, onClose }: D
                         onClick={onClose}
                         className="px-4 py-1.5 text-xs font-semibold rounded-md border border-border bg-surface hover:bg-border/20 transition-colors text-foreground cursor-pointer"
                     >
-                        إغلاق
+                        Close
                     </button>
                 </div>
 

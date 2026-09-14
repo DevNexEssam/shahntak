@@ -79,7 +79,7 @@ export default function Users() {
     };
 
     return (
-        <section className="space-y-6 text-right font-arabic">
+        <section className="space-y-6 text-left">
 
             {/* Top Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -88,9 +88,9 @@ export default function Users() {
                         <span className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
                             <LuUser className="w-5 h-5" />
                         </span>
-                        إدارة المستخدمين والمدراء
+                        Users & Administrators Management
                     </h1>
-                    <p className="text-xs text-body mt-1">إدارة فريق عمل منصة شحنتك وتخصيص صلاحيات الوصول والمستويات القيادية</p>
+                    <p className="text-xs text-body mt-1">Manage Shahntak platform team, assign access permissions, and administrative levels</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -99,13 +99,13 @@ export default function Users() {
                         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 transition-all font-bold text-xs shadow-xs cursor-pointer"
                     >
                         <LuPlus className="w-4 h-4" />
-                        <span>إضافة مستخدم جديد</span>
+                        <span>Add New User</span>
                     </button>
 
                     <button
                         onClick={() => refetch()}
                         disabled={isFetching}
-                        title="تحديث البيانات"
+                        title="Refresh Data"
                         className="p-2.5 rounded-xl border border-border bg-surface hover:bg-surface-muted text-body hover:text-heading transition-all cursor-pointer disabled:opacity-50"
                     >
                         <LuRefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin text-accent" : ""}`} />
@@ -116,7 +116,7 @@ export default function Users() {
             {/* Error Notification Banner */}
             {isError && (
                 <div className="mb-4">
-                    <ErrorMessege message={(error as Error)?.message || "تعذر جلب بيانات المستخدمين من الخادم"} />
+                    <ErrorMessege message={(error as Error)?.message || "Failed to fetch user data from server"} />
                 </div>
             )}
 
@@ -125,10 +125,10 @@ export default function Users() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">إجمالي المستخدمين</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Total Users</span>
                             <h3 className="text-2xl font-bold text-heading my-1 font-latin">{stats.total}</h3>
                             <p className="text-xs text-body flex items-center gap-1 mt-2">
-                                <span>المسجلين بالنظام</span>
+                                <span>Registered in the system</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center">
@@ -140,10 +140,10 @@ export default function Users() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">المستخدمون النشطون</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Active Users</span>
                             <h3 className="text-2xl font-bold text-emerald-600 my-1 font-latin">{stats.active}</h3>
                             <p className="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-2">
-                                <span>حسابات مفعلة</span>
+                                <span>Active accounts</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
@@ -155,10 +155,10 @@ export default function Users() {
                 <div className="border border-border rounded-sm p-5 bg-surface">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <span className="text-xs font-semibold text-body block mb-1">غير النشطين</span>
+                            <span className="text-xs font-semibold text-body block mb-1">Inactive Users</span>
                             <h3 className="text-2xl font-bold text-rose-600 my-1 font-latin">{stats.inactive}</h3>
                             <p className="text-xs text-rose-600 font-bold flex items-center gap-1 mt-2">
-                                <span>حسابات موقوفة</span>
+                                <span>Suspended accounts</span>
                             </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-rose-500/10 text-rose-600 flex items-center justify-center">
@@ -172,9 +172,9 @@ export default function Users() {
             <div className="space-y-4">
                 <div className="border-b border-border flex items-center gap-2 overflow-x-auto">
                     {[
-                        { key: 'all', label: 'جميع المستخدمين', count: stats.total },
-                        { key: 'active', label: 'حسابات مفعلة', count: stats.active },
-                        { key: 'inactive', label: 'حسابات موقوفة', count: stats.inactive },
+                        { key: 'all', label: 'All Users', count: stats.total },
+                        { key: 'active', label: 'Active Accounts', count: stats.active },
+                        { key: 'inactive', label: 'Suspended Accounts', count: stats.inactive },
                     ].map((tab) => (
                         <button
                             key={tab.key}
@@ -198,13 +198,13 @@ export default function Users() {
 
                 <div className="bg-surface p-4 rounded-md border border-border flex items-center justify-between">
                     <div className="relative w-full md:w-96">
-                        <LuSearch className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-body" />
+                        <LuSearch className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-body" />
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            placeholder="بحث بالاسم، البريد، أو رقم الجوال..."
-                            className="w-full pl-4 pr-10 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
+                            placeholder="Search by name, email, or phone number..."
+                            className="w-full pl-10 pr-4 py-2 rounded-md bg-surface-muted border border-border text-sm text-heading placeholder:text-body/60 focus:outline-none focus:border-accent"
                         />
                     </div>
                 </div>
@@ -214,19 +214,19 @@ export default function Users() {
             <div className="bg-surface rounded-md border border-border overflow-hidden">
                 {usersList.length === 0 ? (
                     <div className="p-12 text-center">
-                        <EmptyData message="لا يوجد مستخدمون يطابقون خيارات البحث الحالية" icon={LuUser} />
+                        <EmptyData message="No users match the current search options" icon={LuUser} />
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm border-collapse">
+                        <table className="w-full text-left text-sm border-collapse">
                             <thead>
                                 <tr className="bg-surface-muted/60 border-b border-border text-xs font-bold text-body">
-                                    <th className="py-3.5 px-4">المستخدم</th>
-                                    <th className="py-3.5 px-4">البريد الإلكتروني</th>
-                                    <th className="py-3.5 px-4">الجوال</th>
-                                    <th className="py-3.5 px-4">الصلاحية</th>
-                                    <th className="py-3.5 px-4">الحالة</th>
-                                    <th className="py-3.5 px-4 text-center">الإجراءات</th>
+                                    <th className="py-3.5 px-4">User</th>
+                                    <th className="py-3.5 px-4">Email</th>
+                                    <th className="py-3.5 px-4">Phone</th>
+                                    <th className="py-3.5 px-4">Role</th>
+                                    <th className="py-3.5 px-4">Status</th>
+                                    <th className="py-3.5 px-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border font-medium">
@@ -254,7 +254,7 @@ export default function Users() {
                                         <td className="py-3.5 px-4 text-xs font-bold text-heading">
                                             <span className="inline-flex items-center gap-1">
                                                 <LuShieldCheck className="w-3.5 h-3.5 text-accent" />
-                                                {user.role === "super" ? "سوبر أدمن" : "مدير (Admin)"}
+                                                {user.role === "super" ? "Super Admin" : "Admin"}
                                             </span>
                                         </td>
 
@@ -262,11 +262,11 @@ export default function Users() {
                                             {user.status === "active" ? (
                                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-200">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                                    نشط
+                                                    Active
                                                 </span>
                                             ) : (
                                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-600 border border-rose-200">
-                                                    غير نشط
+                                                    Inactive
                                                 </span>
                                             )}
                                         </td>
@@ -278,7 +278,7 @@ export default function Users() {
                                                         setSelectedUser(user);
                                                         setIsDetailsOpen(true);
                                                     }}
-                                                    title="عرض التفاصيل"
+                                                    title="View details"
                                                     className="p-2 rounded-md bg-surface-muted hover:bg-accent-soft text-body hover:text-accent border border-border transition-all cursor-pointer"
                                                 >
                                                     <LuEye className="w-4 h-4" />
@@ -289,7 +289,7 @@ export default function Users() {
                                                         setSelectedUser(user);
                                                         setIsEditOpen(true);
                                                     }}
-                                                    title="تعديل المستخدم"
+                                                    title="Edit user"
                                                     className="p-2 rounded-md bg-surface-muted hover:bg-amber-500/10 text-body hover:text-amber-600 border border-border transition-all cursor-pointer"
                                                 >
                                                     <LuPencil className="w-4 h-4" />
@@ -297,7 +297,7 @@ export default function Users() {
 
                                                 <button
                                                     onClick={() => setUserToDeleteId(user._id)}
-                                                    title="حذف المستخدم"
+                                                    title="Delete user"
                                                     className="p-2 rounded-md bg-surface-muted hover:bg-rose-500/10 text-body hover:text-rose-600 border border-border transition-all cursor-pointer"
                                                 >
                                                     <LuTrash2 className="w-4 h-4" />
@@ -315,7 +315,7 @@ export default function Users() {
                 {totalPages > 1 && (
                     <div className="p-4 border-t border-border bg-surface-muted/30 flex items-center justify-between text-xs font-bold text-body">
                         <span className="text-body font-medium">
-                            عرض الصفحة <b className="font-latin text-heading">{page}</b> من <b className="font-latin text-heading">{totalPages}</b> (إجمالي {stats.total} مستخدم)
+                            Showing page <b className="font-latin text-heading">{page}</b> of <b className="font-latin text-heading">{totalPages}</b> (Total {stats.total} users)
                         </span>
 
                         <div className="flex items-center gap-2">
@@ -324,8 +324,8 @@ export default function Users() {
                                 disabled={page === 1}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <LuChevronRight className="w-4 h-4" />
-                                <span>السابق</span>
+                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Previous</span>
                             </button>
 
                             <button
@@ -333,8 +333,8 @@ export default function Users() {
                                 disabled={page >= totalPages}
                                 className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md border border-border bg-surface text-heading hover:bg-surface-muted transition-colors disabled:opacity-40 cursor-pointer"
                             >
-                                <span>التالي</span>
-                                <LuChevronLeft className="w-4 h-4" />
+                                <span>Next</span>
+                                <LuChevronRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -370,8 +370,8 @@ export default function Users() {
                 onClose={() => setUserToDeleteId(null)}
                 onConfirm={handleDeleteConfirm}
                 isDeleting={isDeleting}
-                title="تأكيد حذف المستخدم"
-                description="هل أنت تأكد من رغبتك في حذف هذا المستخدم نهائياً؟ لن يتمكن من تسجيل الدخول أو استخدام النظام بعد الآن."
+                title="Confirm User Deletion"
+                description="Are you sure you want to permanently delete this user? They will no longer be able to log in or access the system."
             />
         </section>
     );
