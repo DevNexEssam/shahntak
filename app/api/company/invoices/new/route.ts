@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -25,14 +25,14 @@ export async function POST(req: NextRequest) {
 
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: إنشاء الفواتير مخصص لحسابات الشركات فقط" },
+                { success: false, message: "Unauthorized access: Invoice creation is restricted to company accounts" },
                 { status: 403 }
             );
         }
 
         if (userRole === "staff") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: حظر إنشاء الفواتير على حسابات الموظفين" },
+                { success: false, message: "Unauthorized access: Invoice creation is disabled for staff accounts" },
                 { status: 403 }
             );
         }
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "حساب الشركة غير نشط أو تم تعطيله" },
+                { success: false, message: "Company account is inactive or disabled" },
                 { status: 403 }
             );
         }
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
         if (body.shipmentId) {
             if (!mongoose.Types.ObjectId.isValid(body.shipmentId)) {
                 return NextResponse.json(
-                    { success: false, message: "معرف الشحنة المحددة غير صالح" },
+                    { success: false, message: "Invalid shipment ID specified" },
                     { status: 400 }
                 );
             }
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
 
             if (!targetShipment) {
                 return NextResponse.json(
-                    { success: false, message: "لم يتم العثور على الشحنة المحددة" },
+                    { success: false, message: "Specified shipment was not found" },
                     { status: 404 }
                 );
             }
@@ -95,11 +95,11 @@ export async function POST(req: NextRequest) {
             });
 
             if (existingLinkedInvoice || targetShipment.invoiceId) {
-                const invNumber = existingLinkedInvoice?.invoiceNumber || "مسبقاً";
+                const invNumber = existingLinkedInvoice?.invoiceNumber || "previously";
                 return NextResponse.json(
                     {
                         success: false,
-                        message: `حماية النزاهة المالية (Anti-Duplication Guard): هذه الشحنة تملك فاتورة صادرة مسبقاً برقم (${invNumber}) ولا يمكن تكرار إصدار فاتورة ثانية لها`,
+                        message: `Anti-Duplication Guard: This shipment already has an issued invoice (${invNumber}) and cannot have a duplicate invoice created`,
                     },
                     { status: 409 }
                 );
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
 
         if (basePrice <= 0) {
             return NextResponse.json(
-                { success: false, message: "المبلغ الأساسي قبل الضريبة يجب أن يكون أكبر من الصفر" },
+                { success: false, message: "Base amount before tax must be greater than zero" },
                 { status: 400 }
             );
         }
@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
 
         if (existingInvNum) {
             return NextResponse.json(
-                { success: false, message: "رقم الفاتورة مسجل بالفعل بالنظام" },
+                { success: false, message: "Invoice number is already registered in the system" },
                 { status: 409 }
             );
         }
@@ -159,14 +159,14 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json(
-            { success: true, message: "تم إنشاء الفاتورة الضريبية وربطها بنجاح", data: newInvoice },
+            { success: true, message: "Tax invoice created and linked successfully", data: newInvoice },
             { status: 201 }
         );
     } catch (error: any) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء إنشاء الفاتورة",
+                message: "Server error occurred while creating invoice",
                 error: error.message,
             },
             { status: 500 }

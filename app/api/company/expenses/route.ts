@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: عرض المصروفات مخصص لحسابات الشركات" },
+                { success: false, message: "Unauthorized access: Viewing expenses is restricted to company accounts" },
                 { status: 403 }
             );
         }
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -112,7 +112,7 @@ export async function GET(req: NextRequest) {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء جلب المصروفات", error: error.message },
+            { success: false, message: "Server error occurred while fetching expenses", error: error.message },
             { status: 500 }
         );
     }
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -134,14 +134,14 @@ export async function POST(req: NextRequest) {
         const { role, userRole, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: تسجيل المصروفات مخصص لشركات النقل" },
+                { success: false, message: "Unauthorized access: Expense tracking is restricted to transport companies" },
                 { status: 403 }
             );
         }
 
         if (userRole === "staff") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: حظر إضافة المصروفات على حسابات الموظفين" },
+                { success: false, message: "Unauthorized access: Expense entry is disabled for staff accounts" },
                 { status: 403 }
             );
         }
@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -162,7 +162,7 @@ export async function POST(req: NextRequest) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "حساب الشركة غير نشط" },
+                { success: false, message: "Company account is inactive" },
                 { status: 403 }
             );
         }
@@ -179,7 +179,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات المصروف غير مكتملة أو غير صالحة",
+                    message: "Incomplete or invalid expense data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 400 }
@@ -203,12 +203,12 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json(
-            { success: true, message: "تم تسجل المصروف بنجاح", data: newExpense },
+            { success: true, message: "Expense recorded successfully", data: newExpense },
             { status: 201 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء إضافة المصروف", error: error.message },
+            { success: false, message: "Server error occurred while adding expense", error: error.message },
             { status: 500 }
         );
     }

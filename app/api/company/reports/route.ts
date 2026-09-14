@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: تصفح التقارير مخصص لحسابات الشركات فقط" },
+                { success: false, message: "Unauthorized access: Browsing reports is restricted to company accounts" },
                 { status: 403 }
             );
         }
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "حساب الشركة غير نشط أو تم تعطيله" },
+                { success: false, message: "Company account is inactive or disabled" },
                 { status: 403 }
             );
         }
@@ -125,13 +125,13 @@ export async function GET(req: NextRequest) {
             ]);
 
             const dayMap: Record<number, string> = {
-                1: "الأحد",
-                2: "الإثنين",
-                3: "الثلاثاء",
-                4: "الأربعاء",
-                5: "الخميس",
-                6: "الجمعة",
-                7: "السبت",
+                1: "Sunday",
+                2: "Monday",
+                3: "Tuesday",
+                4: "Wednesday",
+                5: "Thursday",
+                6: "Friday",
+                7: "Saturday",
             };
 
             const ordersByDayMap: Record<string, number> = {};
@@ -142,17 +142,17 @@ export async function GET(req: NextRequest) {
                 }
             });
 
-            const daysOfWeekOrder = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+            const daysOfWeekOrder = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
             const weeklyOrdersTrend = daysOfWeekOrder.map((day) => ({
                 day,
                 orders: ordersByDayMap[day] || 0,
             }));
 
             const shipmentStatusBreakdown = [
-                { name: "تم التوصيل", value: (deliveredOrders || 0) + (deliveredShipments || 0), color: "#7444fd" },
-                { name: "ترانزيت / بالسيارة", value: (inTransitShipments || 0) + (shippedOrders || 0), color: "#a855f7" },
-                { name: "مجمع بشحنة", value: groupedOrders || 0, color: "#3b82f6" },
-                { name: "قيد الانتظار والمعالجة", value: pendingOrders || 0, color: "#f59e0b" },
+                { name: "Delivered", value: (deliveredOrders || 0) + (deliveredShipments || 0), color: "#7444fd" },
+                { name: "In Transit", value: (inTransitShipments || 0) + (shippedOrders || 0), color: "#a855f7" },
+                { name: "Grouped", value: groupedOrders || 0, color: "#3b82f6" },
+                { name: "Pending", value: pendingOrders || 0, color: "#f59e0b" },
             ];
 
             resultData.orders = {
@@ -265,7 +265,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء جلب التقارير",
+                message: "Server error occurred while fetching reports",
                 error: error.message,
             },
             { status: 500 }

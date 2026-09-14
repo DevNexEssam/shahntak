@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: إضافة الشحنات مخصصة للشركات فقط" },
+                { success: false, message: "Unauthorized access: Adding shipments is restricted to company accounts" },
                 { status: 403 }
             );
         }
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "حساب الشركة غير نشط أو تم تعطيله" },
+                { success: false, message: "Company account is inactive or disabled" },
                 { status: 403 }
             );
         }
@@ -69,14 +69,14 @@ export async function POST(req: NextRequest) {
 
         if (shipmentsInput.length === 0) {
             return NextResponse.json(
-                { success: false, message: "لم يتم تمرير أي شحنات للاستيراد" },
+                { success: false, message: "No shipments provided for import" },
                 { status: 400 }
             );
         }
 
         if (shipmentsInput.length > 200) {
             return NextResponse.json(
-                { success: false, message: "الحد الأقصى هو 200 شحنة في الملف الواحد لتجنب إجهاد الخادم" },
+                { success: false, message: "Maximum limit is 200 shipments per file to prevent server load" },
                 { status: 400 }
             );
         }
@@ -107,13 +107,13 @@ export async function POST(req: NextRequest) {
             if (ordersInShipment.length === 0) {
                 creationErrors.push({
                     index: sIdx,
-                    errors: { shipment: ["لا تملك هذه الشحنة أي طلبات مرفقة"] },
+                    errors: { shipment: ["This shipment has no attached orders"] },
                 });
                 continue;
             }
 
-            const origin = (shipData.origin || "الرياض").trim();
-            const destination = (shipData.destination || "جدة").trim();
+            const origin = (shipData.origin || "Riyadh").trim();
+            const destination = (shipData.destination || "Jeddah").trim();
 
             // Smart Route Matching
             const matchedRoute = await Route.findOne({
@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
 
                     if (existingDBOrder) {
                         if (existingDBOrder.shipmentId) {
-                            shipmentErrors.push(`الطلب (${explicitOrderNum}) مدمج بالفعل في شحنة أخرى سابقاً ولا يمكن دمجه مجدداً.`);
+                            shipmentErrors.push(`Order (${explicitOrderNum}) is already merged in another shipment and cannot be re-merged.`);
                             continue;
                         } else {
                             targetOrderId = existingDBOrder._id as mongoose.Types.ObjectId;
@@ -179,7 +179,7 @@ export async function POST(req: NextRequest) {
                     const ordValidation = orderCreateValidationSchema.safeParse(ordItem);
                     if (!ordValidation.success) {
                         const errMsgs = Object.values(ordValidation.error.flatten().fieldErrors).flat().join(", ");
-                        shipmentErrors.push(`الطلب رقم ${oIdx + 1}: ${errMsgs}`);
+                        shipmentErrors.push(`Order #${oIdx + 1}: ${errMsgs}`);
                         continue;
                     }
 
@@ -295,7 +295,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "جميع الشحنات الممررة تحتوي على أخطاء وتعذر استيرادها",
+                    message: "All passed shipments contain errors and failed to import",
                     errors: creationErrors,
                 },
                 { status: 422 }
@@ -311,7 +311,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
             {
                 success: true,
-                message: `تم استيراد وإنشاء ${createdShipments.length} شحنة بنجاح وتجميع كافة الطلبات التابعة لها`,
+                message: `Successfully imported and created ${createdShipments.length} shipments and grouped all related orders`,
                 count: createdShipments.length,
                 data: createdShipments,
             },
@@ -321,7 +321,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء الاستيراد الجماعي للشحنات",
+                message: "Server error occurred during bulk shipment import",
                 error: error.message,
             },
             { status: 500 }

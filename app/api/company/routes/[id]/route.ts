@@ -14,12 +14,12 @@ export async function GET(req: NextRequest) {
 
         const session = await getServerSession(authOptions);
         if (!session?.user) {
-            return NextResponse.json({ success: false, message: "يجب تسجيل الدخول أولاً" }, { status: 401 });
+            return NextResponse.json({ success: false, message: "Authentication required" }, { status: 401 });
         }
 
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
-            return NextResponse.json({ success: false, message: "غير مصرح لك" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         const activeCompanyId = companyId || userId;
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
         const id = pathname.split("/").pop();
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ success: false, message: "معرف المسار غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid route ID" }, { status: 400 });
         }
 
         const route = await Route.findOne({
@@ -37,12 +37,12 @@ export async function GET(req: NextRequest) {
         }).populate("carrierId", "name phone");
 
         if (!route) {
-            return NextResponse.json({ success: false, message: "لم يتم العثور على المسار" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Route not found" }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: route }, { status: 200 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred while fetching route", error: error.message }, { status: 500 });
     }
 }
 
@@ -53,12 +53,12 @@ export async function PUT(req: NextRequest) {
 
         const session = await getServerSession(authOptions);
         if (!session?.user) {
-            return NextResponse.json({ success: false, message: "يجب تسجيل الدخول أولاً" }, { status: 401 });
+            return NextResponse.json({ success: false, message: "Authentication required" }, { status: 401 });
         }
 
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
-            return NextResponse.json({ success: false, message: "غير مصرح لك" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         const activeCompanyId = companyId || userId;
@@ -66,7 +66,7 @@ export async function PUT(req: NextRequest) {
         const id = pathname.split("/").pop();
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ success: false, message: "معرف المسار غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid route ID" }, { status: 400 });
         }
 
         const existingRoute = await Route.findOne({
@@ -76,7 +76,7 @@ export async function PUT(req: NextRequest) {
         });
 
         if (!existingRoute) {
-            return NextResponse.json({ success: false, message: "لم يتم العثور على المسار أو لا تملك صلاحية التعديل عليه" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Route not found or you do not have permission to update it" }, { status: 404 });
         }
 
         const body = await req.json();
@@ -86,7 +86,7 @@ export async function PUT(req: NextRequest) {
         const validation = routeUpdateValidationSchema.safeParse(body);
         if (!validation.success) {
             return NextResponse.json(
-                { success: false, message: "بيانات الإدخال غير صالحة", errors: validation.error.flatten().fieldErrors },
+                { success: false, message: "Invalid input data", errors: validation.error.flatten().fieldErrors },
                 { status: 422 }
             );
         }
@@ -104,9 +104,9 @@ export async function PUT(req: NextRequest) {
             { new: true, runValidators: true }
         );
 
-        return NextResponse.json({ success: true, message: "تم تحديث بيانات المسار بنجاح", data: updatedRoute }, { status: 200 });
+        return NextResponse.json({ success: true, message: "Route updated successfully", data: updatedRoute }, { status: 200 });
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم أثناء تحديث المسار", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred while updating route", error: error.message }, { status: 500 });
     }
 }
 
@@ -117,12 +117,12 @@ export async function DELETE(req: NextRequest) {
 
         const session = await getServerSession(authOptions);
         if (!session?.user) {
-            return NextResponse.json({ success: false, message: "يجب تسجيل الدخول أولاً" }, { status: 401 });
+            return NextResponse.json({ success: false, message: "Authentication required" }, { status: 401 });
         }
 
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
-            return NextResponse.json({ success: false, message: "غير مصرح لك" }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Unauthorized action" }, { status: 403 });
         }
 
         const activeCompanyId = companyId || userId;
@@ -131,7 +131,7 @@ export async function DELETE(req: NextRequest) {
         const isHardDelete = searchParams.get("hard") === "true";
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-            return NextResponse.json({ success: false, message: "معرف المسار غير صالح" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Invalid route ID" }, { status: 400 });
         }
 
         const route = await Route.findOne({
@@ -140,19 +140,19 @@ export async function DELETE(req: NextRequest) {
         });
 
         if (!route) {
-            return NextResponse.json({ success: false, message: "لم يتم العثور على المسار المراد حذفه" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Route to delete not found" }, { status: 404 });
         }
 
         if (isHardDelete) {
             await Route.deleteOne({ _id: id, companyId: new mongoose.Types.ObjectId(activeCompanyId) });
-            return NextResponse.json({ success: true, message: "تم حذف المسار نهائياً من النظام" }, { status: 200 });
+            return NextResponse.json({ success: true, message: "Route permanently deleted from system" }, { status: 200 });
         } else {
             route.deletedAt = new Date();
             route.isActive = false;
             await route.save();
-            return NextResponse.json({ success: true, message: "تم أرشفة وتجميد المسار بنجاح" }, { status: 200 });
+            return NextResponse.json({ success: true, message: "Route successfully archived and deactivated" }, { status: 200 });
         }
     } catch (error: any) {
-        return NextResponse.json({ success: false, message: "حدث خطأ في الخادم أثناء حذف المسار", error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: "Server error occurred while deleting route", error: error.message }, { status: 500 });
     }
 }

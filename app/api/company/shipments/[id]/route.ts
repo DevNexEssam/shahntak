@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشحنة غير صالح" },
+                { success: false, message: "Invalid shipment ID" },
                 { status: 400 }
             );
         }
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
 
         if (!shipment) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الشحنة" },
+                { success: false, message: "Shipment not found" },
                 { status: 404 }
             );
         }
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ success: true, data: shipment }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء جلب الشحنة", error: error.message },
+            { success: false, message: "Server error occurred while fetching shipment", error: error.message },
             { status: 500 }
         );
     }
@@ -78,7 +78,7 @@ export async function PUT(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -86,7 +86,7 @@ export async function PUT(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -97,7 +97,7 @@ export async function PUT(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشحنة غير صالح" },
+                { success: false, message: "Invalid shipment ID" },
                 { status: 400 }
             );
         }
@@ -110,7 +110,7 @@ export async function PUT(req: NextRequest) {
 
         if (!shipment) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الشحنة أو لا تملك صلاحية التعديل عليها" },
+                { success: false, message: "Shipment not found or you do not have permission to update it" },
                 { status: 404 }
             );
         }
@@ -120,7 +120,7 @@ export async function PUT(req: NextRequest) {
         // Strict Lock: Delivered shipments cannot be modified in any way
         if (shipment.status === "delivered") {
             return NextResponse.json(
-                { success: false, message: "الشحنة مسلّمة بالكامل (Delivered) ومقفلة نهائياً، لا يمكن إجراء أي تعديل عليها أو تغيير حالتها." },
+                { success: false, message: "Shipment is fully delivered and locked; no updates or status changes are permitted" },
                 { status: 400 }
             );
         }
@@ -133,7 +133,7 @@ export async function PUT(req: NextRequest) {
                 (body.destination && body.destination.trim() !== shipment.destination)
             ) {
                 return NextResponse.json(
-                    { success: false, message: "لا يمكن تعديل مدينة المصدر أو الوجهة لشحنة تم استلامها وتحريكها بالفعل على الطريق" },
+                    { success: false, message: "Cannot modify origin or destination city for a shipment already picked up or in transit on the road" },
                     { status: 400 }
                 );
             }
@@ -177,7 +177,7 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات الإدخال غير صالحة",
+                    message: "Invalid input data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -189,7 +189,7 @@ export async function PUT(req: NextRequest) {
         // Prevent moving directly from cancelled to delivered or in_transit
         if (shipment.status === "cancelled" && (newStatus === "delivered" || newStatus === "in_transit")) {
             return NextResponse.json(
-                { success: false, message: "لا يمكن تحويل الشحنة الملغية إلى في الطريق أو تم التوصيل مباشرة دون إعادة إطلاقها أولاً" },
+                { success: false, message: "Cannot set a cancelled shipment directly to in-transit or delivered without re-launching it first" },
                 { status: 400 }
             );
         }
@@ -197,7 +197,7 @@ export async function PUT(req: NextRequest) {
         // check delivery retry state
         if (shipment.status === "delivery_failed" && newStatus === "delivered") {
             return NextResponse.json(
-                { success: false, message: "لا يمكن تحويل شحنة فاشلة التوصيل مباشرة إلى تم التوصيل دون خروجها للتوصيل مجدداً" },
+                { success: false, message: "Cannot set a delivery-failed shipment directly to delivered without sending it out for delivery again" },
                 { status: 400 }
             );
         }
@@ -263,14 +263,14 @@ export async function PUT(req: NextRequest) {
         );
 
         return NextResponse.json(
-            { success: true, message: "تم تحديث بيانات الشحنة بنجاح", data: updatedShipment },
+            { success: true, message: "Shipment updated successfully", data: updatedShipment },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء تحديث الشحنة",
+                message: "Server error occurred while updating shipment",
                 error: error.message,
             },
             { status: 500 }
@@ -286,7 +286,7 @@ export async function DELETE(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -294,7 +294,7 @@ export async function DELETE(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -306,7 +306,7 @@ export async function DELETE(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشحنة غير صالح" },
+                { success: false, message: "Invalid shipment ID" },
                 { status: 400 }
             );
         }
@@ -318,7 +318,7 @@ export async function DELETE(req: NextRequest) {
 
         if (!shipment) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الشحنة المراد حذفها" },
+                { success: false, message: "Shipment to delete not found" },
                 { status: 404 }
             );
         }
@@ -327,7 +327,7 @@ export async function DELETE(req: NextRequest) {
         const activeShipmentStates = ["delivered", "in_transit", "out_for_delivery"];
         if (activeShipmentStates.includes(shipment.status)) {
             return NextResponse.json(
-                { success: false, message: "لا يمكن حذف شحنة في الطريق أو تم تسليمها بالفعل للعملاء. يرجى استخدام إجراءات الإلغاء أو الإرجاع الرسمية" },
+                { success: false, message: "Cannot delete a shipment that is currently in transit or already delivered to customers. Please use official cancellation or return procedures" },
                 { status: 400 }
             );
         }
@@ -356,7 +356,7 @@ export async function DELETE(req: NextRequest) {
         if (isHardDelete) {
             await Shipment.deleteOne({ _id: id, companyId: new mongoose.Types.ObjectId(activeCompanyId) });
             return NextResponse.json(
-                { success: true, message: "تم حذف الشحنة وإلغاء الفاتورة غير المدفوعة وإعادة فك الطلبات بنجاح" },
+                { success: true, message: "Shipment deleted, unpaid invoice cancelled, and linked orders released successfully" },
                 { status: 200 }
             );
         } else {
@@ -364,7 +364,7 @@ export async function DELETE(req: NextRequest) {
             shipment.status = "cancelled";
             await shipment.save();
             return NextResponse.json(
-                { success: true, message: "تمت أرشفة الشحنة وإلغاء الفاتورة غير المدفوعة وإعادة فك الطلبات بنجاح" },
+                { success: true, message: "Shipment archived, unpaid invoice cancelled, and linked orders released successfully" },
                 { status: 200 }
             );
         }
@@ -372,7 +372,7 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء حذف الشحنة",
+                message: "Server error occurred while deleting shipment",
                 error: error.message,
             },
             { status: 500 }

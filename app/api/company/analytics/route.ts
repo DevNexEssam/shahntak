@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: جلب التحليلات مخصص لشركات النقل" },
+                { success: false, message: "Unauthorized access: Fetching analytics is restricted to transport companies" },
                 { status: 403 }
             );
         }
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
         }
 
 
-        //  FINANCIAL (الإيرادات والتحصيل)
+        // FINANCIAL (Revenue and Collection)
 
         if (tab === "financial") {
             const invoices = await Invoice.find(invoiceBase).lean();
@@ -214,7 +214,7 @@ export async function GET(req: NextRequest) {
         }
 
 
-        //  OPERATIONAL (التشغیلي والأسطول)
+        // OPERATIONAL (Operational and Fleet)
 
         if (tab === "operational") {
             const [shipments, invoices, expenses] = await Promise.all([
@@ -256,7 +256,7 @@ export async function GET(req: NextRequest) {
         }
 
 
-        //  EXPENSES (المصروفات والنفقات)
+        // EXPENSES (Expenses and Expenditures)
 
         if (tab === "expenses") {
             const [expenses, shipments] = await Promise.all([
@@ -287,7 +287,7 @@ export async function GET(req: NextRequest) {
                 percentage: totalExpensesSum > 0 ? Math.round((categoryMap[cat] / totalExpensesSum) * 100) : 0,
             })).sort((a, b) => b.value - a.value);
 
-            const topExpenseCategory = categoriesChart.length > 0 ? categoriesChart[0].name : "لا يوجد";
+            const topExpenseCategory = categoriesChart.length > 0 ? categoriesChart[0].name : "None";
 
             return NextResponse.json({
                 success: true,
@@ -304,7 +304,7 @@ export async function GET(req: NextRequest) {
         }
 
 
-        //  TAX (الضريبي -  VAT Report)
+        // TAX (VAT Report)
 
         if (tab === "tax") {
             const [invoices, expenses, company] = await Promise.all([
@@ -350,13 +350,13 @@ export async function GET(req: NextRequest) {
         }
 
         return NextResponse.json(
-            { success: false, message: "التبويب المحدد غير معروف" },
+            { success: false, message: "Unknown tab specified" },
             { status: 400 }
         );
 
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء جلب التحليلات", error: error.message },
+            { success: false, message: "Server error occurred while fetching analytics", error: error.message },
             { status: 500 }
         );
     }

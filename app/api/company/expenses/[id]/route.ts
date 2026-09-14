@@ -18,7 +18,7 @@ export async function PUT(
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -26,14 +26,14 @@ export async function PUT(
         const { role, userRole, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: تعديل المصروفات مخصص لشركات النقل" },
+                { success: false, message: "Unauthorized access: Modifying expenses is restricted to transport companies" },
                 { status: 403 }
             );
         }
 
         if (userRole === "staff") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: حظر تعديل المصروفات على حسابات الموظفين" },
+                { success: false, message: "Unauthorized access: Expense modification is disabled for staff accounts" },
                 { status: 403 }
             );
         }
@@ -41,7 +41,7 @@ export async function PUT(
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف المصروف أو الشركة غير صالح" },
+                { success: false, message: "Invalid expense or company ID" },
                 { status: 400 }
             );
         }
@@ -54,7 +54,7 @@ export async function PUT(
 
         if (!existingExpense) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على المصروف المحدد أو تم حذفه" },
+                { success: false, message: "The specified expense was not found or has been deleted" },
                 { status: 404 }
             );
         }
@@ -66,7 +66,7 @@ export async function PUT(
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات التعديل غير صالحة",
+                    message: "Invalid update data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 400 }
@@ -87,12 +87,12 @@ export async function PUT(
         await existingExpense.save();
 
         return NextResponse.json(
-            { success: true, message: "تم تعديل المصروف بنجاح", data: existingExpense },
+            { success: true, message: "Expense updated successfully", data: existingExpense },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء تعديل المصروف", error: error.message },
+            { success: false, message: "Server error occurred while updating expense", error: error.message },
             { status: 500 }
         );
     }
@@ -110,7 +110,7 @@ export async function DELETE(
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -118,14 +118,14 @@ export async function DELETE(
         const { role, userRole, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: حذف المصروفات مخصص لشركات النقل" },
+                { success: false, message: "Unauthorized access: Deleting expenses is restricted to transport companies" },
                 { status: 403 }
             );
         }
 
         if (userRole === "staff") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: حظر حذف المصروفات على حسابات الموظفين" },
+                { success: false, message: "Unauthorized access: Expense deletion is disabled for staff accounts" },
                 { status: 403 }
             );
         }
@@ -133,7 +133,7 @@ export async function DELETE(
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف المصروف غير صالح" },
+                { success: false, message: "Invalid expense ID" },
                 { status: 400 }
             );
         }
@@ -146,7 +146,7 @@ export async function DELETE(
 
         if (!existingExpense) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على المصروف المحدد أو تم حذفه مسبقاً" },
+                { success: false, message: "The specified expense was not found or was previously deleted" },
                 { status: 404 }
             );
         }
@@ -155,12 +155,12 @@ export async function DELETE(
         await existingExpense.save();
 
         return NextResponse.json(
-            { success: true, message: "تم حذف المصروف بنجاح" },
+            { success: true, message: "Expense deleted successfully" },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء حذف المصروف", error: error.message },
+            { success: false, message: "Server error occurred while deleting expense", error: error.message },
             { status: 500 }
         );
     }

@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الطلب غير صالح" },
+                { success: false, message: "Invalid order ID" },
                 { status: 400 }
             );
         }
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
 
         if (!order) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الطلب" },
+                { success: false, message: "Order not found" },
                 { status: 404 }
             );
         }
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ success: true, data: order }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء جلب الطلب", error: error.message },
+            { success: false, message: "Server error occurred while fetching order", error: error.message },
             { status: 500 }
         );
     }
@@ -71,7 +71,7 @@ export async function PUT(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -79,7 +79,7 @@ export async function PUT(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -95,7 +95,7 @@ export async function PUT(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الطلب غير صالح" },
+                { success: false, message: "Invalid order ID" },
                 { status: 400 }
             );
         }
@@ -108,7 +108,7 @@ export async function PUT(req: NextRequest) {
 
         if (!order) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الطلب أو لا تملك صلاحية التعديل عليه" },
+                { success: false, message: "Order not found or you do not have permission to update it" },
                 { status: 404 }
             );
         }
@@ -122,21 +122,21 @@ export async function PUT(req: NextRequest) {
         // Strict Lock
         if (currentStatus === "delivered") {
             return NextResponse.json(
-                { success: false, message: "الطلب مسلّم بالكامل (Delivered) ومقفل نهائياً، لا يمكن إجراء أي تعديل عليه أو تغيير حالته." },
+                { success: false, message: "Order is fully delivered and locked; no updates or status changes are permitted" },
                 { status: 400 }
             );
         }
 
         if (currentStatus === "cancelled" && (newStatus === "shipped" || newStatus === "delivered")) {
             return NextResponse.json(
-                { success: false, message: "لا يمكن تحويل الطلب الملغي إلى مشحون أو مسلم مباشرة دون إعادته لقيد الانتظار أولاً" },
+                { success: false, message: "Cannot set a cancelled order directly to shipped or delivered without returning it to pending first" },
                 { status: 400 }
             );
         }
 
         if (currentStatus === "pending" && newStatus === "delivered" && !order.shipmentId) {
             return NextResponse.json(
-                { success: false, message: "لا يمكن تحويل الطلب من قيد الانتظار إلى مسلم مباشرة دون تجميعه وشحنه" },
+                { success: false, message: "Cannot transition an order from pending to delivered directly without assembling and shipping it" },
                 { status: 400 }
             );
         }
@@ -149,7 +149,7 @@ export async function PUT(req: NextRequest) {
 
             if (!mergedRecipientName || !mergedPhone || !mergedCity || !mergedAddress) {
                 return NextResponse.json(
-                    { success: false, message: "يرجى تصحيح بيانات المستلم الناقصة (الاسم، الجوال، المدينة، والعنوان) قبل تفعيل الطلب" },
+                    { success: false, message: "Please correct incomplete recipient details (Name, Phone, City, Address) before activating order" },
                     { status: 400 }
                 );
             }
@@ -165,7 +165,7 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات الإدخال غير صالحة",
+                    message: "Invalid input data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -179,14 +179,14 @@ export async function PUT(req: NextRequest) {
         );
 
         return NextResponse.json(
-            { success: true, message: "تم تحديث بيانات الطلب بنجاح", data: updatedOrder },
+            { success: true, message: "Order updated successfully", data: updatedOrder },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء تحديث الطلب",
+                message: "Server error occurred while updating order",
                 error: error.message,
             },
             { status: 500 }
@@ -202,7 +202,7 @@ export async function DELETE(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -210,7 +210,7 @@ export async function DELETE(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -227,7 +227,7 @@ export async function DELETE(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الطلب غير صالح" },
+                { success: false, message: "Invalid order ID" },
                 { status: 400 }
             );
         }
@@ -239,7 +239,7 @@ export async function DELETE(req: NextRequest) {
 
         if (!order) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الطلب المراد حذفه" },
+                { success: false, message: "Order to delete not found" },
                 { status: 404 }
             );
         }
@@ -253,7 +253,7 @@ export async function DELETE(req: NextRequest) {
         if (isHardDelete) {
             await Order.deleteOne({ _id: id, companyId: new mongoose.Types.ObjectId(activeCompanyId) });
             return NextResponse.json(
-                { success: true, message: "تم حذف الطلب نهائياً من النظام" },
+                { success: true, message: "Order permanently deleted from system" },
                 { status: 200 }
             );
         } else {
@@ -262,7 +262,7 @@ export async function DELETE(req: NextRequest) {
             order.shipmentId = undefined;
             await order.save();
             return NextResponse.json(
-                { success: true, message: "تم إغلاق وأرشفة الطلب بنجاح" },
+                { success: true, message: "Order successfully archived and cancelled" },
                 { status: 200 }
             );
         }
@@ -270,7 +270,7 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء حذف الطلب",
+                message: "Server error occurred while deleting order",
                 error: error.message,
             },
             { status: 500 }

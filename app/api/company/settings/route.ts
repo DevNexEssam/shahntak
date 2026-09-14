@@ -17,7 +17,7 @@ export async function GET() {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -26,7 +26,7 @@ export async function GET() {
 
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: استعراض الإعدادات مخصص لحسابات الشركات فقط" },
+                { success: false, message: "Unauthorized access: Viewing settings is restricted to company accounts" },
                 { status: 403 }
             );
         }
@@ -34,7 +34,7 @@ export async function GET() {
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -47,7 +47,7 @@ export async function GET() {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "حساب الشركة غير نشط أو تم تعطيله" },
+                { success: false, message: "Company account is inactive or disabled" },
                 { status: 403 }
             );
         }
@@ -71,7 +71,7 @@ export async function GET() {
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ أثناء جلب إعدادات الشركة", error: error.message },
+            { success: false, message: "Server error occurred while fetching company settings", error: error.message },
             { status: 500 }
         );
     }
@@ -85,7 +85,7 @@ export async function PUT(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -94,7 +94,7 @@ export async function PUT(req: NextRequest) {
 
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: تعديل الإعدادات مخصص لحسابات الشركات فقط" },
+                { success: false, message: "Unauthorized access: Updating settings is restricted to company accounts" },
                 { status: 403 }
             );
         }
@@ -102,7 +102,7 @@ export async function PUT(req: NextRequest) {
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -110,7 +110,7 @@ export async function PUT(req: NextRequest) {
         const { userRole } = session.user as any;
         if (userRole === "staff") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: حظر تعديل الإعدادات المالية والضريبية على حسابات الموظفين" },
+                { success: false, message: "Unauthorized access: Financial and tax settings modification is disabled for staff accounts" },
                 { status: 403 }
             );
         }
@@ -125,7 +125,7 @@ export async function PUT(req: NextRequest) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "حساب الشركة غير موجود أو غير نشط" },
+                { success: false, message: "Company account not found or inactive" },
                 { status: 404 }
             );
         }
@@ -145,7 +145,7 @@ export async function PUT(req: NextRequest) {
 
             if (parsedRate !== 15 && parsedRate !== 0) {
                 return NextResponse.json(
-                    { success: false, message: "نسبة ضريبة القيمة المضافة غير مقبولة. النسب المعتمدة هي 15% أساسية أو 0% معفاة وفقاً للائحة " },
+                    { success: false, message: "VAT rate is invalid. Accepted rates are 15% standard or 0% exempt under tax regulations" },
                     { status: 400 }
                 );
             }
@@ -153,7 +153,7 @@ export async function PUT(req: NextRequest) {
             const currentTaxNumber = company.taxNumber || body.taxNumber;
             if (parsedRate === 15 && (!currentTaxNumber || currentTaxNumber.trim() === "")) {
                 return NextResponse.json(
-                    { success: false, message: "حماية النزاهة الضريبية: يجب تسجيل وتوثيق الرقم الضريبي للشركة (VAT Registration Number) أولاً لتفعيل نسبة ضريبة 15%" },
+                    { success: false, message: "Tax Integrity Guard: Company Tax Registration Number (VAT TRN) must be registered and verified first before enabling 15% VAT rate" },
                     { status: 400 }
                 );
             }
@@ -161,7 +161,7 @@ export async function PUT(req: NextRequest) {
             if (parsedRate === 0) {
                 if (!body.vatExemptionReason || body.vatExemptionReason.trim().length < 3) {
                     return NextResponse.json(
-                        { success: false, message: "عند اختيار نسبة ضريبة 0% (معفاة)، يجب اختيار أو كتابة سبب الإعفاء الضريبي الرسمي" },
+                        { success: false, message: "When selecting 0% (Exempt) VAT rate, an official VAT exemption reason must be selected or specified" },
                         { status: 400 }
                     );
                 }
@@ -174,7 +174,7 @@ export async function PUT(req: NextRequest) {
             if (parsedRate !== previousRate) {
                 if (!body.vatRateReason || body.vatRateReason.trim().length < 3) {
                     return NextResponse.json(
-                        { success: false, message: "حماية النزاهة الضريبية ( Audit Log): يجب إدخال سبب تعديل نسبة الضريبة حتمياً لحفظ السجل التاريخي للتغيير" },
+                        { success: false, message: "Tax Integrity Guard (Audit Log): A valid reason for changing the VAT rate must be provided to maintain audit trail logs" },
                         { status: 400 }
                     );
                 }
@@ -184,7 +184,7 @@ export async function PUT(req: NextRequest) {
                     rate: parsedRate,
                     changedAt: new Date(),
                     changedBy: new mongoose.Types.ObjectId(String(userId || (session.user as any).id)),
-                    changedByName: session.user.name || session.user.email || "حساب الشركة الرئيسي",
+                    changedByName: session.user.name || session.user.email || "Primary Company Account",
                     reason: body.vatRateReason.trim(),
                 };
 
@@ -198,14 +198,14 @@ export async function PUT(req: NextRequest) {
         if (body.currentPassword || body.newPassword) {
             if (!body.currentPassword || !body.newPassword) {
                 return NextResponse.json(
-                    { success: false, message: "تغيير كلمة المرور يستوجب إدخال كلمة المرور الحالية والجديدة" },
+                    { success: false, message: "Changing password requires providing both current and new passwords" },
                     { status: 400 }
                 );
             }
 
             if (body.newPassword.length < 6) {
                 return NextResponse.json(
-                    { success: false, message: "كلمة المرور الجديدة يجب أن تكون على الأقل 6 أحرف" },
+                    { success: false, message: "New password must be at least 6 characters long" },
                     { status: 400 }
                 );
             }
@@ -218,7 +218,7 @@ export async function PUT(req: NextRequest) {
 
             if (!companyAccount) {
                 return NextResponse.json(
-                    { success: false, message: "حساب الشركة غير موجود أو غير نشط" },
+                    { success: false, message: "Company account not found or inactive" },
                     { status: 404 }
                 );
             }
@@ -226,7 +226,7 @@ export async function PUT(req: NextRequest) {
             const isPasswordValid = await bcrypt.compare(body.currentPassword, companyAccount.password);
             if (!isPasswordValid) {
                 return NextResponse.json(
-                    { success: false, message: "كلمة المرور الحالية غير صحيحة" },
+                    { success: false, message: "Current password is incorrect" },
                     { status: 400 }
                 );
             }
@@ -244,14 +244,14 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json(
             {
                 success: true,
-                message: body.newPassword ? "تم تحديث إعدادات الشركة وكلمة المرور بنجاح" : "تم تحديث بيانات ونسب الضريبة للشركة بنجاح",
+                message: body.newPassword ? "Company settings and password updated successfully" : "Company profile and tax rate settings updated successfully",
                 data: updatedCompany,
             },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ أثناء تحديث إعدادات الشركة", error: error.message },
+            { success: false, message: "Server error occurred while updating company settings", error: error.message },
             { status: 500 }
         );
     }

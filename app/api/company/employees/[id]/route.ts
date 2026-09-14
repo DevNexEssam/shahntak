@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الموظف غير صالح" },
+                { success: false, message: "Invalid employee ID" },
                 { status: 400 }
             );
         }
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
 
         if (!employee) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الموظف" },
+                { success: false, message: "Employee not found" },
                 { status: 404 }
             );
         }
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ success: true, data: employee }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء جلب الموظف", error: error.message },
+            { success: false, message: "Server error occurred while fetching employee", error: error.message },
             { status: 500 }
         );
     }
@@ -73,7 +73,7 @@ export async function PUT(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -81,7 +81,7 @@ export async function PUT(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -92,7 +92,7 @@ export async function PUT(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الموظف غير صالح" },
+                { success: false, message: "Invalid employee ID" },
                 { status: 400 }
             );
         }
@@ -105,7 +105,7 @@ export async function PUT(req: NextRequest) {
 
         if (!employee) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الموظف أو لا تملك صلاحية التعديل عليه" },
+                { success: false, message: "Employee not found or you do not have permission to update this record" },
                 { status: 404 }
             );
         }
@@ -121,7 +121,7 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات الإدخال غير صالحة",
+                    message: "Invalid input data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -149,8 +149,8 @@ export async function PUT(req: NextRequest) {
                     {
                         success: false,
                         message: isEmailTaken
-                            ? "البريد الإلكتروني مسجل بالفعل لموظف آخر"
-                            : "رقم الهاتف مسجل بالفعل لموظف آخر",
+                            ? "Email is already registered for another employee"
+                            : "Phone number is already registered for another employee",
                     },
                     { status: 409 }
                 );
@@ -173,14 +173,14 @@ export async function PUT(req: NextRequest) {
         ).select("-password");
 
         return NextResponse.json(
-            { success: true, message: "تم تحديث بيانات الموظف بنجاح", data: updatedEmployee },
+            { success: true, message: "Employee updated successfully", data: updatedEmployee },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء تحديث بيانات الموظف",
+                message: "Server error occurred while updating employee",
                 error: error.message,
             },
             { status: 500 }
@@ -196,7 +196,7 @@ export async function DELETE(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -204,7 +204,7 @@ export async function DELETE(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -216,7 +216,7 @@ export async function DELETE(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الموظف غير صالح" },
+                { success: false, message: "Invalid employee ID" },
                 { status: 400 }
             );
         }
@@ -228,7 +228,7 @@ export async function DELETE(req: NextRequest) {
 
         if (!employee) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الموظف المراد حذفه" },
+                { success: false, message: "Employee to delete not found" },
                 { status: 404 }
             );
         }
@@ -236,7 +236,7 @@ export async function DELETE(req: NextRequest) {
         if (isHardDelete) {
             await CompanyUser.deleteOne({ _id: id, companyId: new mongoose.Types.ObjectId(activeCompanyId) });
             return NextResponse.json(
-                { success: true, message: "تم حذف حساب الموظف نهائياً من النظام" },
+                { success: true, message: "Employee account permanently deleted from system" },
                 { status: 200 }
             );
         } else {
@@ -244,7 +244,7 @@ export async function DELETE(req: NextRequest) {
             employee.userIsActive = false;
             await employee.save();
             return NextResponse.json(
-                { success: true, message: "تمت أرشفة وتجميد حساب الموظف بنجاح" },
+                { success: true, message: "Employee account successfully archived and deactivated" },
                 { status: 200 }
             );
         }
@@ -252,7 +252,7 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء حذف الموظف",
+                message: "Server error occurred while deleting employee",
                 error: error.message,
             },
             { status: 500 }

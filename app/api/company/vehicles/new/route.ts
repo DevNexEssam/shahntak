@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك: إضافة المركبات مخصصة للشركات فقط" },
+                { success: false, message: "Unauthorized access: Adding vehicles is restricted to company accounts" },
                 { status: 403 }
             );
         }
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         const activeCompanyId = companyId || userId;
         if (!mongoose.Types.ObjectId.isValid(activeCompanyId)) {
             return NextResponse.json(
-                { success: false, message: "معرف الشركة غير صالح" },
+                { success: false, message: "Invalid company ID" },
                 { status: 400 }
             );
         }
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
 
         if (!company) {
             return NextResponse.json(
-                { success: false, message: "حساب الشركة غير نشط أو تم تعطيله" },
+                { success: false, message: "Company account is inactive or disabled" },
                 { status: 403 }
             );
         }
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات الإدخال غير صالحة",
+                    message: "Invalid input data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -87,14 +87,14 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json(
-            { success: true, message: "تمت إضافة المركبة بنجاح", data: newVehicle },
+            { success: true, message: "Vehicle added successfully", data: newVehicle },
             { status: 201 }
         );
     } catch (error: any) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء إضافة المركبة",
+                message: "Server error occurred while adding vehicle",
                 error: error.message,
             },
             { status: 500 }

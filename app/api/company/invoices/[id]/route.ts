@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الفاتورة غير صالح" },
+                { success: false, message: "Invalid invoice ID" },
                 { status: 400 }
             );
         }
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
 
         if (!invoice) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الفاتورة" },
+                { success: false, message: "Invoice not found" },
                 { status: 404 }
             );
         }
@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
             vatAmount,
             taxRateSnapshot: effectiveTaxRate,
             taxRate: effectiveTaxRate,
-            vatExemptionReason: effectiveTaxRate === 0 ? (companyRecord?.vatExemptionReason || "خدمات نقل معفاة بموجب اللائحة") : "",
+            vatExemptionReason: effectiveTaxRate === 0 ? (companyRecord?.vatExemptionReason || "Transport services exempt under regulations") : "",
             total: computedTotal,
             shipment: linkedShipment || (invoice.invoiceShipments && invoice.invoiceShipments[0]) || null,
         };
@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ success: true, data: enrichedInvoice }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, message: "حدث خطأ في الخادم أثناء جلب الفاتورة", error: error.message },
+            { success: false, message: "Server error occurred while fetching invoice", error: error.message },
             { status: 500 }
         );
     }
@@ -118,7 +118,7 @@ export async function PUT(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -126,7 +126,7 @@ export async function PUT(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -137,7 +137,7 @@ export async function PUT(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الفاتورة غير صالح" },
+                { success: false, message: "Invalid invoice ID" },
                 { status: 400 }
             );
         }
@@ -150,7 +150,7 @@ export async function PUT(req: NextRequest) {
 
         if (!invoice) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الفاتورة أو لا تملك صلاحية التعديل عليها" },
+                { success: false, message: "Invoice not found or you do not have permission to update it" },
                 { status: 404 }
             );
         }
@@ -160,7 +160,7 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "حماية النزاهة المالية: لا يمكن تعديل بيانات أو مبالغ أو إعادة فتح فاتورة سُددت وبحالة مدفوعة نهائياً",
+                    message: "Financial Integrity Guard: Paid invoices cannot be modified, updated, or re-opened",
                 },
                 { status: 400 }
             );
@@ -184,7 +184,7 @@ export async function PUT(req: NextRequest) {
                 return NextResponse.json(
                     {
                         success: false,
-                        message: "لا يمكن تحويل حالة الفاتورة إلى مدفوعة يدوياً للشحنات غير المسلمة",
+                        message: "Cannot manually set invoice status to paid for undelivered shipments",
                     },
                     { status: 400 }
                 );
@@ -234,7 +234,7 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "بيانات الإدخال غير صالحة",
+                    message: "Invalid input data",
                     errors: validation.error.flatten().fieldErrors,
                 },
                 { status: 422 }
@@ -248,14 +248,14 @@ export async function PUT(req: NextRequest) {
         );
 
         return NextResponse.json(
-            { success: true, message: "تم تحديث بيانات الفاتورة بنجاح", data: updatedInvoice },
+            { success: true, message: "Invoice updated successfully", data: updatedInvoice },
             { status: 200 }
         );
     } catch (error: any) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء تحديث الفاتورة",
+                message: "Server error occurred while updating invoice",
                 error: error.message,
             },
             { status: 500 }
@@ -271,7 +271,7 @@ export async function DELETE(req: NextRequest) {
         const session = await getServerSession(authOptions);
         if (!session?.user) {
             return NextResponse.json(
-                { success: false, message: "يجب تسجيل الدخول أولاً" },
+                { success: false, message: "Authentication required" },
                 { status: 401 }
             );
         }
@@ -279,7 +279,7 @@ export async function DELETE(req: NextRequest) {
         const { role, companyId, id: userId } = session.user as any;
         if (role !== "company") {
             return NextResponse.json(
-                { success: false, message: "غير مصرح لك" },
+                { success: false, message: "Unauthorized action" },
                 { status: 403 }
             );
         }
@@ -291,7 +291,7 @@ export async function DELETE(req: NextRequest) {
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return NextResponse.json(
-                { success: false, message: "معرف الفاتورة غير صالح" },
+                { success: false, message: "Invalid invoice ID" },
                 { status: 400 }
             );
         }
@@ -303,7 +303,7 @@ export async function DELETE(req: NextRequest) {
 
         if (!invoice) {
             return NextResponse.json(
-                { success: false, message: "لم يتم العثور على الفاتورة المراد حذفها" },
+                { success: false, message: "Invoice to delete not found" },
                 { status: 404 }
             );
         }
@@ -311,7 +311,7 @@ export async function DELETE(req: NextRequest) {
         // check deletion safety
         if (invoice.status === "paid") {
             return NextResponse.json(
-                { success: false, message: "حماية النزاهة المالية: لا يمكن حذف أو إلغاء فاتورة تم تحصيلها وبحالة مدفوعة" },
+                { success: false, message: "Financial Integrity Guard: Cannot delete or cancel paid invoices" },
                 { status: 400 }
             );
         }
@@ -319,7 +319,7 @@ export async function DELETE(req: NextRequest) {
         const linkedShipment = await Shipment.findOne({ invoiceId: invoice._id, deletedAt: null }).lean();
         if (linkedShipment && linkedShipment.status === "delivered") {
             return NextResponse.json(
-                { success: false, message: "حماية النزاهة الضريبية: لا يمكن حذف أو إلغاء فاتورة مرتبطة بشحنة مكتملة ومسلّمة" },
+                { success: false, message: "Tax Integrity Guard: Cannot delete or cancel invoices linked to completed and delivered shipments" },
                 { status: 400 }
             );
         }
@@ -327,7 +327,7 @@ export async function DELETE(req: NextRequest) {
         if (isHardDelete) {
             await Invoice.deleteOne({ _id: id, companyId: new mongoose.Types.ObjectId(activeCompanyId) });
             return NextResponse.json(
-                { success: true, message: "تم حذف الفاتورة نهائياً من النظام" },
+                { success: true, message: "Invoice permanently deleted from system" },
                 { status: 200 }
             );
         } else {
@@ -335,7 +335,7 @@ export async function DELETE(req: NextRequest) {
             invoice.status = "cancelled";
             await invoice.save();
             return NextResponse.json(
-                { success: true, message: "تمت أرشفة وإلغاء الفاتورة بنجاح" },
+                { success: true, message: "Invoice successfully archived and cancelled" },
                 { status: 200 }
             );
         }
@@ -343,7 +343,7 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json(
             {
                 success: false,
-                message: "حدث خطأ في الخادم أثناء حذف الفاتورة",
+                message: "Server error occurred while deleting invoice",
                 error: error.message,
             },
             { status: 500 }
